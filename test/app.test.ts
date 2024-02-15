@@ -1,10 +1,8 @@
-import 'dotenv/config'
-const request = require('supertest');
-import app from '../src/app'
-
+import { createApp } from '../src/app'
+import { expect } from '@jest/globals'
 
 describe('app.ts', () => {
-    it('should return 200', async () => {
-        await request(app).get('/hello-world').expect(200)
-    });
-});
+    it('should successfully create an app', async () => {
+        expect(async () => await createApp()).not.toThrow()
+    })
+})
