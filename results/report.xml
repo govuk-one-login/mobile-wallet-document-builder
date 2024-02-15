@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="3" failures="0" errors="0" time="7.558">
+  <testsuite name="config.ts" errors="0" failures="0" skipped="0" timestamp="2024-02-15T11:39:55" time="6.318" tests="2">
+    <testcase classname="config.ts should throw an error if PORT environment variable is not set " name="config.ts should throw an error if PORT environment variable is not set " time="0.023">
+    </testcase>
+    <testcase classname="config.ts should return PORT environment variable value if set " name="config.ts should return PORT environment variable value if set " time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="app.ts" errors="0" failures="0" skipped="0" timestamp="2024-02-15T11:39:55" time="6.91" tests="1">
+    <testcase classname="app.ts should successfully create an app" name="app.ts should successfully create an app" time="0.013">
+    </testcase>
+  </testsuite>
+</testsuites>
