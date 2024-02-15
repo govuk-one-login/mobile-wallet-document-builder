@@ -1,8 +1,9 @@
 import express from "express";
-import { documentBuilder } from "./controller";
+import { documentBuilderGet, documentBuilderPost } from "./controller";
 
 const router = express.Router();
 
-router.get("/hello-world", documentBuilder);
+router.get("/credential_offer", documentBuilderGet);
+router.post("/credential_offer", documentBuilderPost);
 
 export { router as documentBuilderRouter };
