@@ -4,9 +4,12 @@
   "description": "A UI for the Mock CRI",
   "repository": "https://github.com/govuk-one-login/mobile-wallet-document-builder",
   "scripts": {
-    "build": "npx tsc",
+    "build": "npx tsc && npm run build-sass && npm run copy-assets",
+    "build-sass": "rm -rf dist/public/style.css && sass --no-source-map src/assets/scss/application.scss dist/public/stylesheets/application.css --style compressed",
+    "copy-assets": "mkdir -p dist && copyfiles -u 1 src/**/*.njk dist/ && cp node_modules/govuk-frontend/dist/govuk/all.bundle.js dist/public/scripts && rm -rf dist/assets && cp -rf node_modules/govuk-frontend/dist/govuk/assets dist/assets",
     "start": "node dist/server.js",
-    "test": "jest --coverage",
+    "test": "node_modules/.bin/jest",
+    "test:unit": "node_modules/.bin/jest --testPathPattern=test/unit",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --ext .ts . --fix",
     "format": "prettier --ignore-path .gitignore --write \"*/**/*.{ts,json}\""
@@ -17,7 +20,7 @@
     "@aws-sdk/client-dynamodb": "^3.514.0",
     "axios": "^1.6.7",
     "body-parser": "^1.20.2",
-    "cookie-parser": "^1.4.6",
+    "copyfiles": "2.4.1",
     "express": "^4.18.2",
     "govuk-frontend": "^5.1.0",
     "nunjucks": "^3.2.4",

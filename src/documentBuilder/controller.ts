@@ -5,7 +5,7 @@ export async function documentBuilderGet(
   req: Request,
   res: Response
 ): Promise<void> {
-  res.render("test.njk");
+  res.render("base.njk");
 }
 
 export async function documentBuilderPost(
@@ -20,7 +20,7 @@ export async function documentBuilderPost(
 
   const qrCode = await QRCode.toDataURL(deepLinkWithCredentialOffer);
 
-  res.render("test.njk", {
+  res.render("base.njk", {
     deepLink: deepLinkWithCredentialOffer,
     qrCode,
   });

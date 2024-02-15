@@ -4,7 +4,6 @@ import { documentDataRouter } from "./documentData/router";
 
 import nunjucks from "nunjucks";
 import path from "path";
-import cookieParser from "cookie-parser";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
@@ -13,9 +12,7 @@ const APP_VIEWS = [
 
 export async function createApp(): Promise<express.Application> {
   const app: express.Application = express();
-
-  app.use(cookieParser());
-
+  
   app.use(express.static(path.join(__dirname, "public")));
   app.use("/public", express.static(path.join(__dirname, "public")));
   app.use(express.static(path.join(__dirname, "assets")));
@@ -29,7 +26,7 @@ export async function createApp(): Promise<express.Application> {
     })
   );
 
-  app.use(express.urlencoded({ extended: true })); // support encoded bodies
+  app.use(express.urlencoded({ extended: true }));
   app.use(documentBuilderRouter);
   app.use(documentDataRouter);
 
