@@ -1,7 +1,28 @@
-{% extends "base.njk" %}
+{% extends "govuk/template.njk" %}
+{% from "govuk/components/header/macro.njk" import govukHeader %}
 
-{% set pageTitle = "hello-world" %}
+{% block head %}
+  <link href="/public/stylesheets/application.css" rel="stylesheet">
+{% endblock %}
 
-{% block content %}
-  <h1 class="govuk-heading-l govuk-!-margin-top-3">Welcome to the Wallet Document Builder</h1>
+{% block pageTitle %}
+  {{ pageTitle }}
+{% endblock %}
+
+{% block header %}
+  {{ govukHeader({
+    homepageUrl: "login"
+  }) }}
+{% endblock %}
+
+{% block main %}
+  <div class="govuk-width-container {{ containerClasses }}">
+    <main class="govuk-main-wrapper {{ mainClasses }} govuk-!-padding-top-2" id="main-content" role="main" >
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full {{ rowClasses }}">
+      {% block content %}{% endblock %}
+      </div>
+    </div>
+    </main>
+  </div>
 {% endblock %}

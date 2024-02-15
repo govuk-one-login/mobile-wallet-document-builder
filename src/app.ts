@@ -1,7 +1,6 @@
 import express from "express";
 import { documentBuilderRouter } from "./documentBuilder/router";
 import { documentDataRouter } from "./documentData/router";
-
 import nunjucks from "nunjucks";
 import path from "path";
 
@@ -17,6 +16,7 @@ export async function createApp(): Promise<express.Application> {
   app.use("/public", express.static(path.join(__dirname, "public")));
   app.use(express.static(path.join(__dirname, "assets")));
   app.use("/assets", express.static(path.join(__dirname, "assets")));
+  
 
   app.set(
     "view engine",
