@@ -1,0 +1,51 @@
+{
+  "name": "mobile-wallet-document-builder",
+  "version": "1.0.0",
+  "description": "A service for filling in the content of documents, storing them and, through integration with a wallet credential issuer, providing the links needed to load those documents into the GOV.UK Wallet",
+  "repository": "https://github.com/govuk-one-login/mobile-wallet-document-builder",
+  "scripts": {
+    "build": "npx tsc && npm run build-sass && npm run copy-assets",
+    "build-sass": "rm -rf dist/public/style.css && sass --no-source-map src/assets/scss/application.scss dist/public/stylesheets/application.css --style compressed",
+    "copy-assets": "mkdir -p dist && copyfiles -u 1 src/**/*.njk dist/ && cp node_modules/govuk-frontend/govuk/all.js dist/public/scripts && rm -rf dist/assets && cp -rf node_modules/govuk-frontend/govuk/assets dist/assets",
+    "start": "node dist/server.js",
+    "test": "node_modules/.bin/jest",
+    "test:unit": "node_modules/.bin/jest --testPathPattern=test/unit",
+    "lint": "eslint --ext .ts .",
+    "lint:fix": "eslint --ext .ts . --fix",
+    "format": "prettier --ignore-path .gitignore --write \"*/**/*.{ts,json}\""
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.514.0",
+    "axios": "^1.6.7",
+    "body-parser": "^1.20.2",
+    "copyfiles": "2.4.1",
+    "express": "^4.18.2",
+    "govuk-frontend": "4.7.0",
+    "nunjucks": "3.2.4",
+    "qrcode": "^1.5.3"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.6",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.17",
+    "@types/nunjucks": "^3.2.6",
+    "@types/qrcode": "^1.5.5",
+    "@types/supertest": "^6.0.2",
+    "@typescript-eslint/eslint-plugin": "6.13.1",
+    "@typescript-eslint/parser": "6.13.1",
+    "dotenv": "^16.4.4",
+    "eslint": "8.52.0",
+    "eslint-config-prettier": "9.1.0",
+    "jest": "^29.7.0",
+    "jest-junit": "^16.0.0",
+    "prettier": "^2.8.8",
+    "sass": "^1.70.0",
+    "supertest": "^6.3.4",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
