@@ -11,3 +11,6 @@ results/
 # Mac
 .DS_Store
 .idea
+
+# Test coverage
+.nyc_output
