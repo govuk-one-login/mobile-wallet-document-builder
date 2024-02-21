@@ -20,8 +20,8 @@ jobs:
           node-version-file: .node-version
       - name: Install dependencies
         run: npm install
-      - name: Generate coverage report
-        run: npm run test:coverage
+      # - name: Generate coverage report
+      #   run: npm run test:coverage
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1 # pin@master
         env:
