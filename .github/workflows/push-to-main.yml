@@ -34,7 +34,6 @@ jobs:
         env:
           ECR_REGISTRY: "${{ secrets.BUILD_ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com"
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          PORT: 8000
         run: |
           cd ${GITHUB_WORKSPACE} || exit 1
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA .
@@ -49,18 +48,11 @@ jobs:
           sed -i "s|CONTAINER-IMAGE-PLACEHOLDER|$ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA|" template.yaml
 
       - name: SAM Validate
-        run: sam validate --region ${{ env.AWS_REGION }} -t deploy/template.yaml
+        run: sam validate --region ${{ env.AWS_REGION }} -t ./template.yaml
 
-      - name: Create cf-template.yaml and zip
-        run: |
-          cd ${GITHUB_WORKSPACE} || exit 1
-          sam build
-          mv .aws-sam/build/template.yaml cf-template.yaml
-          zip template.zip cf-template.yaml
-
-      - name: Upload CloudFormation artifacts to S3
-        env:
-          ARTIFACT_BUCKET: ${{ secrets.BUILD_ARTIFACT_BUCKET }}
-        run: |
-          cd ${GITHUB_WORKSPACE} || exit 1
-          aws s3 cp template.zip "s3://$ARTIFACT_BUCKET/template.zip" --metadata "repository=$GITHUB_REPOSITORY,commitsha=$GITHUB_SHA"
+      - name: Deploy SAM app
+        uses: govuk-one-login/devplatform-upload-action@v3.5
+        with:
+            artifact-bucket-name: ${{ secrets.BUILD_ENV_ARTIFACT_BUCKET_NAME }}
+            signing-profile-name: ${{ secrets.SIGNING_PROFILE_NAME }}
+            working-directory: ./sam-app/.aws-sam/build
