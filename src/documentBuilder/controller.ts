@@ -6,7 +6,7 @@ export async function documentBuilderGet(
   res: Response
 ): Promise<void> {
   console.log("documentBuilderGet");
-  res.render("hello.njk");
+  res.render("document-form.njk");
 }
 
 export async function documentBuilderPost(
