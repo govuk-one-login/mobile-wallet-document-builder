@@ -2,9 +2,9 @@
 name: 'Deployment'
 
 'on':
-    workflow_dispatch:
-    push:
-      branches: [ main ]
+  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 permissions:
   id-token: write
@@ -16,26 +16,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # pin@v3
         with:
           fetch-depth: '0'
 
+      - name: Setup SAM CLI
+        uses: aws-actions/setup-sam@c6696d35f45207ec9622ec3235f1997c660e1ab2 # pin@v2
+        with:
+          version: 1.90.0
+          use-installer: true
+
       - name: Set up AWS creds
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # pin@v4
         with:
           role-to-assume: ${{ secrets.GH_ACTIONS_ROLE_ARN }}
           aws-region: eu-west-2
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@2fc7aceee09e9e4a7105c0d060c656fad0b4f63d # pin@v1
 
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: "${{ secrets.BUILD_ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com"
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
         run: |
-          cd ${GITHUB_WORKSPACE} || exit 1
+          cd deploy ${GITHUB_WORKSPACE} || exit 1
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA
 
@@ -44,15 +50,25 @@ jobs:
           ECR_REGISTRY: "${{ secrets.BUILD_ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com"
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
         run: |
-          cd ${GITHUB_WORKSPACE} || exit 1
+          cd deploy ${GITHUB_WORKSPACE} || exit 1
           sed -i "s|CONTAINER-IMAGE-PLACEHOLDER|$ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA|" template.yaml
+
+      - name: SAM Validate
+        run: |
+          echo "SAM_CLI_TELEMETRY=0" >> $GITHUB_ENV
+          sam validate
+
+      - name: Sam build
+        run: |
+          cd deploy ${GITHUB_WORKSPACE} || exit 1
+          sam build --cached
 
       - name: SAM Validate
         run: sam validate --region ${{ env.AWS_REGION }} -t ./template.yaml
 
       - name: Deploy SAM app
-        uses: govuk-one-login/devplatform-upload-action@v3.5
+        uses: govuk-one-login/devplatform-upload-action@1bf704ccba8eaebea0bd43318321d806b29f9fe4 # pin@v3.5
         with:
-            artifact-bucket-name: ${{ secrets.BUILD_ENV_ARTIFACT_BUCKET_NAME }}
-            signing-profile-name: ${{ secrets.SIGNING_PROFILE_NAME }}
-            working-directory: ./sam-app/.aws-sam/build
+          artifact-bucket-name: ${{ secrets.BUILD_ENV_ARTIFACT_BUCKET_NAME }}
+          signing-profile-name: ${{ secrets.SIGNING_PROFILE_NAME }}
+          working-directory: ./deploy/.aws-sam/build
