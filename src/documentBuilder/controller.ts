@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 import QRCode from "qrcode";
+import { Document } from "./documentBuilder";
+import { saveDocument } from "./documentStore";
+import { randomUUID } from "node:crypto";
 
 export async function documentBuilderGet(
   req: Request,
@@ -15,15 +18,20 @@ export async function documentBuilderPost(
 ): Promise<void> {
   console.log("documentBuilderPost");
 
-  // save document data to DynamoDB
+  const document = Document.fromRequestBody(req.body);
+  console.log("Document created");
+
+  const documentId = randomUUID();
+  await saveDocument(document, documentId);
 
   // axios GET request to Credential Issuer
   const deepLinkWithCredentialOffer = "test";
 
   const qrCode = await QRCode.toDataURL(deepLinkWithCredentialOffer);
 
-  res.render("hello.njk", {
-    deepLink: deepLinkWithCredentialOffer,
-    qrCode,
+  res.render("document-id.njk", {
+    documentId,
+    deepLink: deepLinkWithCredentialOffer, // not yet in use
+    qrCode, // not yet in use
   });
 }
