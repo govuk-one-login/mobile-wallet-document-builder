@@ -12,5 +12,5 @@ results/
 .DS_Store
 .idea
 
-# Test coverage
+# Ignore changes to .env
 .env

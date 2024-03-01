@@ -42,7 +42,7 @@ describe("documentBuilder.ts", () => {
         familyName: "O'Hara Hamilton",
         nino: "QQ123456A",
       };
-      
+
       const nameParts = getNameParts(documentDetails);
 
       expect(nameParts).toEqual([
@@ -61,7 +61,7 @@ describe("documentBuilder.ts", () => {
         familyName: "Adler",
         nino: "QQ123456A",
       };
-      
+
       const nameParts = getNameParts(documentDetails);
 
       expect(nameParts).toEqual([
@@ -98,9 +98,7 @@ describe("documentBuilder.ts", () => {
 
       const socialSecurityRecord = getSocialSecurityRecord(documentDetails);
 
-      expect(socialSecurityRecord).toEqual([
-        { "personalNumber": "QQ123456A" }
-      ]);
+      expect(socialSecurityRecord).toEqual([{ personalNumber: "QQ123456A" }]);
     });
 
     it("should return an empty array when NINO is missing", () => {
