@@ -10,7 +10,6 @@
     "start": "node dist/server.js",
     "test": "node_modules/.bin/jest",
     "test:unit": "node_modules/.bin/jest --testPathPattern=test/unit",
-    "test:coverage": "nyc --reporter=lcov --reporter=text-summary npm run test:unit",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --ext .ts . --fix",
     "format": "prettier --ignore-path .gitignore --write \"*/**/*.{ts,json}\""
