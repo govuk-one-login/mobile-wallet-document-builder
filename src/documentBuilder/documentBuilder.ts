@@ -5,8 +5,7 @@ import {
   SocialSecurityRecord,
 } from "../types/interfaces";
 
-function getNameParts(input: DocumentDetails) {
-  console.log(input);
+export function getNameParts(input: DocumentDetails) {
   const nameParts: NamePart[] = [];
   if (input.title) {
     nameParts.push({
@@ -38,7 +37,7 @@ function getNameParts(input: DocumentDetails) {
   return nameParts;
 }
 
-function getSocialSecurityRecord(input: DocumentDetails) {
+export function getSocialSecurityRecord(input: DocumentDetails) {
   const socialSecurityRecord: SocialSecurityRecord[] = [];
   if (input.nino) {
     socialSecurityRecord.push({
