@@ -3,10 +3,10 @@ import {
   getDocumentsTableName,
   getEnvironment,
   getLocalStackEndpoint,
-  getPortNumber
+  getPortNumber,
 } from "../../src/config/appConfig";
 
-describe("aws.ts", () => {
+describe("appConfig.ts", () => {
   it("should throw an error if PORT environment variable is not set", () => {
     expect(() => getPortNumber()).toThrow(
       new Error("PORT environment variable not set")
@@ -20,7 +20,7 @@ describe("aws.ts", () => {
 
   it("should throw an error if DOCUMENTS_TABLE_NAME environment variable is not set", () => {
     expect(() => getDocumentsTableName()).toThrow(
-        new Error("DOCUMENTS_TABLE_NAME environment variable not set")
+      new Error("DOCUMENTS_TABLE_NAME environment variable not set")
     );
   });
 
@@ -39,8 +39,14 @@ describe("aws.ts", () => {
     expect(getEnvironment()).toEqual("local");
   });
 
-  it("should return the AWS region value", () => {
-    expect(getAwsRegion()).toEqual("eu-west-2");
+  it("should return the default value ('eu-west-2') of the AWS_REGION environment variable value if not set", () => {
+    process.env.AWS_REGION = "";
+    expect(getEnvironment()).toEqual("local");
+  });
+
+  it("should return AWS_REGION environment variable value if set", () => {
+    process.env.AWS_REGION = "eu-west-3";
+    expect(getAwsRegion()).toEqual("eu-west-3");
   });
 
   it("should return the LocalStack endpoint value", () => {

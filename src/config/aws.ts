@@ -6,7 +6,7 @@ import {
 import { LocalStackAwsConfig } from "../types/interfaces";
 import { DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
 
-function getLocalStackAwsConfig(): LocalStackAwsConfig {
+export function getLocalStackAwsConfig(): LocalStackAwsConfig {
   return {
     endpoint: getLocalStackEndpoint(),
     accessKeyId: "accessKeyId",
@@ -15,10 +15,12 @@ function getLocalStackAwsConfig(): LocalStackAwsConfig {
   };
 }
 
-export function getDbConfig(): DynamoDBClientConfig {
+export function getDatabaseConfig(): DynamoDBClientConfig {
   if (getEnvironment() === "local") {
     return getLocalStackAwsConfig();
   }
 
-  return getAwsRegion();
+  return {
+    region: getAwsRegion(),
+  };
 }
