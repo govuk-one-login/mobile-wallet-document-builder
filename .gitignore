@@ -13,4 +13,4 @@ results/
 .idea
 
 # Test coverage
-.nyc_output
+.env
