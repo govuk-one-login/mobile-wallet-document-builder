@@ -38,6 +38,8 @@
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "6.13.1",
     "@typescript-eslint/parser": "6.13.1",
+    "aws-sdk-client-mock": "^3.0.1",
+    "aws-sdk-client-mock-jest": "^3.0.1",
     "dotenv": "^16.4.4",
     "eslint": "8.52.0",
     "eslint-config-prettier": "9.1.0",

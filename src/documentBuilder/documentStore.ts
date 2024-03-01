@@ -30,5 +30,6 @@ export async function saveDocument(
     console.log(`Document saved: ${JSON.stringify(response)}`);
   } catch (error) {
     console.log(`Failed to save document: ${JSON.stringify(error)}`);
+    throw error;
   }
 }

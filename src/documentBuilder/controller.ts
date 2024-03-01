@@ -25,13 +25,12 @@ export async function documentBuilderPost(
   await saveDocument(document, documentId);
 
   // axios GET request to Credential Issuer
-  const deepLinkWithCredentialOffer = "test";
-
-  const qrCode = await QRCode.toDataURL(deepLinkWithCredentialOffer);
+  // const deepLinkWithCredentialOffer = "test";
+  // const qrCode = await QRCode.toDataURL(deepLinkWithCredentialOffer);
 
   res.render("document-id.njk", {
     documentId,
-    deepLink: deepLinkWithCredentialOffer, // not yet in use
-    qrCode, // not yet in use
+    // deepLink: deepLinkWithCredentialOffer, // not yet in use
+    // qrCode, // not yet in use
   });
 }
