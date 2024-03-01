@@ -16,13 +16,13 @@ export async function documentBuilderPost(
   res: Response
 ): Promise<void> {
   console.log("documentBuilderPost");
-  
+
   const document = Document.fromRequestBody(req.body);
   console.log("Document created");
 
   const documentId = randomUUID();
   await saveDocument(document, documentId);
-  
+
   res.render("document-id.njk", {
     documentId,
   });
