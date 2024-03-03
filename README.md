@@ -46,8 +46,6 @@ npm run build
 ```
 
 ### Run
-
-#### Prerequisites
 This app uses LocalStack to run AWS services locally. To start the LocalStack container and provision a local version of the **documents** DynamoDB table, run the command:
 ```
 docker-compose up
