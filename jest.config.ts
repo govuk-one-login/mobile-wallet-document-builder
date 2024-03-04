@@ -19,6 +19,7 @@ export default {
   ],
   "coveragePathIgnorePatterns": [
     "<rootDir>/src/types/interfaces.ts",
+    "<rootDir>/src/server.ts"
   ],
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
