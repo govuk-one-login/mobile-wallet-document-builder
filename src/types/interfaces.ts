@@ -1,8 +1,12 @@
 export interface LocalStackAwsConfig {
-  endpoint?: string;
-  accessKeyId?: string;
-  secretAccessKey?: string;
+  endpoint: string;
+  credentials: Credentials;
   region: string;
+}
+
+export interface Credentials {
+  accessKeyId: string;
+  secretAccessKey: string;
 }
 
 export interface DocumentDetails {

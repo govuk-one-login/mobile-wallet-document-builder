@@ -9,8 +9,10 @@ import { DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
 export function getLocalStackAwsConfig(): LocalStackAwsConfig {
   return {
     endpoint: getLocalStackEndpoint(),
-    accessKeyId: "accessKeyId",
-    secretAccessKey: "secretAccessKey",
+    credentials: {
+      accessKeyId: "accessKeyId",
+      secretAccessKey: "secretAccessKey",
+    },
     region: getAwsRegion(),
   };
 }
