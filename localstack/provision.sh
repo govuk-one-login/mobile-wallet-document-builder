@@ -15,7 +15,7 @@ aws --endpoint-url=http://localhost:4566 dynamodb put-item \
     --item '
     {
       "documentId": {
-        "S":  "test_document_id"
+        "S":  "86bd9f55-d675-4a16-963a-56ac17c8597c"
       },
       "walletSubjectId": {
            "S":  "test_wallet_subject_id"

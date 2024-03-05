@@ -59,11 +59,13 @@ The application should be running on port 8000.
 
 Open http://localhost:8000/credential_offer in a web browser.
 
-To check that an item was saved to the DynamoDB **documents** table, run the following command in the terminal (replacing first the `documentId` in the command):
+To check that an item was saved to the DynamoDB **documents** table, run the following command in the terminal (replacing the `documentId` in the command):
 
 ```
 aws --endpoint-url=http://localhost:4566 --region eu-west-2 dynamodb query --table-name documents --key-condition-expression "documentId = :documentId" --expression-attribute-values "{ \":documentId\" : { \"S\" : \"86bd9f55-d675-4a16-963a-56ac17c8597c\" } }"
 ```
+
+Your AWS CLI options must be configured before running this command. If they are not, run ```aws configure``` before running the command above.
 
 ## Test
 
