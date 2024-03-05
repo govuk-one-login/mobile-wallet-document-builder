@@ -1,11 +1,11 @@
 import {
   CredentialSubject,
-  DocumentDetails,
+  FormData,
   NamePart,
   SocialSecurityRecord,
 } from "../types/interfaces";
 
-export function getNameParts(input: DocumentDetails) {
+export function getNameParts(input: FormData) {
   const nameParts: NamePart[] = [];
   if (input.title) {
     nameParts.push({
@@ -37,7 +37,7 @@ export function getNameParts(input: DocumentDetails) {
   return nameParts;
 }
 
-export function getSocialSecurityRecord(input: DocumentDetails) {
+export function getSocialSecurityRecord(input: FormData) {
   const socialSecurityRecord: SocialSecurityRecord[] = [];
   if (input.nino) {
     socialSecurityRecord.push({
@@ -60,9 +60,9 @@ export class Document {
    * A static method for mapping a document's details into a document in the verifiable credential structure.
    *
    * @returns a document
-   * @param input {DocumentDetails}
+   * @param input {FormData}
    */
-  static fromRequestBody(input: DocumentDetails): Document {
+  static fromRequestBody(input: FormData): Document {
     this.trimRequestBody(input);
 
     const type = ["VerifiableCredential", "SocialSecurityCredential"];
@@ -74,10 +74,10 @@ export class Document {
     return new Document(type, credentialSubject);
   }
 
-  private static trimRequestBody(input: DocumentDetails) {
+  private static trimRequestBody(input: FormData) {
     for (const key in input) {
-      const trimmed = input[key as keyof DocumentDetails]!.trim();
-      input[key as keyof DocumentDetails] = trimmed
+      const trimmed = input[key as keyof FormData]!.trim();
+      input[key as keyof FormData] = trimmed
     }
   }
 }

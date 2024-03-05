@@ -9,7 +9,7 @@ export interface Credentials {
   secretAccessKey: string;
 }
 
-export interface DocumentDetails {
+export interface FormData {
   title?: string;
   givenName?: string;
   familyName?: string;
