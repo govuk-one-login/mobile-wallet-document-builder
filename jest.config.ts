@@ -13,10 +13,14 @@ export default {
     'default',
     ['jest-junit', { outputDirectory: 'results', outputName: 'report.xml' }]
   ],
+  collectCoverage: true,
   collectCoverageFrom: [
     'src/**',
   ],
-  collectCoverage: true,
+  "coveragePathIgnorePatterns": [
+    "<rootDir>/src/types/interfaces.ts",
+    "<rootDir>/src/server.ts"
+  ],
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   testMatch: ['**/*.test.ts'],
