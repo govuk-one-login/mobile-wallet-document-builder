@@ -44,6 +44,8 @@ jobs:
             use-installer: true
 
         - name: SAM Validate
+          with: 
+            aws-region: eu-west-2
           run: |
             echo "SAM_CLI_TELEMETRY=0" >> $GITHUB_ENV
             cd deploy && sam validate
