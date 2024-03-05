@@ -33,15 +33,70 @@ Parameters:
     Type: Number
     Default: 8000
 
+Mappings:
+  # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
+  # PlatformConfiguration:
+  #   dev:
+  #     CSLSEGRESS: "This should not ever be set; the dev account is not configured to egress logs."
+  #   build:
+  #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
+  #   staging:
+  #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
+  #   integration:
+  #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
+  #   production:
+  #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
+  ECSConfiguration:
+    dev:
+      FrontImageRepository: TBC
+    build:
+      FrontImageRepository: TBC
+    staging:
+      FrontImageRepository: TBC
+    integration:
+      FrontImageRepository: TBC
+    production:
+      FrontImageRepository: TBC
+  ElasticLoadBalancerAccountIds:
+    eu-west-2:
+      AccountId: 652711504416
+
 Resources:
 
- # ECS RESOURCES
+# SECURITY GROUPS
 
-  ECSSecurityGroupV2:
+  WalletFELoadBalancerSG:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: >-
-        DCA Front ECS Security Group permitting outbound
+        Wallet Stub Front LoadBalancer Security Group
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow from anyone on port 80
+          FromPort: 80
+          IpProtocol: tcp
+          ToPort: 80
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${VpcStackName}-VpcId"
+
+  WalletFELoadBalancerSGEgressToECSSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroupEgress'
+    Properties:
+      GroupId: !GetAtt WalletFELoadBalancerSG.GroupId
+      IpProtocol: tcp
+      Description: >-
+        Egress between the Wallet Stub FE Front load balancer and
+        the Wallet Stub FE Front ECS security group
+      DestinationSecurityGroupId: !GetAtt WalletFEECSSecurityGroup.GroupId
+      FromPort: !Ref ContainerPort
+      ToPort: !Ref ContainerPort
+
+  WalletFEECSSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: >-
+        Wallet Stub Front ECS Security Group permitting outbound
         to anywhere.
       SecurityGroupEgress:
         - CidrIp: 0.0.0.0/0
@@ -49,249 +104,146 @@ Resources:
           IpProtocol: '-1'
       VpcId:
         Fn::ImportValue:
-          !Sub "${DevPlatformVpcStackName}-VpcId"
+          !Sub "${VpcStackName}-VpcId"
 
-  WalletFrontEndStubCluster:
-    Type: 'AWS::ECS::Cluster'
+  WalletFEECSSecurityGroupIngressFromLoadBalancer:
+    Type: 'AWS::EC2::SecurityGroupIngress'
     Properties:
-      ClusterSettings:
-        - Name: containerInsights
-          Value: enabled
-      Tags:
-        - Key: Name
-          Value: !Sub "${AWS::StackName}-ECSClusterV2"
-        - Key: Product
-          Value: "GOV.UK sign in"
-        - Key: System
-          Value: "DCA CRI"
-        - Key: Environment
-          Value: !Sub "${Environment}"
+      IpProtocol: tcp
+      Description: >-
+        Wallet Stub FE ECS permits inbound from the Wallet Stub 
+        Front load balancer.
+      FromPort: !Ref ContainerPort
+      ToPort: !Ref ContainerPort
+      GroupId: !GetAtt WalletFEECSSecurityGroup.GroupId
+      SourceSecurityGroupId: !GetAtt WalletFELoadBalancerSG.GroupId
 
-  DCAFrontEcsServiceV2:
-    Type: 'AWS::ECS::Service'
-    Properties:
-      Cluster: !Ref DCAFrontEcsClusterV2
-      DeploymentConfiguration:
-        DeploymentCircuitBreaker:
-          Enable: TRUE
-          Rollback: TRUE
-      EnableECSManagedTags: false
-      HealthCheckGracePeriodSeconds: 60
-      LaunchType: FARGATE
-      LoadBalancers:
-        - ContainerName: app
-          ContainerPort: !Ref ContainerPort
-          TargetGroupArn: !Ref LoadBalancerListenerTargetGroupECSV2
-      NetworkConfiguration:
-        AwsvpcConfiguration:
-          AssignPublicIp: DISABLED
-          SecurityGroups:
-            - !GetAtt ECSSecurityGroupV2.GroupId
-          Subnets:
-            - Fn::ImportValue:
-                !Sub "${DevPlatformVpcStackName}-ProtectedSubnetIdA"
-            - Fn::ImportValue:
-                !Sub "${DevPlatformVpcStackName}-ProtectedSubnetIdB"
-            - Fn::ImportValue:
-                !Sub "${DevPlatformVpcStackName}-ProtectedSubnetIdC"
-      TaskDefinition: !Ref ECSServiceTaskDefinitionV2
-      Tags:
-        - Key: Name
-          Value: !Sub "${AWS::StackName}-ECSV2"
-        - Key: Product
-          Value: "GOV.UK sign in"
-        - Key: System
-          Value: "DCA CRI"
-        - Key: Environment
-          Value: !Sub "${Environment}"
-    DependsOn:
-      - LoadBalancerListenerV2
+# ACCESS LOGS
 
-  ECSServiceTaskDefinitionV2:
-    Type: 'AWS::ECS::TaskDefinition'
+  WalletFEAccessLogsBucket:
+    Type: AWS::S3::Bucket
     Properties:
-      ContainerDefinitions:
-        - Essential: true
-          Image: CONTAINER-IMAGE-PLACEHOLDER
-          Name: app
-          Environment:
-            - Name: EXTERNAL_WEBSITE_HOST
-              Value: !GetAtt ApiGwHttpEndpoint.ApiEndpoint
-            - Name: OAUTH_ENABLED
-              Value: !FindInMap [EnvironmentVariables, !Ref Environment, OAUTHENABLED ]
-            - Name: APP_NAME
-              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, APPNAME ]
-            - Name: SUPPORT_EMAIL
-              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, SUPPORTEMAIL ]
-            - Name: PRIVACY_NOTICE_URL
-              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, PRIVACYNOTICEURL]
-              # Feature Flags - end
-            - Name: ENVIRONMENT
-              Value: !Sub "${Environment}"
-            - Name: PORT
-              Value: !Ref ContainerPort
-            - Name: FRONT_END_URL
-              Value: !Sub
-                - "https://${Url}"
-                - Url: !Ref FrontCustomDomain
-            - Name: FRONT_END_URL_ALTERNATE_SUBDOMAIN
-              Value: !Sub
-                - "https://${Url}"
-                - Url: !Ref AppFrontCustomDomain
-            - Name: API_URL
-              Value: !Sub
-                - "https://${Url}"
-                - Url:
-                    Fn::ImportValue:
-                      !Sub "${BackendStackName}-apigateway-url"
-            - Name: APP_STORE_URL
-              Value: !FindInMap [EnvironmentVariables, !Ref Environment, APPSTOREURL ]
-            - Name: MOBILE_APP_ID
-              Value: !FindInMap [EnvironmentVariables, !Ref Environment, MOBILEAPPID ]
-            - Name: PLAY_STORE_URL
-              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, PLAYSTOREURL ]
-            - Name: ANDROID_APP_ID
-              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, ANDROIDAPPID ]
-            - Name: ANDROID_FINGER_PRINT
-              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, ANDROIDFINGERPRINT ]
-            - Name: UNIVERSAL_ANALYTICS_GTM_CONTAINER_ID
-              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, UNIVERSALANALYTICSGTMCONTAINERID ]
-            - Name: GOOGLE_ANALYTICS_4_GTM_CONTAINER_ID
-              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, GOOGLEANALYTICS4GTMCONTAINERID ]
-            - Name: X_GOVUK_SIGNIN_DCA_FEATURE_FLAG_20230725_GOOGLE_ANALYTICS_4_ENABLED
-              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, GA4ENABLED ]
-            - Name: ANALYTICS_COOKIE_DOMAIN
-              Value: !FindInMap [EnvironmentVariables, !Ref Environment, ANALYTICSCOOKIEDOMAIN ]
-            - Name: SERVICE_COOKIE_DOMAIN
-              Value: !FindInMap [EnvironmentVariables, !Ref Environment, SERVICECOOKIEDOMAIN ]
-            - Name: IS_SESSION_FINISHED_POLLING_DURATION
-              Value: !FindInMap [EnvironmentVariables, !Ref Environment, ISSESSIONFINISHEDPOLLINGDURATION]
-            - Name: IS_SESSION_FINISHED_INTERVAL
-              Value: !FindInMap [EnvironmentVariables, !Ref Environment, ISSESSIONFINISHEDINTERVAL ]
-            - Name: SESSION_TIMEOUT
-              Value: !FindInMap [EnvironmentVariables, !Ref Environment, SESSIONTIMEOUT ]
-            - Name: NODE_ENV
-              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, NODEENV ]
-            - Name: SUPPORT_FORM_LINK
-              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, SUPPORTFORMLINK ]
-          PortMappings:
-            - ContainerPort: !Ref ContainerPort
-              Protocol: tcp
-          LogConfiguration:
-            LogDriver: awslogs
-            Options:
-              awslogs-group : !Ref ECSAccessLogsGroup
-              awslogs-region : !Sub ${AWS::Region}
-              awslogs-stream-prefix : !Sub dca-front-${Environment}
-      Cpu: '1024' # Increased to use 1 CPU unit
-      ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
-      Memory: '2048' # Upgraded memory value to match with increased CPU
-      NetworkMode: awsvpc
-      RequiresCompatibilities:
-        - FARGATE
-      TaskRoleArn: !GetAtt ECSTaskRole.Arn
-      Tags:
-        - Key: Name
-          Value: !Sub "${AWS::StackName}-TaskDefinitionV2"
-        - Key: Product
-          Value: "GOV.UK sign in"
-        - Key: System
-          Value: "DCA CRI"
-        - Key: Environment
-          Value: !Sub "${Environment}"
+      BucketName: !Sub wallet-stub-front-${Environment}-access-logs
+      VersioningConfiguration:
+        Status: "Enabled"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
 
-  ECSTaskExecutionRole:
-    Type: 'AWS::IAM::Role'
+  WalletFEAccessLogsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
     Properties:
-      AssumeRolePolicyDocument:
+      Bucket: !Ref WalletFEAccessLogsBucket
+      PolicyDocument:
+        Version: "2012-10-17"
         Statement:
-          - Action: 'sts:AssumeRole'
-            Effect: Allow
+          - Effect: Allow
             Principal:
-              Service: ecs-tasks.amazonaws.com
-        Version: 2012-10-17
-      Policies:
-        - PolicyName: PullDCAFrontImage
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - "ecr:BatchGetImage"
-                  - "ecr:GetDownloadUrlForLayer"
-                  - "ecr:BatchCheckLayerAvailability"
-                Resource:
-                  - !FindInMap [ ECSConfiguration, !Ref Environment, FrontImageRepository ]
-              - Effect: Allow
-                Action:
-                  - "ecr:GetAuthorizationToken"
-                Resource:
-                  - "*"
-              - Effect: Allow
-                Action:
-                  - "logs:CreateLogStream"
-                  - "logs:PutLogEvents"
-                Resource:
-                  - !GetAtt "ECSAccessLogsGroup.Arn"
-                  - !Sub "${ECSAccessLogsGroup.Arn}:*"
-      PermissionsBoundary: !If
-        - UsePermissionsBoundary
-        - !Ref PermissionsBoundary
-        - !Ref AWS::NoValue
+              AWS: !Sub
+                - "arn:aws:iam::${ElbAccountId}:root"
+                - ElbAccountId: !FindInMap [ ElasticLoadBalancerAccountIds, !Ref AWS::Region, AccountId ]
+            Action:
+              - s3:PutObject
+            Resource:
+              - !Sub arn:aws:s3:::${WalletFEAccessLogsBucket}/wallet-stub-front-${Environment}/AWSLogs/${AWS::AccountId}/*
 
-  ECSTaskRole:
-    Type: 'AWS::IAM::Role'
+# LOADBALANCER RESOURCES
+
+  WalletFELoadBalancer:
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
     Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Action: 'sts:AssumeRole'
-            Effect: Allow
-            Principal:
-              Service: ecs-tasks.amazonaws.com
-        Version: 2012-10-17
-      PermissionsBoundary: !If
-        - UsePermissionsBoundary
-        - !Ref PermissionsBoundary
-        - !Ref AWS::NoValue
+      Scheme: internal
+      SecurityGroups:
+        - !GetAtt WalletFELoadBalancerSG.GroupId
+      Subnets:
+        - Fn::ImportValue:
+            !Sub "${VpcStackName}-PrivateSubnetIdA"
+        - Fn::ImportValue:
+            !Sub "${VpcStackName}-PrivateSubnetIdB"
+        - Fn::ImportValue:
+            !Sub "${VpcStackName}-PrivateSubnetIdC"
+      Type: application
+      LoadBalancerAttributes:
+        - Key: access_logs.s3.enabled
+          Value: true
+        - Key: access_logs.s3.bucket
+          Value: !Ref WalletFEAccessLogsBucket
+        - Key: access_logs.s3.prefix
+          Value: !Sub wallet-stub-front-${Environment}
+        - Key: idle_timeout.timeout_seconds
+          Value: 60 # N.B, this is 1 second less than the nodeJS app is configured in server.ts
+
+  WalletFELoadBalancerListenerTargetGroupECS:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      HealthCheckEnabled: TRUE
+      HealthCheckProtocol: HTTP
+      Matcher:
+        HttpCode: 200-499
+      Port: 80
+      Protocol: HTTP
+      TargetType: ip
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${VpcStackName}-VpcId"
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 60
+
+  WalletFELoadBalancerListener:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref WalletFELoadBalancerListenerTargetGroupECS
+          Type: forward
+      LoadBalancerArn: !Ref WalletFELoadBalancer
+      Port: 80
+      Protocol: HTTP
 
 # APIGW RESOURCES
 
-  ApiGwHttpEndpoint:
+  WalletFEApiGwHttpEndpoint:
       Type: 'AWS::ApiGatewayV2::Api'
       Properties:
-        Name: !Sub dca-front-${Environment}-${AWS::StackName}
-        Description: !Sub "Document Check Mobile And Web (DCMAW) Frontend API. ${AWS::StackName}"
+        Name: !Sub wallet-stub-front-${Environment}-${AWS::StackName}
+        Description: !Sub "Wallet Stub Frontend API. ${AWS::StackName}"
         ProtocolType: HTTP
 
-  ApiGwHttpEndpointIntegration:
+  WalletFEApiGwHttpEndpointIntegration:
       Type: 'AWS::ApiGatewayV2::Integration'
       Properties:
-        ApiId: !Ref ApiGwHttpEndpoint
+        ApiId: !Ref WalletFEApiGwHttpEndpoint
         IntegrationType: HTTP_PROXY
         ConnectionId:
           Fn::ImportValue:
             !Sub "${VpcStackName}-VpcLinkId"
         ConnectionType: VPC_LINK
         IntegrationMethod: ANY
-        IntegrationUri: !Ref LoadBalancerListener
+        IntegrationUri: !Ref WalletFELoadBalancerListener
         PayloadFormatVersion: '1.0'
         RequestParameters:
           overwrite:header.x-govuk-signin-source-ip: $context.identity.sourceIp
 
-  APIGWRoute:
+  WalletFEAPIGWRoute:
     Type: 'AWS::ApiGatewayV2::Route'
     Properties:
-      ApiId: !Ref ApiGwHttpEndpoint
+      ApiId: !Ref WalletFEApiGwHttpEndpoint
       RouteKey: 'ANY /{proxy+}'
       Target: !Join
         - /
         - - integrations
-          - !Ref ApiGwHttpEndpointIntegration
+          - !Ref WalletFEApiGwHttpEndpointIntegration
 
-  APIStageDefault:
+  WalletFEAPIStageDefault:
     Type: 'AWS::ApiGatewayV2::Stage'
     Properties:
-      ApiId: !Ref ApiGwHttpEndpoint
+      ApiId: !Ref WalletFEApiGwHttpEndpoint
       StageName: $default
       AutoDeploy: true
       DefaultRouteSettings:
@@ -300,7 +252,7 @@ Resources:
         ThrottlingBurstLimit: 400
         ThrottlingRateLimit: 1200
       AccessLogSettings:
-        DestinationArn: !GetAtt APIGWAccessLogsGroup.Arn
+        DestinationArn: !GetAtt WalletFEAPIGWAccessLogsGroup.Arn
         Format: >-
           {
           "requestId":"$context.requestId",
@@ -314,44 +266,34 @@ Resources:
           "responseLength":"$context.responseLength"
           }
 
-  APIGWAccessLogsGroup:
+  WalletFEAPIGWAccessLogsGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub /aws/apigateway/${AWS::StackName}-dcaFront-API-GW-AccessLogs
+      LogGroupName: !Sub /aws/apigateway/${AWS::StackName}-WalletFE-API-GW-AccessLogs
 
-  FrontCustomDomain:
+  WalletFEFrontCustomDomain:
     Type: AWS::ApiGatewayV2::DomainName
     Properties:
-      DomainName: !If
-        - IsNotDevelopment
-        - !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
-        - !If
-          - StackNameIsFrontendDev
-          - !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
-          - !Sub
-            - "${AWS::StackName}-${FEURL}"
-            - FEURL:
-                !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
+      DomainName: !Sub "stub-credential-issuer.mobile.${Environment}.account.gov.uk"
       DomainNameConfigurations:
         - CertificateArn: !Sub "{{resolve:ssm:/${Environment}/Platform/ACM/PrimaryZoneWildcardCertificateARN}}"
           EndpointType: REGIONAL
           SecurityPolicy: TLS_1_2
 
-  FrontApiRecord:
+  WalletFEFrontApiRecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      Name: !Ref FrontCustomDomain
+      Name: !Ref WalletFEFrontCustomDomain
       Type: A
       HostedZoneId: !Sub "{{resolve:ssm:/${Environment}/Platform/Route53/PrimaryZoneID}}"
       AliasTarget:
-        DNSName: !GetAtt FrontCustomDomain.RegionalDomainName
-        HostedZoneId: !GetAtt FrontCustomDomain.RegionalHostedZoneId
+        DNSName: !GetAtt WalletFEFrontCustomDomain.RegionalDomainName
+        HostedZoneId: !GetAtt WalletFEFrontCustomDomain.RegionalHostedZoneId
         EvaluateTargetHealth: false
 
-  FrontApiMapping:
-    DependsOn: APIStageDefault
+  WallFEFrontApiMapping:
     Type: AWS::ApiGatewayV2::ApiMapping
     Properties:
-      DomainName: !Ref FrontCustomDomain
-      ApiId: !Ref ApiGwHttpEndpoint
-      Stage: !Ref APIStageDefault
+      DomainName: !Ref WalletFEFrontCustomDomain
+      ApiId: !Ref WalletFEApiGwHttpEndpoint
+      Stage: !Ref WalletFEAPIStageDefault

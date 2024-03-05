@@ -1,0 +1,10 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "wallet-stub-frontend"
+resolve_s3 = true
+s3_prefix = "wallet-stub-frontend"
+region = "eu-west-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Environment=\"dev\" VpcStackName=\"platform-vpc\" ContainerPort=\"8000\""
+image_repositories = []
