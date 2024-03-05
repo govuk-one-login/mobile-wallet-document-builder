@@ -6,12 +6,12 @@ import {
 
 describe("documentBuilder.ts", () => {
   describe("Document", () => {
-    it("should return the document in the correct format", () => {
+    it("should return the document in the correct format and without any whitespaces", () => {
       const documentDetails = {
-        title: "Ms",
-        givenName: "Irene",
-        familyName: "Adler",
-        nino: "QQ123456A",
+        title: " Ms   ",
+        givenName: " Irene  ",
+        familyName: " Adler  ",
+        nino: " QQ123456A   ",
       };
 
       const document = Document.fromRequestBody(documentDetails);

@@ -63,6 +63,8 @@ export class Document {
    * @param input {DocumentDetails}
    */
   static fromRequestBody(input: DocumentDetails): Document {
+    this.trimRequestBody(input);
+
     const type = ["VerifiableCredential", "SocialSecurityCredential"];
     const credentialSubject: CredentialSubject = {
       name: [{ nameParts: getNameParts(input) }],
@@ -70,5 +72,12 @@ export class Document {
     };
 
     return new Document(type, credentialSubject);
+  }
+
+  private static trimRequestBody(input: DocumentDetails) {
+    for (const key in input) {
+      const trimmed = input[key as keyof DocumentDetails]!.trim();
+      input[key as keyof DocumentDetails] = trimmed
+    }
   }
 }
