@@ -19,3 +19,7 @@ results/
 deploy/.aws-sam/
 deploy/samconfig.toml
 deploy/practice.yaml
+
+# Ignore changes to .env
+.env
+
