@@ -328,6 +328,10 @@ Resources:
       EnableECSManagedTags: false
       HealthCheckGracePeriodSeconds: 60
       LaunchType: FARGATE
+      LoadBalancers:
+        - ContainerName: app
+          ContainerPort: !Ref ContainerPort
+          TargetGroupArn: !Ref WalletFELoadBalancerListenerTargetGroupECS
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: DISABLED
@@ -356,11 +360,15 @@ Resources:
     Properties:
       ContainerDefinitions:
         - Essential: true
-          Image: CONTAINER-IMAGE-PLACEHOLDER
+          Image: 671524980203.dkr.ecr.eu-west-2.amazonaws.com/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry:chris-image
           Name: app
           Environment:
             - Name: PORT
               Value: !Ref ContainerPort
+            - Name: DOCUMENTS_TABLE_NAME
+              Value: documents
+            - Name: ENVIRONMENT
+              Value: !Sub "${Environment}"
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp
