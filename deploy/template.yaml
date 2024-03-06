@@ -45,13 +45,13 @@ Mappings:
   #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
   ECSConfiguration:
     dev:
-      FrontImageRepository: TBC
+      FrontImageRepository: arn:aws:ecr:eu-west-2:671524980203:repository/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry
     build:
-      FrontImageRepository: TBC
+      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
     staging:
-      FrontImageRepository: TBC
+      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
     integration:
-      FrontImageRepository: TBC
+      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
   ElasticLoadBalancerAccountIds:
     eu-west-2:
       AccountId: 652711504416
@@ -423,10 +423,10 @@ Resources:
                 Resource:
                   - !GetAtt "WalletFEECSAccessLogsGroup.Arn"
                   - !Sub "${WalletFEECSAccessLogsGroup.Arn}:*"
-      PermissionsBoundary: !If
-        - UsePermissionsBoundary
-        - !Ref PermissionsBoundary
-        - !Ref AWS::NoValue
+      # PermissionsBoundary: !If
+      #   - UsePermissionsBoundary
+      #   - !Ref PermissionsBoundary
+      #   - !Ref AWS::NoValue
 
   WalletFEECSTaskRole:
     Type: 'AWS::IAM::Role'
@@ -438,7 +438,7 @@ Resources:
             Principal:
               Service: ecs-tasks.amazonaws.com
         Version: 2012-10-17
-      PermissionsBoundary: !If
-        - UsePermissionsBoundary
-        - !Ref PermissionsBoundary
-        - !Ref AWS::NoValue
+      # PermissionsBoundary: !If
+      #   - UsePermissionsBoundary
+      #   - !Ref PermissionsBoundary
+      #   - !Ref AWS::NoValue
