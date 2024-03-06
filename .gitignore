@@ -12,9 +12,6 @@ results/
 .DS_Store
 .idea
 
-# Test coverage
-.nyc_output
-
 # Temp Yaml Files
 deploy/.aws-sam/
 deploy/samconfig.toml

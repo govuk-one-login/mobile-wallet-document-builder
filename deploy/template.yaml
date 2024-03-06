@@ -15,7 +15,6 @@ Parameters:
       - "build"
       - "staging"
       # - "integration"
-      # - "production"
   VpcStackName:
     Description: >
       The name of the stack that defines the VPC in which this container will
@@ -44,8 +43,6 @@ Mappings:
   #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
   #   integration:
   #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
-  #   production:
-  #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
   ECSConfiguration:
     dev:
       FrontImageRepository: TBC
@@ -54,8 +51,6 @@ Mappings:
     staging:
       FrontImageRepository: TBC
     integration:
-      FrontImageRepository: TBC
-    production:
       FrontImageRepository: TBC
   ElasticLoadBalancerAccountIds:
     eu-west-2:
