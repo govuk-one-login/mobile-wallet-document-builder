@@ -115,6 +115,11 @@ Resources:
 
 # ACCESS LOGS
 
+  WalletFEAPIGWAccessLogsGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/apigateway/${AWS::StackName}-WalletFE-API-GW-AccessLogs
+
   WalletFEAccessLogsBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -260,11 +265,6 @@ Resources:
           "protocol":"$context.protocol",
           "responseLength":"$context.responseLength"
           }
-
-  WalletFEAPIGWAccessLogsGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub /aws/apigateway/${AWS::StackName}-WalletFE-API-GW-AccessLogs
 
   WalletFEFrontCustomDomain:
     Type: AWS::ApiGatewayV2::DomainName
