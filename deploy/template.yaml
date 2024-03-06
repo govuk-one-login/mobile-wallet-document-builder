@@ -120,6 +120,12 @@ Resources:
     Properties:
       LogGroupName: !Sub /aws/apigateway/${AWS::StackName}-WalletFE-API-GW-AccessLogs
 
+  WalletFEECSAccessLogsGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/ecs/${AWS::StackName}-Wallet-Stub-Front-ECS
+      RetentionInDays: 14
+
   WalletFEAccessLogsBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -353,16 +359,8 @@ Resources:
           Image: CONTAINER-IMAGE-PLACEHOLDER
           Name: app
           Environment:
-            # - Name: EXTERNAL_WEBSITE_HOST
-            #   Value: !GetAtt WalletFEApiGwHttpEndpoint.ApiEndpoint
-            # - Name: ENVIRONMENT
-            #   Value: !Sub "${Environment}"
             - Name: PORT
               Value: !Ref ContainerPort
-            # - Name: FRONT_END_URL
-            #   Value: !Sub
-            #     - "https://${Url}"
-            #     - Url: !Ref WalletFEFrontCustomDomain
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp
