@@ -27,9 +27,6 @@ jobs:
     name: "Deploy Image & Template to Dev"
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs:
-      - validate_application
-      - validate_deployment
     steps:
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # pin@v3
         with:
