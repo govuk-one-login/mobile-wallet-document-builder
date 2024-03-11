@@ -32,7 +32,19 @@ Parameters:
     Type: Number
     Default: 8000
 
+Conditions:
+  StackNameIsFrontendDev: !Equals [ !Ref "AWS::StackName", frontend-dev ]
+
 Mappings:
+  EnvironmentVariables:
+    dev:
+      FEURL: "www.stub-credential-issuer.mobile.dev.account.gov.uk"
+    build:
+      FEURL: "www.stub-credential-issuer.mobile.build.account.gov.uk"
+    staging:
+      FEURL: "www.stub-credential-issuer.mobile.stage.account.gov.uk"
+    integration:
+      FEURL: "www.stub-credential-issuer.mobile.integration.account.gov.uk"
   # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
   # PlatformConfiguration:
   #   dev:
@@ -52,6 +64,7 @@ Mappings:
       FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
     integration:
       FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
+  
   ElasticLoadBalancerAccountIds:
     eu-west-2:
       AccountId: 652711504416
@@ -275,7 +288,13 @@ Resources:
   WalletFEFrontCustomDomain:
     Type: AWS::ApiGatewayV2::DomainName
     Properties:
-      DomainName: !Sub "stub-credential-issuer.mobile.${Environment}.account.gov.uk"
+      DomainName: !If 
+        - StackNameIsFrontendDev
+        - !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
+        - !Sub
+          - "${AWS::StackName}-${FEURL}"
+          - FEURL:
+              !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
       DomainNameConfigurations:
         - CertificateArn: !Sub "{{resolve:ssm:/${Environment}/Platform/ACM/PrimaryZoneWildcardCertificateARN}}"
           EndpointType: REGIONAL
