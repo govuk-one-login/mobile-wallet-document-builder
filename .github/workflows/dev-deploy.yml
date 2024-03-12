@@ -80,9 +80,9 @@ jobs:
         run: |
           echo "Running sam build on template file"
           echo "SAM_CLI_TELEMETRY=0" >> $GITHUB_ENV
-          cd deploy ${GITHUB_WORKSPACE} || exit 1
+          cd ${GITHUB_WORKSPACE}/deploy || exit 1
           sam validate
-          sam build --template-file=./deploy/template.yaml
+          sam build
           mv .aws-sam/build/template.yaml cf-template.yaml
           echo "Replacing 'CONTAINER-IMAGE-PLACEHOLDER' with new ECR image ref"
           sed -i "s|CONTAINER-IMAGE-PLACEHOLDER|$ECR_REGISTRY/$ECR_REPOSITORY:$GIT_REF_SHA|" cf-template.yaml
