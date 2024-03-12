@@ -38,13 +38,13 @@ Conditions:
 Mappings:
   EnvironmentVariables:
     dev:
-      FEURL: "www.stub-credential-issuer.mobile.dev.account.gov.uk"
+      FEURL: "stub-credential-issuer.mobile.dev.account.gov.uk"
     build:
-      FEURL: "www.stub-credential-issuer.mobile.build.account.gov.uk"
+      FEURL: "stub-credential-issuer.mobile.build.account.gov.uk"
     staging:
-      FEURL: "www.stub-credential-issuer.mobile.stage.account.gov.uk"
+      FEURL: "stub-credential-issuer.mobile.stage.account.gov.uk"
     integration:
-      FEURL: "www.stub-credential-issuer.mobile.integration.account.gov.uk"
+      FEURL: "stub-credential-issuer.mobile.integration.account.gov.uk"
   # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
   # PlatformConfiguration:
   #   dev:
