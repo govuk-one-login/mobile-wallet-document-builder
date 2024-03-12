@@ -342,6 +342,8 @@ Resources:
           Value: !Sub "${Environment}"
 
   WalletFEECSService:
+    DependsOn:
+      - WalletFELoadBalancerListener
     Type: 'AWS::ECS::Service'
     Properties:
       Cluster: !Ref WalletFECluster
