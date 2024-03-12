@@ -4,7 +4,7 @@ name: 'Deployment'
 'on':
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ main, DCMAW-8186-2 ]
 
 permissions:
   id-token: write
@@ -56,7 +56,7 @@ jobs:
           ECR_REGISTRY: "${{ secrets.BUILD_ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com"
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
         run: |
-          cd deploy ${GITHUB_WORKSPACE} || exit 1
+          cd ${GITHUB_WORKSPACE}/deploy || exit 1
           sed -i "s|CONTAINER-IMAGE-PLACEHOLDER|$ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA|" template.yaml
 
       - name: SAM Validate
@@ -66,7 +66,7 @@ jobs:
 
       - name: Sam build
         run: |
-          cd deploy ${GITHUB_WORKSPACE} || exit 1
+          cd ${GITHUB_WORKSPACE}/deploy || exit 1 
           sam build --cached
 
       - name: Deploy SAM app
