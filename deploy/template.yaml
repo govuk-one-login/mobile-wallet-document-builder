@@ -21,11 +21,10 @@ Parameters:
       run.
     Type: String
     Default: platform-vpc
-  # BackendStackName:
-  #   Description: >
-  #     The name of the backend stack to depend on.  Is set to a default as not required for the higher envs.
-  #   Type: String
-  #   Default: backend-api
+  PermissionsBoundary:
+    Description: "The ARN of the permissions boundary to apply when creating IAM roles"
+    Type: String
+    Default: "none"
   ContainerPort:
     Description: >
       The port on which the container is running
@@ -33,18 +32,24 @@ Parameters:
     Default: 8000
 
 Conditions:
-  StackNameIsFrontendDev: !Equals [ !Ref "AWS::StackName", frontend-dev ]
+  StackNameIsWalletDocBuilderFE: !Equals [ !Ref "AWS::StackName", wallet-doc-builer-fe ]
+
+  UsePermissionsBoundary:
+    Fn::Not:
+      - Fn::Equals:
+          - !Ref PermissionsBoundary
+          - "none"
 
 Mappings:
   EnvironmentVariables:
     dev:
-      FEURL: "www.stub-credential-issuer.mobile.dev.account.gov.uk"
+      FEURL: "stub-credential-issuer.mobile.dev.account.gov.uk"
     build:
-      FEURL: "www.stub-credential-issuer.mobile.build.account.gov.uk"
+      FEURL: "stub-credential-issuer.mobile.build.account.gov.uk"
     staging:
-      FEURL: "www.stub-credential-issuer.mobile.stage.account.gov.uk"
+      FEURL: "stub-credential-issuer.mobile.stage.account.gov.uk"
     integration:
-      FEURL: "www.stub-credential-issuer.mobile.integration.account.gov.uk"
+      FEURL: "stub-credential-issuer.mobile.integration.account.gov.uk"
   # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
   # PlatformConfiguration:
   #   dev:
@@ -289,7 +294,7 @@ Resources:
     Type: AWS::ApiGatewayV2::DomainName
     Properties:
       DomainName: !If 
-        - StackNameIsFrontendDev
+        - StackNameIsWalletDocBuilderFE
         - !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
         - !Sub
           - "${AWS::StackName}-${FEURL}"
@@ -337,6 +342,8 @@ Resources:
           Value: !Sub "${Environment}"
 
   WalletFEECSService:
+    DependsOn:
+      - WalletFELoadBalancerListener
     Type: 'AWS::ECS::Service'
     Properties:
       Cluster: !Ref WalletFECluster
@@ -453,10 +460,10 @@ Resources:
                 Resource:
                   - !GetAtt "WalletFEECSAccessLogsGroup.Arn"
                   - !Sub "${WalletFEECSAccessLogsGroup.Arn}:*"
-      # PermissionsBoundary: !If
-      #   - UsePermissionsBoundary
-      #   - !Ref PermissionsBoundary
-      #   - !Ref AWS::NoValue
+      PermissionsBoundary: !If
+        - UsePermissionsBoundary
+        - !Ref PermissionsBoundary
+        - !Ref AWS::NoValue
 
   WalletFEECSTaskRole:
     Type: 'AWS::IAM::Role'
@@ -468,7 +475,7 @@ Resources:
             Principal:
               Service: ecs-tasks.amazonaws.com
         Version: 2012-10-17
-      # PermissionsBoundary: !If
-      #   - UsePermissionsBoundary
-      #   - !Ref PermissionsBoundary
-      #   - !Ref AWS::NoValue
+      PermissionsBoundary: !If
+        - UsePermissionsBoundary
+        - !Ref PermissionsBoundary
+        - !Ref AWS::NoValue
