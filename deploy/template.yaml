@@ -32,7 +32,7 @@ Parameters:
     Default: 8000
 
 Conditions:
-  StackNameIsWalletDocBuilderFE: !Equals [ !Ref "AWS::StackName", wallet-doc-builer-fe ]
+  StackNameIsWalletDocBuilderFE: !Equals [ !Ref "AWS::StackName", wallet-doc-builder-fe ]
 
   UsePermissionsBoundary:
     Fn::Not:
