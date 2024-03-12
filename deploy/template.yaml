@@ -21,11 +21,10 @@ Parameters:
       run.
     Type: String
     Default: platform-vpc
-  # BackendStackName:
-  #   Description: >
-  #     The name of the backend stack to depend on.  Is set to a default as not required for the higher envs.
-  #   Type: String
-  #   Default: backend-api
+  PermissionsBoundary:
+    Description: "The ARN of the permissions boundary to apply when creating IAM roles"
+    Type: String
+    Default: "none"
   ContainerPort:
     Description: >
       The port on which the container is running
@@ -33,7 +32,13 @@ Parameters:
     Default: 8000
 
 Conditions:
-  StackNameIsFrontendDev: !Equals [ !Ref "AWS::StackName", frontend-dev ]
+  StackNameIsWalletDocBuilderFE: !Equals [ !Ref "AWS::StackName", wallet-doc-builer-fe ]
+
+  UsePermissionsBoundary:
+    Fn::Not:
+      - Fn::Equals:
+          - !Ref PermissionsBoundary
+          - "none"
 
 Mappings:
   EnvironmentVariables:
@@ -289,7 +294,7 @@ Resources:
     Type: AWS::ApiGatewayV2::DomainName
     Properties:
       DomainName: !If 
-        - StackNameIsFrontendDev
+        - StackNameIsWalletDocBuilderFE
         - !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
         - !Sub
           - "${AWS::StackName}-${FEURL}"
@@ -453,10 +458,10 @@ Resources:
                 Resource:
                   - !GetAtt "WalletFEECSAccessLogsGroup.Arn"
                   - !Sub "${WalletFEECSAccessLogsGroup.Arn}:*"
-      # PermissionsBoundary: !If
-      #   - UsePermissionsBoundary
-      #   - !Ref PermissionsBoundary
-      #   - !Ref AWS::NoValue
+      PermissionsBoundary: !If
+        - UsePermissionsBoundary
+        - !Ref PermissionsBoundary
+        - !Ref AWS::NoValue
 
   WalletFEECSTaskRole:
     Type: 'AWS::IAM::Role'
@@ -468,7 +473,7 @@ Resources:
             Principal:
               Service: ecs-tasks.amazonaws.com
         Version: 2012-10-17
-      # PermissionsBoundary: !If
-      #   - UsePermissionsBoundary
-      #   - !Ref PermissionsBoundary
-      #   - !Ref AWS::NoValue
+      PermissionsBoundary: !If
+        - UsePermissionsBoundary
+        - !Ref PermissionsBoundary
+        - !Ref AWS::NoValue
