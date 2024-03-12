@@ -62,6 +62,7 @@ jobs:
       - name: SAM Validate
         run: |
           echo "SAM_CLI_TELEMETRY=0" >> $GITHUB_ENV
+          cd ${GITHUB_WORKSPACE}/deploy || exit 1
           sam validate
 
       - name: Sam build
