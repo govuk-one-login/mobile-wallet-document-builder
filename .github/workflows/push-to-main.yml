@@ -59,15 +59,11 @@ jobs:
           cd ${GITHUB_WORKSPACE}/deploy || exit 1
           sed -i "s|CONTAINER-IMAGE-PLACEHOLDER|$ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA|" template.yaml
 
-      - name: SAM Validate
+      - name: Sam Build & Validate
         run: |
           echo "SAM_CLI_TELEMETRY=0" >> $GITHUB_ENV
           cd ${GITHUB_WORKSPACE}/deploy || exit 1
           sam validate
-
-      - name: Sam build
-        run: |
-          cd ${GITHUB_WORKSPACE}/deploy || exit 1 
           sam build --cached
 
       - name: Deploy SAM app
