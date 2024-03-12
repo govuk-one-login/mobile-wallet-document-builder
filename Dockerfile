@@ -2,7 +2,8 @@ FROM node:20-alpine@sha256:f25b0e9d3d116e267d4ff69a3a99c0f4cf6ae94eadd87f1bf7bd6
 
 WORKDIR /app
 COPY src/ src/
-COPY package.json .env tsconfig.json ./
+COPY .env.example .env
+COPY package.json tsconfig.json ./
 ARG PORT
 RUN npm install --ignore-scripts && npm run build
 
