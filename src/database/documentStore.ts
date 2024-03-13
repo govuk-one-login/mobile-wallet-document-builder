@@ -63,7 +63,6 @@ export async function getDocument(
     }
 
     console.log(`Document found: ${JSON.stringify(Item)}`);
-
     return Item;
   } catch (error) {
     console.log(`Failed to get document: ${JSON.stringify(error)}`);
