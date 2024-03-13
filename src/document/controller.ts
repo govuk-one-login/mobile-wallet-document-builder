@@ -1,20 +1,24 @@
 import { Request, Response } from "express";
-import { getDocument } from "../database/documentStore";
+import { getDocumentFromDatabase } from "../database/documentStore";
 
-export async function documentDataGet(
+export async function documentGet(
   req: Request,
   res: Response
 ): Promise<Response> {
-  const { documentId } = req.params;
+  try {
+    const { documentId } = req.params;
 
-  const databaseItem = await getDocument(documentId);
+    const databaseItem = await getDocumentFromDatabase(documentId);
+    if (!databaseItem) {
+      return res.status(204).send();
+    }
 
-  if (!databaseItem) {
-    return res.status(204).send();
+    const documentString = databaseItem.vc as string;
+    const document = JSON.parse(documentString) as Document;
+
+    return res.status(200).json(document);
+  } catch (error) {
+    console.log(`An error happened: ${JSON.stringify(error)}`);
+    return res.status(500).send();
   }
-
-  const documentString = databaseItem.vc as string;
-  const document = JSON.parse(documentString) as Document;
-
-  return res.status(200).json(document);
 }

@@ -11,7 +11,7 @@ jest.mock("node:crypto", () => ({
 }));
 jest.mock("../../src/documentBuilder/documentBuilder");
 jest.mock("../../src/database/documentStore", () => ({
-  saveDocument: jest.fn(),
+  saveDocumentToDatabase: jest.fn(),
 }));
 
 describe("controller.ts", () => {
@@ -45,7 +45,7 @@ describe("controller.ts", () => {
       } as unknown as Document;
 
       jest.spyOn(Document, "fromRequestBody").mockReturnValue(document);
-      const saveDocument = documentStore.saveDocument as jest.Mock;
+      const saveDocument = documentStore.saveDocumentToDatabase as jest.Mock;
 
       await documentBuilderPost(req, res);
 
@@ -82,7 +82,7 @@ describe("controller.ts", () => {
       } as unknown as Document;
 
       jest.spyOn(Document, "fromRequestBody").mockReturnValue(document);
-      const saveDocument = documentStore.saveDocument as jest.Mock;
+      const saveDocument = documentStore.saveDocumentToDatabase as jest.Mock;
       saveDocument.mockRejectedValueOnce(new Error("DYNAMODB_ERROR"));
 
       await expect(documentBuilderPost(req, res)).rejects.toThrow(

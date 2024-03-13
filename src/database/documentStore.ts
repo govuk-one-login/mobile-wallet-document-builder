@@ -14,7 +14,7 @@ import { UUID } from "node:crypto";
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());
 const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
-export async function saveDocument(
+export async function saveDocumentToDatabase(
   document: Document,
   documentId: UUID
 ): Promise<void> {
@@ -40,7 +40,7 @@ export async function saveDocument(
   }
 }
 
-export async function getDocument(
+export async function getDocumentFromDatabase(
   documentId: string
 ): Promise<Record<string, unknown> | undefined> {
   console.log("getDocument");

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Document } from "./documentBuilder";
-import { saveDocument } from "../database/documentStore";
+import { saveDocumentToDatabase } from "../database/documentStore";
 import { randomUUID } from "node:crypto";
 
 export async function documentBuilderGet(
@@ -21,7 +21,7 @@ export async function documentBuilderPost(
   console.log("Document created");
 
   const documentId = randomUUID();
-  await saveDocument(document, documentId);
+  await saveDocumentToDatabase(document, documentId);
 
   res.render("document-id.njk", {
     documentId,

@@ -5,7 +5,7 @@ import {
   DynamoDBDocumentClient,
   GetCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { getDocument, saveDocument } from "../../src/database/documentStore";
+import { getDocumentFromDatabase, saveDocumentToDatabase } from "../../src/database/documentStore";
 import "aws-sdk-client-mock-jest";
 
 import { Document } from "../../src/documentBuilder/documentBuilder";
@@ -34,7 +34,7 @@ describe("documentStore.ts", () => {
       });
 
       await expect(
-        saveDocument(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46")
+        saveDocumentToDatabase(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46")
       ).resolves.not.toThrow();
       expect(databaseMockClient).toHaveReceivedCommandWith(
         PutCommand,
@@ -52,7 +52,7 @@ describe("documentStore.ts", () => {
       databaseMockClient.on(PutCommand).rejectsOnce("SOME_ERROR");
 
       await expect(
-        saveDocument(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46")
+        saveDocumentToDatabase(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46")
       ).rejects.toThrow("SOME_ERROR");
     });
   });
@@ -81,7 +81,7 @@ describe("documentStore.ts", () => {
         },
       });
 
-      const response = await getDocument(
+      const response = await getDocumentFromDatabase(
         "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
       );
 
@@ -104,7 +104,7 @@ describe("documentStore.ts", () => {
         },
       });
 
-      const response = await getDocument(
+      const response = await getDocumentFromDatabase(
         "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
       );
 
@@ -116,7 +116,7 @@ describe("documentStore.ts", () => {
       databaseMockClient.on(GetCommand).rejectsOnce("SOME_ERROR");
 
       await expect(
-        getDocument("2e0fac05-4b38-480f-9cbd-b046eabe1e46")
+        getDocumentFromDatabase("2e0fac05-4b38-480f-9cbd-b046eabe1e46")
       ).rejects.toThrow("SOME_ERROR");
     });
   });
