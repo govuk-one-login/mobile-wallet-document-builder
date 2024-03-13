@@ -31,5 +31,6 @@ export async function documentBuilderPost(
   res.render("credential-offer.njk", {
     universalLink: credentialOfferUri,
     qrCode,
+    documentId, // Included for testing purposes only
   });
 }

@@ -85,6 +85,7 @@ describe("controller.ts", () => {
         qrCode: "data:image/png;base64,iVBORw0KGgoAAAANSU",
         universalLink:
           "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer",
+        documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       });
     });
 
