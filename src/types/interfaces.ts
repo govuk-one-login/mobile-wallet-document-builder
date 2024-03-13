@@ -33,3 +33,7 @@ export interface NamePart {
 export interface SocialSecurityRecord {
   personalNumber: string;
 }
+
+export interface CredentialOfferResponse {
+  credential_offer_uri: string;
+}

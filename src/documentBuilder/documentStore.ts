@@ -10,7 +10,8 @@ const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
 export async function saveDocument(
   document: Document,
-  documentId: UUID
+  documentId: UUID,
+  walletSubjectId: string
 ): Promise<void> {
   console.log("saveDocument");
 
@@ -20,7 +21,7 @@ export async function saveDocument(
     TableName: tableName,
     Item: {
       documentId: documentId,
-      walletSubjectId: "testSubject",
+      walletSubjectId: walletSubjectId,
       vc: JSON.stringify(document),
     },
   });
