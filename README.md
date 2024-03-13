@@ -7,10 +7,11 @@ A service for filling in the content of documents, storing them and, through int
 
 - node >= v20.0.0
 - [Homebrew package manager](https://brew.sh)
-- [Docker](https://docs.docker.com/get-docker/) 
+- [Docker](https://docs.docker.com/get-docker/)
 - [docker-compose](https://docs.docker.com/compose/install/) (version 1.9.0+)
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
-If you don't have node, or don't have a recent enough version installed:
+**If you don't have node, or don't have a recent enough version installed:**
 
 The project has been configured with nvm (node version manager). You can use this to install the right version of node.
 
@@ -39,6 +40,12 @@ Create a copy of the example environment variable file:
 cp .env.example .env
 ```
 
+### Linting
+Lint and format the code:
+```
+npm run format
+```
+
 ### Build
 Build the assets:
 ```
@@ -46,29 +53,38 @@ npm run build
 ```
 
 ### Run
-This app uses LocalStack to run AWS services locally. To start the LocalStack container and provision a local version of the **documents** DynamoDB table, run the command:
+
+#### Setting up the AWS CLI
+You will need to have the AWS CLI installed and configured to interact with the local database. You can configure the CLI with the values below by running `aws configure`:
 ```
-docker-compose up
+AWS Access Key ID [None]: na
+AWS Secret Access Key [None]: na
+Default region name [None]: eu-west-2
+Default output format [None]:
 ```
 
-Then run the following command to start the application:
+####  Setting up LocalStack
+This app uses LocalStack to run AWS services locally on port `4561`.
+
+To start the LocalStack container and provision a local version of the **documents** DynamoDB table, run `docker-compose up`.
+
+You will need to have Docker Desktop or alternative like installed.
+
+#### Running the Application
+Run the application with:
 ```
 npm run start
 ```
-The application should be running on port 8000.
 
-Open http://localhost:8000/credential_offer in a web browser.
+#### Test API Request
+[http://localhost:8000/credential_offer](http://localhost:8000/credential_offer)
 
-To check that an item was saved to the DynamoDB **documents** table, run the following command in the terminal (replacing the `documentId` in the command):
+#### Reading from the Database
+To check that an item was saved to the DynamoDB **documents** table, run `aws --endpoint-url=http://localhost:4561 --region eu-west-2 dynamodb query --table-name documents --key-condition-expression "documentId = :documentId" --expression-attribute-values "{ \":documentId\" : { \"S\" : \"86bd9f55-d675-4a16-963a-56ac17c8597c\" } }"`, replacing the **documentId** with the relevant one.**
 
-```
-aws --endpoint-url=http://localhost:4566 --region eu-west-2 dynamodb query --table-name documents --key-condition-expression "documentId = :documentId" --expression-attribute-values "{ \":documentId\" : { \"S\" : \"86bd9f55-d675-4a16-963a-56ac17c8597c\" } }"
-```
-
-Your AWS CLI options must be configured before running this command. If they are not, run ```aws configure``` before running the command above.
+To return all items from the **documents** table, run `aws --endpoint-url=http://localhost:4561 --region eu-west-2 dynamodb scan --table-name documents`.
 
 ## Test
-
 Run the following command to run the unit tests:
 ```
 npm run test
