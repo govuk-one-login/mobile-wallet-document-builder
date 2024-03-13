@@ -1,9 +1,9 @@
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
+process.env.ENVIRONMENT = "local";
 import { mockClient } from "aws-sdk-client-mock";
 import { PutCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { saveDocument } from "../../src/documentBuilder/documentStore";
 import "aws-sdk-client-mock-jest";
-
 import { Document } from "../../src/documentBuilder/documentBuilder";
 
 describe("saveDocument", () => {
@@ -17,7 +17,7 @@ describe("saveDocument", () => {
       TableName: "testTable",
       Item: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        walletSubjectId: "testSubject",
+        walletSubjectId: "walletSubjectIdPlaceholder",
         vc: JSON.stringify(document),
       },
     };
@@ -30,7 +30,7 @@ describe("saveDocument", () => {
     });
 
     await expect(
-      saveDocument(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46")
+      saveDocument(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46", "walletSubjectIdPlaceholder")
     ).resolves.not.toThrow();
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });
@@ -45,7 +45,7 @@ describe("saveDocument", () => {
       TableName: "testTable",
       Item: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        walletSubjectId: "testSubject",
+        walletSubjectId: "walletSubjectIdPlaceholder",
         vc: JSON.stringify(document),
       },
     };
@@ -54,7 +54,7 @@ describe("saveDocument", () => {
     dynamoDbMock.on(PutCommand).rejectsOnce("DYNAMODB_ERROR");
 
     await expect(
-      saveDocument(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46")
+      saveDocument(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46", "walletSubjectIdPlaceholder")
     ).rejects.toThrow("DYNAMODB_ERROR");
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });

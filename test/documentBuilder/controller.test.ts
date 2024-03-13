@@ -4,7 +4,9 @@ import {
 } from "../../src/documentBuilder/controller";
 import { Document } from "../../src/documentBuilder/documentBuilder";
 import * as documentStore from "../../src/documentBuilder/documentStore";
+import * as credentialOffer from "../../src/documentBuilder/credentialOffer";
 import { Request, Response } from "express";
+import QRCode from "qrcode";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
@@ -13,22 +15,34 @@ jest.mock("../../src/documentBuilder/documentBuilder");
 jest.mock("../../src/documentBuilder/documentStore", () => ({
   saveDocument: jest.fn(),
 }));
+jest.mock("../../src/documentBuilder/credentialOffer", () => ({
+  getCredentialOffer: jest.fn(),
+}));
+jest.mock("qrcode");
 
 describe("controller.ts", () => {
   describe("documentBuilderGet", () => {
     it("should render the form page for inputting document details", async () => {
-      const req = {} as Request;
-      const res = { render: jest.fn() } as unknown as Response;
+      const request = {} as Request;
+      const response = { render: jest.fn() } as unknown as Response;
 
-      await documentBuilderGet(req, res);
+      await documentBuilderGet(request, response);
 
-      expect(res.render).toHaveBeenCalledWith("document-form.njk");
+      expect(response.render).toHaveBeenCalledWith("document-form.njk");
     });
   });
 
   describe("documentBuilderPost", () => {
-    it("should render the document ID", async () => {
-      const req = {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    const mockedQrCode = QRCode as jest.Mocked<typeof QRCode>;
+    const saveDocument = documentStore.saveDocument as jest.Mock;
+    const getCredentialOffer = credentialOffer.getCredentialOffer as jest.Mock;
+
+    it("should render the credential offer", async () => {
+      const request = {
         body: {
           title: "Ms",
           givenName: "Irene",
@@ -36,36 +50,46 @@ describe("controller.ts", () => {
           nino: "QQ123456A",
         },
       } as unknown as Request;
-
-      const res = { render: jest.fn() } as unknown as Response;
-
+      const response = { render: jest.fn() } as unknown as Response;
       const document = {
         type: "testType",
         credentialSubject: "testCredentialSubject",
       } as unknown as Document;
+      const credentialOfferMocked = {
+        credential_offer_uri:
+          "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer",
+      };
+      const qrCode =
+        "data:image/png;base64,iVBORw0KGgoAAAANSU" as unknown as void;
 
-      jest.spyOn(Document, "fromRequestBody").mockReturnValue(document);
-      const saveDocument = documentStore.saveDocument as jest.Mock;
+      mockedQrCode.toDataURL.mockReturnValueOnce(qrCode);
+      jest.spyOn(Document, "fromRequestBody").mockReturnValueOnce(document);
+      getCredentialOffer.mockReturnValueOnce(credentialOfferMocked);
 
-      await documentBuilderPost(req, res);
+      await documentBuilderPost(request, response);
 
-      expect(Document.fromRequestBody).toHaveBeenCalledWith({
-        title: "Ms",
-        givenName: "Irene",
-        familyName: "Adler",
-        nino: "QQ123456A",
-      });
+      expect(Document.fromRequestBody).toHaveBeenCalledWith(request.body);
       expect(saveDocument).toHaveBeenCalledWith(
-        { credentialSubject: "testCredentialSubject", type: "testType" },
+        {
+          type: "testType",
+          credentialSubject: "testCredentialSubject",
+        },
+        "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+        "walletSubjectIdPlaceholder"
+      );
+      expect(getCredentialOffer).toHaveBeenCalledWith(
+        "walletSubjectIdPlaceholder",
         "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
       );
-      expect(res.render).toHaveBeenCalledWith("document-id.njk", {
-        documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+      expect(response.render).toHaveBeenCalledWith("credential-offer.njk", {
+        qrCode: "data:image/png;base64,iVBORw0KGgoAAAANSU",
+        universalLink:
+          "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer",
       });
     });
 
     it("should throw a DYNAMODB_ERROR error", async () => {
-      const req = {
+      const request = {
         body: {
           title: "Ms",
           givenName: "Irene",
@@ -73,19 +97,16 @@ describe("controller.ts", () => {
           nino: "QQ123456A",
         },
       } as unknown as Request;
-
-      const res = { render: jest.fn() } as unknown as Response;
-
+      const response = { render: jest.fn() } as unknown as Response;
       const document = {
         type: "testType",
         credentialSubject: "testCredentialSubject",
       } as unknown as Document;
 
-      jest.spyOn(Document, "fromRequestBody").mockReturnValue(document);
-      const saveDocument = documentStore.saveDocument as jest.Mock;
+      jest.spyOn(Document, "fromRequestBody").mockReturnValueOnce(document);
       saveDocument.mockRejectedValueOnce(new Error("DYNAMODB_ERROR"));
 
-      await expect(documentBuilderPost(req, res)).rejects.toThrow(
+      await expect(documentBuilderPost(request, response)).rejects.toThrow(
         "DYNAMODB_ERROR"
       );
 
@@ -97,9 +118,11 @@ describe("controller.ts", () => {
       });
       expect(saveDocument).toHaveBeenCalledWith(
         { credentialSubject: "testCredentialSubject", type: "testType" },
-        "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+        "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+        "walletSubjectIdPlaceholder"
       );
-      expect(res.render).not.toHaveBeenCalled();
+      expect(getCredentialOffer).not.toHaveBeenCalled();
+      expect(response.render).not.toHaveBeenCalled();
     });
   });
 });

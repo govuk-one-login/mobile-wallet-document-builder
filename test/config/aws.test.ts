@@ -10,7 +10,7 @@ describe("aws.ts", () => {
         accessKeyId: "accessKeyId",
         secretAccessKey: "secretAccessKey",
       },
-      endpoint: "http://localhost:4566",
+      endpoint: "http://localhost:4561",
       region: "eu-west-2",
     });
   });
@@ -22,7 +22,7 @@ describe("aws.ts", () => {
         accessKeyId: "accessKeyId",
         secretAccessKey: "secretAccessKey",
       },
-      endpoint: "http://localhost:4566",
+      endpoint: "http://localhost:4561",
       region: "eu-west-2",
     });
   });
