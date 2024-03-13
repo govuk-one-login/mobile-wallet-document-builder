@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Document } from "./documentBuilder";
-import { saveDocument } from "./documentStore";
+import { saveDocument } from "../database/documentStore";
 import { randomUUID } from "node:crypto";
 
 export async function documentBuilderGet(

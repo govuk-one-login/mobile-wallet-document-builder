@@ -1,6 +1,6 @@
 import express from "express";
 import { documentBuilderRouter } from "./documentBuilder/router";
-import { documentDataRouter } from "./documentData/router";
+import { documentDataRouter } from "./document/router";
 import nunjucks from "nunjucks";
 import path from "path";
 

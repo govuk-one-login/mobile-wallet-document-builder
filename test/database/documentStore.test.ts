@@ -1,7 +1,7 @@
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
 import { mockClient } from "aws-sdk-client-mock";
 import { PutCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { saveDocument } from "../../src/documentBuilder/documentStore";
+import { saveDocument } from "../../src/database/documentStore";
 import "aws-sdk-client-mock-jest";
 
 import { Document } from "../../src/documentBuilder/documentBuilder";

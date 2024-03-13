@@ -3,14 +3,14 @@ import {
   documentBuilderPost,
 } from "../../src/documentBuilder/controller";
 import { Document } from "../../src/documentBuilder/documentBuilder";
-import * as documentStore from "../../src/documentBuilder/documentStore";
+import * as documentStore from "../../src/database/documentStore";
 import { Request, Response } from "express";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
 }));
 jest.mock("../../src/documentBuilder/documentBuilder");
-jest.mock("../../src/documentBuilder/documentStore", () => ({
+jest.mock("../../src/database/documentStore", () => ({
   saveDocument: jest.fn(),
 }));
 

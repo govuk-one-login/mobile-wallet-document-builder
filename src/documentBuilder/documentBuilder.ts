@@ -77,7 +77,7 @@ export class Document {
   private static trimRequestBody(input: FormData) {
     for (const key in input) {
       const trimmed = input[key as keyof FormData]!.trim();
-      input[key as keyof FormData] = trimmed
+      input[key as keyof FormData] = trimmed;
     }
   }
 }
