@@ -1,12 +1,11 @@
 import { getDocumentsTableName } from "../config/appConfig";
 import { getDatabaseConfig } from "../config/aws";
-import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   PutCommand,
   DynamoDBDocumentClient,
   GetCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { unmarshall } from "@aws-sdk/util-dynamodb";
 
 import { Document } from "../documentBuilder/documentBuilder";
 import { UUID } from "node:crypto";

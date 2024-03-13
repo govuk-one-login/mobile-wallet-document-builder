@@ -5,7 +5,10 @@ import {
   DynamoDBDocumentClient,
   GetCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { getDocumentFromDatabase, saveDocumentToDatabase } from "../../src/database/documentStore";
+import {
+  getDocumentFromDatabase,
+  saveDocumentToDatabase,
+} from "../../src/database/documentStore";
 import "aws-sdk-client-mock-jest";
 
 import { Document } from "../../src/documentBuilder/documentBuilder";
