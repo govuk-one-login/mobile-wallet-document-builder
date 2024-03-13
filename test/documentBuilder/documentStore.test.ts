@@ -30,7 +30,11 @@ describe("saveDocument", () => {
     });
 
     await expect(
-      saveDocument(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46", "walletSubjectIdPlaceholder")
+      saveDocument(
+        document,
+        "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+        "walletSubjectIdPlaceholder"
+      )
     ).resolves.not.toThrow();
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });
@@ -54,7 +58,11 @@ describe("saveDocument", () => {
     dynamoDbMock.on(PutCommand).rejectsOnce("DYNAMODB_ERROR");
 
     await expect(
-      saveDocument(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46", "walletSubjectIdPlaceholder")
+      saveDocument(
+        document,
+        "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+        "walletSubjectIdPlaceholder"
+      )
     ).rejects.toThrow("DYNAMODB_ERROR");
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });

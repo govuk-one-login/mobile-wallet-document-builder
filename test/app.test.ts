@@ -1,4 +1,4 @@
-process.env.ENVIRONMENT = 'local';
+process.env.ENVIRONMENT = "local";
 import { createApp } from "../src/app";
 import { expect } from "@jest/globals";
 
