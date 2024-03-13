@@ -15,7 +15,11 @@ export function getDocumentsTableName(): string {
 }
 
 export function getEnvironment(): string {
-  return process.env.ENVIRONMENT || "local";
+  return getEnvVarValue("ENVIRONMENT");
+}
+
+export function getMockCriEndpoint(): string {
+  return getEnvVarValue("MOCK_CRI_URL");
 }
 
 export function getAwsRegion(): string {
@@ -23,5 +27,5 @@ export function getAwsRegion(): string {
 }
 
 export function getLocalStackEndpoint(): string {
-  return `http://localhost:4566`;
+  return `http://localhost:4561`;
 }
