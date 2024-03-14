@@ -77,7 +77,7 @@ npm run start
 ```
 
 #### Test API Request
-[http://localhost:8000/credential_offer](http://localhost:8000/credential_offer)
+[http://localhost:8000/build-document](http://localhost:8000/build-document)
 
 #### Reading from the Database
 To check that an item was saved to the DynamoDB **documents** table, run `aws --endpoint-url=http://localhost:4561 --region eu-west-2 dynamodb query --table-name documents --key-condition-expression "documentId = :documentId" --expression-attribute-values "{ \":documentId\" : { \"S\" : \"86bd9f55-d675-4a16-963a-56ac17c8597c\" } }"`, replacing the **documentId** with the relevant one.**
