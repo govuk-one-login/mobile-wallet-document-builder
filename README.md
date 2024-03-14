@@ -76,11 +76,19 @@ Run the application with:
 npm run start
 ```
 
-#### Start URL
+#### Start URL & Endpoints
+
+To start and test the credential offer endpoint, go to:
+
 [http://localhost:8000/build-document](http://localhost:8000/build-document)
 
+To get a document's details, hit the following endpoint:
+
+[http://localhost:8000/document/:documentId](http://localhost:8000/document/:documentId)
+
+
 #### Reading from the Database
-To check that an item was saved to the DynamoDB **documents** table, run `aws --endpoint-url=http://localhost:4561 --region eu-west-2 dynamodb query --table-name documents --key-condition-expression "documentId = :documentId" --expression-attribute-values "{ \":documentId\" : { \"S\" : \"86bd9f55-d675-4a16-963a-56ac17c8597c\" } }"`, replacing the **documentId** with the relevant one.**
+To check that an item was saved to the DynamoDB **documents** table, run `aws --endpoint-url=http://localhost:4561 --region eu-west-2 dynamodb query --table-name documents --key-condition-expression "documentId = :documentId" --expression-attribute-values "{ \":documentId\" : { \"S\" : \"86bd9f55-d675-4a16-963a-56ac17c8597c\" } }"`, replacing the **documentId** with the relevant one.
 
 To return all items from the **documents** table, run `aws --endpoint-url=http://localhost:4561 --region eu-west-2 dynamodb scan --table-name documents`.
 
