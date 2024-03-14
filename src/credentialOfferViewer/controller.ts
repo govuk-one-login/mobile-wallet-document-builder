@@ -7,8 +7,6 @@ export async function viewCredentialOffer(
   res: Response
 ): Promise<void> {
   try {
-    console.log("viewCredentialOffer");
-
     const { documentId } = req.params;
     const walletSubjectId = "walletSubjectIdPlaceholder";
 
@@ -19,7 +17,6 @@ export async function viewCredentialOffer(
     res.render("credential-offer.njk", {
       universalLink: credentialOfferUri,
       qrCode,
-      documentId, // Included for testing purposes only
     });
   } catch (error) {
     console.log(`An error happened: ${JSON.stringify(error)}`);

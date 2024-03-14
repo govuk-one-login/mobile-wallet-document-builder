@@ -13,8 +13,6 @@ export async function saveDocument(
   documentId: UUID,
   walletSubjectId: string
 ): Promise<void> {
-  console.log("saveDocument");
-
   const tableName = getDocumentsTableName();
 
   const command = new PutCommand({

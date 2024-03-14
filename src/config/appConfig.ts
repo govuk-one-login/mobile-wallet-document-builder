@@ -18,7 +18,7 @@ export function getEnvironment(): string {
   return getEnvVarValue("ENVIRONMENT");
 }
 
-export function getMockCriEndpoint(): string {
+export function getCriEndpoint(): string {
   return getEnvVarValue("MOCK_CRI_URL");
 }
 

@@ -8,8 +8,6 @@ export async function documentBuilderGet(
   res: Response
 ): Promise<void> {
   try {
-    console.log("documentBuilderGet");
-
     res.render("document-details-form.njk");
   } catch (error) {
     console.log(`An error happened: ${JSON.stringify(error)}`);
@@ -22,8 +20,6 @@ export async function documentBuilderPost(
   res: Response
 ): Promise<void> {
   try {
-    console.log("documentBuilderPost");
-
     const document = Document.fromRequestBody(req.body);
 
     const walletSubjectId = "walletSubjectIdPlaceholder";
