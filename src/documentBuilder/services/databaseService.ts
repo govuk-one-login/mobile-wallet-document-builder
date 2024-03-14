@@ -1,8 +1,8 @@
-import { getDocumentsTableName } from "../config/appConfig";
-import { getDatabaseConfig } from "../config/aws";
+import { getDocumentsTableName } from "../../config/appConfig";
+import { getDatabaseConfig } from "../../config/aws";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { PutCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { Document } from "./documentBuilder";
+import { Document } from "../models/documentBuilder";
 import { UUID } from "node:crypto";
 
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());

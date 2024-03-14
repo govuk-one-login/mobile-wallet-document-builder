@@ -1,6 +1,6 @@
 import axios from "axios";
-import { getMockCriEndpoint } from "../config/appConfig";
-import { CredentialOfferResponse } from "../types/interfaces";
+import { getMockCriEndpoint } from "../../config/appConfig";
+import { CredentialOfferResponse } from "../../types/interfaces";
 
 export async function getCredentialOffer(
   walletSubjectId: string,
