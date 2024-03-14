@@ -400,6 +400,8 @@ Resources:
               Value: documents
             - Name: ENVIRONMENT
               Value: !Sub "${Environment}"
+            - Name: MOCK_CRI_URL
+              Value: placeholderValue
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp

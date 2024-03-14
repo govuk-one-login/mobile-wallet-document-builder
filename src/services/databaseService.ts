@@ -6,26 +6,24 @@ import {
   DynamoDBDocumentClient,
   GetCommand,
 } from "@aws-sdk/lib-dynamodb";
-
-import { Document } from "../documentBuilder/documentBuilder";
+import { Document } from "../documentBuilder/models/documentBuilder";
 import { UUID } from "node:crypto";
 
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());
 const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
-export async function saveDocumentToDatabase(
+export async function saveDocument(
   document: Document,
-  documentId: UUID
+  documentId: UUID,
+  walletSubjectId: string
 ): Promise<void> {
-  console.log("saveDocument");
-
   const tableName = getDocumentsTableName();
 
   const command = new PutCommand({
     TableName: tableName,
     Item: {
       documentId: documentId,
-      walletSubjectId: "testSubject",
+      walletSubjectId: walletSubjectId,
       vc: JSON.stringify(document),
     },
   });
@@ -39,11 +37,9 @@ export async function saveDocumentToDatabase(
   }
 }
 
-export async function getDocumentFromDatabase(
+export async function getDocument(
   documentId: string
 ): Promise<Record<string, unknown> | undefined> {
-  console.log("getDocument");
-
   const tableName = getDocumentsTableName();
 
   const command = new GetCommand({
@@ -57,14 +53,17 @@ export async function getDocumentFromDatabase(
     const { Item } = await documentClient.send(command);
 
     if (!Item) {
-      console.log("No document found");
+      console.log(`No document found for documentID ${documentId}`);
       return undefined;
     }
 
-    console.log(`Document found: ${JSON.stringify(Item)}`);
     return Item;
   } catch (error) {
-    console.log(`Failed to get document: ${JSON.stringify(error)}`);
+    console.log(
+      `Failed to get document with documentID ${documentId}: ${JSON.stringify(
+        error
+      )}`
+    );
     throw error;
   }
 }

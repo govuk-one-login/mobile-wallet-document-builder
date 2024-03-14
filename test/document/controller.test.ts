@@ -1,9 +1,9 @@
-import { documentGet } from "../../src/document/controller";
-import * as documentStore from "../../src/database/documentStore";
+import { documentController } from "../../src/document/controller";
+import * as documentStore from "../../src/services/databaseService";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
-jest.mock("../../src/database/documentStore", () => ({
-  getDocumentFromDatabase: jest.fn(),
+jest.mock("../../src/services/databaseService", () => ({
+  getDocument: jest.fn(),
 }));
 
 describe("controller.ts", () => {
@@ -13,7 +13,7 @@ describe("controller.ts", () => {
       params: { documentId: "testDocumentId" },
     });
 
-    const getDocument = documentStore.getDocumentFromDatabase as jest.Mock;
+    const getDocument = documentStore.getDocument as jest.Mock;
     getDocument.mockReturnValueOnce({
       vc: JSON.stringify({
         type: "testType",
@@ -21,7 +21,7 @@ describe("controller.ts", () => {
       }),
     });
 
-    await documentGet(req, res);
+    await documentController(req, res);
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
@@ -37,10 +37,10 @@ describe("controller.ts", () => {
       params: { documentId: "testDocumentId" },
     });
 
-    const getDocument = documentStore.getDocumentFromDatabase as jest.Mock;
+    const getDocument = documentStore.getDocument as jest.Mock;
     getDocument.mockReturnValueOnce(undefined);
 
-    await documentGet(req, res);
+    await documentController(req, res);
 
     expect(res.status).toHaveBeenCalledWith(204);
   });
@@ -51,10 +51,10 @@ describe("controller.ts", () => {
       params: { documentId: "testDocumentId" },
     });
 
-    const getDocument = documentStore.getDocumentFromDatabase as jest.Mock;
+    const getDocument = documentStore.getDocument as jest.Mock;
     getDocument.mockRejectedValueOnce(new Error("SOME_ERROR"));
 
-    await documentGet(req, res);
+    await documentController(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
   });

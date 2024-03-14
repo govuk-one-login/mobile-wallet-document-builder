@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import { getDocumentFromDatabase } from "../database/documentStore";
+import { getDocument } from "../services/databaseService";
 
-export async function documentGet(
+export async function documentController(
   req: Request,
   res: Response
 ): Promise<Response> {
   try {
     const { documentId } = req.params;
 
-    const databaseItem = await getDocumentFromDatabase(documentId);
+    const databaseItem = await getDocument(documentId);
     if (!databaseItem) {
       return res.status(204).send();
     }

@@ -3,7 +3,7 @@ import {
   FormData,
   NamePart,
   SocialSecurityRecord,
-} from "../types/interfaces";
+} from "../../types/interfaces";
 
 export function getNameParts(input: FormData) {
   const nameParts: NamePart[] = [];

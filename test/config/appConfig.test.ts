@@ -3,6 +3,7 @@ import {
   getDocumentsTableName,
   getEnvironment,
   getLocalStackEndpoint,
+  getCriEndpoint,
   getPortNumber,
 } from "../../src/config/appConfig";
 
@@ -29,14 +30,26 @@ describe("appConfig.ts", () => {
     expect(getDocumentsTableName()).toEqual("testTable");
   });
 
-  it("should return the default value ('local') of the ENVIRONMENT environment variable value if not set", () => {
-    process.env.ENVIRONMENT = "";
-    expect(getEnvironment()).toEqual("local");
+  it("should throw an error if ENVIRONMENT environment variable is not set", () => {
+    expect(() => getEnvironment()).toThrow(
+      new Error("ENVIRONMENT environment variable not set")
+    );
   });
 
   it("should return ENVIRONMENT environment variable value if set", () => {
     process.env.ENVIRONMENT = "local";
     expect(getEnvironment()).toEqual("local");
+  });
+
+  it("should throw an error if MOCK_CRI_URL environment variable is not set", () => {
+    expect(() => getCriEndpoint()).toThrow(
+      new Error("MOCK_CRI_URL environment variable not set")
+    );
+  });
+
+  it("should return MOCK_CRI_URL environment variable value if set", () => {
+    process.env.MOCK_CRI_URL = "http://localhost:1234";
+    expect(getCriEndpoint()).toEqual("http://localhost:1234");
   });
 
   it("should return the default value ('eu-west-2') of the AWS_REGION environment variable value if not set", () => {
@@ -50,6 +63,6 @@ describe("appConfig.ts", () => {
   });
 
   it("should return the LocalStack endpoint value", () => {
-    expect(getLocalStackEndpoint()).toEqual("http://localhost:4566");
+    expect(getLocalStackEndpoint()).toEqual("http://localhost:4561");
   });
 });
