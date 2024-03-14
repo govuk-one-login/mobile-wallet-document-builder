@@ -2,7 +2,7 @@ import {
   Document,
   getNameParts,
   getSocialSecurityRecord,
-} from "../../src/documentBuilder/documentBuilder";
+} from "../../../src/documentBuilder/models/documentBuilder";
 
 describe("documentBuilder.ts", () => {
   describe("Document", () => {

@@ -3,7 +3,7 @@ import { documentBuilderGet, documentBuilderPost } from "./controller";
 
 const router = express.Router();
 
-router.get("/credential_offer", documentBuilderGet);
-router.post("/credential_offer", documentBuilderPost);
+router.get("/build-document", documentBuilderGet);
+router.post("/build-document", documentBuilderPost);
 
 export { router as documentBuilderRouter };

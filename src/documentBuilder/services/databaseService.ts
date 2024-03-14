@@ -1,8 +1,8 @@
-import { getDocumentsTableName } from "../config/appConfig";
-import { getDatabaseConfig } from "../config/aws";
+import { getDocumentsTableName } from "../../config/appConfig";
+import { getDatabaseConfig } from "../../config/aws";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { PutCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { Document } from "./documentBuilder";
+import { Document } from "../models/documentBuilder";
 import { UUID } from "node:crypto";
 
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());
@@ -10,17 +10,16 @@ const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
 export async function saveDocument(
   document: Document,
-  documentId: UUID
+  documentId: UUID,
+  walletSubjectId: string
 ): Promise<void> {
-  console.log("saveDocument");
-
   const tableName = getDocumentsTableName();
 
   const command = new PutCommand({
     TableName: tableName,
     Item: {
       documentId: documentId,
-      walletSubjectId: "testSubject",
+      walletSubjectId: walletSubjectId,
       vc: JSON.stringify(document),
     },
   });

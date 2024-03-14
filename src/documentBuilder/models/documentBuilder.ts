@@ -3,7 +3,7 @@ import {
   FormData,
   NamePart,
   SocialSecurityRecord,
-} from "../types/interfaces";
+} from "../../types/interfaces";
 
 export function getNameParts(input: FormData) {
   const nameParts: NamePart[] = [];
@@ -77,7 +77,7 @@ export class Document {
   private static trimRequestBody(input: FormData) {
     for (const key in input) {
       const trimmed = input[key as keyof FormData]!.trim();
-      input[key as keyof FormData] = trimmed
+      input[key as keyof FormData] = trimmed;
     }
   }
 }
