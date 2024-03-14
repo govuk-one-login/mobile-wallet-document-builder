@@ -1,13 +1,14 @@
-FROM node:20-alpine@sha256:f25b0e9d3d116e267d4ff69a3a99c0f4cf6ae94eadd87f1bf7bd68ea3ff0bef7
+FROM node:20.5.1-alpine3.17@sha256:ca274cb63ae61f501edb8a5abc29d926f8169793655a4cf39dc7fd8de0a4bca9
 
 WORKDIR /app
 COPY src/ src/
 COPY .env.example .env
 COPY package.json tsconfig.json ./
 ARG PORT
-RUN npm install --ignore-scripts
-RUN npm audit fix
+RUN npm update -g
+RUN npm install --ignore-scripts && npm update ip
 RUN npm run build
+
 
 EXPOSE $PORT
 CMD npm run start
