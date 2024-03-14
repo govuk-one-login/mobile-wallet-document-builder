@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import QRCode from "qrcode";
 import { getCredentialOffer } from "./services/credentialOfferService";
 
-export async function viewCredentialOffer(
+export async function credentialOfferViewerController(
   req: Request,
   res: Response
 ): Promise<void> {

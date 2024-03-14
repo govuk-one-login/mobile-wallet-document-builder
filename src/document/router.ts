@@ -1,8 +1,8 @@
 import express from "express";
-import { documentDataGet } from "./controller";
+import { documentController } from "./controller";
 
 const router = express.Router();
 
-router.get("/document", documentDataGet);
+router.get("/document/:documentId", documentController);
 
 export { router as documentDataRouter };

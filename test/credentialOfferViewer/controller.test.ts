@@ -1,4 +1,4 @@
-import { viewCredentialOffer } from "../../src/credentialOfferViewer/controller";
+import { credentialOfferViewerController } from "../../src/credentialOfferViewer/controller";
 import * as credentialOfferService from "../../src/credentialOfferViewer/services/credentialOfferService";
 import QRCode from "qrcode";
 import { getMockReq, getMockRes } from "@jest-mock/express";
@@ -38,7 +38,7 @@ describe("controller.ts", () => {
     mockedQrCode.toDataURL.mockReturnValueOnce(qrCodeMocked);
     getCredentialOffer.mockReturnValueOnce(credentialOfferMocked);
 
-    await viewCredentialOffer(req, res);
+    await credentialOfferViewerController(req, res);
 
     expect(getCredentialOffer).toHaveBeenCalledWith(
       "walletSubjectIdPlaceholder",
@@ -61,7 +61,7 @@ describe("controller.ts", () => {
 
     getCredentialOffer.mockRejectedValueOnce(new Error("SOME_ERROR"));
 
-    await viewCredentialOffer(req, res);
+    await credentialOfferViewerController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("500.njk");
   });

@@ -1,8 +1,11 @@
 import express from "express";
-import { viewCredentialOffer } from "./controller";
+import { credentialOfferViewerController } from "./controller";
 
 const router = express.Router();
 
-router.get("/view-credential-offer/:documentId", viewCredentialOffer);
+router.get(
+  "/view-credential-offer/:documentId",
+  credentialOfferViewerController
+);
 
 export { router as credentialOfferViewerRouter };

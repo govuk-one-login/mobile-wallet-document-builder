@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { Document } from "./models/documentBuilder";
 import { randomUUID } from "node:crypto";
-import { saveDocument } from "./services/databaseService";
+import { saveDocument } from "../services/databaseService";
 
-export async function documentBuilderGet(
+export async function documentBuilderGetController(
   req: Request,
   res: Response
 ): Promise<void> {
@@ -15,7 +15,7 @@ export async function documentBuilderGet(
   }
 }
 
-export async function documentBuilderPost(
+export async function documentBuilderPostController(
   req: Request,
   res: Response
 ): Promise<void> {

@@ -1,16 +1,16 @@
 import {
-  documentBuilderGet,
-  documentBuilderPost,
+  documentBuilderGetController,
+  documentBuilderPostController,
 } from "../../src/documentBuilder/controller";
 import { Document } from "../../src/documentBuilder/models/documentBuilder";
-import * as databaseService from "../../src/documentBuilder/services/databaseService";
+import * as databaseService from "../../src/services/databaseService";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
 }));
 jest.mock("../../src/documentBuilder/models/documentBuilder");
-jest.mock("../../src/documentBuilder/services/databaseService", () => ({
+jest.mock("../../src/services/databaseService", () => ({
   saveDocument: jest.fn(),
 }));
 
@@ -25,7 +25,7 @@ describe("controller.ts", () => {
     const req = getMockReq();
     const { res } = getMockRes();
 
-    await documentBuilderGet(req, res);
+    await documentBuilderGetController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("document-details-form.njk");
   });
@@ -47,7 +47,7 @@ describe("controller.ts", () => {
 
     jest.spyOn(Document, "fromRequestBody").mockReturnValueOnce(document);
 
-    await documentBuilderPost(req, res);
+    await documentBuilderPostController(req, res);
 
     expect(res.redirect).toHaveBeenCalledWith(
       "view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46"
@@ -86,7 +86,7 @@ describe("controller.ts", () => {
     jest.spyOn(Document, "fromRequestBody").mockReturnValueOnce(document);
     saveDocument.mockRejectedValueOnce(new Error("SOME_DATABASE_ERROR"));
 
-    await documentBuilderPost(req, res);
+    await documentBuilderPostController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("500.njk");
     expect(Document.fromRequestBody).toHaveBeenCalledWith({
