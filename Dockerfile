@@ -6,9 +6,7 @@ COPY .env.example .env
 COPY package.json tsconfig.json ./
 ARG PORT
 RUN npm update -g
-RUN npm install --ignore-scripts && npm update ip
-RUN npm run build
-
+RUN npm install --ignore-scripts && npm run build
 
 EXPOSE $PORT
 CMD npm run start
