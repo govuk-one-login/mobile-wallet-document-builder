@@ -1,4 +1,4 @@
-process.env.MOCK_CRI_URL = "http://localhost:1234";
+import "dotenv/config";
 import { getCredentialOffer } from "../../../src/credentialOfferViewer/services/credentialOfferService";
 import axios, { AxiosResponse } from "axios";
 
@@ -26,7 +26,7 @@ describe("credentialOfferService.ts", () => {
     const response = await getCredentialOffer(walletSubjectId, documentId);
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      "http://localhost:1234/credential_offer",
+      "http://localhost:8080/credential_offer",
       {
         params: {
           documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",

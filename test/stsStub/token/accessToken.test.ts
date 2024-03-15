@@ -1,10 +1,10 @@
+import "dotenv/config";
 import {
   createSignedAccessToken,
   getJwtAccessToken,
   createAccessTokenPayload,
 } from "../../../src/stsStub/token/accessToken";
 import { KmsService } from "../../../src/stsStub/services/kmsService";
-import "dotenv/config";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("1a0fac05-4b38-480f-9cbd-b046eabe1e22"),

@@ -1,8 +1,8 @@
+import "dotenv/config";
 import { stsStubController } from "../../src/stsStub/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as accessToken from "../../src/stsStub/token/accessToken";
 import * as validateTokenRequest from "../../src/stsStub/token/validateTokenRequest";
-import "dotenv/config";
 
 jest.mock("../../src/stsStub/token/validateTokenRequest", () => ({
   validateGrantType: jest.fn(),
