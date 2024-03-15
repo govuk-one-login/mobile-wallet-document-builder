@@ -29,6 +29,10 @@ export async function mockStsController(
       return res.status(400).json({ error: "invalid_grant" });
     }
 
+    console.log({
+      message: `Valid pre-authorized code received: ${preAuthorizedCode}`,
+    });
+
     const accessToken = await createAccessToken(
       WALLET_SUBJECT_ID,
       payload,
