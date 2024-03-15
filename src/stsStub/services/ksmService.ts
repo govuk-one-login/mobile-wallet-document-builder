@@ -32,12 +32,11 @@ export class KmsService {
       throw error;
     }
 
-    try {
-      return this.parseSignature(response.Signature!);
-    } catch (error) {
-      console.log(`Error parsing signature from DER to JOSE: ${error}`);
-      throw error;
+    if (!response.Signature) {
+      throw new Error("No signature returned");
     }
+
+    return this.parseSignature(response.Signature);
   }
 
   private parseSignature(rawSignature: Uint8Array): string {
