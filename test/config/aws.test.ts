@@ -1,6 +1,7 @@
 import {
   getLocalStackAwsConfig,
-  getDatabaseConfig, getKmsConfig,
+  getDatabaseConfig,
+  getKmsConfig,
 } from "../../src/config/aws";
 
 describe("aws.ts", () => {
