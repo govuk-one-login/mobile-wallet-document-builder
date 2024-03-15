@@ -29,3 +29,11 @@ export function getAwsRegion(): string {
 export function getLocalStackEndpoint(): string {
   return `http://localhost:4561`;
 }
+
+export function getStsSigningKeyId(): string {
+  return getEnvVarValue("STS_SIGNING_KEY_ID");
+}
+
+export function getAccessTokenTtlInSecs(): string {
+  return getEnvVarValue("ACCESS_TOKEN_TTL_IN_SECS");
+}
