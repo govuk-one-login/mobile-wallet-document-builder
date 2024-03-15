@@ -18,7 +18,7 @@ export default {
     'src/**',
   ],
   "coveragePathIgnorePatterns": [
-    "<rootDir>/src/types/interfaces.ts",
+    "<rootDir>/src/types/AccessTokenPayload.ts",
     "<rootDir>/src/server.ts"
   ],
   coverageDirectory: 'coverage',

@@ -3,7 +3,7 @@ import {
   getAwsRegion,
   getLocalStackEndpoint,
 } from "./appConfig";
-import { LocalStackAwsConfig } from "../types/interfaces";
+import { LocalStackAwsConfig } from "../types/LocalStackAwsConfig";
 import { DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
 import { KMSClientConfig } from "@aws-sdk/client-kms";
 

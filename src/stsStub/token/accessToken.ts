@@ -1,8 +1,6 @@
-import {
-  AccessTokenPayload,
-  Jwt,
-  PreAuthorizedCodePayload,
-} from "../types/interfaces";
+import { AccessTokenPayload } from "../../types/AccessTokenPayload";
+import { Jwt } from "../../types/Jwt";
+import { PreAuthorizedCodePayload } from "../../types/PreAuthorizedCodePayload";
 import { KmsService } from "../services/ksmService";
 import { UUID } from "node:crypto";
 
