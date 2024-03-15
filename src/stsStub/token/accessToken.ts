@@ -1,29 +1,30 @@
 import { AccessTokenPayload } from "../../types/AccessTokenPayload";
 import { Jwt } from "../../types/Jwt";
 import { PreAuthorizedCodePayload } from "../../types/PreAuthorizedCodePayload";
-import { KmsService } from "../services/ksmService";
-import { UUID } from "node:crypto";
+import { KmsService } from "../services/kmsService";
+import { randomUUID, UUID } from "node:crypto";
 
 const ACCESS_TOKEN_SIGNING_ALGORITHM = "RS256";
 const ACCESS_TOKEN_JWT_TYPE = "JWT";
 
-export async function createAccessToken(
+export async function getJwtAccessToken(
   walletSubjectId: string,
   payload: PreAuthorizedCodePayload,
   signingKeyId: string,
-  c_nonce: UUID
+kmsService = new KmsService(signingKeyId)
 ): Promise<Jwt> {
   const accessTokenPayload = createAccessTokenPayload(
     walletSubjectId,
     payload,
-    c_nonce
+    randomUUID()
   );
 
   return await createSignedAccessToken(
     accessTokenPayload,
     signingKeyId,
     ACCESS_TOKEN_SIGNING_ALGORITHM,
-    ACCESS_TOKEN_JWT_TYPE
+    ACCESS_TOKEN_JWT_TYPE,
+      kmsService
   );
 }
 
@@ -42,16 +43,17 @@ export function createAccessTokenPayload(
 }
 
 export async function createSignedAccessToken(
-  payload: PreAuthorizedCodePayload,
+  payload: AccessTokenPayload,
   keyId: string,
   alg: string,
-  typ: string
+  typ: string,
+  kmsService: KmsService
 ): Promise<Jwt> {
   const header = { alg, typ, kid: keyId };
   const encodedHeader = base64Encoder(header);
   const encodedPayload = base64Encoder(payload);
   const message = `${encodedHeader}.${encodedPayload}`;
-  const signature = await new KmsService(keyId).sign(message);
+  const signature = await kmsService.sign(message);
 
   return `${encodedHeader}.${encodedPayload}.${signature}`;
 }

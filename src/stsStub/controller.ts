@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { createAccessToken } from "./token/accessToken";
-import { randomUUID } from "node:crypto";
+import { getJwtAccessToken } from "./token/accessToken";
 import {
   validateGrantType,
   getPreAuthorizedCodePayload,
@@ -12,15 +11,13 @@ import {
 
 const WALLET_SUBJECT_ID = "walletSubjectIdPlaceholder";
 
-export async function mockStsController(
+export async function stsStubController(
   req: Request,
   res: Response
 ): Promise<Response> {
   try {
     const grantType = req.body["grant_type"];
     const preAuthorizedCode = req.body["pre-authorized_code"];
-
-    console.log(req.body);
 
     const isGrantTypeValid = validateGrantType(grantType);
     const payload = getPreAuthorizedCodePayload(preAuthorizedCode);
@@ -33,14 +30,11 @@ export async function mockStsController(
       message: `Valid pre-authorized code received: ${preAuthorizedCode}`,
     });
 
-    const accessToken = await createAccessToken(
+    const accessToken = await getJwtAccessToken(
       WALLET_SUBJECT_ID,
       payload,
-      getStsSigningKeyId(),
-      randomUUID()
+      getStsSigningKeyId()
     );
-
-    console.log("accessToken", accessToken);
 
     return res.status(200).json({
       access_token: accessToken,
