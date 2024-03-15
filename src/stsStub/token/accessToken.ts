@@ -11,7 +11,7 @@ export async function getJwtAccessToken(
   walletSubjectId: string,
   payload: PreAuthorizedCodePayload,
   signingKeyId: string,
-kmsService = new KmsService(signingKeyId)
+  kmsService = new KmsService(signingKeyId)
 ): Promise<Jwt> {
   const accessTokenPayload = createAccessTokenPayload(
     walletSubjectId,
@@ -24,7 +24,7 @@ kmsService = new KmsService(signingKeyId)
     signingKeyId,
     ACCESS_TOKEN_SIGNING_ALGORITHM,
     ACCESS_TOKEN_JWT_TYPE,
-      kmsService
+    kmsService
   );
 }
 
