@@ -60,9 +60,7 @@ export async function documentBuilderBuildDocumentPostController(
     const documentId = randomUUID();
     await saveDocument(document, documentId, walletSubjectId);
 
-    res.redirect(
-      `/view-credential-offer/?documentId=${documentId}&app=${selectedApp}`
-    );
+    res.redirect(`/view-credential-offer/${documentId}?app=${selectedApp}`);
   } catch (error) {
     console.log(`An error happened: ${JSON.stringify(error)}`);
     res.render("500.njk");

@@ -8,7 +8,7 @@ export async function credentialOfferViewerController(
   res: Response
 ): Promise<void> {
   try {
-    const documentId = req.query.documentId as string;
+    const documentId = req.params.documentId as string;
     const selectedApp = req.query.app as string;
 
     const walletSubjectId = "walletSubjectIdPlaceholder";
