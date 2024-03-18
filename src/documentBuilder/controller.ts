@@ -51,7 +51,7 @@ export async function documentBuilderBuildDocumentGetController(
 ): Promise<void> {
   try {
     const selectedApp = req.query.app;
-    res.render("document-details-form.njk", { app: selectedApp });
+    res.render("document-details-form.njk", { selectedApp: selectedApp });
   } catch (error) {
     console.log(`An error happened: ${JSON.stringify(error)}`);
     res.render("500.njk");
