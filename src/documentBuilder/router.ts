@@ -1,12 +1,16 @@
 import express from "express";
 import {
-  documentBuilderGetController,
-  documentBuilderPostController,
+  documentBuilderSelectAppGetController,
+  documentBuilderSelectAppPostController,
+  documentBuilderBuildDocumentGetController,
+  documentBuilderBuildDocumentPostController
 } from "./controller";
 
 const router = express.Router();
 
-router.get("/build-document", documentBuilderGetController);
-router.post("/build-document", documentBuilderPostController);
+router.get("/select-app", documentBuilderSelectAppGetController);
+router.post("/select-app", documentBuilderSelectAppPostController);
+router.get("/build-document", documentBuilderBuildDocumentGetController);
+router.post("/build-document", documentBuilderBuildDocumentPostController);
 
 export { router as documentBuilderRouter };

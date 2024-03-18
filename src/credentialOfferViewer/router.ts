@@ -4,7 +4,7 @@ import { credentialOfferViewerController } from "./controller";
 const router = express.Router();
 
 router.get(
-  "/view-credential-offer/:documentId",
+  "/view-credential-offer",
   credentialOfferViewerController
 );
 

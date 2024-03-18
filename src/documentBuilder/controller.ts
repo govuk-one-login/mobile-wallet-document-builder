@@ -3,30 +3,66 @@ import { Document } from "./models/documentBuilder";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 
-export async function documentBuilderGetController(
-  req: Request,
-  res: Response
+export async function documentBuilderSelectAppGetController(
+    req: Request,
+    res: Response
 ): Promise<void> {
   try {
-    res.render("document-details-form.njk");
+    res.render("select-app-form.njk");
   } catch (error) {
     console.log(`An error happened: ${JSON.stringify(error)}`);
     res.render("500.njk");
   }
 }
 
-export async function documentBuilderPostController(
+
+export async function documentBuilderSelectAppPostController(
+    req: Request,
+    res: Response
+): Promise<void> {
+  try {
+    const selectedApp = req.body['select-app-choice'];
+
+    if (selectedApp) {
+      res.redirect(`/build-document?app=${selectedApp}`);
+
+    } else {
+      res.render('select-app-form.njk', {
+        isInvalid: selectedApp === undefined,
+      })
+    }
+  } catch (error) {
+    console.log(`An error happened: ${JSON.stringify(error)}`);
+    res.render("500.njk");
+  }
+}
+
+export async function documentBuilderBuildDocumentGetController(
   req: Request,
   res: Response
 ): Promise<void> {
   try {
+    const selectedApp = req.query.app;
+    res.render("document-details-form.njk", {app: selectedApp});
+  } catch (error) {
+    console.log(`An error happened: ${JSON.stringify(error)}`);
+    res.render("500.njk");
+  }
+}
+
+export async function documentBuilderBuildDocumentPostController(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    const selectedApp = req.query.app;
     const document = Document.fromRequestBody(req.body);
 
     const walletSubjectId = "walletSubjectIdPlaceholder";
     const documentId = randomUUID();
     await saveDocument(document, documentId, walletSubjectId);
 
-    res.redirect(`view-credential-offer/${documentId}`);
+    res.redirect(`/view-credential-offer/?documentId=${documentId}&app=${selectedApp}`);
   } catch (error) {
     console.log(`An error happened: ${JSON.stringify(error)}`);
     res.render("500.njk");
