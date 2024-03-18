@@ -1,6 +1,8 @@
 import {
-  documentBuilderGetController,
-  documentBuilderPostController,
+  documentBuilderBuildDocumentGetController,
+  documentBuilderBuildDocumentPostController,
+  documentBuilderSelectAppGetController,
+  documentBuilderSelectAppPostController,
 } from "../../src/documentBuilder/controller";
 import { Document } from "../../src/documentBuilder/models/documentBuilder";
 import * as databaseService from "../../src/services/databaseService";
@@ -21,13 +23,53 @@ describe("controller.ts", () => {
 
   const saveDocument = databaseService.saveDocument as jest.Mock;
 
-  it("should render the form  for inputting document details", async () => {
+  it("should render the form for selecting an app", async () => {
     const req = getMockReq();
     const { res } = getMockRes();
 
-    await documentBuilderGetController(req, res);
+    await documentBuilderSelectAppGetController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("document-details-form.njk");
+    expect(res.render).toHaveBeenCalledWith("select-app-form.njk");
+  });
+
+  it("should redirect to the form for entering a document's details", async () => {
+    const req = getMockReq({
+      body: {
+        "select-app-choice": "any-app",
+      },
+    });
+    const { res } = getMockRes();
+
+    await documentBuilderSelectAppPostController(req, res);
+
+    expect(res.redirect).toHaveBeenCalledWith("/build-document?app=any-app");
+  });
+
+  it("should re-render the form for selecting an app when no choice was selected", async () => {
+    const req = getMockReq();
+    const { res } = getMockRes();
+
+    await documentBuilderSelectAppPostController(req, res);
+
+    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
+      isInvalid: true,
+    });
+    expect(res.redirect).not.toHaveBeenCalled();
+  });
+
+  it("should render the form  for inputting document details", async () => {
+    const req = getMockReq({
+      query: {
+        app: "any-app",
+      },
+    });
+    const { res } = getMockRes();
+
+    await documentBuilderBuildDocumentGetController(req, res);
+
+    expect(res.render).toHaveBeenCalledWith("document-details-form.njk", {
+      selectedApp: "any-app",
+    });
   });
 
   it("should redirect to the credential offer page", async () => {
@@ -38,6 +80,9 @@ describe("controller.ts", () => {
         familyName: "Adler",
         nino: "QQ123456A",
       },
+      query: {
+        app: "any-app",
+      },
     });
     const { res } = getMockRes();
     const document = {
@@ -47,10 +92,10 @@ describe("controller.ts", () => {
 
     jest.spyOn(Document, "fromRequestBody").mockReturnValueOnce(document);
 
-    await documentBuilderPostController(req, res);
+    await documentBuilderBuildDocumentPostController(req, res);
 
     expect(res.redirect).toHaveBeenCalledWith(
-      "view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+      "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?app=any-app"
     );
     expect(Document.fromRequestBody).toHaveBeenCalledWith({
       title: "Ms",
@@ -76,6 +121,9 @@ describe("controller.ts", () => {
         familyName: "Adler",
         nino: "QQ123456A",
       },
+      query: {
+        app: "any-app",
+      },
     });
     const { res } = getMockRes();
     const document = {
@@ -86,7 +134,7 @@ describe("controller.ts", () => {
     jest.spyOn(Document, "fromRequestBody").mockReturnValueOnce(document);
     saveDocument.mockRejectedValueOnce(new Error("SOME_DATABASE_ERROR"));
 
-    await documentBuilderPostController(req, res);
+    await documentBuilderBuildDocumentPostController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("500.njk");
     expect(Document.fromRequestBody).toHaveBeenCalledWith({
