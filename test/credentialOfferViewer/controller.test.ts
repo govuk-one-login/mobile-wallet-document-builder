@@ -1,5 +1,7 @@
 import { credentialOfferViewerController } from "../../src/credentialOfferViewer/controller";
 import * as credentialOfferService from "../../src/credentialOfferViewer/services/credentialOfferService";
+import * as customCredentialOfferUri from "../../src/credentialOfferViewer/helpers/customCredentialOfferUri";
+
 import QRCode from "qrcode";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
@@ -9,6 +11,12 @@ jest.mock(
     getCredentialOffer: jest.fn(),
   })
 );
+jest.mock(
+  "../../src/credentialOfferViewer/helpers/customCredentialOfferUri",
+  () => ({
+    getCustomCredentialOfferUri: jest.fn(),
+  })
+);
 jest.mock("qrcode");
 
 describe("controller.ts", () => {
@@ -16,14 +24,19 @@ describe("controller.ts", () => {
     jest.clearAllMocks();
   });
 
-  const mockedQrCode = QRCode as jest.Mocked<typeof QRCode>;
   const getCredentialOffer =
     credentialOfferService.getCredentialOffer as jest.Mock;
+  const getCustomCredentialOfferUri =
+    customCredentialOfferUri.getCustomCredentialOfferUri as jest.Mock;
+  const mockedQrCode = QRCode as jest.Mocked<typeof QRCode>;
 
   it("should render the credential offer page", async () => {
     const req = getMockReq({
       params: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+      },
+      query: {
+        app: "test-build",
       },
     });
     const { res } = getMockRes();
@@ -37,6 +50,9 @@ describe("controller.ts", () => {
 
     mockedQrCode.toDataURL.mockReturnValueOnce(qrCodeMocked);
     getCredentialOffer.mockReturnValueOnce(credentialOfferMocked);
+    getCustomCredentialOfferUri.mockReturnValueOnce(
+      "https://mobile.build.account.gov.uk/test-wallet/add?credential_offer=testCredentialOffer"
+    );
 
     await credentialOfferViewerController(req, res);
 
@@ -44,10 +60,14 @@ describe("controller.ts", () => {
       "walletSubjectIdPlaceholder",
       "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
     );
+    expect(getCustomCredentialOfferUri).toHaveBeenCalledWith(
+      "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer",
+      "test-build"
+    );
     expect(res.render).toHaveBeenCalledWith("credential-offer.njk", {
       qrCode: "data:image/png;base64,iVBORw0KGgoAAAANSU",
       universalLink:
-        "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer",
+        "https://mobile.build.account.gov.uk/test-wallet/add?credential_offer=testCredentialOffer",
     });
   });
 
