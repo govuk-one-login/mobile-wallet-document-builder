@@ -18,7 +18,12 @@ export async function documentController(
 
     return res.status(200).json(document);
   } catch (error) {
-    console.log(`An error happened: ${JSON.stringify(error)}`);
+    console.log(
+      `An error happened: ${JSON.stringify(
+        error,
+        Object.getOwnPropertyNames(error)
+      )}`
+    );
     return res.status(500).send();
   }
 }
