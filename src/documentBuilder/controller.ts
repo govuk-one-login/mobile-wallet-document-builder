@@ -4,8 +4,8 @@ import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 
 export async function documentBuilderSelectAppGetController(
-    req: Request,
-    res: Response
+  req: Request,
+  res: Response
 ): Promise<void> {
   try {
     res.render("select-app-form.njk");
@@ -15,21 +15,19 @@ export async function documentBuilderSelectAppGetController(
   }
 }
 
-
 export async function documentBuilderSelectAppPostController(
-    req: Request,
-    res: Response
+  req: Request,
+  res: Response
 ): Promise<void> {
   try {
-    const selectedApp = req.body['select-app-choice'];
+    const selectedApp = req.body["select-app-choice"];
 
     if (selectedApp) {
       res.redirect(`/build-document?app=${selectedApp}`);
-
     } else {
-      res.render('select-app-form.njk', {
+      res.render("select-app-form.njk", {
         isInvalid: selectedApp === undefined,
-      })
+      });
     }
   } catch (error) {
     console.log(`An error happened: ${JSON.stringify(error)}`);
@@ -43,7 +41,7 @@ export async function documentBuilderBuildDocumentGetController(
 ): Promise<void> {
   try {
     const selectedApp = req.query.app;
-    res.render("document-details-form.njk", {app: selectedApp});
+    res.render("document-details-form.njk", { app: selectedApp });
   } catch (error) {
     console.log(`An error happened: ${JSON.stringify(error)}`);
     res.render("500.njk");
@@ -62,7 +60,9 @@ export async function documentBuilderBuildDocumentPostController(
     const documentId = randomUUID();
     await saveDocument(document, documentId, walletSubjectId);
 
-    res.redirect(`/view-credential-offer/?documentId=${documentId}&app=${selectedApp}`);
+    res.redirect(
+      `/view-credential-offer/?documentId=${documentId}&app=${selectedApp}`
+    );
   } catch (error) {
     console.log(`An error happened: ${JSON.stringify(error)}`);
     res.render("500.njk");

@@ -3,7 +3,7 @@ import {
   documentBuilderSelectAppGetController,
   documentBuilderSelectAppPostController,
   documentBuilderBuildDocumentGetController,
-  documentBuilderBuildDocumentPostController
+  documentBuilderBuildDocumentPostController,
 } from "./controller";
 
 const router = express.Router();

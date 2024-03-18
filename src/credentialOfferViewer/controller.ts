@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import QRCode from "qrcode";
 import { getCredentialOffer } from "./services/credentialOfferService";
-import {getCustomCredentialOfferUri} from "./helpers/customCredentialOfferUri";
+import { getCustomCredentialOfferUri } from "./helpers/customCredentialOfferUri";
 
 export async function credentialOfferViewerController(
   req: Request,
@@ -15,7 +15,10 @@ export async function credentialOfferViewerController(
 
     const response = await getCredentialOffer(walletSubjectId, documentId);
 
-    const credentialOfferUri = getCustomCredentialOfferUri(response["credential_offer_uri"], selectedApp)
+    const credentialOfferUri = getCustomCredentialOfferUri(
+      response["credential_offer_uri"],
+      selectedApp
+    );
     const qrCode = await QRCode.toDataURL(credentialOfferUri);
 
     res.render("credential-offer.njk", {
@@ -23,7 +26,12 @@ export async function credentialOfferViewerController(
       qrCode,
     });
   } catch (error) {
-    console.log(`An error happened: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`);
+    console.log(
+      `An error happened: ${JSON.stringify(
+        error,
+        Object.getOwnPropertyNames(error)
+      )}`
+    );
     res.render("500.njk");
   }
 }
