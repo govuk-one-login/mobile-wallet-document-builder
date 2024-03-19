@@ -32,7 +32,7 @@ export async function saveDocument(
     const response = await documentClient.send(command);
     console.log(`Document saved: ${JSON.stringify(response)}`);
   } catch (error) {
-    console.log(`Failed to save document: ${JSON.stringify(error)}`);
+    console.log(`Failed to save document: ${error}`);
     throw error;
   }
 }
@@ -60,9 +60,7 @@ export async function getDocument(
     return Item;
   } catch (error) {
     console.log(
-      `Failed to get document with documentID ${documentId}: ${JSON.stringify(
-        error
-      )}`
+      `Failed to get document with documentID ${documentId}: ${error}`
     );
     throw error;
   }

@@ -25,7 +25,6 @@ export function getCustomCredentialOfferUri(
   selectedApp: string
 ) {
   const selectedAppPath = DEEP_LINK_PATHS.get(selectedApp);
-  console.log("selectedAppPath", selectedAppPath);
   if (!selectedAppPath) {
     throw new Error("Path not found");
   }

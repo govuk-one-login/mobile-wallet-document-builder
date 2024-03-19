@@ -10,12 +10,7 @@ export async function documentBuilderSelectAppGetController(
   try {
     res.render("select-app-form.njk");
   } catch (error) {
-    console.log(
-      `An error happened: ${JSON.stringify(
-        error,
-        Object.getOwnPropertyNames(error)
-      )}`
-    );
+    console.log(`An error happened: ${error}`);
     res.render("500.njk");
   }
 }
@@ -35,12 +30,7 @@ export async function documentBuilderSelectAppPostController(
       });
     }
   } catch (error) {
-    console.log(
-      `An error happened: ${JSON.stringify(
-        error,
-        Object.getOwnPropertyNames(error)
-      )}`
-    );
+    console.log(`An error happened: ${error}`);
     res.render("500.njk");
   }
 }
@@ -53,7 +43,7 @@ export async function documentBuilderBuildDocumentGetController(
     const selectedApp = req.query.app;
     res.render("document-details-form.njk", { selectedApp: selectedApp });
   } catch (error) {
-    console.log(`An error happened: ${JSON.stringify(error)}`);
+    console.log(`An error happened: ${error}`);
     res.render("500.njk");
   }
 }
@@ -72,12 +62,7 @@ export async function documentBuilderBuildDocumentPostController(
 
     res.redirect(`/view-credential-offer/${documentId}?app=${selectedApp}`);
   } catch (error) {
-    console.log(
-      `An error happened: ${JSON.stringify(
-        error,
-        Object.getOwnPropertyNames(error)
-      )}`
-    );
+    console.log(`An error happened: ${error}`);
     res.render("500.njk");
   }
 }

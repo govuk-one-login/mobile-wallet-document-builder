@@ -26,12 +26,7 @@ export async function credentialOfferViewerController(
       qrCode,
     });
   } catch (error) {
-    console.log(
-      `An error happened: ${JSON.stringify(
-        error,
-        Object.getOwnPropertyNames(error)
-      )}`
-    );
+    console.log(`An error happened: ${error}`);
     res.render("500.njk");
   }
 }
