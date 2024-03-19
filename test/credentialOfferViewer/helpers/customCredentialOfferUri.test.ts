@@ -11,7 +11,7 @@ describe("customCredentialOfferUri.ts", () => {
     );
 
     expect(response).toEqual(
-      "https://N8W395F695.uk.gov.one-login.build/wallet/add?credential_offer=testCredentialOffer"
+      "https://mobile.build.account.gov.uk/wallet/add?credential_offer=testCredentialOffer"
     );
   });
 
@@ -25,7 +25,7 @@ describe("customCredentialOfferUri.ts", () => {
     );
 
     expect(response).toEqual(
-      "https://N8W395F695.uk.gov.one-login.staging/wallet/add?credential_offer=testCredentialOffer"
+      "https://mobile.staging.account.gov.uk/wallet/add?credential_offer=testCredentialOffer"
     );
   });
 
@@ -39,7 +39,7 @@ describe("customCredentialOfferUri.ts", () => {
     );
 
     expect(response).toEqual(
-      "https://mobile.build.account.gov.uk/test-wallet/add?credential_offer=testCredentialOffer"
+      "https://mobile.build.account.gov.uk/wallet-test/add?credential_offer=testCredentialOffer"
     );
   });
 
@@ -53,7 +53,7 @@ describe("customCredentialOfferUri.ts", () => {
     );
 
     expect(response).toEqual(
-      "https://mobile.staging.account.gov.uk/test-wallet/add?credential_offer=testCredentialOffer"
+      "https://mobile.staging.account.gov.uk/wallet-test/add?credential_offer=testCredentialOffer"
     );
   });
 

@@ -1,10 +1,10 @@
 type DeepLinkPaths = Map<string, string>;
 
 const DEEP_LINK_PATHS: DeepLinkPaths = new Map([
-  ["sts-build", "https://N8W395F695.uk.gov.one-login.build/wallet/"],
-  ["sts-staging", "https://N8W395F695.uk.gov.one-login.staging/wallet/"],
-  ["test-build", "https://mobile.build.account.gov.uk/test-wallet/"],
-  ["test-staging", "https://mobile.staging.account.gov.uk/test-wallet/"],
+  ["sts-build", "https://mobile.build.account.gov.uk/wallet/"],
+  ["sts-staging", "https://mobile.staging.account.gov.uk/wallet/"],
+  ["test-build", "https://mobile.build.account.gov.uk/wallet-test/"],
+  ["test-staging", "https://mobile.staging.account.gov.uk/wallet-test/"],
 ]);
 
 const URI_STRING_VALUE_TO_SLICE_ON = "add?";
