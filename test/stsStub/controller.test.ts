@@ -1,5 +1,5 @@
-process.env.STS_SIGNING_KEY_ID = 'mock_signing_key_id';
-process.env.ACCESS_TOKEN_TTL_IN_SECS = '100';
+process.env.STS_SIGNING_KEY_ID = "mock_signing_key_id";
+process.env.ACCESS_TOKEN_TTL_IN_SECS = "100";
 import { stsStubController } from "../../src/stsStub/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as accessToken from "../../src/stsStub/token/accessToken";
