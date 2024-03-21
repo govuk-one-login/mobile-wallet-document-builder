@@ -66,4 +66,14 @@ describe("customCredentialOfferUri.ts", () => {
       getCustomCredentialOfferUri(credentialOfferUri, selectedApp);
     }).toThrow("Path not found");
   });
+
+  it("should throw an error if the URI returned by the CRI is invalid", async () => {
+    const credentialOfferUri =
+      "https://not.the.expected.uri/wallet/add?credential_offer=testCredentialOffer";
+    const selectedApp = "wallet-test-staging";
+
+    expect(() => {
+      getCustomCredentialOfferUri(credentialOfferUri, selectedApp);
+    }).toThrow("Invalid URI");
+  });
 });

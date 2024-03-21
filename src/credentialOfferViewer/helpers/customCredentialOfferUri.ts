@@ -7,10 +7,17 @@ const DEEP_LINK_PATHS: DeepLinkPaths = new Map([
   ["wallet-test-staging", "https://mobile.staging.account.gov.uk/wallet-test/"],
 ]);
 
-const PATTERN_TO_SLICE_ON = "https://mobile.account.gov.uk/wallet/";
+const PATTERN_TO_SPLIT_URI_ON = "https://mobile.account.gov.uk/wallet/";
+
+function isInvalidUri(uriParts: string[]) {
+  return uriParts.length !== 2;
+}
 
 function replaceUriPath(credentialOfferUri: string, path: string) {
-  const uriParts = credentialOfferUri.split(PATTERN_TO_SLICE_ON);
+  const uriParts = credentialOfferUri.split(PATTERN_TO_SPLIT_URI_ON);
+  if (isInvalidUri(uriParts)) {
+    throw new Error("Invalid URI");
+  }
   const uriWithoutPath = uriParts[1];
 
   const uriNew = path + uriWithoutPath;
