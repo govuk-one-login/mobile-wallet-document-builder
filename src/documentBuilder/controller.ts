@@ -3,39 +3,7 @@ import { Document } from "./models/documentBuilder";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 
-export async function documentBuilderSelectAppGetController(
-  req: Request,
-  res: Response
-): Promise<void> {
-  try {
-    res.render("select-app-form.njk");
-  } catch (error) {
-    console.log(`An error happened: ${error}`);
-    res.render("500.njk");
-  }
-}
-
-export async function documentBuilderSelectAppPostController(
-  req: Request,
-  res: Response
-): Promise<void> {
-  try {
-    const selectedApp = req.body["select-app-choice"];
-
-    if (selectedApp) {
-      res.redirect(`/build-document?app=${selectedApp}`);
-    } else {
-      res.render("select-app-form.njk", {
-        isInvalid: selectedApp === undefined,
-      });
-    }
-  } catch (error) {
-    console.log(`An error happened: ${error}`);
-    res.render("500.njk");
-  }
-}
-
-export async function documentBuilderBuildDocumentGetController(
+export async function documentBuilderGetController(
   req: Request,
   res: Response
 ): Promise<void> {
@@ -48,7 +16,7 @@ export async function documentBuilderBuildDocumentGetController(
   }
 }
 
-export async function documentBuilderBuildDocumentPostController(
+export async function documentBuilderPostController(
   req: Request,
   res: Response
 ): Promise<void> {
