@@ -3,8 +3,8 @@ import { getCustomCredentialOfferUri } from "../../../src/credentialOfferViewer/
 describe("customCredentialOfferUri.ts", () => {
   it("should return the URI for the STS app in build", async () => {
     const credentialOfferUri =
-      "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer";
-    const selectedApp = "sts-build";
+      "https://mobile.account.gov.uk/wallet/add?credential_offer=testCredentialOffer";
+    const selectedApp = "govuk-build";
     const response = getCustomCredentialOfferUri(
       credentialOfferUri,
       selectedApp
@@ -17,8 +17,8 @@ describe("customCredentialOfferUri.ts", () => {
 
   it("should return the URI for the STS app in staging", async () => {
     const credentialOfferUri =
-      "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer";
-    const selectedApp = "sts-staging";
+      "https://mobile.account.gov.uk/wallet/add?credential_offer=testCredentialOffer";
+    const selectedApp = "govuk-staging";
     const response = getCustomCredentialOfferUri(
       credentialOfferUri,
       selectedApp
@@ -31,8 +31,8 @@ describe("customCredentialOfferUri.ts", () => {
 
   it("should return the URI for the Test app in build", async () => {
     const credentialOfferUri =
-      "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer";
-    const selectedApp = "test-build";
+      "https://mobile.account.gov.uk/wallet/add?credential_offer=testCredentialOffer";
+    const selectedApp = "wallet-test-build";
     const response = getCustomCredentialOfferUri(
       credentialOfferUri,
       selectedApp
@@ -45,8 +45,8 @@ describe("customCredentialOfferUri.ts", () => {
 
   it("should return the URI for the Test app in staging", async () => {
     const credentialOfferUri =
-      "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer";
-    const selectedApp = "test-staging";
+      "https://mobile.account.gov.uk/wallet/add?credential_offer=testCredentialOffer";
+    const selectedApp = "wallet-test-staging";
     const response = getCustomCredentialOfferUri(
       credentialOfferUri,
       selectedApp
@@ -59,7 +59,7 @@ describe("customCredentialOfferUri.ts", () => {
 
   it("should throw an error if there is no path for the selected app", async () => {
     const credentialOfferUri =
-      "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer";
+      "https://mobile.account.gov.uk/wallet/add?credential_offer=testCredentialOffer";
     const selectedApp = "unknownOption";
 
     expect(() => {

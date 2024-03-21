@@ -1,23 +1,20 @@
 type DeepLinkPaths = Map<string, string>;
 
 const DEEP_LINK_PATHS: DeepLinkPaths = new Map([
-  ["sts-build", "https://mobile.build.account.gov.uk/wallet/"],
-  ["sts-staging", "https://mobile.staging.account.gov.uk/wallet/"],
-  ["test-build", "https://mobile.build.account.gov.uk/wallet-test/"],
-  ["test-staging", "https://mobile.staging.account.gov.uk/wallet-test/"],
+  ["govuk-build", "https://mobile.build.account.gov.uk/wallet/"],
+  ["govuk-staging", "https://mobile.staging.account.gov.uk/wallet/"],
+  ["wallet-test-build", "https://mobile.build.account.gov.uk/wallet-test/"],
+  ["wallet-test-staging", "https://mobile.staging.account.gov.uk/wallet-test/"],
 ]);
 
-const URI_STRING_VALUE_TO_SLICE_ON = "add?";
+const PATTERN_TO_SLICE_ON = "https://mobile.account.gov.uk/wallet/";
 
 function replaceUriPath(credentialOfferUri: string, path: string) {
-  const indexToSliceFrom = credentialOfferUri.indexOf(
-    URI_STRING_VALUE_TO_SLICE_ON
-  );
-  const credentialOfferUriWithoutPath =
-    credentialOfferUri.slice(indexToSliceFrom);
+  const uriParts = credentialOfferUri.split(PATTERN_TO_SLICE_ON);
+  const uriWithoutPath = uriParts[1];
 
-  const credentialOfferUriNew = path + credentialOfferUriWithoutPath;
-  return credentialOfferUriNew;
+  const uriNew = path + uriWithoutPath;
+  return uriNew;
 }
 
 export function getCustomCredentialOfferUri(
