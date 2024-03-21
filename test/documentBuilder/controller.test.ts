@@ -22,12 +22,18 @@ describe("controller.ts", () => {
   const saveDocument = databaseService.saveDocument as jest.Mock;
 
   it("should render the form  for inputting document details", async () => {
-    const req = getMockReq();
+    const req = getMockReq({
+      query: {
+        app: "any-app",
+      },
+    });
     const { res } = getMockRes();
 
     await documentBuilderGetController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("document-details-form.njk");
+    expect(res.render).toHaveBeenCalledWith("document-details-form.njk", {
+      selectedApp: "any-app",
+    });
   });
 
   it("should redirect to the credential offer page", async () => {
@@ -37,6 +43,9 @@ describe("controller.ts", () => {
         givenName: "Irene",
         familyName: "Adler",
         nino: "QQ123456A",
+      },
+      query: {
+        app: "any-app",
       },
     });
     const { res } = getMockRes();
@@ -50,7 +59,7 @@ describe("controller.ts", () => {
     await documentBuilderPostController(req, res);
 
     expect(res.redirect).toHaveBeenCalledWith(
-      "view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+      "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?app=any-app"
     );
     expect(Document.fromRequestBody).toHaveBeenCalledWith({
       title: "Ms",
@@ -75,6 +84,9 @@ describe("controller.ts", () => {
         givenName: "Irene",
         familyName: "Adler",
         nino: "QQ123456A",
+      },
+      query: {
+        app: "any-app",
       },
     });
     const { res } = getMockRes();

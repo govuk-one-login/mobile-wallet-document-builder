@@ -80,7 +80,7 @@ npm run start
 
 To start and test the credential offer endpoint, go to:
 
-[http://localhost:8000/build-document](http://localhost:8000/build-document)
+[http://localhost:8000/select-app](http://localhost:8000/select-app)
 
 To get a document's details, hit the following endpoint:
 
