@@ -1,4 +1,5 @@
-import "dotenv/config";
+process.env.DOCUMENTS_TABLE_NAME = "testTable";
+process.env.ENVIRONMENT = "local";
 import { mockClient } from "aws-sdk-client-mock";
 import {
   PutCommand,
@@ -17,7 +18,7 @@ describe("databaseService.ts", () => {
     } as unknown as Document;
 
     const putItemCommand = {
-      TableName: "documents",
+      TableName: "testTable",
       Item: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         walletSubjectId: "walletSubjectIdPlaceholder",
@@ -49,7 +50,7 @@ describe("databaseService.ts", () => {
     } as unknown as Document;
 
     const putItemCommand = {
-      TableName: "documents",
+      TableName: "testTable",
       Item: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         walletSubjectId: "walletSubjectIdPlaceholder",
@@ -72,7 +73,7 @@ describe("databaseService.ts", () => {
 
   it("should get a document from the database table by documentId and return it", async () => {
     const getCommandInput = {
-      TableName: "documents",
+      TableName: "testTable",
       Key: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       },

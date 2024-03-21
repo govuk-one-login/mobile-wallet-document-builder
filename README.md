@@ -34,6 +34,12 @@ Install node dependencies:
 npm install
 ```
 
+### Configure
+Create a copy of the example environment variable file:
+```
+cp .env.example .env
+```
+
 ### Linting
 Lint and format the code:
 ```
