@@ -86,6 +86,11 @@ To get a document's details, hit the following endpoint:
 
 [http://localhost:8000/document/:documentId](http://localhost:8000/document/:documentId)
 
+To swap a pre-authorized code for an access token (STS Stub):
+```
+curl -d "grant_type=urn:ietf:params:oauth:grant-type:pre-authorized_code&pre-authorized_code=eyJraWQiOiJmZjI3NWI5Mi0wZGVmLTRkZmMtYjBmNi04N2M5NmIyNmM2YzciLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJ1cm46ZmRjOmdvdjp1azp3YWxsZXQiLCJjbGllbnRJZCI6ImFiYzEyMyIsImlzcyI6InVybjpmZGM6Z292OnVrOjxITVJDPiIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsiMWNkZmMxNjktMmZjNC00NDhjLTlmODEtN2I2OTI5NjBjZTEzIl0sImV4cCI6MTcxMDUxMDQyNywiaWF0IjoxNzEwNTEwMTI3fQ.IzlFYl3FBJXYZXbdDGSZHGQoU76pZw2ktjMxmkwwATwQK6hf4Q1Hyv7cmtwYgdNmgwZvmYibZvMz37i22s-GJQ" -X POST http://localhost:8000/sts-stub/token | jq
+```
+
 
 #### Reading from the Database
 To check that an item was saved to the DynamoDB **documents** table, run `aws --endpoint-url=http://localhost:4561 --region eu-west-2 dynamodb query --table-name documents --key-condition-expression "documentId = :documentId" --expression-attribute-values "{ \":documentId\" : { \"S\" : \"86bd9f55-d675-4a16-963a-56ac17c8597c\" } }"`, replacing the **documentId** with the relevant one.

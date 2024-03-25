@@ -1,10 +1,9 @@
 import {
   CredentialSubject,
-  FormData,
   NamePart,
   SocialSecurityRecord,
-} from "../../types/interfaces";
-
+} from "../../types/CredentialSubject";
+import { FormData } from "../../types/FormData";
 export function getNameParts(input: FormData) {
   const nameParts: NamePart[] = [];
   if (input.title) {
