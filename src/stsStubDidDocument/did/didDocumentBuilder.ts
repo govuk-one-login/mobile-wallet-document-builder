@@ -3,7 +3,7 @@ import { createPublicKey, JsonWebKey } from "node:crypto";
 import { VerificationMethod } from "./verificationMethod";
 import { DidDocument } from "./didDocument";
 
-export class DidDocumentGenerator {
+export class DidDocumentBuilder {
   private readonly DID_TYPE = "JsonWebKey";
   private readonly CONTEXT = [
     "https://www.w3.org/ns/did/v1",
