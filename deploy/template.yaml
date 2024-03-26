@@ -74,6 +74,14 @@ Mappings:
     eu-west-2:
       AccountId: 652711504416
 
+  DidController:
+    dev:
+      Controller: "did:web:wallet-api.mobile.dev.account.gov.uk"
+    build:
+      Controller: "did:web:wallet-api.mobile.build.account.gov.uk"
+    staging:
+      Controller: "did:web:wallet-api.mobile.staging.account.gov.uk"
+
 Resources:
 
 # SECURITY GROUPS
@@ -406,6 +414,8 @@ Resources:
               Value: !Ref StsStubSigningKey
             - Name: ACCESS_TOKEN_TTL_IN_SECS
               Value: 180
+            - Name: DID_CONTROLLER
+              Value: !FindInMap [DidController, !Ref Environment, Controller]
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp
