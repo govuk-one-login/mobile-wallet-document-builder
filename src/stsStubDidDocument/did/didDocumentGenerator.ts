@@ -24,7 +24,12 @@ export class DidDocumentGenerator {
     const verificationMethod = await this.buildVerificationMethod();
     const assertionMethod = verificationMethod.id;
 
-    return new DidDocument(this.CONTEXT, id, [verificationMethod], [assertionMethod]);
+    return new DidDocument(
+      this.CONTEXT,
+      id,
+      [verificationMethod],
+      [assertionMethod]
+    );
   }
 
   async buildVerificationMethod() {
