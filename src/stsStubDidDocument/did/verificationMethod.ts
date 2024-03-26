@@ -1,3 +1,5 @@
+import { JsonWebKey } from "node:crypto";
+
 export class VerificationMethod {
   id: string;
   type: string;
