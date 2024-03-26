@@ -19,7 +19,7 @@ export class DidDocumentBuilder {
     this.didController = didController;
   }
 
-  public async run() {
+  public async buildDidDocument() {
     const id = this.didController;
     const verificationMethod = await this.buildVerificationMethod();
     const assertionMethod = verificationMethod.id;
@@ -32,7 +32,7 @@ export class DidDocumentBuilder {
     );
   }
 
-  async buildVerificationMethod() {
+  private async buildVerificationMethod() {
     const publicKey = await this.kmsService.getPublicKey();
     const jwk = this.createJwk(publicKey);
 
@@ -47,7 +47,8 @@ export class DidDocumentBuilder {
       "\n-----END PUBLIC KEY-----";
 
     try {
-      const jwk = createPublicKey(publicKeyPem).export({ format: "jwk" });
+      const keyObject = createPublicKey(publicKeyPem);
+      const jwk = keyObject.export({ format: "jwk" });
       this.addKidToJwk(jwk);
       return jwk;
     } catch (error) {

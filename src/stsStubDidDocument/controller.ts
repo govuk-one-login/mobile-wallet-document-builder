@@ -16,7 +16,7 @@ export async function stsStubDidDocumentController(
       kmsService,
       keyId,
       didController
-    ).run();
+    ).buildDidDocument();
 
     return res.status(200).json(didDocument);
   } catch (error) {
