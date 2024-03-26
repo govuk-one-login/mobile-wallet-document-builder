@@ -3,9 +3,10 @@ import { appSelectorRouter } from "./appSelector/router";
 import { documentBuilderRouter } from "./documentBuilder/router";
 import { credentialOfferViewerRouter } from "./credentialOfferViewer/router";
 import { documentRouter } from "./document/router";
-import { mockStsRouter } from "./stsStub/router";
+import { stsStubAccessTokenRouter } from "./stsStubAccessToken/router";
 import nunjucks from "nunjucks";
 import path from "path";
+import { stsStubDidDocumentRouter } from "./stsStubDidDocument/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
@@ -35,7 +36,9 @@ export async function createApp(): Promise<express.Application> {
   app.use(appSelectorRouter);
   app.use(documentBuilderRouter);
   app.use(credentialOfferViewerRouter);
-    app.use(documentRouter);
-    app.use(mockStsRouter);
+  app.use(documentRouter);
+  app.use(stsStubAccessTokenRouter);
+  app.use(stsStubDidDocumentRouter);
+
   return app;
 }

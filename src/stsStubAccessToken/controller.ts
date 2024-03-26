@@ -11,7 +11,7 @@ import {
 
 const WALLET_SUBJECT_ID = "walletSubjectIdPlaceholder";
 
-export async function stsStubController(
+export async function stsStubAccessTokenController(
   req: Request,
   res: Response
 ): Promise<Response> {
