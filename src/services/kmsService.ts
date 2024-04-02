@@ -1,4 +1,6 @@
 import {
+  GetPublicKeyCommand,
+  GetPublicKeyResponse,
   KMSClient,
   SignCommand,
   SignCommandInput,
@@ -6,7 +8,7 @@ import {
   SigningAlgorithmSpec,
 } from "@aws-sdk/client-kms";
 
-import { getKmsConfig } from "../../config/aws";
+import { getKmsConfig } from "../config/aws";
 
 export class KmsService {
   constructor(
@@ -22,7 +24,7 @@ export class KmsService {
       SigningAlgorithm: this.signingAlgorithm,
       MessageType: "RAW",
     };
-    const command = new SignCommand(signCommandInput);
+    const command: SignCommand = new SignCommand(signCommandInput);
 
     let response: SignCommandOutput;
     try {
@@ -41,5 +43,29 @@ export class KmsService {
 
   private parseSignature(rawSignature: Uint8Array): string {
     return Buffer.from(rawSignature).toString("base64url");
+  }
+
+  public async getPublicKey() {
+    const command: GetPublicKeyCommand = new GetPublicKeyCommand({
+      KeyId: this.keyId,
+    });
+
+    let response: GetPublicKeyResponse;
+    try {
+      response = await this.kmsClient.send(command);
+    } catch (error) {
+      console.log(`Error fetching public key: ${error as Error}`);
+      throw error;
+    }
+
+    if (!response.PublicKey) {
+      throw new Error("No public key returned");
+    }
+
+    return this.parsePublicKey(response.PublicKey as Uint8Array);
+  }
+
+  private parsePublicKey(publicKeyRaw: Uint8Array) {
+    return Buffer.from(publicKeyRaw).toString("base64");
   }
 }

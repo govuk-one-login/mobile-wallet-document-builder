@@ -1,7 +1,7 @@
 import {
   getPreAuthorizedCodePayload,
   validateGrantType,
-} from "../../../src/stsStub/token/validateTokenRequest";
+} from "../../../src/stsStubAccessToken/token/validateTokenRequest";
 
 describe("validateTokenRequest.ts", () => {
   describe("validateGrantType", () => {

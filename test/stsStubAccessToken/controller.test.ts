@@ -1,15 +1,15 @@
 process.env.STS_SIGNING_KEY_ID = "mock_signing_key_id";
 process.env.ACCESS_TOKEN_TTL_IN_SECS = "100";
-import { stsStubController } from "../../src/stsStub/controller";
+import { stsStubAccessTokenController } from "../../src/stsStubAccessToken/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
-import * as accessToken from "../../src/stsStub/token/accessToken";
-import * as validateTokenRequest from "../../src/stsStub/token/validateTokenRequest";
+import * as accessToken from "../../src/stsStubAccessToken/token/accessToken";
+import * as validateTokenRequest from "../../src/stsStubAccessToken/token/validateTokenRequest";
 
-jest.mock("../../src/stsStub/token/validateTokenRequest", () => ({
+jest.mock("../../src/stsStubAccessToken/token/validateTokenRequest", () => ({
   validateGrantType: jest.fn(),
   getPreAuthorizedCodePayload: jest.fn(),
 }));
-jest.mock("../../src/stsStub/token/accessToken", () => ({
+jest.mock("../../src/stsStubAccessToken/token/accessToken", () => ({
   getJwtAccessToken: jest.fn(),
 }));
 
@@ -36,7 +36,7 @@ describe("controller.ts", () => {
       "eyJ0eXAiOiJKV1Qh.eyJzdWIiOiM.9nQevZ--Asqx5ltCWvw_AvVNDA"
     );
 
-    await stsStubController(req, res);
+    await stsStubAccessTokenController(req, res);
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
@@ -56,7 +56,7 @@ describe("controller.ts", () => {
       validateTokenRequest.validateGrantType as jest.Mock;
     validateGrantType.mockReturnValueOnce(false);
 
-    await stsStubController(req, res);
+    await stsStubAccessTokenController(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
@@ -78,7 +78,7 @@ describe("controller.ts", () => {
       validateTokenRequest.getPreAuthorizedCodePayload as jest.Mock;
     getPreAuthorizedCodePayload.mockReturnValueOnce(false);
 
-    await stsStubController(req, res);
+    await stsStubAccessTokenController(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
@@ -103,7 +103,7 @@ describe("controller.ts", () => {
     const createAccessToken = accessToken.getJwtAccessToken as jest.Mock;
     createAccessToken.mockRejectedValueOnce(new Error("SOME_ERROR"));
 
-    await stsStubController(req, res);
+    await stsStubAccessTokenController(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({

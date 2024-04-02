@@ -37,3 +37,7 @@ export function getStsSigningKeyId(): string {
 export function getAccessTokenTtlInSecs(): string {
   return getEnvVarValue("ACCESS_TOKEN_TTL_IN_SECS");
 }
+
+export function getDidController(): string {
+  return getEnvVarValue("DID_CONTROLLER");
+}
