@@ -9,7 +9,7 @@ jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("1a0fac05-4b38-480f-9cbd-b046eabe1e22"),
 }));
 
-describe("accessToken.ts", () => {
+describe("proofJwt.ts", () => {
   describe("createAccessTokenPayload", () => {
     it("should return the access token payload", async () => {
       const response = createAccessTokenPayload(

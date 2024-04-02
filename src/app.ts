@@ -7,6 +7,7 @@ import { stsStubAccessTokenRouter } from "./stsStubAccessToken/router";
 import nunjucks from "nunjucks";
 import path from "path";
 import { stsStubDidDocumentRouter } from "./stsStubDidDocument/router";
+import {walletStubRouter} from "./walletStub/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
@@ -39,6 +40,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(documentRouter);
   app.use(stsStubAccessTokenRouter);
   app.use(stsStubDidDocumentRouter);
+  app.use(walletStubRouter);
 
   return app;
 }
