@@ -46,7 +46,7 @@ export function getSocialSecurityRecord(input: FormData) {
   return socialSecurityRecord;
 }
 
-export class Document {
+export class DbsDocument {
   public readonly type: string[];
   public readonly credentialSubject: CredentialSubject;
 
@@ -61,16 +61,23 @@ export class Document {
    * @returns a document
    * @param input {FormData}
    */
-  static fromRequestBody(input: FormData): Document {
+  static fromRequestBody(input: any): DbsDocument {
     this.trimRequestBody(input);
 
-    const type = ["VerifiableCredential", "SocialSecurityCredential"];
+    const type = ["VerifiableCredential", "BasicCheckCredential"];
     const credentialSubject: CredentialSubject = {
+      issuanceDate: input.issuanceDate,
+      expirationDate: input.issuanceDate + 1, // year
       name: [{ nameParts: getNameParts(input) }],
+      "birthDate": [
+        {
+          "value": "2023-10-18"
+        }
+      ],
       socialSecurityRecord: getSocialSecurityRecord(input),
     };
 
-    return new Document(type, credentialSubject);
+    return new DbsDocument(type, credentialSubject);
   }
 
   private static trimRequestBody(input: FormData) {

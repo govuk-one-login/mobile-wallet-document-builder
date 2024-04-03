@@ -46,7 +46,7 @@ export function getSocialSecurityRecord(input: FormData) {
   return socialSecurityRecord;
 }
 
-export class Document {
+export class NinoDocument {
   public readonly type: string[];
   public readonly credentialSubject: CredentialSubject;
 
@@ -61,7 +61,7 @@ export class Document {
    * @returns a document
    * @param input {FormData}
    */
-  static fromRequestBody(input: FormData): Document {
+  static fromRequestBody(input: FormData): NinoDocument {
     this.trimRequestBody(input);
 
     const type = ["VerifiableCredential", "SocialSecurityCredential"];
@@ -70,7 +70,7 @@ export class Document {
       socialSecurityRecord: getSocialSecurityRecord(input),
     };
 
-    return new Document(type, credentialSubject);
+    return new NinoDocument(type, credentialSubject);
   }
 
   private static trimRequestBody(input: FormData) {

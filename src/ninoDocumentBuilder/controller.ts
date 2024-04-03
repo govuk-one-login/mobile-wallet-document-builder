@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Document } from "./models/documentBuilder";
+import { NinoDocument } from "./models/documentBuilder";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 
@@ -22,7 +22,7 @@ export async function ninoDocumentBuilderPostController(
 ): Promise<void> {
   try {
     const selectedApp = req.query.app;
-    const document = Document.fromRequestBody(req.body);
+    const document = NinoDocument.fromRequestBody(req.body);
 
     const walletSubjectId = "walletSubjectIdPlaceholder";
     const documentId = randomUUID();
