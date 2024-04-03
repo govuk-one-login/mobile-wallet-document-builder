@@ -20,4 +20,4 @@ deploy/practice.yaml
 # Ignore changes to .env
 .env
 
-/mobile-wallet-document-builder.iml
+*.iml
