@@ -8,7 +8,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { saveDocument, getDocument } from "../../src/services/databaseService";
 import "aws-sdk-client-mock-jest";
-import { Document } from "../../src/documentBuilder/models/documentBuilder";
+import { Document } from "../../src/dbsDocumentBuilder/models/documentBuilder";
 
 describe("databaseService.ts", () => {
   it("should save a document to the database table", async () => {

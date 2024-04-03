@@ -6,7 +6,7 @@ import {
   DynamoDBDocumentClient,
   GetCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { Document } from "../documentBuilder/models/documentBuilder";
+import { Document } from "../dbsDocumentBuilder/models/documentBuilder";
 import { UUID } from "node:crypto";
 
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());

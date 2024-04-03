@@ -20,7 +20,7 @@ export async function appSelectorPostController(
     const selectedApp = req.body["select-app-choice"];
 
     if (selectedApp) {
-      res.redirect(`/build-document?app=${selectedApp}`);
+      res.redirect(`/select-document?app=${selectedApp}`);
     } else {
       res.render("select-app-form.njk", {
         isInvalid: selectedApp === undefined,
