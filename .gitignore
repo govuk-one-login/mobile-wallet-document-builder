@@ -20,3 +20,4 @@ deploy/practice.yaml
 # Ignore changes to .env
 .env
 
+*.iml
