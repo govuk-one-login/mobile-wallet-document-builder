@@ -20,7 +20,6 @@ export async function documentSelectorPostController(
   try {
     const selectedApp = req.query.app;
     const selectedDocument = req.body["select-document-choice"];
-    console.log(selectedDocument);
 
     if (selectedDocument && selectedDocument === "nino") {
       res.redirect(`/build-nino-document?app=${selectedApp}`);

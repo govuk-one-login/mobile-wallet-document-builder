@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { NinoDocument } from "./models/ninoDocumentBuilder";
+import { NinoDocument } from "./models/ninoDocument";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 
-const CREDENTIAL_TYPE = "SocialSecurityCredential;";
+const CREDENTIAL_TYPE = "SocialSecurityCredential";
 
 export async function ninoDocumentBuilderGetController(
   req: Request,

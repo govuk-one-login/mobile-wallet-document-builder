@@ -41,7 +41,7 @@ export class NinoDocument {
           nameParts: getNameParts(
             input.givenName,
             input.familyName,
-            input.nino
+            input.title
           ),
         },
       ],

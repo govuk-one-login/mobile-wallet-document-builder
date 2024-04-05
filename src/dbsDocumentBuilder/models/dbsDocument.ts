@@ -6,12 +6,10 @@ import { DbsFormData } from "../../types/NinoFormData";
 import { getNameParts } from "../../helpers/getNameParts";
 
 function getExpirationDate() {
-  const dateInOneYear = new Date(
-    new Date().setFullYear(new Date().getFullYear() + 1)
-  );
-  const dateFormatted = `${
-    dateInOneYear.getFullYear
-  }-${dateInOneYear.getMonth()}-${dateInOneYear.getDay()}`;
+  const nextYear = new Date().getFullYear() + 1;
+  const dateInOneYearTimestamp = new Date().setFullYear(nextYear);
+  const dateInOneYear = new Date(dateInOneYearTimestamp);
+  const dateFormatted = `${dateInOneYear.getFullYear()}-${dateInOneYear.getMonth()}-${dateInOneYear.getDay()}`;
   return dateFormatted;
 }
 

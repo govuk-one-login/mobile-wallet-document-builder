@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { DbsDocument } from "./models/dbsDocumentBuilder";
+import { DbsDocument } from "./models/dbsDocument";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 
-const CREDENTIAL_TYPE = "BasicCheckCredential;";
+const CREDENTIAL_TYPE = "BasicCheckCredential";
 
 export async function dbsDocumentBuilderGetController(
   req: Request,
