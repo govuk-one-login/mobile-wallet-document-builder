@@ -1,6 +1,17 @@
 import { DbsDocument } from "../../../src/dbsDocumentBuilder/models/dbsDocument";
 
 describe("dbsDocument.ts", () => {
+  beforeEach(() => {
+    const mockedDate = new Date(2024, 3, 5);
+
+    jest.useFakeTimers();
+    jest.setSystemTime(mockedDate);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it("should return the DBS document in the correct format and without any whitespaces", () => {
     const documentDetails = {
       "issuance-day": "16",
@@ -27,7 +38,7 @@ describe("dbsDocument.ts", () => {
       type: ["VerifiableCredential", "BasicCheckCredential"],
       credentialSubject: {
         issuanceDate: "2024-1-16",
-        expirationDate: "2025-3-6",
+        expirationDate: "2025-4-5",
         name: [
           {
             nameParts: [
@@ -108,7 +119,7 @@ describe("dbsDocument.ts", () => {
           },
         ],
         birthDate: [{ value: "2024--" }],
-        expirationDate: "2025-3-6",
+        expirationDate: "2025-4-5",
         issuanceDate: "2024--",
         name: [
           {
@@ -167,7 +178,7 @@ describe("dbsDocument.ts", () => {
           },
         ],
         birthDate: [{ value: "cab=*;ds-1-16" }],
-        expirationDate: "2025-3-6",
+        expirationDate: "2025-4-5",
         issuanceDate: "cab=*;ds-1-16",
         name: [
           {

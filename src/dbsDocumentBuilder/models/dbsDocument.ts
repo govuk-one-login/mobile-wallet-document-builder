@@ -8,9 +8,10 @@ import { getNameParts } from "../../helpers/getNameParts";
 function getExpirationDate() {
   const nextYear = new Date().getFullYear() + 1;
   const dateInOneYearTimestamp = new Date().setFullYear(nextYear);
-  const dateInOneYear = new Date(dateInOneYearTimestamp);
-  const dateFormatted = `${dateInOneYear.getFullYear()}-${dateInOneYear.getMonth()}-${dateInOneYear.getDay()}`;
-  return dateFormatted;
+  const year = new Date(dateInOneYearTimestamp).getFullYear();
+  const month = new Date(dateInOneYearTimestamp).getMonth() + 1;
+  const day = new Date(dateInOneYearTimestamp).getDate();
+  return `${year}-${month}-${day}`;
 }
 
 export class DbsDocument {
