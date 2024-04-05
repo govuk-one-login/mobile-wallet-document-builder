@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
-import { NinoDocument } from "./models/documentBuilder";
+import { NinoDocument } from "./models/ninoDocumentBuilder";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
+
+const CREDENTIAL_TYPE = "SocialSecurityCredential;";
 
 export async function ninoDocumentBuilderGetController(
   req: Request,
@@ -23,12 +25,13 @@ export async function ninoDocumentBuilderPostController(
   try {
     const selectedApp = req.query.app;
     const document = NinoDocument.fromRequestBody(req.body);
-
     const walletSubjectId = "walletSubjectIdPlaceholder";
     const documentId = randomUUID();
     await saveDocument(document, documentId, walletSubjectId);
 
-    res.redirect(`/view-credential-offer/${documentId}?app=${selectedApp}`);
+    res.redirect(
+      `/view-credential-offer/${documentId}?app=${selectedApp}&type=${CREDENTIAL_TYPE}`
+    );
   } catch (error) {
     console.log(`An error happened: ${error}`);
     res.render("500.njk");

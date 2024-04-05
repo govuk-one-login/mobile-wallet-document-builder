@@ -1,49 +1,18 @@
 import {
   CredentialSubject,
-  NamePart,
-  SocialSecurityRecord,
+  DbsCredentialSubject,
 } from "../../types/CredentialSubject";
-import { FormData } from "../../types/FormData";
-export function getNameParts(input: FormData) {
-  const nameParts: NamePart[] = [];
-  if (input.title) {
-    nameParts.push({
-      value: input.title,
-      type: "Title",
-    });
-  }
+import { DbsFormData } from "../../types/NinoFormData";
+import { getNameParts } from "../../helpers/getNameParts";
 
-  if (input.givenName) {
-    const givenNames = input.givenName.split(" ");
-    for (const name of givenNames) {
-      nameParts.push({
-        value: name,
-        type: "GivenName",
-      });
-    }
-  }
-
-  if (input.familyName) {
-    const familyNames = input.familyName.split(" ");
-    for (const surname of familyNames) {
-      nameParts.push({
-        value: surname,
-        type: "FamilyName",
-      });
-    }
-  }
-
-  return nameParts;
-}
-
-export function getSocialSecurityRecord(input: FormData) {
-  const socialSecurityRecord: SocialSecurityRecord[] = [];
-  if (input.nino) {
-    socialSecurityRecord.push({
-      personalNumber: input.nino,
-    });
-  }
-  return socialSecurityRecord;
+function getExpirationDate() {
+  const dateInOneYear = new Date(
+    new Date().setFullYear(new Date().getFullYear() + 1)
+  );
+  const dateFormatted = `${
+    dateInOneYear.getFullYear
+  }-${dateInOneYear.getMonth()}-${dateInOneYear.getDay()}`;
+  return dateFormatted;
 }
 
 export class DbsDocument {
@@ -59,31 +28,49 @@ export class DbsDocument {
    * A static method for mapping a document's details into a document in the verifiable credential structure.
    *
    * @returns a document
-   * @param input {FormData}
+   * @param input {DbsFormData}
    */
-  static fromRequestBody(input: any): DbsDocument {
+  static fromRequestBody(input: DbsFormData): DbsDocument {
     this.trimRequestBody(input);
 
     const type = ["VerifiableCredential", "BasicCheckCredential"];
-    const credentialSubject: CredentialSubject = {
-      issuanceDate: input.issuanceDate,
-      expirationDate: input.issuanceDate + 1, // year
-      name: [{ nameParts: getNameParts(input) }],
-      "birthDate": [
+    const credentialSubject: DbsCredentialSubject = {
+      issuanceDate: `${input["issuance-year"]}-${input["issuance-month"]}-${input["issuance-day"]}`,
+      expirationDate: getExpirationDate(),
+      name: [{ nameParts: getNameParts(input.firstName, input.lastName) }],
+      birthDate: [
         {
-          "value": "2023-10-18"
-        }
+          value: `${input["issuance-year"]}-${input["issuance-month"]}-${input["issuance-day"]}`,
+        },
       ],
-      socialSecurityRecord: getSocialSecurityRecord(input),
+      address: [
+        {
+          subBuildingName: input.subBuildingName,
+          buildingName: input.buildingName,
+          streetName: input.streetName,
+          addressLocality: input.addressLocality,
+          postalCode: input.postalCode,
+          addressCountry: input.addressCountry,
+        },
+      ],
+      basicCheckRecord: [
+        {
+          certificateNumber: input.certificateNumber,
+          applicationNumber: input.applicationNumber,
+          certificateType: "basic",
+          outcome: "Result clear",
+          policeRecordsCheck: "Clear",
+        },
+      ],
     };
 
     return new DbsDocument(type, credentialSubject);
   }
 
-  private static trimRequestBody(input: FormData) {
+  private static trimRequestBody(input: DbsFormData) {
     for (const key in input) {
-      const trimmed = input[key as keyof FormData]!.trim();
-      input[key as keyof FormData] = trimmed;
+      const trimmed = input[key as keyof DbsFormData]!.trim();
+      input[key as keyof DbsFormData] = trimmed;
     }
   }
 }

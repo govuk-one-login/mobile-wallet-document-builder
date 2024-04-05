@@ -7,8 +7,8 @@ import { stsStubAccessTokenRouter } from "./stsStubAccessToken/router";
 import nunjucks from "nunjucks";
 import path from "path";
 import { stsStubDidDocumentRouter } from "./stsStubDidDocument/router";
-import {documentSelectorRouter} from "./documentSelector/router";
-import {ninoDocumentBuilderRouter} from "./ninoDocumentBuilder/router";
+import { documentSelectorRouter } from "./documentSelector/router";
+import { ninoDocumentBuilderRouter } from "./ninoDocumentBuilder/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),

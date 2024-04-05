@@ -7,17 +7,17 @@
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
     <form action="/build-dbs-document/?app={{ selectedApp }}" method="post">
         {% call govukFieldset({
-            legend: {
-            text: "Please enter the Clear Basic DBS Check document details:",
-            classes: "govuk-fieldset__legend--m",
-            isPageHeading: true
+            "legend": {
+            "text": "Please enter the Clear Basic DBS Check document details:",
+            "classes": "govuk-fieldset__legend--m",
+            "isPageHeading": true
             } }) %}
             {{ govukDateInput({
                 "id": "issuance-date",
-                "name": "issuanceDate",
+                "namePrefix": "issuance",
                 "fieldset": {
                     "legend": {
-                        "text": "Document issuance date",
+                        "text": "Issuance date",
                         "isPageHeading": true,
                         "classes": "govuk-fieldset__legend--s"
                     }
@@ -45,11 +45,11 @@
                     "text": "First name",
                     "classes": "govuk-label--s"
                 },
-                "classes": "govuk-!-width-one-third",
                 "id": "first-name",
                 "name": "firstName",
-                "autocomplete": "first-name",
+                "classes": "govuk-!-width-one-third",
                 "spellcheck": false,
+                "autocomplete": "first-name",
                 "value": "Sarah Elizabeth"
             }) }}
             {{ govukInput({
@@ -57,16 +57,16 @@
                     "text": "Last name",
                     "classes": "govuk-label--s"
                 },
-                "classes": "govuk-!-width-one-third",
                 "id": "last-name",
                 "name": "lastName",
-                "autocomplete": "last-name",
+                "classes": "govuk-!-width-one-third",
                 "spellcheck": false,
+                "autocomplete": "last-name",
                 "value": "Edwards"
             }) }}
             {{ govukDateInput({
                 "id": "birth-date",
-                "namePrefix": "birth-date",
+                "namePrefix": "birth",
                 "fieldset": {
                     "legend": {
                         "text": "Date of birth",
@@ -92,81 +92,87 @@
                 ]
             }) }}
             {% call govukFieldset({
-                legend: {
-                text: "Full address",
-                classes: "govuk-fieldset__legend--s",
-                isPageHeading: false
+                "legend": {
+                "text": "Full address",
+                "classes": "govuk-fieldset__legend--s",
+                "isPageHeading": false
                 }
                 }) %}
                 {{ govukInput({
-                                label: {
-                                text: "Flat number"
-                                },
-                                classes: "govuk-input--width-5",
-                                id: "flat-number",
-                                value: data['address-flat-number-current'],
-                                name: "flat-number",
-                                value: "FLAT 11"
-                                }) }}
+                    "label": {
+                        "text": "Flat number (Sub building name)"
+                    },
+                    "id": "sub-building-name",
+                    "name": "subBuildingName",
+                    "classes": "govuk-input--width-5",
+                    "spellcheck": false,
+                    "autocomplete": "address-line1",
+                    "value": "FLAT 11"
+                }) }}
                 {{ govukInput({
-                                label: {
-                                text: "House name"
-                                },
-                                classes: "govuk-input--width-20",
-                                id: "house-name",
-                                value: data['address-house-name-current'],
-                                name: "house-name",
-                                value: "BLASHFORD"
-                                }) }}
+                    "label": {
+                        "text": "Building name"
+                    },
+                    "id": "building-name",
+                    "name": "buildingName",
+                    "classes": "govuk-input--width-20",
+                    "spellcheck": false,
+                    "autocomplete": "address-line2",
+                    "value": "BLASHFORD"
+                }) }}
                 {{ govukInput({
-                                label: {
-                                text: "Street name"
-                                },
-                                classes: "govuk-input--width-20",
-                                id: "street",
-                                value: data['address-street-current'],
-                                name: "street",
-                                value: "ADELAIDE ROAD"
-                                }) }}
+                    "label": {
+                        "text": "Street name"
+                    },
+                    "id": "street-name",
+                    "name": "streetName",
+                    "classes": "govuk-input--width-20",
+                    "spellcheck": false,
+                    "autocomplete": "address-line3",
+                    "value": "ADELAIDE ROAD"
+                }) }}
                 {{ govukInput({
-                                label: {
-                                text: "Town or city"
-                                },
-                                classes: "govuk-input--width-20",
-                                id: "city",
-                                value: data['address-city-current'],
-                                name: "city",
-                                value: "LONDON"
-                                }) }}
+                    "label": {
+                        "text": "Town or city (Address locality)"
+                    },
+                    "id": "address-locality",
+                    "name": "addressLocality",
+                    "classes": "govuk-input--width-20",
+                    "spellcheck": false,
+                    "autocomplete": "address-level2",
+                    "value": "LONDON"
+                }) }}
                 {{ govukInput({
                     "label": {
                         "text": "Country"
                     },
+                    "id": "address-country",
+                    "name": "addressCountry",
                     "classes": "govuk-input--width-20",
-                    "id": "country",
-                    "name": "country",
+                    "spellcheck": false,
+                    "autocomplete": "country-name",
                     "value": "GB"
                 }) }}
                 {{ govukInput({
-                                label: {
-                                text: "Postcode"
-                                },
-                                classes: "govuk-input--width-10",
-                                id: "postcode",
-                                value: data['address-postcode'],
-                                name: "postcode",
-                                autocomplete: "postal-code",
-                                value: "NW3 3RX"
-                                }) }}
+                    "label": {
+                        "text": "Postcode"
+                    },
+                    "id": "postal-code",
+                    "name": "postalCode",
+                    "classes": "govuk-input--width-10",
+                    "spellcheck": false,
+                    "autocomplete": "postal-code",
+                    "value": "NW3 3RX"
+                }) }}
             {% endcall %}
             {{ govukInput({
                 "label": {
                     "text": "Certificate number",
                     "classes": "govuk-label--s"
                 },
-                "classes": "govuk-!-width-one-third",
                 "id": "certificate-number",
                 "name": "certificateNumber",
+                "classes": "govuk-!-width-one-third",
                 "spellcheck": false,
                 "value": "12345"
             }) }}
@@ -175,9 +181,9 @@
                     "text": "Application number",
                     "classes": "govuk-label--s"
                 },
+                "id": "application-number",
+                "name": "applicationNumber",
                 "classes": "govuk-!-width-one-third",
-                "id": "certificate-number",
-                "name": "certificateNumber",
                 "spellcheck": false,
                 "value": "67890"
             }) }}
@@ -186,9 +192,9 @@
                     "text": "Certificate type",
                     "classes": "govuk-label--s"
                 },
+                "id": "certificate-type",
+                "name": "certificateType",
                 "classes": "govuk-!-width-one-third",
-                "id": "certificate-number",
-                "name": "certificateNumber",
                 "value": "Basic",
                 "disabled": true
             }) }}
@@ -197,9 +203,9 @@
                     "text": "Outcome",
                     "classes": "govuk-label--s"
                 },
+                "id": "outcome",
+                "name": "outcome",
                 "classes": "govuk-!-width-one-third",
-                "id": "certificate-number",
-                "name": "certificateNumber",
                 "value": "Clear",
                 "disabled": true
             }) }}
@@ -208,9 +214,9 @@
                     "text": "Police records check",
                     "classes": "govuk-label--s"
                 },
+                "id": "police-records-check",
+                "name": "policeRecordsCheck",
                 "classes": "govuk-!-width-one-third",
-                "id": "certificate-number",
-                "name": "certificateNumber",
                 "value": "Clear",
                 "disabled": true
             }) }}

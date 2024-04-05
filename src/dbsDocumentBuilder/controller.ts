@@ -3,6 +3,8 @@ import { DbsDocument } from "./models/dbsDocumentBuilder";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 
+const CREDENTIAL_TYPE = "BasicCheckCredential;";
+
 export async function dbsDocumentBuilderGetController(
   req: Request,
   res: Response
@@ -23,12 +25,13 @@ export async function dbsDocumentBuilderPostController(
   try {
     const selectedApp = req.query.app;
     const document = DbsDocument.fromRequestBody(req.body);
-
     const walletSubjectId = "walletSubjectIdPlaceholder";
     const documentId = randomUUID();
     await saveDocument(document, documentId, walletSubjectId);
 
-    res.redirect(`/view-credential-offer/${documentId}?app=${selectedApp}`);
+    res.redirect(
+      `/view-credential-offer/${documentId}?app=${selectedApp}&type=${CREDENTIAL_TYPE}`
+    );
   } catch (error) {
     console.log(`An error happened: ${error}`);
     res.render("500.njk");

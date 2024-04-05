@@ -1,42 +1,12 @@
 import {
   CredentialSubject,
-  NamePart,
+  NinoCredentialSubject,
   SocialSecurityRecord,
 } from "../../types/CredentialSubject";
-import { FormData } from "../../types/FormData";
-export function getNameParts(input: FormData) {
-  const nameParts: NamePart[] = [];
-  if (input.title) {
-    nameParts.push({
-      value: input.title,
-      type: "Title",
-    });
-  }
+import { NinoFormData } from "../../types/NinoFormData";
+import { getNameParts } from "../../helpers/getNameParts";
 
-  if (input.givenName) {
-    const givenNames = input.givenName.split(" ");
-    for (const name of givenNames) {
-      nameParts.push({
-        value: name,
-        type: "GivenName",
-      });
-    }
-  }
-
-  if (input.familyName) {
-    const familyNames = input.familyName.split(" ");
-    for (const surname of familyNames) {
-      nameParts.push({
-        value: surname,
-        type: "FamilyName",
-      });
-    }
-  }
-
-  return nameParts;
-}
-
-export function getSocialSecurityRecord(input: FormData) {
+export function getSocialSecurityRecord(input: NinoFormData) {
   const socialSecurityRecord: SocialSecurityRecord[] = [];
   if (input.nino) {
     socialSecurityRecord.push({
@@ -59,24 +29,32 @@ export class NinoDocument {
    * A static method for mapping a document's details into a document in the verifiable credential structure.
    *
    * @returns a document
-   * @param input {FormData}
+   * @param input {NinoFormData}
    */
-  static fromRequestBody(input: FormData): NinoDocument {
+  static fromRequestBody(input: NinoFormData): NinoDocument {
     this.trimRequestBody(input);
 
     const type = ["VerifiableCredential", "SocialSecurityCredential"];
-    const credentialSubject: CredentialSubject = {
-      name: [{ nameParts: getNameParts(input) }],
+    const credentialSubject: NinoCredentialSubject = {
+      name: [
+        {
+          nameParts: getNameParts(
+            input.givenName,
+            input.familyName,
+            input.nino
+          ),
+        },
+      ],
       socialSecurityRecord: getSocialSecurityRecord(input),
     };
 
     return new NinoDocument(type, credentialSubject);
   }
 
-  private static trimRequestBody(input: FormData) {
+  private static trimRequestBody(input: NinoFormData) {
     for (const key in input) {
-      const trimmed = input[key as keyof FormData]!.trim();
-      input[key as keyof FormData] = trimmed;
+      const trimmed = input[key as keyof NinoFormData]!.trim();
+      input[key as keyof NinoFormData] = trimmed;
     }
   }
 }
