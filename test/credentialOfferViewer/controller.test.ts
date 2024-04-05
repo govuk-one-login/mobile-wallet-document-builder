@@ -37,7 +37,7 @@ describe("controller.ts", () => {
       },
       query: {
         app: "test-build",
-        type: "BasicCheckCredential"
+        type: "BasicCheckCredential",
       },
     });
     const { res } = getMockRes();
@@ -59,7 +59,7 @@ describe("controller.ts", () => {
     expect(getCredentialOffer).toHaveBeenCalledWith(
       "walletSubjectIdPlaceholder",
       "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        "BasicCheckCredential"
+      "BasicCheckCredential"
     );
     expect(getCustomCredentialOfferUri).toHaveBeenCalledWith(
       "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer",
@@ -79,7 +79,7 @@ describe("controller.ts", () => {
       },
       query: {
         app: "test-build",
-        type: "BasicCheckCredential"
+        type: "BasicCheckCredential",
       },
     });
     const { res } = getMockRes();

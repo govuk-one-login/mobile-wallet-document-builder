@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { NinoDocument } from "./models/ninoDocument";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
+import { CredentialType } from "../types/CredentialType";
 
-const CREDENTIAL_TYPE = "SocialSecurityCredential";
+const CREDENTIAL_TYPE = CredentialType.socialSecurityCredential;
 
 export async function ninoDocumentBuilderGetController(
   req: Request,
@@ -24,7 +25,7 @@ export async function ninoDocumentBuilderPostController(
 ): Promise<void> {
   try {
     const selectedApp = req.query.app;
-    const document = NinoDocument.fromRequestBody(req.body);
+    const document = NinoDocument.fromRequestBody(req.body, CREDENTIAL_TYPE);
     const walletSubjectId = "walletSubjectIdPlaceholder";
     const documentId = randomUUID();
     await saveDocument(document, documentId, walletSubjectId);

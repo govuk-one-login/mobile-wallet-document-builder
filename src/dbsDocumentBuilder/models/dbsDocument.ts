@@ -4,6 +4,7 @@ import {
 } from "../../types/CredentialSubject";
 import { DbsFormData } from "../../types/NinoFormData";
 import { getNameParts } from "../../helpers/getNameParts";
+import { CredentialType } from "../../types/CredentialType";
 
 function getExpirationDate() {
   const nextYear = new Date().getFullYear() + 1;
@@ -28,11 +29,15 @@ export class DbsDocument {
    *
    * @returns a document
    * @param input {DbsFormData}
+   * @param credentialType {CredentialType}
    */
-  static fromRequestBody(input: DbsFormData): DbsDocument {
+  static fromRequestBody(
+    input: DbsFormData,
+    credentialType: CredentialType
+  ): DbsDocument {
     this.trimRequestBody(input);
 
-    const type = ["VerifiableCredential", "BasicCheckCredential"];
+    const type = ["VerifiableCredential", credentialType];
     const credentialSubject: DbsCredentialSubject = {
       issuanceDate: `${input["issuance-year"]}-${input["issuance-month"]}-${input["issuance-day"]}`,
       expirationDate: getExpirationDate(),

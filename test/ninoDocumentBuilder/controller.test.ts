@@ -74,7 +74,10 @@ describe("controller.ts", () => {
     expect(res.redirect).toHaveBeenCalledWith(
       "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?app=any-app&type=SocialSecurityCredential"
     );
-    expect(NinoDocument.fromRequestBody).toHaveBeenCalledWith(requestBody);
+    expect(NinoDocument.fromRequestBody).toHaveBeenCalledWith(
+      requestBody,
+      "SocialSecurityCredential"
+    );
     expect(saveDocument).toHaveBeenCalledWith(
       ninoDocument,
       "2e0fac05-4b38-480f-9cbd-b046eabe1e46",

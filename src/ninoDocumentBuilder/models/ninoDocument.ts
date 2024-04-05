@@ -5,6 +5,7 @@ import {
 } from "../../types/CredentialSubject";
 import { NinoFormData } from "../../types/NinoFormData";
 import { getNameParts } from "../../helpers/getNameParts";
+import { CredentialType } from "../../types/CredentialType";
 
 export function getSocialSecurityRecord(input: NinoFormData) {
   const socialSecurityRecord: SocialSecurityRecord[] = [];
@@ -30,11 +31,15 @@ export class NinoDocument {
    *
    * @returns a document
    * @param input {NinoFormData}
+   * @param credentialType {CredentialType}
    */
-  static fromRequestBody(input: NinoFormData): NinoDocument {
+  static fromRequestBody(
+    input: NinoFormData,
+    credentialType: CredentialType
+  ): NinoDocument {
     this.trimRequestBody(input);
 
-    const type = ["VerifiableCredential", "SocialSecurityCredential"];
+    const type = ["VerifiableCredential", credentialType];
     const credentialSubject: NinoCredentialSubject = {
       name: [
         {

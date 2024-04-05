@@ -1,4 +1,5 @@
 import { DbsDocument } from "../../../src/dbsDocumentBuilder/models/dbsDocument";
+import { CredentialType } from "../../../src/types/CredentialType";
 
 describe("dbsDocument.ts", () => {
   beforeEach(() => {
@@ -32,7 +33,10 @@ describe("dbsDocument.ts", () => {
       applicationNumber: "E0023455534   ",
     };
 
-    const document = DbsDocument.fromRequestBody(documentDetails);
+    const document = DbsDocument.fromRequestBody(
+      documentDetails,
+      <CredentialType>"BasicCheckCredential"
+    );
 
     expect(document).toEqual({
       type: ["VerifiableCredential", "BasicCheckCredential"],
@@ -95,7 +99,10 @@ describe("dbsDocument.ts", () => {
       applicationNumber: "",
     };
 
-    const document = DbsDocument.fromRequestBody(documentDetails);
+    const document = DbsDocument.fromRequestBody(
+      documentDetails,
+      <CredentialType>"BasicCheckCredential"
+    );
 
     expect(document).toEqual({
       credentialSubject: {
@@ -154,7 +161,10 @@ describe("dbsDocument.ts", () => {
       applicationNumber: "E0023455534",
     };
 
-    const document = DbsDocument.fromRequestBody(documentDetails);
+    const document = DbsDocument.fromRequestBody(
+      documentDetails,
+      <CredentialType>"BasicCheckCredential"
+    );
 
     expect(document).toEqual({
       credentialSubject: {

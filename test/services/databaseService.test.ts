@@ -43,7 +43,7 @@ describe("databaseService.ts", () => {
 
     await expect(
       saveDocument(
-          document,
+        document,
         "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         "walletSubjectIdPlaceholder"
       )
@@ -116,9 +116,7 @@ describe("databaseService.ts", () => {
         httpStatusCode: 200,
       },
       Item: {
-        vc: JSON.stringify(
-          document
-        ),
+        vc: JSON.stringify(document),
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         walletSubjectId: "testWalletSubjectId",
       },

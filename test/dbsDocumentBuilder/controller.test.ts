@@ -108,7 +108,10 @@ describe("controller.ts", () => {
     expect(res.redirect).toHaveBeenCalledWith(
       "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?app=any-app&type=BasicCheckCredential"
     );
-    expect(DbsDocument.fromRequestBody).toHaveBeenCalledWith(requestBody);
+    expect(DbsDocument.fromRequestBody).toHaveBeenCalledWith(
+      requestBody,
+      "BasicCheckCredential"
+    );
     expect(saveDocument).toHaveBeenCalledWith(
       dbsDocument,
       "2e0fac05-4b38-480f-9cbd-b046eabe1e46",

@@ -1,7 +1,8 @@
 import {
-  NinoDocument,
   getSocialSecurityRecord,
+  NinoDocument,
 } from "../../../src/ninoDocumentBuilder/models/ninoDocument";
+import { CredentialType } from "../../../src/types/CredentialType";
 
 describe("ninoDocument.ts", () => {
   it("should return the NINO document in the correct format and without any whitespaces", () => {
@@ -12,7 +13,10 @@ describe("ninoDocument.ts", () => {
       nino: " QQ123456A   ",
     };
 
-    const ninoDocument = NinoDocument.fromRequestBody(documentDetails);
+    const ninoDocument = NinoDocument.fromRequestBody(
+      documentDetails,
+      <CredentialType>"SocialSecurityCredential"
+    );
 
     expect(ninoDocument).toEqual({
       credentialSubject: {

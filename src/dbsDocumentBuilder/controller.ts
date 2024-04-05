@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { DbsDocument } from "./models/dbsDocument";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
+import { CredentialType } from "../types/CredentialType";
 
-const CREDENTIAL_TYPE = "BasicCheckCredential";
+const CREDENTIAL_TYPE = CredentialType.basicCheckCredential;
 
 export async function dbsDocumentBuilderGetController(
   req: Request,
@@ -24,7 +25,7 @@ export async function dbsDocumentBuilderPostController(
 ): Promise<void> {
   try {
     const selectedApp = req.query.app;
-    const document = DbsDocument.fromRequestBody(req.body);
+    const document = DbsDocument.fromRequestBody(req.body, CREDENTIAL_TYPE);
     const walletSubjectId = "walletSubjectIdPlaceholder";
     const documentId = randomUUID();
     await saveDocument(document, documentId, walletSubjectId);

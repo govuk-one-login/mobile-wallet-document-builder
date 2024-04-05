@@ -24,13 +24,17 @@ describe("credentialOfferService.ts", () => {
 
     mockedAxios.get.mockResolvedValue(criResponseMocked);
 
-    const response = await getCredentialOffer(walletSubjectId, documentId, credentialType);
+    const response = await getCredentialOffer(
+      walletSubjectId,
+      documentId,
+      credentialType
+    );
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       "http://localhost:1234/credential_offer",
       {
         params: {
-          "credentialType": "BasicCheckCredential",
+          credentialType: "BasicCheckCredential",
           documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           walletSubjectId: "walletSubjectIdPlaceholder",
         },
