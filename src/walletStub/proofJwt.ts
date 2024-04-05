@@ -21,7 +21,7 @@ export async function getProofJwt(nonce: string): Promise<Jwt> {
 
   const header = {alg: ACCESS_TOKEN_SIGNING_ALGORITHM, typ: ACCESS_TOKEN_JWT_TYPE, kid: didKey};
   const encodedHeader = base64Encoder(header);
-  const payload = {iss: "s6BhdRkqt3", aud: "https://server.example.com", iat: Date.now(), nonce: nonce};
+  const payload = {iss: "urn:fdc:gov:uk:wallet", aud: "urn:fdc:gov:uk:example-credential-issuer", iat: Date.now(), nonce: nonce};
   const encodedPayload = base64Encoder(payload);
   const message = `${encodedHeader}.${encodedPayload}`;
 
