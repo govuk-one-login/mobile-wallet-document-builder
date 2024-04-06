@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getCriEndpoint } from "../../config/appConfig";
-import { CredentialOfferResponse } from "../../types/CredentialOfferResponse";
+import { CredentialOfferResponse } from "../types/CredentialOfferResponse";
 
 const CREDENTIAL_OFFER_PATH = "/credential_offer";
 

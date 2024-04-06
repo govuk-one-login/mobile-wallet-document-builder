@@ -1,13 +1,12 @@
 import {
-  CredentialSubject,
   NinoCredentialSubject,
   SocialSecurityRecord,
-} from "../../types/CredentialSubject";
-import { NinoFormData } from "../../types/NinoFormData";
+} from "../types/NinoCredentialSubject";
+import { NinoInputData } from "../types/NinoInputData";
 import { getNameParts } from "../../helpers/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
 
-export function getSocialSecurityRecord(input: NinoFormData) {
+export function getSocialSecurityRecord(input: NinoInputData) {
   const socialSecurityRecord: SocialSecurityRecord[] = [];
   if (input.nino) {
     socialSecurityRecord.push({
@@ -19,9 +18,9 @@ export function getSocialSecurityRecord(input: NinoFormData) {
 
 export class NinoDocument {
   public readonly type: string[];
-  public readonly credentialSubject: CredentialSubject;
+  public readonly credentialSubject: NinoCredentialSubject;
 
-  constructor(type: string[], credentialSubject: CredentialSubject) {
+  constructor(type: string[], credentialSubject: NinoCredentialSubject) {
     this.type = type;
     this.credentialSubject = credentialSubject;
   }
@@ -30,11 +29,11 @@ export class NinoDocument {
    * A static method for mapping a document's details into a document in the verifiable credential structure.
    *
    * @returns a document
-   * @param input {NinoFormData}
+   * @param input {NinoInputData}
    * @param credentialType {CredentialType}
    */
   static fromRequestBody(
-    input: NinoFormData,
+    input: NinoInputData,
     credentialType: CredentialType
   ): NinoDocument {
     this.trimRequestBody(input);
@@ -56,10 +55,10 @@ export class NinoDocument {
     return new NinoDocument(type, credentialSubject);
   }
 
-  private static trimRequestBody(input: NinoFormData) {
+  private static trimRequestBody(input: NinoInputData) {
     for (const key in input) {
-      const trimmed = input[key as keyof NinoFormData]!.trim();
-      input[key as keyof NinoFormData] = trimmed;
+      const trimmed = input[key as keyof NinoInputData]!.trim();
+      input[key as keyof NinoInputData] = trimmed;
     }
   }
 }

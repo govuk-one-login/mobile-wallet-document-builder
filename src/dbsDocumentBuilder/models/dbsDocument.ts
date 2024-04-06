@@ -1,8 +1,7 @@
 import {
-  CredentialSubject,
   DbsCredentialSubject,
-} from "../../types/CredentialSubject";
-import { DbsFormData } from "../../types/NinoFormData";
+} from "../types/DbsCredentialSubject";
+import { DbsInputData } from "../types/DbsInputData";
 import { getNameParts } from "../../helpers/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
 
@@ -17,9 +16,9 @@ function getExpirationDate() {
 
 export class DbsDocument {
   public readonly type: string[];
-  public readonly credentialSubject: CredentialSubject;
+  public readonly credentialSubject: DbsCredentialSubject;
 
-  constructor(type: string[], credentialSubject: CredentialSubject) {
+  constructor(type: string[], credentialSubject: DbsCredentialSubject) {
     this.type = type;
     this.credentialSubject = credentialSubject;
   }
@@ -28,11 +27,11 @@ export class DbsDocument {
    * A static method for mapping a document's details into a document in the verifiable credential structure.
    *
    * @returns a document
-   * @param input {DbsFormData}
+   * @param input {DbsInputData}
    * @param credentialType {CredentialType}
    */
   static fromRequestBody(
-    input: DbsFormData,
+    input: DbsInputData,
     credentialType: CredentialType
   ): DbsDocument {
     this.trimRequestBody(input);
@@ -71,10 +70,10 @@ export class DbsDocument {
     return new DbsDocument(type, credentialSubject);
   }
 
-  private static trimRequestBody(input: DbsFormData) {
+  private static trimRequestBody(input: DbsInputData) {
     for (const key in input) {
-      const trimmed = input[key as keyof DbsFormData]!.trim();
-      input[key as keyof DbsFormData] = trimmed;
+      const trimmed = input[key as keyof DbsInputData]!.trim();
+      input[key as keyof DbsInputData] = trimmed;
     }
   }
 }
