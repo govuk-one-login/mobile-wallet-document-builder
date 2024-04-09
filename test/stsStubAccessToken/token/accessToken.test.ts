@@ -16,17 +16,17 @@ describe("accessToken.ts", () => {
         "mock_wallet_subject_id",
         {
           iss: "mock_issuer",
-          aud: "mock_aud",
+          aud: "mock_audience",
           credential_identifiers: ["mock_credential_identifier"],
         },
         "1a0fac05-4b38-480f-9cbd-b046eabe1e22"
       );
 
       expect(response).toEqual({
-        aud: "mock_aud",
+        aud: "mock_issuer",
         c_nonce: "1a0fac05-4b38-480f-9cbd-b046eabe1e22",
         credential_identifiers: ["mock_credential_identifier"],
-        iss: "mock_issuer",
+        iss: "mock_audience",
         sub: "mock_wallet_subject_id",
       });
     });
@@ -40,7 +40,7 @@ describe("accessToken.ts", () => {
 
       const response = await createSignedAccessToken(
         {
-          aud: "mock_aud",
+          aud: "mock_audience",
           c_nonce: "1a0fac05-4b38-480f-9cbd-b046eabe1e22",
           credential_identifiers: ["mock_credential_identifier"],
           iss: "mock_issuer",
@@ -53,10 +53,10 @@ describe("accessToken.ts", () => {
       );
 
       expect(response).toEqual(
-        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2tfa2V5X2lkIn0.eyJhdWQiOiJtb2NrX2F1ZCIsImNfbm9uY2UiOiIxYTBmYWMwNS00YjM4LTQ4MGYtOWNiZC1iMDQ2ZWFiZTFlMjIiLCJjcmVkZW50aWFsX2lkZW50aWZpZXJzIjpbIm1vY2tfY3JlZGVudGlhbF9pZGVudGlmaWVyIl0sImlzcyI6Im1vY2tfaXNzdWVyIiwic3ViIjoibW9ja193YWxsZXRfc3ViamVjdF9pZCJ9.mocked_signature"
+        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2tfa2V5X2lkIn0.eyJhdWQiOiJtb2NrX2F1ZGllbmNlIiwiY19ub25jZSI6IjFhMGZhYzA1LTRiMzgtNDgwZi05Y2JkLWIwNDZlYWJlMWUyMiIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsibW9ja19jcmVkZW50aWFsX2lkZW50aWZpZXIiXSwiaXNzIjoibW9ja19pc3N1ZXIiLCJzdWIiOiJtb2NrX3dhbGxldF9zdWJqZWN0X2lkIn0.mocked_signature"
       );
       expect(mockKmsService.sign).toHaveBeenCalledWith(
-        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2tfa2V5X2lkIn0.eyJhdWQiOiJtb2NrX2F1ZCIsImNfbm9uY2UiOiIxYTBmYWMwNS00YjM4LTQ4MGYtOWNiZC1iMDQ2ZWFiZTFlMjIiLCJjcmVkZW50aWFsX2lkZW50aWZpZXJzIjpbIm1vY2tfY3JlZGVudGlhbF9pZGVudGlmaWVyIl0sImlzcyI6Im1vY2tfaXNzdWVyIiwic3ViIjoibW9ja193YWxsZXRfc3ViamVjdF9pZCJ9"
+        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2tfa2V5X2lkIn0.eyJhdWQiOiJtb2NrX2F1ZGllbmNlIiwiY19ub25jZSI6IjFhMGZhYzA1LTRiMzgtNDgwZi05Y2JkLWIwNDZlYWJlMWUyMiIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsibW9ja19jcmVkZW50aWFsX2lkZW50aWZpZXIiXSwiaXNzIjoibW9ja19pc3N1ZXIiLCJzdWIiOiJtb2NrX3dhbGxldF9zdWJqZWN0X2lkIn0"
       );
     });
   });
@@ -71,7 +71,7 @@ describe("accessToken.ts", () => {
         "mock_wallet_subject_id",
         {
           iss: "mock_issuer",
-          aud: "mock_aud",
+          aud: "mock_audience",
           credential_identifiers: ["mock_credential_identifier"],
         },
         "mock_key_id",
@@ -79,7 +79,7 @@ describe("accessToken.ts", () => {
       );
 
       expect(response).toEqual(
-        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2tfa2V5X2lkIn0.eyJzdWIiOiJtb2NrX3dhbGxldF9zdWJqZWN0X2lkIiwiaXNzIjoibW9ja19pc3N1ZXIiLCJhdWQiOiJtb2NrX2F1ZCIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsibW9ja19jcmVkZW50aWFsX2lkZW50aWZpZXIiXSwiY19ub25jZSI6IjFhMGZhYzA1LTRiMzgtNDgwZi05Y2JkLWIwNDZlYWJlMWUyMiJ9.mocked_signature"
+        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2tfa2V5X2lkIn0.eyJzdWIiOiJtb2NrX3dhbGxldF9zdWJqZWN0X2lkIiwiaXNzIjoibW9ja19hdWRpZW5jZSIsImF1ZCI6Im1vY2tfaXNzdWVyIiwiY3JlZGVudGlhbF9pZGVudGlmaWVycyI6WyJtb2NrX2NyZWRlbnRpYWxfaWRlbnRpZmllciJdLCJjX25vbmNlIjoiMWEwZmFjMDUtNGIzOC00ODBmLTljYmQtYjA0NmVhYmUxZTIyIn0.mocked_signature"
       );
     });
   });

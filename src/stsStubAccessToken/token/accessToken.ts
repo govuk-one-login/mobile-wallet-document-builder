@@ -35,8 +35,8 @@ export function createAccessTokenPayload(
 ): AccessTokenPayload {
   return {
     sub: walletSubjectId,
-    iss: payload.iss,
-    aud: payload.aud,
+    iss: payload.aud,
+    aud: payload.iss,
     credential_identifiers: payload.credential_identifiers,
     c_nonce,
   };
