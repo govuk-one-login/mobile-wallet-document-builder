@@ -4,16 +4,17 @@
 {% extends "base.njk" %}
 {% block content %}
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
-    <form action="/build-document/?app={{ selectedApp }}" method="post">
+    <form action="/build-nino-document/?app={{ selectedApp }}" method="post">
         {% call govukFieldset({
             legend: {
-            text: "Please enter the document details:",
+            text: "Please enter the NINO document details:",
             classes: "govuk-fieldset__legend--m",
             isPageHeading: true
             } }) %}
             {{ govukInput({
                 "label": {
-                    "text": "Title"
+                    "text": "Title",
+                    "classes": "govuk-label--s"
                 },
                 "classes": "govuk-input--width-5",
                 "id": "title",
@@ -23,7 +24,8 @@
             }) }}
             {{ govukInput({
                 "label": {
-                    "text": "Given name"
+                    "text": "Given name",
+                    "classes": "govuk-label--s"
                 },
                 "classes": "govuk-input--width-20",
                 "id": "given-name",
@@ -34,7 +36,8 @@
             }) }}
             {{ govukInput({
                 "label": {
-                    "text": "Family name"
+                    "text": "Family name",
+                    "classes": "govuk-label--s"
                 },
                 "classes": "govuk-input--width-20",
                 "id": "family-name",
@@ -45,7 +48,8 @@
             }) }}
             {{ govukInput({
                 "label": {
-                    "text": "National Insurance Number"
+                    "text": "National Insurance Number",
+                    "classes": "govuk-label--s"
                 },
                 "classes": "govuk-input--width-10",
                 "id": "nino",

@@ -1,6 +1,5 @@
 export interface CredentialSubject {
   name: Name[];
-  socialSecurityRecord: SocialSecurityRecord[];
 }
 
 export interface Name {
@@ -10,8 +9,4 @@ export interface Name {
 export interface NamePart {
   value: string;
   type: string;
-}
-
-export interface SocialSecurityRecord {
-  personalNumber: string;
 }

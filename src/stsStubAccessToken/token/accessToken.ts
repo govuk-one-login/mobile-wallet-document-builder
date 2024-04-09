@@ -1,6 +1,6 @@
-import { AccessTokenPayload } from "../../types/AccessTokenPayload";
-import { Jwt } from "../../types/Jwt";
-import { PreAuthorizedCodePayload } from "../../types/PreAuthorizedCodePayload";
+import { AccessTokenPayload } from "../types/AccessTokenPayload";
+import { Jwt } from "../types/Jwt";
+import { PreAuthorizedCodePayload } from "../types/PreAuthorizedCodePayload";
 import { KmsService } from "../../services/kmsService";
 import { randomUUID, UUID } from "node:crypto";
 

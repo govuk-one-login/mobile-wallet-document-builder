@@ -37,6 +37,7 @@ describe("controller.ts", () => {
       },
       query: {
         app: "test-build",
+        type: "BasicCheckCredential",
       },
     });
     const { res } = getMockRes();
@@ -47,7 +48,6 @@ describe("controller.ts", () => {
     };
     const qrCodeMocked =
       "data:image/png;base64,iVBORw0KGgoAAAANSU" as unknown as void;
-
     mockedQrCode.toDataURL.mockReturnValueOnce(qrCodeMocked);
     getCredentialOffer.mockReturnValueOnce(credentialOfferMocked);
     getCustomCredentialOfferUri.mockReturnValueOnce(
@@ -58,7 +58,8 @@ describe("controller.ts", () => {
 
     expect(getCredentialOffer).toHaveBeenCalledWith(
       "walletSubjectIdPlaceholder",
-      "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+      "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+      "BasicCheckCredential"
     );
     expect(getCustomCredentialOfferUri).toHaveBeenCalledWith(
       "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer",
@@ -76,9 +77,12 @@ describe("controller.ts", () => {
       params: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       },
+      query: {
+        app: "test-build",
+        type: "BasicCheckCredential",
+      },
     });
     const { res } = getMockRes();
-
     getCredentialOffer.mockRejectedValueOnce(new Error("SOME_ERROR"));
 
     await credentialOfferViewerController(req, res);
