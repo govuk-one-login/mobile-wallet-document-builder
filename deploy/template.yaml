@@ -523,3 +523,55 @@ Resources:
     Properties:
       AliasName: alias/sts-stub-signing-key
       TargetKeyId: !Ref StsStubSigningKey
+
+  DocumentDatabaseKmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - kms:*
+            Resource:
+              - "*"
+
+  DocumentDatabaseKmsKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub "alias/${AWS::StackName}/${Environment}/DocumentDatabaseKmsKey"
+      TargetKeyId: !Ref DocumentDatabaseKmsKey
+
+  # DYNAMODB RESOURCES
+
+   DocumentDatabase:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: documentId
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      TableName: documents
+      KeySchema:
+        - AttributeName: documentId
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+        SSEType: KMS
+        KMSMasterKeyId: !GetAtt DocumentDatabaseKmsKey.Arn
+      Tags:
+        - Key: Product
+          Value: GOV.UK Sign In
+        - Key: System
+          Value: Mobile Wallet
+        - Key: Owner
+          Value: Mobile Wallet Team
+        - Key: Environment
+          Value: !Ref "Environment"
