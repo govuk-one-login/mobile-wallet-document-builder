@@ -547,7 +547,7 @@ Resources:
 
   # DYNAMODB RESOURCES
 
-   DocumentDatabase:
+  DocumentDatabase:
     Type: AWS::DynamoDB::Table
     DeletionPolicy: Delete
     UpdateReplacePolicy: Delete
