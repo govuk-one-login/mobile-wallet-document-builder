@@ -499,6 +499,9 @@ Resources:
               - Effect: Allow
                 Action: 'dynamodb:PutItem'
                 Resource: !GetAtt DocumentDatabase.Arn
+              - Effect: Allow
+                Action: 'kms:Decrypt'
+                Resource: !GetAtt DocumentDatabaseKmsKey.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
