@@ -476,6 +476,9 @@ Resources:
                 Resource:
                   - !GetAtt "WalletFEECSAccessLogsGroup.Arn"
                   - !Sub "${WalletFEECSAccessLogsGroup.Arn}:*"
+              - Effect: Allow
+                Action: 'dynamodb:PutItem'
+                Resource: !GetAtt DocumentDatabase.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
@@ -490,10 +493,6 @@ Resources:
             Effect: Allow
             Principal:
               Service: ecs-tasks.amazonaws.com
-          - Action: 'dynamodb:PutItem'
-            Effect: Allow
-            Principal:
-              Service: !GetAtt DocumentDatabase.Arn
         Version: 2012-10-17
       PermissionsBoundary: !If
         - UsePermissionsBoundary
