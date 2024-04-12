@@ -491,14 +491,14 @@ Resources:
             Principal:
               Service: ecs-tasks.amazonaws.com
         Version: 2012-10-17
-        Policies:
-          - PolicyName: AccessDynamoDb
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: Allow
-                  Action: 'dynamodb:PutItem'
-                  Resource: !GetAtt DocumentDatabase.Arn
+      Policies:
+        - PolicyName: AccessDynamoDb
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 'dynamodb:PutItem'
+                Resource: !GetAtt DocumentDatabase.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
