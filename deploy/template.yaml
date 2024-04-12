@@ -478,7 +478,7 @@ Resources:
                   - !Sub "${WalletFEECSAccessLogsGroup.Arn}:*"
               - Effect: Allow
                 Action: 'dynamodb:PutItem'
-                Resource: !GetAtt DocumentDatabase.Arn
+                Resource: 'arn:aws:dynamodb:eu-west-2:671524980203:table/documents'
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
