@@ -476,9 +476,6 @@ Resources:
                 Resource:
                   - !GetAtt "WalletFEECSAccessLogsGroup.Arn"
                   - !Sub "${WalletFEECSAccessLogsGroup.Arn}:*"
-              - Effect: Allow
-                Action: 'dynamodb:PutItem'
-                Resource: 'arn:aws:dynamodb:eu-west-2:671524980203:table/documents'
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
@@ -494,6 +491,14 @@ Resources:
             Principal:
               Service: ecs-tasks.amazonaws.com
         Version: 2012-10-17
+        Policies:
+          - PolicyName: AccessDynamoDb
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: 'dynamodb:PutItem'
+                  Resource: !GetAtt DocumentDatabase.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
