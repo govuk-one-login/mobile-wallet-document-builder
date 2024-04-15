@@ -43,14 +43,14 @@ Conditions:
 Mappings:
   EnvironmentVariables:
     dev:
-      BEURL: "example-credential-issuer.mobile.dev.account.gov.uk"
-      FEURL: "stub-credential-issuer.mobile.dev.account.gov.uk"
+      BEURL: "https://example-credential-issuer.mobile.dev.account.gov.uk"
+      FEURL: "https://stub-credential-issuer.mobile.dev.account.gov.uk"
     build:
-      BEURL: "example-credential-issuer.mobile.build.account.gov.uk"
-      FEURL: "stub-credential-issuer.mobile.build.account.gov.uk"
+      BEURL: "https://example-credential-issuer.mobile.build.account.gov.uk"
+      FEURL: "https://stub-credential-issuer.mobile.build.account.gov.uk"
     staging:
-      BEURL: "example-credential-issuer.mobile.staging.account.gov.uk"
-      FEURL: "stub-credential-issuer.mobile.staging.account.gov.uk"
+      BEURL: "https://example-credential-issuer.mobile.staging.account.gov.uk"
+      FEURL: "https://stub-credential-issuer.mobile.staging.account.gov.uk"
   # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
   # PlatformConfiguration:
   #   dev:
@@ -408,7 +408,7 @@ Resources:
             - Name: ENVIRONMENT
               Value: dev
             - Name: MOCK_CRI_URL
-              Value: https://example-credential-issuer.mobile.dev.account.gov.uk
+              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, BEURL ]
             - Name: STS_SIGNING_KEY_ID
               Value: !Ref StsStubSigningKey
             - Name: ACCESS_TOKEN_TTL_IN_SECS
