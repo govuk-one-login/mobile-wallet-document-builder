@@ -43,13 +43,14 @@ Conditions:
 Mappings:
   EnvironmentVariables:
     dev:
+      BEURL: "example-credential-issuer.mobile.dev.account.gov.uk"
       FEURL: "stub-credential-issuer.mobile.dev.account.gov.uk"
     build:
+      BEURL: "example-credential-issuer.mobile.build.account.gov.uk"
       FEURL: "stub-credential-issuer.mobile.build.account.gov.uk"
     staging:
-      FEURL: "stub-credential-issuer.mobile.stage.account.gov.uk"
-    integration:
-      FEURL: "stub-credential-issuer.mobile.integration.account.gov.uk"
+      BEURL: "example-credential-issuer.mobile.staging.account.gov.uk"
+      FEURL: "stub-credential-issuer.mobile.staging.account.gov.uk"
   # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
   # PlatformConfiguration:
   #   dev:
@@ -66,8 +67,6 @@ Mappings:
     build:
       FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
     staging:
-      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
-    integration:
       FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
   
   ElasticLoadBalancerAccountIds:
