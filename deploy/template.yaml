@@ -408,7 +408,7 @@ Resources:
             - Name: ENVIRONMENT
               Value: !Sub "${Environment}"
             - Name: MOCK_CRI_URL
-              Value: placeholderValue
+              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, BEURL ]
             - Name: STS_SIGNING_KEY_ID
               Value: !Ref StsStubSigningKey
             - Name: ACCESS_TOKEN_TTL_IN_SECS
