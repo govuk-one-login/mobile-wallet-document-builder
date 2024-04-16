@@ -502,7 +502,10 @@ Resources:
                 Action: 'dynamodb:PutItem'
                 Resource: !GetAtt DocumentDatabase.Arn
               - Effect: Allow
-                Action: 'kms:Decrypt'
+                Action: 
+                  - 'kms:Decrypt'
+                  - 'kms:Encrypt'
+                  - 'kms:GenerateDataKey'
                 Resource: !GetAtt DocumentDatabaseKmsKey.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
