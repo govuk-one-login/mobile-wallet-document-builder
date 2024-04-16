@@ -404,9 +404,9 @@ Resources:
             - Name: PORT
               Value: !Ref ContainerPort
             - Name: DOCUMENTS_TABLE_NAME
-              Value: documents
+              Value: !Ref DocumentDatabase
             - Name: ENVIRONMENT
-              Value: dev
+              Value: !Sub "${Environment}"
             - Name: MOCK_CRI_URL
               Value: !Sub 
                       - "https://${BEURL}"
