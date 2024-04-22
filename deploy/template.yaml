@@ -533,7 +533,9 @@ Resources:
           - Effect: Allow
             Principal:
               AWS: !GetAtt WalletFEECSTaskRole.Arn
-            Action: kms:Sign
+            Action:
+              - 'kms:Sign'
+              - 'kms:GetPublicKey'
             Resource:
               - "*"
       KeySpec: RSA_4096
