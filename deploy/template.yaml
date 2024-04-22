@@ -34,6 +34,8 @@ Parameters:
 Conditions:
   StackNameIsWalletDocBuilderFE: !Equals [ !Ref "AWS::StackName", wallet-doc-builder-fe ]
 
+  IsBuild: !Equals [ !Ref Environment, build ]
+
   UsePermissionsBoundary:
     Fn::Not:
       - Fn::Equals:
@@ -605,3 +607,41 @@ Resources:
       Properties:
         ResourceArn: !Ref WalletFELoadBalancer
         WebACLArn: !Sub "{{resolve:ssm:/${Environment}/Platform/Security/WafArn}}"
+
+# ALARMS
+
+  DocBuilderLowContainerTaskCountAlarm:
+    Condition: IsBuild
+    DependsOn:
+       - WalletFECluster
+       - WalletFEECSService
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "${AWS::StackName}-DocBuilderLowContainerTaskCountAlarm"
+      AlarmDescription: Trigger a warning if the running container task count drops below 1
+      ActionsEnabled: false
+      # OKActions: - commented until we create sns topics for wallet alarms
+      #   - !ImportValue platform-alarm-topic-critical-alert
+      # AlarmActions:
+      #   - !ImportValue platform-alarm-topic-critical-alert
+      InsufficientDataActions: []
+      Dimensions: []
+      EvaluationPeriods: 1
+      DatapointsToAlarm: 1
+      Threshold: 1
+      ComparisonOperator: LessThanThreshold
+      TreatMissingData: breaching
+      Metrics:
+        - Id: containerTaskCount
+          ReturnData: true
+          MetricStat:
+            Metric:
+              Namespace: ECS/ContainerInsights
+              MetricName: RunningTaskCount
+              Dimensions:
+                - Name: ClusterName
+                  Value: !Ref WalletFECluster
+                - Name: ServiceName
+                  Value: !GetAtt WalletFEECSService.Name
+            Period: 60
+            Stat: Minimum
