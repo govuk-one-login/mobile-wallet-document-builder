@@ -156,7 +156,7 @@ Resources:
   WalletFEAccessLogsBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub wallet-stub-front-${Environment}-access-logs
+      BucketName: !Sub wallet-stub-front-${AWS::StackName}-${Environment}-access-logs
       VersioningConfiguration:
         Status: "Enabled"
       PublicAccessBlockConfiguration:
