@@ -611,7 +611,7 @@ Resources:
 # ALARMS
 
   DocBuilderLowContainerTaskCountAlarm:
-    # Condition: IsBuild
+    Condition: IsBuild
     DependsOn:
        - WalletFECluster
        - WalletFEECSService
