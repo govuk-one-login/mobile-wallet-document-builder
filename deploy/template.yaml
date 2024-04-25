@@ -43,13 +43,14 @@ Conditions:
 Mappings:
   EnvironmentVariables:
     dev:
+      BEURL: "example-credential-issuer.mobile.dev.account.gov.uk"
       FEURL: "stub-credential-issuer.mobile.dev.account.gov.uk"
     build:
+      BEURL: "example-credential-issuer.mobile.build.account.gov.uk"
       FEURL: "stub-credential-issuer.mobile.build.account.gov.uk"
     staging:
-      FEURL: "stub-credential-issuer.mobile.stage.account.gov.uk"
-    integration:
-      FEURL: "stub-credential-issuer.mobile.integration.account.gov.uk"
+      BEURL: "example-credential-issuer.mobile.staging.account.gov.uk"
+      FEURL: "stub-credential-issuer.mobile.staging.account.gov.uk"
   # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
   # PlatformConfiguration:
   #   dev:
@@ -66,8 +67,6 @@ Mappings:
     build:
       FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
     staging:
-      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
-    integration:
       FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
   
   ElasticLoadBalancerAccountIds:
@@ -405,11 +404,14 @@ Resources:
             - Name: PORT
               Value: !Ref ContainerPort
             - Name: DOCUMENTS_TABLE_NAME
-              Value: documents
+              Value: !Ref DocumentDatabase
             - Name: ENVIRONMENT
               Value: !Sub "${Environment}"
             - Name: MOCK_CRI_URL
-              Value: placeholderValue
+              Value: !Sub 
+                      - "https://${BEURL}"
+                      - BEURL:
+                          !FindInMap [ EnvironmentVariables, !Ref Environment, BEURL ]
             - Name: STS_SIGNING_KEY_ID
               Value: !Ref StsStubSigningKey
             - Name: ACCESS_TOKEN_TTL_IN_SECS
@@ -491,6 +493,22 @@ Resources:
             Principal:
               Service: ecs-tasks.amazonaws.com
         Version: 2012-10-17
+      Policies:
+        - PolicyName: AccessDynamoDb
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:GetItem'
+                Resource: !GetAtt DocumentDatabase.Arn
+              - Effect: Allow
+                Action: 
+                  - 'kms:Decrypt'
+                  - 'kms:Encrypt'
+                  - 'kms:GenerateDataKey'
+                Resource: !GetAtt DocumentDatabaseKmsKey.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
@@ -514,6 +532,14 @@ Resources:
               - "kms:*"
             Resource:
               - "*"
+          - Effect: Allow
+            Principal:
+              AWS: !GetAtt WalletFEECSTaskRole.Arn
+            Action:
+              - 'kms:Sign'
+              - 'kms:GetPublicKey'
+            Resource:
+              - "*"
       KeySpec: RSA_4096
       KeyUsage: SIGN_VERIFY
       MultiRegion: false
@@ -523,3 +549,63 @@ Resources:
     Properties:
       AliasName: alias/sts-stub-signing-key
       TargetKeyId: !Ref StsStubSigningKey
+
+  DocumentDatabaseKmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - kms:*
+            Resource:
+              - "*"
+
+  DocumentDatabaseKmsKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub "alias/${AWS::StackName}/${Environment}/DocumentDatabaseKmsKey"
+      TargetKeyId: !Ref DocumentDatabaseKmsKey
+
+  # DYNAMODB RESOURCES
+
+  DocumentDatabase:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: documentId
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      TableName: documents
+      KeySchema:
+        - AttributeName: documentId
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+        SSEType: KMS
+        KMSMasterKeyId: !GetAtt DocumentDatabaseKmsKey.Arn
+      Tags:
+        - Key: Product
+          Value: GOV.UK Sign In
+        - Key: System
+          Value: Mobile Wallet
+        - Key: Owner
+          Value: Mobile Wallet Team
+        - Key: Environment
+          Value: !Ref "Environment"
+
+# WAF ASSOCIATION
+
+  DocBuilderWebAclAssociation:
+      Type: AWS::WAFv2::WebACLAssociation
+      Properties:
+        ResourceArn: !Ref WalletFELoadBalancer
+        WebACLArn: !Sub "{{resolve:ssm:/${Environment}/Platform/Security/WafArn}}"

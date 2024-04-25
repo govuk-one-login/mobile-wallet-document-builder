@@ -16,12 +16,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # pin@v3
+      - uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # pin@v3
         with:
           fetch-depth: '0'
 
       - name: Setup SAM CLI
-        uses: aws-actions/setup-sam@c6696d35f45207ec9622ec3235f1997c660e1ab2 # pin@v2
+        uses: aws-actions/setup-sam@342dcc4899c07fedf41f91cbb1e6c68925a85d37 # pin@v2
         with:
           version: 1.90.0
           use-installer: true

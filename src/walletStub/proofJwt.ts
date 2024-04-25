@@ -1,4 +1,4 @@
-import { Jwt } from "../types/Jwt";
+import { Jwt } from "../stsStubAccessToken/types/Jwt";
 import {
   GetPublicKeyCommand,
   GetPublicKeyResponse,

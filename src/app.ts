@@ -1,19 +1,23 @@
 import express from "express";
 import { appSelectorRouter } from "./appSelector/router";
-import { documentBuilderRouter } from "./documentBuilder/router";
+import { dbsDocumentBuilderRouter } from "./dbsDocumentBuilder/router";
 import { credentialOfferViewerRouter } from "./credentialOfferViewer/router";
 import { documentRouter } from "./document/router";
 import { stsStubAccessTokenRouter } from "./stsStubAccessToken/router";
 import nunjucks from "nunjucks";
 import path from "path";
 import { stsStubDidDocumentRouter } from "./stsStubDidDocument/router";
+import { documentSelectorRouter } from "./documentSelector/router";
+import { ninoDocumentBuilderRouter } from "./ninoDocumentBuilder/router";
 import {walletStubRouter} from "./walletStub/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
   path.join(__dirname, "../src/credentialOfferViewer/views"),
-  path.join(__dirname, "../src/documentBuilder/views"),
+  path.join(__dirname, "../src/dbsDocumentBuilder/views"),
+  path.join(__dirname, "../src/ninoDocumentBuilder/views"),
   path.join(__dirname, "../src/appSelector/views"),
+  path.join(__dirname, "../src/documentSelector/views"),
   path.resolve("node_modules/govuk-frontend/"),
 ];
 
@@ -35,7 +39,9 @@ export async function createApp(): Promise<express.Application> {
 
   app.use(express.urlencoded({ extended: true }));
   app.use(appSelectorRouter);
-  app.use(documentBuilderRouter);
+  app.use(documentSelectorRouter);
+  app.use(dbsDocumentBuilderRouter);
+  app.use(ninoDocumentBuilderRouter);
   app.use(credentialOfferViewerRouter);
   app.use(documentRouter);
   app.use(stsStubAccessTokenRouter);

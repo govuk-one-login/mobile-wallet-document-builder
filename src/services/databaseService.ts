@@ -6,14 +6,15 @@ import {
   DynamoDBDocumentClient,
   GetCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { Document } from "../documentBuilder/models/documentBuilder";
+import { DbsDocument } from "../dbsDocumentBuilder/models/dbsDocument";
+import { NinoDocument } from "../ninoDocumentBuilder/models/ninoDocument";
 import { UUID } from "node:crypto";
 
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());
 const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
 export async function saveDocument(
-  document: Document,
+  document: DbsDocument | NinoDocument,
   documentId: UUID,
   walletSubjectId: string
 ): Promise<void> {
