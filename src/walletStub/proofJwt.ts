@@ -12,7 +12,7 @@ import format from 'ecdsa-sig-formatter';
 
 const ACCESS_TOKEN_SIGNING_ALGORITHM = "ES256";
 const ACCESS_TOKEN_JWT_TYPE = "JWT";
-const KEY_ID = "aa275b92-0def-4dfc-b0f6-87c96b26c6c7";
+const KEY_ID = "2ced22e2-c15b-4e02-aa5f-7a10a2eaccc7";
 
 export async function getProofJwt(nonce: string): Promise<Jwt> {
   const kmsService = new WalletStubKmsService(KEY_ID)
