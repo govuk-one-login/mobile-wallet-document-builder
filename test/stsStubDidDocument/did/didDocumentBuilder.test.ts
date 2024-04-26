@@ -18,10 +18,10 @@ describe("didDocumentBuilder.ts", () => {
     };
     (crypto.createPublicKey as jest.Mock).mockImplementation(() => ({
       export: jest.fn().mockImplementation(() => ({
-        "kty": "EC",
-        "x": "A-oRroL1tmWN8lbEf1Zz9nJa3P9E0dQJ4Iwv_qOmFD8",
-        "y": "76st88TuKuI0dUMW9MPsfcZwkR2VX1c4klNK96M3QP8",
-        "crv": "P-256",
+        kty: "EC",
+        x: "A-oRroL1tmWN8lbEf1Zz9nJa3P9E0dQJ4Iwv_qOmFD8",
+        y: "76st88TuKuI0dUMW9MPsfcZwkR2VX1c4klNK96M3QP8",
+        crv: "P-256",
       })),
     }));
 
@@ -49,10 +49,10 @@ describe("didDocumentBuilder.ts", () => {
           id: "did:web:wallet-api.test.gov.uk#test-key-id",
           publicKeyJwk: {
             kid: "test-key-id",
-            "kty": "EC",
-            "x": "A-oRroL1tmWN8lbEf1Zz9nJa3P9E0dQJ4Iwv_qOmFD8",
-            "y": "76st88TuKuI0dUMW9MPsfcZwkR2VX1c4klNK96M3QP8",
-            "crv": "P-256",
+            kty: "EC",
+            x: "A-oRroL1tmWN8lbEf1Zz9nJa3P9E0dQJ4Iwv_qOmFD8",
+            y: "76st88TuKuI0dUMW9MPsfcZwkR2VX1c4klNK96M3QP8",
+            crv: "P-256",
           },
           type: "JsonWebKey",
         },

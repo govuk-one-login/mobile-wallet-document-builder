@@ -42,8 +42,9 @@ export class KmsService {
   }
 
   private parseSignature(rawSignature: Uint8Array): string {
-    const base64EncodedSignature = Buffer.from(rawSignature).toString("base64url");
-    return format.derToJose(base64EncodedSignature, 'ES256');
+    const base64EncodedSignature =
+      Buffer.from(rawSignature).toString("base64url");
+    return format.derToJose(base64EncodedSignature, "ES256");
   }
 
   public async getPublicKey() {

@@ -38,12 +38,15 @@ describe("kmsService.ts", () => {
   });
 
   it("should return a base64 encoded signature when call to KMS is successful", async () => {
-    const mockSignature = 'yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw';
-    const mockSignatureDer = format.joseToDer(mockSignature, 'ES256');
+    const mockSignature =
+      "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw";
+    const mockSignatureDer = format.joseToDer(mockSignature, "ES256");
     mockKmsClient.on(SignCommand).resolves({ Signature: mockSignatureDer });
     const response = await kmsService.sign("mock_message_to_sign");
 
-    expect(response).toEqual("yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw");
+    expect(response).toEqual(
+      "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw"
+    );
   });
 
   it("should throw an error when an error happens when calling KMS to fetch public key", async () => {
