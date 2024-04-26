@@ -7,9 +7,10 @@ describe("verificationMethod.ts", () => {
       "JsonWebKey",
       "did:web:wallet-api.test.gov.uk",
       {
-        kty: "RSA",
-        n: "uA1gxsWNOVSboz38-wAAeqKjqH7DuG8f19YrWZhBVQsDIa-I_PDNTm4c",
-        e: "AQAB",
+          "kty": "EC",
+          "x": "A-oRroL1tmWN8lbEf1Zz9nJa3P9E0dQJ4Iwv_qOmFD8",
+          "y": "76st88TuKuI0dUMW9MPsfcZwkR2VX1c4klNK96M3QP8",
+          "crv": "P-256",
         kid: "test-key-id",
       }
     );
@@ -18,10 +19,11 @@ describe("verificationMethod.ts", () => {
       controller: "did:web:wallet-api.test.gov.uk",
       id: "did:web:wallet-api.test.gov.uk#test-key-id",
       publicKeyJwk: {
-        e: "AQAB",
         kid: "test-key-id",
-        kty: "RSA",
-        n: "uA1gxsWNOVSboz38-wAAeqKjqH7DuG8f19YrWZhBVQsDIa-I_PDNTm4c",
+          "kty": "EC",
+          "x": "A-oRroL1tmWN8lbEf1Zz9nJa3P9E0dQJ4Iwv_qOmFD8",
+          "y": "76st88TuKuI0dUMW9MPsfcZwkR2VX1c4klNK96M3QP8",
+          "crv": "P-256",
       },
       type: "JsonWebKey",
     });
