@@ -540,7 +540,7 @@ Resources:
               - 'kms:GetPublicKey'
             Resource:
               - "*"
-      KeySpec: ECC_NIST_P256
+      KeySpec: RSA_4096
       KeyUsage: SIGN_VERIFY
       MultiRegion: false
 
