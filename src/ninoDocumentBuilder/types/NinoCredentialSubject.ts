@@ -1,9 +1,9 @@
-import {CredentialSubject} from "../../types/CredentialSubject";
+import { CredentialSubject } from "../../types/CredentialSubject";
 
 export interface NinoCredentialSubject extends CredentialSubject {
-    socialSecurityRecord?: SocialSecurityRecord[];
+  socialSecurityRecord?: SocialSecurityRecord[];
 }
 
 export interface SocialSecurityRecord {
-    personalNumber: string;
+  personalNumber: string;
 }
