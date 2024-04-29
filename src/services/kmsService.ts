@@ -7,13 +7,13 @@ import {
   SignCommandOutput,
   SigningAlgorithmSpec,
 } from "@aws-sdk/client-kms";
+
 import { getKmsConfig } from "../config/aws";
-import format from "ecdsa-sig-formatter";
 
 export class KmsService {
   constructor(
     private readonly keyId: string,
-    private readonly signingAlgorithm: SigningAlgorithmSpec = "ECDSA_SHA_256",
+    private readonly signingAlgorithm: SigningAlgorithmSpec = "RSASSA_PKCS1_V1_5_SHA_256",
     private readonly kmsClient: KMSClient = new KMSClient(getKmsConfig())
   ) {}
 
@@ -42,9 +42,7 @@ export class KmsService {
   }
 
   private parseSignature(rawSignature: Uint8Array): string {
-    const base64EncodedSignature =
-      Buffer.from(rawSignature).toString("base64url");
-    return format.derToJose(base64EncodedSignature, "ES256");
+    return Buffer.from(rawSignature).toString("base64url");
   }
 
   public async getPublicKey() {

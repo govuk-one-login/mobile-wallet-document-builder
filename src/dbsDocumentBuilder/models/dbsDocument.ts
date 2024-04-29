@@ -1,4 +1,6 @@
-import { DbsCredentialSubject } from "../types/DbsCredentialSubject";
+import {
+  DbsCredentialSubject,
+} from "../types/DbsCredentialSubject";
 import { DbsInputData } from "../types/DbsInputData";
 import { getNameParts } from "../../helpers/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
