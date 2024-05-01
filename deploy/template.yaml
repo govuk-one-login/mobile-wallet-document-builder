@@ -646,11 +646,11 @@ Resources:
             Period: 60
             Stat: Minimum
 
-  BE4XXErrorAlarm:
+  BE5XXErrorAlarm:
     Condition: IsBuild
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub "${AWS::StackName}-BE4XXErrorAlarm"
+      AlarmName: !Sub "${AWS::StackName}-BE5XXErrorAlarm"
       AlarmDescription: Trigger the alarm if errorThreshold exceeds 50% with a minimum of 5 invocations in the last 30 minutes
       ActionsEnabled: false
       # OKActions:
@@ -685,7 +685,7 @@ Resources:
           MetricStat:
             Metric:
               Namespace: AWS/ApiGateway
-              MetricName: 4xx
+              MetricName: 5xx
               Dimensions:
                 - Name: ApiId
                   Value: !Ref WalletFEApiGwHttpEndpoint
