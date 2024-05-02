@@ -2,6 +2,7 @@ import express from "express";
 import { documentBuilderRouter } from "./documentBuilder/router";
 import { credentialOfferViewerRouter } from "./credentialOfferViewer/router";
 import { documentDataRouter } from "./document/router";
+import { loggerMiddleware } from "./utils/logger";
 
 import nunjucks from "nunjucks";
 import path from "path";
@@ -30,6 +31,7 @@ export async function createApp(): Promise<express.Application> {
   );
 
   app.use(express.urlencoded({ extended: true }));
+  app.use(loggerMiddleware);
   app.use(documentBuilderRouter);
   app.use(credentialOfferViewerRouter);
   app.use(documentDataRouter);
