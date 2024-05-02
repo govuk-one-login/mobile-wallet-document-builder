@@ -34,6 +34,8 @@ Parameters:
 Conditions:
   StackNameIsWalletDocBuilderFE: !Equals [ !Ref "AWS::StackName", wallet-doc-builder-fe ]
 
+  IsBuild: !Equals [ !Ref Environment, build ]
+
   UsePermissionsBoundary:
     Fn::Not:
       - Fn::Equals:
@@ -43,13 +45,14 @@ Conditions:
 Mappings:
   EnvironmentVariables:
     dev:
+      BEURL: "example-credential-issuer.mobile.dev.account.gov.uk"
       FEURL: "stub-credential-issuer.mobile.dev.account.gov.uk"
     build:
+      BEURL: "example-credential-issuer.mobile.build.account.gov.uk"
       FEURL: "stub-credential-issuer.mobile.build.account.gov.uk"
     staging:
-      FEURL: "stub-credential-issuer.mobile.stage.account.gov.uk"
-    integration:
-      FEURL: "stub-credential-issuer.mobile.integration.account.gov.uk"
+      BEURL: "example-credential-issuer.mobile.staging.account.gov.uk"
+      FEURL: "stub-credential-issuer.mobile.staging.account.gov.uk"
   # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
   # PlatformConfiguration:
   #   dev:
@@ -67,12 +70,18 @@ Mappings:
       FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
     staging:
       FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
-    integration:
-      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
   
   ElasticLoadBalancerAccountIds:
     eu-west-2:
       AccountId: 652711504416
+
+  DidController:
+    dev:
+      Controller: "did:web:wallet-api.mobile.dev.account.gov.uk"
+    build:
+      Controller: "did:web:wallet-api.mobile.build.account.gov.uk"
+    staging:
+      Controller: "did:web:wallet-api.mobile.staging.account.gov.uk"
 
 Resources:
 
@@ -147,7 +156,7 @@ Resources:
   WalletFEAccessLogsBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub wallet-stub-front-${Environment}-access-logs
+      BucketName: !Sub wallet-stub-front-${AWS::StackName}-${Environment}-access-logs
       VersioningConfiguration:
         Status: "Enabled"
       PublicAccessBlockConfiguration:
@@ -397,11 +406,20 @@ Resources:
             - Name: PORT
               Value: !Ref ContainerPort
             - Name: DOCUMENTS_TABLE_NAME
-              Value: documents
+              Value: !Ref DocumentDatabase
             - Name: ENVIRONMENT
               Value: !Sub "${Environment}"
             - Name: MOCK_CRI_URL
-              Value: placeholderValue
+              Value: !Sub 
+                      - "https://${BEURL}"
+                      - BEURL:
+                          !FindInMap [ EnvironmentVariables, !Ref Environment, BEURL ]
+            - Name: STS_SIGNING_KEY_ID
+              Value: !Ref StsStubSigningKey
+            - Name: ACCESS_TOKEN_TTL_IN_SECS
+              Value: 180
+            - Name: DID_CONTROLLER
+              Value: !FindInMap [DidController, !Ref Environment, Controller]
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp
@@ -477,7 +495,207 @@ Resources:
             Principal:
               Service: ecs-tasks.amazonaws.com
         Version: 2012-10-17
+      Policies:
+        - PolicyName: AccessDynamoDb
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:GetItem'
+                Resource: !GetAtt DocumentDatabase.Arn
+              - Effect: Allow
+                Action: 
+                  - 'kms:Decrypt'
+                  - 'kms:Encrypt'
+                  - 'kms:GenerateDataKey'
+                Resource: !GetAtt DocumentDatabaseKmsKey.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
         - !Ref AWS::NoValue
+
+  # KMS RESOURCES
+
+  StsStubSigningKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: Asymmetric key for signing tokens
+      Enabled: true
+      EnableKeyRotation: false
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+            Action:
+              - "kms:*"
+            Resource:
+              - "*"
+          - Effect: Allow
+            Principal:
+              AWS: !GetAtt WalletFEECSTaskRole.Arn
+            Action:
+              - 'kms:Sign'
+              - 'kms:GetPublicKey'
+            Resource:
+              - "*"
+      KeySpec: ECC_NIST_P256
+      KeyUsage: SIGN_VERIFY
+      MultiRegion: false
+
+  StsStubSigningKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: alias/sts-stub-signing-key
+      TargetKeyId: !Ref StsStubSigningKey
+
+  DocumentDatabaseKmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - kms:*
+            Resource:
+              - "*"
+
+  DocumentDatabaseKmsKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub "alias/${AWS::StackName}/${Environment}/DocumentDatabaseKmsKey"
+      TargetKeyId: !Ref DocumentDatabaseKmsKey
+
+  # DYNAMODB RESOURCES
+
+  DocumentDatabase:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: documentId
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      TableName: documents
+      KeySchema:
+        - AttributeName: documentId
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+        SSEType: KMS
+        KMSMasterKeyId: !GetAtt DocumentDatabaseKmsKey.Arn
+      Tags:
+        - Key: Product
+          Value: GOV.UK Sign In
+        - Key: System
+          Value: Mobile Wallet
+        - Key: Owner
+          Value: Mobile Wallet Team
+        - Key: Environment
+          Value: !Ref "Environment"
+
+# WAF ASSOCIATION
+
+  DocBuilderWebAclAssociation:
+      Type: AWS::WAFv2::WebACLAssociation
+      Properties:
+        ResourceArn: !Ref WalletFELoadBalancer
+        WebACLArn: !Sub "{{resolve:ssm:/${Environment}/Platform/Security/WafArn}}"
+
+# ALARMS
+
+  DocBuilderLowContainerTaskCountAlarm:
+    Condition: IsBuild
+    DependsOn:
+       - WalletFECluster
+       - WalletFEECSService
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "${AWS::StackName}-DocBuilderLowContainerTaskCountAlarm"
+      AlarmDescription: Trigger a warning if the running container task count drops below 1
+      ActionsEnabled: false
+      # OKActions: - commented until we create sns topics for wallet alarms
+      #   - !ImportValue platform-alarm-topic-critical-alert
+      # AlarmActions:
+      #   - !ImportValue platform-alarm-topic-critical-alert
+      InsufficientDataActions: []
+      Dimensions: []
+      EvaluationPeriods: 1
+      DatapointsToAlarm: 1
+      Threshold: 1
+      ComparisonOperator: LessThanThreshold
+      TreatMissingData: breaching
+      Metrics:
+        - Id: containerTaskCount
+          ReturnData: true
+          MetricStat:
+            Metric:
+              Namespace: ECS/ContainerInsights
+              MetricName: RunningTaskCount
+              Dimensions:
+                - Name: ClusterName
+                  Value: !Ref WalletFECluster
+                - Name: ServiceName
+                  Value: !GetAtt WalletFEECSService.Name
+            Period: 60
+            Stat: Minimum
+
+  BE5XXErrorAlarm:
+    Condition: IsBuild
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "${AWS::StackName}-BE5XXErrorAlarm"
+      AlarmDescription: Trigger the alarm if errorThreshold exceeds 50% with a minimum of 5 invocations in the last 30 minutes
+      ActionsEnabled: false
+      # OKActions:
+      #   - !ImportValue platform-alarm-topic-slack-warning-alert
+      # AlarmActions:
+      #   - !ImportValue platform-alarm-topic-slack-warning-alert
+      InsufficientDataActions: [ ]
+      Dimensions: [ ]
+      EvaluationPeriods: 1
+      DatapointsToAlarm: 1
+      Threshold: 50
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      Metrics:
+        - Id: errorThreshold
+          Label: errorThreshold
+          ReturnData: true
+          Expression: IF(invocations<5,0,errorPercentage)
+        - Id: invocations
+          ReturnData: false
+          MetricStat:
+            Metric:
+              Namespace: AWS/ApiGateway
+              MetricName: Count
+              Dimensions:
+                - Name: ApiId
+                  Value: !Ref WalletFEApiGwHttpEndpoint
+            Period: 1800
+            Stat: Sum
+        - Id: error
+          ReturnData: false
+          MetricStat:
+            Metric:
+              Namespace: AWS/ApiGateway
+              MetricName: 5xx
+              Dimensions:
+                - Name: ApiId
+                  Value: !Ref WalletFEApiGwHttpEndpoint
+            Period: 1800
+            Stat: Sum
+        - Id: errorPercentage
+          Label: errorPercentage
+          ReturnData: false
+          Expression: (error/invocations) * 100

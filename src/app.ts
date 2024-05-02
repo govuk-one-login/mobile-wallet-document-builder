@@ -1,16 +1,23 @@
 import express from "express";
-import { documentBuilderRouter } from "./documentBuilder/router";
+import { appSelectorRouter } from "./appSelector/router";
+import { dbsDocumentBuilderRouter } from "./dbsDocumentBuilder/router";
 import { credentialOfferViewerRouter } from "./credentialOfferViewer/router";
-import { documentDataRouter } from "./document/router";
-import { loggerMiddleware } from "./utils/logger";
-
+import { documentRouter } from "./document/router";
+import { stsStubAccessTokenRouter } from "./stsStubAccessToken/router";
 import nunjucks from "nunjucks";
 import path from "path";
+import { stsStubDidDocumentRouter } from "./stsStubDidDocument/router";
+import { documentSelectorRouter } from "./documentSelector/router";
+import { ninoDocumentBuilderRouter } from "./ninoDocumentBuilder/router";
+import { loggerMiddleware } from "./utils/logger";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
   path.join(__dirname, "../src/credentialOfferViewer/views"),
-  path.join(__dirname, "../src/documentBuilder/views"),
+  path.join(__dirname, "../src/dbsDocumentBuilder/views"),
+  path.join(__dirname, "../src/ninoDocumentBuilder/views"),
+  path.join(__dirname, "../src/appSelector/views"),
+  path.join(__dirname, "../src/documentSelector/views"),
   path.resolve("node_modules/govuk-frontend/"),
 ];
 
@@ -31,10 +38,15 @@ export async function createApp(): Promise<express.Application> {
   );
 
   app.use(express.urlencoded({ extended: true }));
-  app.use(loggerMiddleware);
-  app.use(documentBuilderRouter);
+  app.use(appSelectorRouter);
+  app.use(documentSelectorRouter);
+  app.use(dbsDocumentBuilderRouter);
+  app.use(ninoDocumentBuilderRouter);
   app.use(credentialOfferViewerRouter);
-  app.use(documentDataRouter);
+  app.use(documentRouter);
+  app.use(stsStubAccessTokenRouter);
+  app.use(stsStubDidDocumentRouter);
+  app.use(loggerMiddleware);
 
   return app;
 }

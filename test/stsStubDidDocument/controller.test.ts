@@ -1,0 +1,74 @@
+process.env.STS_SIGNING_KEY_ID = "mock_signing_key_id";
+process.env.DID_CONTROLLER = "did:web:wallet-api.test.gov.uk";
+import { stsStubDidDocumentController } from "../../src/stsStubDidDocument/controller";
+import { getMockReq, getMockRes } from "@jest-mock/express";
+import { DidDocumentBuilder } from "../../src/stsStubDidDocument/did/didDocumentBuilder";
+
+jest.mock("../../src/stsStubDidDocument/did/didDocumentBuilder");
+jest.mock("../../src/services/kmsService");
+
+describe("controller.ts", () => {
+  it("should return 200 and the did:web document in the response body", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq();
+
+    jest
+      .spyOn(DidDocumentBuilder.prototype, "buildDidDocument")
+      .mockResolvedValueOnce({
+        "@context": ["https://www.w3.org/ns/did/v1"],
+        assertionMethod: ["did:web:wallet-api.test.gov.uk#test-key-id"],
+        id: "did:web:wallet-api.test.gov.uk",
+        verificationMethod: [
+          {
+            controller: "did:web:wallet-api.test.gov.uk",
+            id: "did:web:wallet-api.test.gov.uk#test-key-id",
+            publicKeyJwk: {
+              kty: "EC",
+              x: "A-oRroL1tmWN8lbEf1Zz9nJa3P9E0dQJ4Iwv_qOmFD8",
+              y: "76st88TuKuI0dUMW9MPsfcZwkR2VX1c4klNK96M3QP8",
+              crv: "P-256",
+              kid: "2ced22e2-c15b-4e02-aa5f-7a10a2eaccc7",
+            },
+            type: "JsonWebKey",
+          },
+        ],
+      });
+
+    await stsStubDidDocumentController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      "@context": ["https://www.w3.org/ns/did/v1"],
+      assertionMethod: ["did:web:wallet-api.test.gov.uk#test-key-id"],
+      id: "did:web:wallet-api.test.gov.uk",
+      verificationMethod: [
+        {
+          controller: "did:web:wallet-api.test.gov.uk",
+          id: "did:web:wallet-api.test.gov.uk#test-key-id",
+          publicKeyJwk: {
+            kty: "EC",
+            x: "A-oRroL1tmWN8lbEf1Zz9nJa3P9E0dQJ4Iwv_qOmFD8",
+            y: "76st88TuKuI0dUMW9MPsfcZwkR2VX1c4klNK96M3QP8",
+            crv: "P-256",
+            kid: "2ced22e2-c15b-4e02-aa5f-7a10a2eaccc7",
+          },
+          type: "JsonWebKey",
+        },
+      ],
+    });
+  });
+
+  it("should return 500 if an unexpected error happens", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq();
+
+    jest
+      .spyOn(DidDocumentBuilder.prototype, "buildDidDocument")
+      .mockRejectedValueOnce(new Error("SOME_ERROR"));
+
+    await stsStubDidDocumentController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: "server_error" });
+  });
+});

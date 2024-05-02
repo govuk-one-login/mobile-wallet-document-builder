@@ -1,0 +1,37 @@
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% set showError = isInvalid %}
+{% extends "base.njk" %}
+{% block content %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
+    <form action="/select-document/?app={{ selectedApp }}" method="post">
+        {{ govukRadios({
+                "id": "select-document-choice",
+                "name": "select-document-choice",
+                fieldset: {
+                legend: {
+                text: "Please select a document:",
+                isPageHeading: false,
+                classes: "govuk-fieldset__legend--m"
+                }
+                },
+                items: [
+                {
+                value: "nino",
+                text: "NINO"
+                },
+                {
+                value: "dbs",
+                text: "DBS"
+                }
+                ],
+                errorMessage: {
+                text: "You must choose an option",
+                attributes: { "data-pw": "working-camera-error-message" }
+                } if showError
+                }) }}
+        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+    </form>
+{% endblock %}

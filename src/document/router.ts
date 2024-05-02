@@ -5,4 +5,4 @@ const router = express.Router();
 
 router.get("/document/:documentId", documentController);
 
-export { router as documentDataRouter };
+export { router as documentRouter };

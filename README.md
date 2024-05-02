@@ -80,11 +80,21 @@ npm run start
 
 To start and test the credential offer endpoint, go to:
 
-[http://localhost:8000/build-document](http://localhost:8000/build-document)
+[http://localhost:8000/select-app](http://localhost:8000/select-app)
 
 To get a document's details, hit the following endpoint:
 
 [http://localhost:8000/document/:documentId](http://localhost:8000/document/:documentId)
+
+To swap a pre-authorized code for an access token (STS Stub):
+```
+curl -d "grant_type=urn:ietf:params:oauth:grant-type:pre-authorized_code&pre-authorized_code=eyJraWQiOiJmZjI3NWI5Mi0wZGVmLTRkZmMtYjBmNi04N2M5NmIyNmM2YzciLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJ1cm46ZmRjOmdvdjp1azp3YWxsZXQiLCJjbGllbnRJZCI6IkVYQU1QTEVfQ1JJIiwiaXNzIjoidXJuOmZkYzpnb3Y6dWs6ZXhhbXBsZS1jcmVkZW50aWFsLWlzc3VlciIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsiYmYyODVjOTctMzFkNS00NGEwLWFkZGQtNDNmM2I0YmIzYmMwIl0sImV4cCI6MTcxMjMwNDMwOCwiaWF0IjoxNzEyMzA0MDA4fQ.2-qE4IKUJpUPo04O4m34W13o8f8V6zNuuJ0RBoSyPcBTZFtuJVTHM_4lhiGrOH9vysS8LxTYSSeyv7FugH4RJw" -X POST http://localhost:8000/sts-stub/token | jq
+```
+
+To get the did:web document (STS Stub):
+```
+curl -X GET http://localhost:8000/sts-stub/.well-known/did.json | jq
+```
 
 
 #### Reading from the Database

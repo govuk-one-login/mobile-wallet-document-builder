@@ -3,8 +3,9 @@ import {
   getAwsRegion,
   getLocalStackEndpoint,
 } from "./appConfig";
-import { LocalStackAwsConfig } from "../types/interfaces";
+import { LocalStackAwsConfig } from "../types/LocalStackAwsConfig";
 import { DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
+import { KMSClientConfig } from "@aws-sdk/client-kms";
 
 export function getLocalStackAwsConfig(): LocalStackAwsConfig {
   return {
@@ -18,6 +19,16 @@ export function getLocalStackAwsConfig(): LocalStackAwsConfig {
 }
 
 export function getDatabaseConfig(): DynamoDBClientConfig {
+  if (getEnvironment() === "local") {
+    return getLocalStackAwsConfig();
+  }
+
+  return {
+    region: getAwsRegion(),
+  };
+}
+
+export function getKmsConfig(): KMSClientConfig {
   if (getEnvironment() === "local") {
     return getLocalStackAwsConfig();
   }
