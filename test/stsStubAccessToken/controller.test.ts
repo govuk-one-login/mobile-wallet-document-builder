@@ -2,7 +2,7 @@ process.env.STS_SIGNING_KEY_ID = "mock_signing_key_id";
 process.env.ACCESS_TOKEN_TTL_IN_SECS = "100";
 import { stsStubAccessTokenController } from "../../src/stsStubAccessToken/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
-import * as accessToken from "../../src/stsStubAccessToken/token/accessToken";
+// import * as accessToken from "../../src/stsStubAccessToken/token/accessToken";
 import * as validateTokenRequest from "../../src/stsStubAccessToken/token/validateTokenRequest";
 
 jest.mock("../../src/stsStubAccessToken/token/validateTokenRequest", () => ({
