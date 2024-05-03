@@ -22,7 +22,7 @@ export async function stsStubAccessTokenController(
     const isGrantTypeValid = validateGrantType(grantType);
     const payload = getPreAuthorizedCodePayload(preAuthorizedCode);
 
-    if (isGrantTypeValid || !payload) {
+    if (!isGrantTypeValid || !payload) {
       return res.status(400).json({ error: "invalid_grant" });
     }
 
