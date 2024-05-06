@@ -9,9 +9,9 @@ import { logger } from "./utils/logger";
 
   server
     .listen(port, () => {
-      logger.info(`Server is running on on http://localhost:${port}`);
+      logger.info(`Server is running on port ${port}`);
     })
     .on("error", (error: Error) => {
-      logger.info(`Unable to start server: ${error.message}`);
+      logger.error(error, "Unable to start server");
     });
 })();
