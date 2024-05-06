@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { getDocument } from "../services/databaseService";
 import { logger } from "../utils/logger";
+import {NinoDocument} from "../ninoDocumentBuilder/models/ninoDocument";
+import {DbsDocument} from "../dbsDocumentBuilder/models/dbsDocument";
 
 export async function documentController(
   req: Request,
@@ -15,7 +17,7 @@ export async function documentController(
     }
 
     const documentString = databaseItem.vc as string;
-    const document = JSON.parse(documentString) as Document;
+    const document: NinoDocument | DbsDocument = JSON.parse(documentString);
 
     return res.status(200).json(document);
   } catch (error) {

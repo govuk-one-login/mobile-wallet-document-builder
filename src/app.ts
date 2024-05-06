@@ -24,6 +24,13 @@ const APP_VIEWS = [
 export async function createApp(): Promise<express.Application> {
   const app: express.Application = express();
 
+  app.use(loggerMiddleware);
+  app.use((req, res, next) => {
+    req.log = req.log.child({
+      trace: res.locals.trace,
+    });
+    next();
+  });
   app.use(express.static(path.join(__dirname, "public")));
   app.use("/public", express.static(path.join(__dirname, "public")));
   app.use(express.static(path.join(__dirname, "assets")));
@@ -46,7 +53,6 @@ export async function createApp(): Promise<express.Application> {
   app.use(documentRouter);
   app.use(stsStubAccessTokenRouter);
   app.use(stsStubDidDocumentRouter);
-  app.use(loggerMiddleware);
 
   return app;
 }

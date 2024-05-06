@@ -25,10 +25,11 @@ export async function ninoDocumentBuilderPostController(
   res: Response
 ): Promise<void> {
   try {
+    const documentId = randomUUID();
+    logger.info(`Processing NINO document with documentId ${documentId}`);
     const selectedApp = req.query.app;
     const document = NinoDocument.fromRequestBody(req.body, CREDENTIAL_TYPE);
     const walletSubjectId = "walletSubjectIdPlaceholder";
-    const documentId = randomUUID();
     await saveDocument(document, documentId, walletSubjectId);
 
     res.redirect(

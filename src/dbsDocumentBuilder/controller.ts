@@ -25,10 +25,11 @@ export async function dbsDocumentBuilderPostController(
   res: Response
 ): Promise<void> {
   try {
+    const documentId = randomUUID();
+    logger.info(`Processing DBS document with documentId ${documentId}`);
     const selectedApp = req.query.app;
     const document = DbsDocument.fromRequestBody(req.body, CREDENTIAL_TYPE);
     const walletSubjectId = "walletSubjectIdPlaceholder";
-    const documentId = randomUUID();
     await saveDocument(document, documentId, walletSubjectId);
 
     res.redirect(
