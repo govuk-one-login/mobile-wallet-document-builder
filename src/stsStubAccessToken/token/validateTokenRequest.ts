@@ -1,12 +1,13 @@
 import { JWTPayload, decodeJwt } from "jose";
 import { PreAuthorizedCodePayload } from "../types/PreAuthorizedCodePayload";
+import {logger} from "../../utils/logger";
 
 enum GrantType {
   PREAUTHORIZED_CODE = "urn:ietf:params:oauth:grant-type:pre-authorized_code",
 }
 export function validateGrantType(grantType: string): boolean {
   if (grantType !== GrantType.PREAUTHORIZED_CODE) {
-    console.log("Invalid grant type");
+    logger.error("Invalid grant type");
     return false;
   }
 
@@ -31,27 +32,20 @@ function IsValidCredentialIdentifier(payload: JWTPayload) {
 export function getPreAuthorizedCodePayload(
   preAuthorizedCode: string
 ): false | PreAuthorizedCodePayload {
-  let payload: PreAuthorizedCodePayload;
-
-  try {
-    payload = decodeJwt(preAuthorizedCode);
-  } catch (error) {
-    console.log(`Invalid pre-authorized code: Error decoding token: ${error}`);
-    return false;
-  }
+  const payload: PreAuthorizedCodePayload = decodeJwt(preAuthorizedCode);
 
   if (!IsValidIssuer(payload)) {
-    console.log("Invalid JWT Issuer");
+    logger.error("Invalid JWT Issuer");
     return false;
   }
 
   if (!IsValidAudience(payload)) {
-    console.log("Invalid JWT Audience");
+    logger.error("Invalid JWT Audience");
     return false;
   }
 
   if (!IsValidCredentialIdentifier(payload)) {
-    console.log("Invalid JWT Credential Identifier");
+    logger.error("Invalid JWT Credential Identifier");
     return false;
   }
 

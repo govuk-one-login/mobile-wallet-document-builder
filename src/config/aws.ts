@@ -6,6 +6,7 @@ import {
 import { LocalStackAwsConfig } from "../types/LocalStackAwsConfig";
 import { DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
 import { KMSClientConfig } from "@aws-sdk/client-kms";
+import {logger} from "../utils/logger";
 
 export function getLocalStackAwsConfig(): LocalStackAwsConfig {
   return {
@@ -20,6 +21,7 @@ export function getLocalStackAwsConfig(): LocalStackAwsConfig {
 
 export function getDatabaseConfig(): DynamoDBClientConfig {
   if (getEnvironment() === "local") {
+    logger.info("Running database locally");
     return getLocalStackAwsConfig();
   }
 
@@ -30,6 +32,7 @@ export function getDatabaseConfig(): DynamoDBClientConfig {
 
 export function getKmsConfig(): KMSClientConfig {
   if (getEnvironment() === "local") {
+    logger.info("Running KMS locally");
     return getLocalStackAwsConfig();
   }
 

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import {logger} from "../utils/logger";
 
 export async function appSelectorGetController(
   req: Request,
@@ -7,7 +8,7 @@ export async function appSelectorGetController(
   try {
     res.render("select-app-form.njk");
   } catch (error) {
-    console.log(`An error happened: ${error}`);
+    logger.error(error, "An error happened rendering app selection page");
     res.render("500.njk");
   }
 }
@@ -27,7 +28,7 @@ export async function appSelectorPostController(
       });
     }
   } catch (error) {
-    console.log(`An error happened: ${error}`);
+    logger.error(error, "An error happened selecting app");
     res.render("500.njk");
   }
 }

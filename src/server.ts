@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { createApp } from "./app";
 import { getPortNumber } from "./config/appConfig";
+import { logger } from "./utils/logger";
 
 (async () => {
   const port = getPortNumber();
@@ -8,9 +9,9 @@ import { getPortNumber } from "./config/appConfig";
 
   server
     .listen(port, () => {
-      console.log(`Server is running on on http://localhost:${port}`);
+      logger.info(`Server is running on on http://localhost:${port}`);
     })
     .on("error", (error: Error) => {
-      console.log(`Unable to start server: ${error.message}`);
+      logger.info(`Unable to start server: ${error.message}`);
     });
 })();

@@ -3,6 +3,7 @@ import { NinoDocument } from "./models/ninoDocument";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
+import {logger} from "../utils/logger";
 
 const CREDENTIAL_TYPE = CredentialType.socialSecurityCredential;
 
@@ -14,7 +15,7 @@ export async function ninoDocumentBuilderGetController(
     const selectedApp = req.query.app;
     res.render("nino-document-details-form.njk", { selectedApp: selectedApp });
   } catch (error) {
-    console.log(`An error happened: ${error}`);
+    logger.error(error, "An error happened rendering NINO document page");
     res.render("500.njk");
   }
 }
@@ -34,7 +35,7 @@ export async function ninoDocumentBuilderPostController(
       `/view-credential-offer/${documentId}?app=${selectedApp}&type=${CREDENTIAL_TYPE}`
     );
   } catch (error) {
-    console.log(`An error happened: ${error}`);
+    logger.error(error, "An error happened processing NINO document request");
     res.render("500.njk");
   }
 }

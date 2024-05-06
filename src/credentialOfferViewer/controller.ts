@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import QRCode from "qrcode";
 import { getCredentialOffer } from "./services/credentialOfferService";
 import { getCustomCredentialOfferUri } from "./helpers/customCredentialOfferUri";
+import {logger} from "../utils/logger";
 
 export async function credentialOfferViewerController(
   req: Request,
@@ -31,7 +32,7 @@ export async function credentialOfferViewerController(
       qrCode,
     });
   } catch (error) {
-    console.log(`An error happened: ${error}`);
+    logger.error(error, "An error happened processing credential offer request");
     res.render("500.njk");
   }
 }

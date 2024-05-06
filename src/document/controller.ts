@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getDocument } from "../services/databaseService";
+import {logger} from "../utils/logger";
 
 export async function documentController(
   req: Request,
@@ -18,7 +19,7 @@ export async function documentController(
 
     return res.status(200).json(document);
   } catch (error) {
-    console.log(`An error happened: ${error}`);
+    logger.error(error, "An error happened processing request to get document");
     return res.status(500).send();
   }
 }

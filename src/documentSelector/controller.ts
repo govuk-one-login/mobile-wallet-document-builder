@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import {logger} from "../utils/logger";
 
 export async function documentSelectorGetController(
   req: Request,
@@ -8,7 +9,7 @@ export async function documentSelectorGetController(
     const selectedApp = req.query.app;
     res.render("select-document-form.njk", { selectedApp: selectedApp });
   } catch (error) {
-    console.log(`An error happened: ${error}`);
+    logger.error(error, "An error happened rendering document selection page");
     res.render("500.njk");
   }
 }
@@ -31,7 +32,7 @@ export async function documentSelectorPostController(
       });
     }
   } catch (error) {
-    console.log(`An error happened: ${error}`);
+    logger.error(error, "An error happened processing request to select document");
     res.render("500.njk");
   }
 }

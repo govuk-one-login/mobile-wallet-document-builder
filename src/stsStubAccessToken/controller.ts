@@ -8,6 +8,7 @@ import {
   getAccessTokenTtlInSecs,
   getStsSigningKeyId,
 } from "../config/appConfig";
+import {logger} from "../utils/logger";
 
 const WALLET_SUBJECT_ID = "walletSubjectIdPlaceholder";
 
@@ -26,9 +27,9 @@ export async function stsStubAccessTokenController(
       return res.status(400).json({ error: "invalid_grant" });
     }
 
-    console.log({
-      message: `Valid pre-authorized code received: ${preAuthorizedCode}`,
-    });
+    logger.info(
+   `Valid pre-authorized code received: ${preAuthorizedCode}`,
+    );
 
     const accessToken = await getJwtAccessToken(
       WALLET_SUBJECT_ID,
@@ -42,7 +43,7 @@ export async function stsStubAccessTokenController(
       expires_in: Number(getAccessTokenTtlInSecs()),
     });
   } catch (error) {
-    console.log(`An error happened: ${JSON.stringify(error)}`);
+    logger.error(error, "An error happened creating the access token");
     return res.status(500).json({ error: "server_error" });
   }
 }
