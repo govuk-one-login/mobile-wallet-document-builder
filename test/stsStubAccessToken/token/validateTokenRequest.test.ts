@@ -2,6 +2,7 @@ import {
   getPreAuthorizedCodePayload,
   validateGrantType,
 } from "../../../src/stsStubAccessToken/token/validateTokenRequest";
+import {getDocumentsTableName} from "../../../src/config/appConfig";
 
 describe("validateTokenRequest.ts", () => {
   describe("validateGrantType", () => {
@@ -33,10 +34,10 @@ describe("validateTokenRequest.ts", () => {
       });
     });
 
-    it("should return false if pre-authorized code is not a valid JWT", async () => {
-      const response = getPreAuthorizedCodePayload("not.valid.jwt");
-
-      expect(response).toEqual(false);
+    it("should throw an error if pre-authorized code is not a valid JWT", async () => {
+      expect(() => getPreAuthorizedCodePayload("not.valid.jwt")).toThrow(
+          new Error("Failed to parse the decoded payload as JSON")
+      );
     });
 
     it("should return false if pre-authorized code is missing 'aud' claim", async () => {
