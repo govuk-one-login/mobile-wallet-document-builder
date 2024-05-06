@@ -2,7 +2,6 @@ import {
   getPreAuthorizedCodePayload,
   validateGrantType,
 } from "../../../src/stsStubAccessToken/token/validateTokenRequest";
-import { getDocumentsTableName } from "../../../src/config/appConfig";
 
 describe("validateTokenRequest.ts", () => {
   describe("validateGrantType", () => {

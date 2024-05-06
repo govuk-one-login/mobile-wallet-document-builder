@@ -2,7 +2,6 @@ import { KmsService } from "../../services/kmsService";
 import { createPublicKey, JsonWebKey } from "node:crypto";
 import { VerificationMethod } from "./verificationMethod";
 import { DidDocument } from "./didDocument";
-import { logger } from "../../utils/logger";
 
 export class DidDocumentBuilder {
   private readonly DID_TYPE = "JsonWebKey";
