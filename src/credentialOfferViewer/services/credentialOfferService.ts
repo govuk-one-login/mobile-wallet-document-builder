@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getCriEndpoint } from "../../config/appConfig";
 import { CredentialOfferResponse } from "../types/CredentialOfferResponse";
-import {logger} from "../../utils/logger";
+import { logger } from "../../utils/logger";
 
 const CREDENTIAL_OFFER_PATH = "/credential_offer";
 
@@ -22,7 +22,7 @@ export async function getCredentialOffer(
       },
     });
 
-    logger.info(`Fetched credential offer for documentId ${documentId}`)
+    logger.info(`Fetched credential offer for documentId ${documentId}`);
 
     return response.data;
   } catch (error) {
@@ -31,7 +31,9 @@ export async function getCredentialOffer(
         `Error fetching credential offer for documentId ${documentId}`
       );
     } else {
-      logger.error(`Unexpected error happened fetching credential offer for documentId ${documentId}`);
+      logger.error(
+        `Unexpected error happened fetching credential offer for documentId ${documentId}`
+      );
     }
     throw error;
   }

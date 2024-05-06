@@ -2,7 +2,7 @@ import {
   getPreAuthorizedCodePayload,
   validateGrantType,
 } from "../../../src/stsStubAccessToken/token/validateTokenRequest";
-import {getDocumentsTableName} from "../../../src/config/appConfig";
+import { getDocumentsTableName } from "../../../src/config/appConfig";
 
 describe("validateTokenRequest.ts", () => {
   describe("validateGrantType", () => {
@@ -36,7 +36,7 @@ describe("validateTokenRequest.ts", () => {
 
     it("should throw an error if pre-authorized code is not a valid JWT", async () => {
       expect(() => getPreAuthorizedCodePayload("not.valid.jwt")).toThrow(
-          new Error("Failed to parse the decoded payload as JSON")
+        new Error("Failed to parse the decoded payload as JSON")
       );
     });
 

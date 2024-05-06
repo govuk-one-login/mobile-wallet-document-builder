@@ -8,7 +8,7 @@ import {
   getAccessTokenTtlInSecs,
   getStsSigningKeyId,
 } from "../config/appConfig";
-import {logger} from "../utils/logger";
+import { logger } from "../utils/logger";
 
 const WALLET_SUBJECT_ID = "walletSubjectIdPlaceholder";
 
@@ -27,9 +27,7 @@ export async function stsStubAccessTokenController(
       return res.status(400).json({ error: "invalid_grant" });
     }
 
-    logger.info(
-   `Valid pre-authorized code received: ${preAuthorizedCode}`,
-    );
+    logger.info(`Valid pre-authorized code received: ${preAuthorizedCode}`);
 
     const accessToken = await getJwtAccessToken(
       WALLET_SUBJECT_ID,

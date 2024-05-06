@@ -9,7 +9,7 @@ import {
 } from "@aws-sdk/client-kms";
 import { getKmsConfig } from "../config/aws";
 import format from "ecdsa-sig-formatter";
-import {logger} from "../utils/logger";
+import { logger } from "../utils/logger";
 
 export class KmsService {
   constructor(
@@ -31,7 +31,7 @@ export class KmsService {
     try {
       response = await this.kmsClient.send(command);
     } catch (error) {
-      logger.error("Error signing token with KMS")
+      logger.error("Error signing token with KMS");
       throw error;
     }
 
@@ -57,7 +57,7 @@ export class KmsService {
     try {
       response = await this.kmsClient.send(command);
     } catch (error) {
-      logger.error("Error fetching public key from KMS")
+      logger.error("Error fetching public key from KMS");
       throw error;
     }
 

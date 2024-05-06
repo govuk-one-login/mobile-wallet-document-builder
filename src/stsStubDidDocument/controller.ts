@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { getDidController, getStsSigningKeyId } from "../config/appConfig";
 import { KmsService } from "../services/kmsService";
 import { DidDocumentBuilder } from "./did/didDocumentBuilder";
-import {logger} from "../utils/logger";
+import { logger } from "../utils/logger";
 
 export async function stsStubDidDocumentController(
   req: Request,

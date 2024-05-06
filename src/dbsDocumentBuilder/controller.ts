@@ -3,7 +3,7 @@ import { DbsDocument } from "./models/dbsDocument";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
-import {logger} from "../utils/logger";
+import { logger } from "../utils/logger";
 
 const CREDENTIAL_TYPE = CredentialType.basicCheckCredential;
 

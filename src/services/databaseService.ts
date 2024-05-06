@@ -9,7 +9,7 @@ import {
 import { DbsDocument } from "../dbsDocumentBuilder/models/dbsDocument";
 import { NinoDocument } from "../ninoDocumentBuilder/models/ninoDocument";
 import { UUID } from "node:crypto";
-import {logger} from "../utils/logger";
+import { logger } from "../utils/logger";
 
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());
 const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
@@ -34,7 +34,9 @@ export async function saveDocument(
     await documentClient.send(command);
     logger.info(`Document with documentId ${documentId} saved to database`);
   } catch (error) {
-    logger.error(`Failed to save to database document with documentId ${documentId}`);
+    logger.error(
+      `Failed to save to database document with documentId ${documentId}`
+    );
     throw error;
   }
 }
@@ -61,7 +63,9 @@ export async function getDocument(
 
     return Item;
   } catch (error) {
-    logger.error(`Failed to get from database document with documentId ${documentId}`);
+    logger.error(
+      `Failed to get from database document with documentId ${documentId}`
+    );
     throw error;
   }
 }

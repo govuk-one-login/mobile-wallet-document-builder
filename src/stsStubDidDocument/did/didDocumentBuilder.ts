@@ -2,7 +2,7 @@ import { KmsService } from "../../services/kmsService";
 import { createPublicKey, JsonWebKey } from "node:crypto";
 import { VerificationMethod } from "./verificationMethod";
 import { DidDocument } from "./didDocument";
-import {logger} from "../../utils/logger";
+import { logger } from "../../utils/logger";
 
 export class DidDocumentBuilder {
   private readonly DID_TYPE = "JsonWebKey";
@@ -47,11 +47,10 @@ export class DidDocumentBuilder {
       publicKeyString +
       "\n-----END PUBLIC KEY-----";
 
-      const keyObject = createPublicKey(publicKeyPem);
-      const jwk = keyObject.export({ format: "jwk" });
-      this.addKidToJwk(jwk);
-      return jwk;
-
+    const keyObject = createPublicKey(publicKeyPem);
+    const jwk = keyObject.export({ format: "jwk" });
+    this.addKidToJwk(jwk);
+    return jwk;
   }
 
   private addKidToJwk(jwk: JsonWebKey) {

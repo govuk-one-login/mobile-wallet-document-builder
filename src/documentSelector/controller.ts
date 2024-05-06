@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {logger} from "../utils/logger";
+import { logger } from "../utils/logger";
 
 export async function documentSelectorGetController(
   req: Request,
@@ -32,7 +32,10 @@ export async function documentSelectorPostController(
       });
     }
   } catch (error) {
-    logger.error(error, "An error happened processing request to select document");
+    logger.error(
+      error,
+      "An error happened processing request to select document"
+    );
     res.render("500.njk");
   }
 }

@@ -1,6 +1,6 @@
 import { JWTPayload, decodeJwt } from "jose";
 import { PreAuthorizedCodePayload } from "../types/PreAuthorizedCodePayload";
-import {logger} from "../../utils/logger";
+import { logger } from "../../utils/logger";
 
 enum GrantType {
   PREAUTHORIZED_CODE = "urn:ietf:params:oauth:grant-type:pre-authorized_code",
