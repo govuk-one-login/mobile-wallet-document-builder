@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { getDocument } from "../services/databaseService";
 import { logger } from "../utils/logger";
-import {NinoDocument} from "../ninoDocumentBuilder/models/ninoDocument";
-import {DbsDocument} from "../dbsDocumentBuilder/models/dbsDocument";
+import { NinoDocument } from "../ninoDocumentBuilder/models/ninoDocument";
+import { DbsDocument } from "../dbsDocumentBuilder/models/dbsDocument";
 
 export async function documentController(
   req: Request,
