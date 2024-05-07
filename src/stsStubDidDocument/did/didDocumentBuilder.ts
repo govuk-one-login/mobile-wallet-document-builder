@@ -46,15 +46,10 @@ export class DidDocumentBuilder {
       publicKeyString +
       "\n-----END PUBLIC KEY-----";
 
-    try {
-      const keyObject = createPublicKey(publicKeyPem);
-      const jwk = keyObject.export({ format: "jwk" });
-      this.addKidToJwk(jwk);
-      return jwk;
-    } catch (error) {
-      console.log(`Error creating JWK: ${error as Error}`);
-      throw error;
-    }
+    const keyObject = createPublicKey(publicKeyPem);
+    const jwk = keyObject.export({ format: "jwk" });
+    this.addKidToJwk(jwk);
+    return jwk;
   }
 
   private addKidToJwk(jwk: JsonWebKey) {
