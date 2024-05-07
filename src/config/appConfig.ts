@@ -6,6 +6,10 @@ function getEnvVarValue(variableName: string): string {
   return variableValue;
 }
 
+export function getLogLevel(): string {
+  return process.env.LOGS_LEVEL || "debug";
+}
+
 export function getPortNumber(): string {
   return getEnvVarValue("PORT");
 }
