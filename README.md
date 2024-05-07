@@ -76,6 +76,11 @@ Run the application with:
 npm run start
 ```
 
+To run the application in development mode with nodemon watching the files, run:
+```
+npm run dev
+```
+
 #### Start URL & Endpoints
 
 To start and test the credential offer endpoint, go to:

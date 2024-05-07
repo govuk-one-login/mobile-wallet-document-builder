@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getDidController, getStsSigningKeyId } from "../config/appConfig";
 import { KmsService } from "../services/kmsService";
 import { DidDocumentBuilder } from "./did/didDocumentBuilder";
+import { logger } from "../utils/logger";
 
 export async function stsStubDidDocumentController(
   req: Request,
@@ -20,7 +21,7 @@ export async function stsStubDidDocumentController(
 
     return res.status(200).json(didDocument);
   } catch (error) {
-    console.log(`An error happened: ${error}`);
+    logger.error(error, "An error happened getting the DID document");
     return res.status(500).json({ error: "server_error" });
   }
 }
