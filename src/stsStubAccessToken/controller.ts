@@ -21,12 +21,12 @@ export async function stsStubAccessTokenController(
     const grantType = req.body["grant_type"];
     const preAuthorizedCode = req.body["pre-authorized_code"];
 
-    const preAuthCodeErrors = Object.entries(PREAUTHORIZED_CODE_ERRORS);
-    // check if pre-auth code should trigger an error
-    for (const [error, errorValues] of preAuthCodeErrors) {
-      if (preAuthorizedCode === error) {
+    // check if pre-authorized code should trigger an error
+    const preAuthorizedCodeErrors = Object.entries(PREAUTHORIZED_CODE_ERRORS);
+    for (const [key, value] of preAuthorizedCodeErrors) {
+      if (preAuthorizedCode === key) {
         logger.error(`Error pre-authorized code: ${preAuthorizedCode}`);
-        return res.status(errorValues.statusCode).json(errorValues.message);
+        return res.status(value.statusCode).json(value.message);
       }
     }
 
