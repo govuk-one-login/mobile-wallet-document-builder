@@ -9,6 +9,7 @@ import {
   getStsSigningKeyId,
 } from "../config/appConfig";
 import { logger } from "../utils/logger";
+import { PREAUTHORIZED_CODE_ERRORS } from "./types/PreAuthorizedCodeErrors";
 
 const WALLET_SUBJECT_ID = "walletSubjectIdPlaceholder";
 
@@ -19,6 +20,15 @@ export async function stsStubAccessTokenController(
   try {
     const grantType = req.body["grant_type"];
     const preAuthorizedCode = req.body["pre-authorized_code"];
+
+    const preAuthCodeErrors = Object.entries(PREAUTHORIZED_CODE_ERRORS);
+    // check if pre-auth code should trigger an error
+    for (const [error, errorValues] of preAuthCodeErrors) {
+      if (preAuthorizedCode === error) {
+        logger.error(`Error pre-authorized code: ${preAuthorizedCode}`);
+        return res.status(errorValues.statusCode).json(errorValues.message);
+      }
+    }
 
     const isGrantTypeValid = validateGrantType(grantType);
     const payload = getPreAuthorizedCodePayload(preAuthorizedCode);
