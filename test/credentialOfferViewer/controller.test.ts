@@ -38,6 +38,7 @@ describe("controller.ts", () => {
       query: {
         app: "test-build",
         type: "BasicCheckCredential",
+        error: "",
       },
     });
     const { res } = getMockRes();
@@ -63,7 +64,8 @@ describe("controller.ts", () => {
     );
     expect(getCustomCredentialOfferUri).toHaveBeenCalledWith(
       "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer",
-      "test-build"
+      "test-build",
+      ""
     );
     expect(res.render).toHaveBeenCalledWith("credential-offer.njk", {
       qrCode: "data:image/png;base64,iVBORw0KGgoAAAANSU",
@@ -80,6 +82,7 @@ describe("controller.ts", () => {
       query: {
         app: "test-build",
         type: "BasicCheckCredential",
+        error: "ERROR:500",
       },
     });
     const { res } = getMockRes();
