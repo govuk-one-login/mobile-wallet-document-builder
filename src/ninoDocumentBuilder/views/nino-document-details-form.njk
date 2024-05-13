@@ -1,6 +1,7 @@
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
 {% extends "base.njk" %}
 {% block content %}
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
@@ -56,6 +57,37 @@
                 "name": "nino",
                 "spellcheck": false,
                 "value": "QQ123456C"
+            }) }}
+            {{ govukSelect({
+                "id": "throw-error",
+                "name": "throwError",
+                "label": {
+                    "text": "Throw an error",
+                    "classes": "govuk-label--s"
+                },
+                "items": [
+                    {
+                        "value": "no-error",
+                        "text": "No error",
+                        "selected": true
+                    },
+                    {
+                        "value": "401",
+                        "text": "401"
+                    },
+                    {
+                        "value": "400-invalid-client",
+                        "text": "400 (invalid client)"
+                    },
+                    {
+                        "value": "400-invalid-grant",
+                        "text": "400 (invalid grant)"
+                    },
+                    {
+                        "value": "500",
+                        "text": "500"
+                    }
+                ]
             }) }}
         {% endcall %}
         {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
