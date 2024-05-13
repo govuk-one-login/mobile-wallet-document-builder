@@ -12,7 +12,7 @@ export async function credentialOfferViewerController(
     const { documentId } = req.params;
     const selectedApp = req.query.app as string;
     const credentialType = req.query.type as string;
-
+    const errorScenario = req.query.error as string;
     const walletSubjectId = "walletSubjectIdPlaceholder";
 
     const response = await getCredentialOffer(
@@ -23,8 +23,10 @@ export async function credentialOfferViewerController(
 
     const credentialOfferUri = getCustomCredentialOfferUri(
       response["credential_offer_uri"],
-      selectedApp
+      selectedApp,
+      errorScenario
     );
+
     const qrCode = await QRCode.toDataURL(credentialOfferUri);
 
     res.render("credential-offer.njk", {
