@@ -28,12 +28,13 @@ export async function ninoDocumentBuilderPostController(
     const documentId = randomUUID();
     logger.info(`Processing NINO document with documentId ${documentId}`);
     const selectedApp = req.query.app;
+    const selectedError = req.body["throwError"];
     const document = NinoDocument.fromRequestBody(req.body, CREDENTIAL_TYPE);
     const walletSubjectId = "walletSubjectIdPlaceholder";
     await saveDocument(document, documentId, walletSubjectId);
 
     res.redirect(
-      `/view-credential-offer/${documentId}?app=${selectedApp}&type=${CREDENTIAL_TYPE}`
+      `/view-credential-offer/${documentId}?app=${selectedApp}&type=${CREDENTIAL_TYPE}&error=${selectedError}`
     );
   } catch (error) {
     logger.error(error, "An error happened processing NINO document request");

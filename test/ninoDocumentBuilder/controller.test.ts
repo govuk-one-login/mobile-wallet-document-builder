@@ -36,17 +36,18 @@ describe("controller.ts", () => {
     });
   });
 
-  it("should redirect to the credential offer page with SocialSecurityCredential in the query params", async () => {
+  it("should redirect to the credential offer page with 'selected-app', 'SocialSecurityCredential' and 'ERROR:401' in the query params", async () => {
     const requestBody = {
       title: "Ms",
       givenName: "Irene",
       familyName: "Adler",
       nino: "QQ123456A",
+      throwError: "ERROR:401",
     };
     const req = getMockReq({
       body: requestBody,
       query: {
-        app: "any-app",
+        app: "selected-app",
       },
     });
     const { res } = getMockRes();
@@ -72,7 +73,7 @@ describe("controller.ts", () => {
     await ninoDocumentBuilderPostController(req, res);
 
     expect(res.redirect).toHaveBeenCalledWith(
-      "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?app=any-app&type=SocialSecurityCredential"
+      "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?app=selected-app&type=SocialSecurityCredential&error=ERROR:401"
     );
     expect(NinoDocument.fromRequestBody).toHaveBeenCalledWith(
       requestBody,
