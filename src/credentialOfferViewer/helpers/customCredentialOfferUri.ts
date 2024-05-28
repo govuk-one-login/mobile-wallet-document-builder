@@ -5,6 +5,7 @@ type DeepLinkPaths = Map<string, string>;
 const DEEP_LINK_PATHS: DeepLinkPaths = new Map([
   ["govuk-build", "https://mobile.build.account.gov.uk/wallet/"],
   ["govuk-staging", "https://mobile.staging.account.gov.uk/wallet/"],
+  ["wallet-test-dev", "https://mobile.dev.account.gov.uk/wallet-test/"],
   ["wallet-test-build", "https://mobile.build.account.gov.uk/wallet-test/"],
   ["wallet-test-staging", "https://mobile.staging.account.gov.uk/wallet-test/"],
 ]);

@@ -33,6 +33,22 @@ describe("customCredentialOfferUri.ts", () => {
     );
   });
 
+  it("should return the URI for the Test app in dev", async () => {
+    const credentialOfferUri =
+      "https://mobile.account.gov.uk/wallet/add?credential_offer=%7B%22credentials%22%3A%5B%22BasicCheckCredential%22%5D%2C%22grants%22%3A%7B%22urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Apre-authorized_code%22%3A%7B%22pre-authorized_code%22%3A%22eyJraWQiOiJmZjI3NWI5Mi0wZGVmLTRkZmMtYjBmNi04N2M5NmIyNmM2YzciLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJ1cm46ZmRjOmdvdjp1azp3YWxsZXQiLCJjbGllbnRJZCI6IkVYQU1QTEVfQ1JJIiwiaXNzIjoidXJuOmZkYzpnb3Y6dWs6ZXhhbXBsZS1jcmVkZW50aWFsLWlzc3VlciIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsiMzAzM2VmNjctOGYwOS00MmQyLThhYTQtMmFlZDFhMTU2ZGZmIl0sImV4cCI6MTcxNTYwODU4MywiaWF0IjoxNzE1NjA4MjgzfQ.5n8xVRaOR1H5E7EVkApCwigBNChxTEvMfWCr2KTolKzzqTHdDnJRtprI1rfrqB85DvCqYYYSdsoku6SmZXoHUw%22%7D%7D%2C%22credentialIssuer%22%3A%22http%3A%2F%2Flocalhost%3A8080%22%7D";
+    const selectedApp = "wallet-test-dev";
+    const error = "";
+    const response = getCustomCredentialOfferUri(
+      credentialOfferUri,
+      selectedApp,
+      error
+    );
+
+    expect(response).toEqual(
+      "https://mobile.dev.account.gov.uk/wallet-test/add?credential_offer=%7B%22credentials%22%3A%5B%22BasicCheckCredential%22%5D%2C%22grants%22%3A%7B%22urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Apre-authorized_code%22%3A%7B%22pre-authorized_code%22%3A%22eyJraWQiOiJmZjI3NWI5Mi0wZGVmLTRkZmMtYjBmNi04N2M5NmIyNmM2YzciLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJ1cm46ZmRjOmdvdjp1azp3YWxsZXQiLCJjbGllbnRJZCI6IkVYQU1QTEVfQ1JJIiwiaXNzIjoidXJuOmZkYzpnb3Y6dWs6ZXhhbXBsZS1jcmVkZW50aWFsLWlzc3VlciIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsiMzAzM2VmNjctOGYwOS00MmQyLThhYTQtMmFlZDFhMTU2ZGZmIl0sImV4cCI6MTcxNTYwODU4MywiaWF0IjoxNzE1NjA4MjgzfQ.5n8xVRaOR1H5E7EVkApCwigBNChxTEvMfWCr2KTolKzzqTHdDnJRtprI1rfrqB85DvCqYYYSdsoku6SmZXoHUw%22%7D%7D%2C%22credentialIssuer%22%3A%22http%3A%2F%2Flocalhost%3A8080%22%7D"
+    );
+  });
+
   it("should return the URI for the Test app in build", async () => {
     const credentialOfferUri =
       "https://mobile.account.gov.uk/wallet/add?credential_offer=%7B%22credentials%22%3A%5B%22BasicCheckCredential%22%5D%2C%22grants%22%3A%7B%22urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Apre-authorized_code%22%3A%7B%22pre-authorized_code%22%3A%22eyJraWQiOiJmZjI3NWI5Mi0wZGVmLTRkZmMtYjBmNi04N2M5NmIyNmM2YzciLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJ1cm46ZmRjOmdvdjp1azp3YWxsZXQiLCJjbGllbnRJZCI6IkVYQU1QTEVfQ1JJIiwiaXNzIjoidXJuOmZkYzpnb3Y6dWs6ZXhhbXBsZS1jcmVkZW50aWFsLWlzc3VlciIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsiMzAzM2VmNjctOGYwOS00MmQyLThhYTQtMmFlZDFhMTU2ZGZmIl0sImV4cCI6MTcxNTYwODU4MywiaWF0IjoxNzE1NjA4MjgzfQ.5n8xVRaOR1H5E7EVkApCwigBNChxTEvMfWCr2KTolKzzqTHdDnJRtprI1rfrqB85DvCqYYYSdsoku6SmZXoHUw%22%7D%7D%2C%22credentialIssuer%22%3A%22http%3A%2F%2Flocalhost%3A8080%22%7D";
