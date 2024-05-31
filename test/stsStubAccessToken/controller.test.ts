@@ -14,12 +14,13 @@ jest.mock("../../src/stsStubAccessToken/token/accessToken", () => ({
 }));
 
 describe("controller.ts", () => {
-  it("should return 200 and a bearer access token in the response body", async () => {
+  it("should return 200 and the bearer access token in the response body", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
       body: {
-        grant_type: "mock_grant_type",
-        "pre-authorized_code": "mock_pre-authorized_code",
+        grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
+        "pre-authorized_code":
+          "eyJhbciOiJIUzIIkpXVCJ9.eyJzdWIiOiMjMwjoxNTE2MjM5MQ.SflKRJT4fwpeJ36POk6yJV_adQssw5c",
       },
     });
 
@@ -46,10 +47,74 @@ describe("controller.ts", () => {
     });
   });
 
-  it("should return 400 if  request 'grant_type' is invalid", async () => {
+  it("should return 401 if 'pre-authorized_code' is equal to 'ERROR:401'", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
-      params: { documentId: "testDocumentId" },
+      body: {
+        grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
+        "pre-authorized_code": "ERROR:401",
+      },
+    });
+
+    await stsStubAccessTokenController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith(undefined);
+  });
+
+  it("should return 400 and 'invalid_client' if 'pre-authorized_code' is equal to 'ERROR:CLIENT'", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq({
+      body: {
+        grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
+        "pre-authorized_code": "ERROR:CLIENT",
+      },
+    });
+
+    await stsStubAccessTokenController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "invalid_client" });
+  });
+
+  it("should return 400 and 'invalid_grant' if 'pre-authorized_code' is equal to 'ERROR:GRANT'", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq({
+      body: {
+        grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
+        "pre-authorized_code": "ERROR:GRANT",
+      },
+    });
+
+    await stsStubAccessTokenController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: "invalid_grant" });
+  });
+
+  it("should return 500 and 'server_error' if 'pre-authorized_code' is equal to 'ERROR:500'", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq({
+      body: {
+        grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
+        "pre-authorized_code": "ERROR:500",
+      },
+    });
+
+    await stsStubAccessTokenController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: "server_error" });
+  });
+
+  it("should return 400 and 'invalid_grant' if 'grant_type' is invalid", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq({
+      body: {
+        grant_type: "invalid_grant_type",
+        "pre-authorized_code":
+          "eyJhbciOiJIUzIIkpXVCJ9.eyJzdWIiOiMjMwjoxNTE2MjM5MQ.SflKRJT4fwpeJ36POk6yJV_adQssw5c",
+      },
     });
 
     const validateGrantType =
@@ -64,10 +129,13 @@ describe("controller.ts", () => {
     });
   });
 
-  it("should return 400 if request 'pre-authorized_code' is invalid", async () => {
+  it("should return 400 and 'invalid_grant' if 'pre-authorized_code' is invalid", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
-      params: { documentId: "testDocumentId" },
+      body: {
+        grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
+        "pre-authorized_code": "invalid_pre-authorized_code",
+      },
     });
 
     const validateGrantType =
@@ -86,10 +154,14 @@ describe("controller.ts", () => {
     });
   });
 
-  it("should return 500 if an unexpected error happens", async () => {
+  it("should return 500 and 'server_error' if an unexpected error happens", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
-      params: { documentId: "testDocumentId" },
+      body: {
+        grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
+        "pre-authorized_code":
+          "eyJhbciOiJIUzIIkpXVCJ9.eyJzdWIiOiMjMwjoxNTE2MjM5MQ.SflKRJT4fwpeJ36POk6yJV_adQssw5c",
+      },
     });
 
     const validateGrantType =
