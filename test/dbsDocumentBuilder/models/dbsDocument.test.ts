@@ -42,7 +42,7 @@ describe("dbsDocument.ts", () => {
       type: ["VerifiableCredential", "BasicCheckCredential"],
       credentialSubject: {
         issuanceDate: "2024-1-16",
-        expirationDate: "2025-4-5",
+        expirationDate: "2025-04-05",
         name: [
           {
             nameParts: [
@@ -55,7 +55,7 @@ describe("dbsDocument.ts", () => {
             ],
           },
         ],
-        birthDate: [{ value: "2024-1-16" }],
+        birthDate: [{ value: "1980-3-6" }],
         address: [
           {
             addressCountry: "GB",
@@ -125,8 +125,8 @@ describe("dbsDocument.ts", () => {
             policeRecordsCheck: "Clear",
           },
         ],
-        birthDate: [{ value: "2024--" }],
-        expirationDate: "2025-4-5",
+        birthDate: [{ value: "1980--6" }],
+        expirationDate: "2025-04-05",
         issuanceDate: "2024--",
         name: [
           {
@@ -187,8 +187,8 @@ describe("dbsDocument.ts", () => {
             policeRecordsCheck: "Clear",
           },
         ],
-        birthDate: [{ value: "cab=*;ds-1-16" }],
-        expirationDate: "2025-4-5",
+        birthDate: [{ value: "1980-3-6" }],
+        expirationDate: "2025-04-05",
         issuanceDate: "cab=*;ds-1-16",
         name: [
           {
