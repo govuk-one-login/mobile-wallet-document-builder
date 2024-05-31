@@ -55,7 +55,7 @@ describe("dbsDocument.ts", () => {
             ],
           },
         ],
-        birthDate: [{ value: "2024-1-16" }],
+        birthDate: [{ value: "1980-3-6" }],
         address: [
           {
             addressCountry: "GB",
@@ -125,7 +125,7 @@ describe("dbsDocument.ts", () => {
             policeRecordsCheck: "Clear",
           },
         ],
-        birthDate: [{ value: "2024--" }],
+        birthDate: [{ value: "1980--6" }],
         expirationDate: "2025-4-5",
         issuanceDate: "2024--",
         name: [
@@ -187,7 +187,7 @@ describe("dbsDocument.ts", () => {
             policeRecordsCheck: "Clear",
           },
         ],
-        birthDate: [{ value: "cab=*;ds-1-16" }],
+        birthDate: [{ value: "1980-3-6" }],
         expirationDate: "2025-4-5",
         issuanceDate: "cab=*;ds-1-16",
         name: [

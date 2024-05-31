@@ -41,7 +41,7 @@ export class DbsDocument {
       name: [{ nameParts: getNameParts(input.firstName, input.lastName) }],
       birthDate: [
         {
-          value: `${input["issuance-year"]}-${input["issuance-month"]}-${input["issuance-day"]}`,
+          value: `${input["birth-year"]}-${input["birth-month"]}-${input["birth-day"]}`,
         },
       ],
       address: [
