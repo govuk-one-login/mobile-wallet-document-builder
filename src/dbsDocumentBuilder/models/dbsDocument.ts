@@ -2,15 +2,7 @@ import { DbsCredentialSubject } from "../types/DbsCredentialSubject";
 import { DbsInputData } from "../types/DbsInputData";
 import { getNameParts } from "../../helpers/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
-
-function getExpirationDate() {
-  const nextYear = new Date().getFullYear() + 1;
-  const dateInOneYearTimestamp = new Date().setFullYear(nextYear);
-  const year = new Date(dateInOneYearTimestamp).getFullYear();
-  const month = new Date(dateInOneYearTimestamp).getMonth() + 1;
-  const day = new Date(dateInOneYearTimestamp).getDate();
-  return `${year}-${month}-${day}`;
-}
+import { getExpirationDate } from "../getExpirationDate";
 
 export class DbsDocument {
   public readonly type: string[];
@@ -41,7 +33,7 @@ export class DbsDocument {
       name: [{ nameParts: getNameParts(input.firstName, input.lastName) }],
       birthDate: [
         {
-          value: `${input["issuance-year"]}-${input["issuance-month"]}-${input["issuance-day"]}`,
+          value: `${input["birth-year"]}-${input["birth-month"]}-${input["birth-day"]}`,
         },
       ],
       address: [
