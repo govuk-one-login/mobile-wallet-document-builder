@@ -57,6 +57,10 @@ export function getOIDCPrivateKey(): string {
 export function getOIDCRedirectUri(): string {
   return getEnvVarValue("OIDC_REDIRECT_URI");
 }
-export function getOIDCIssuerDiscoveryEndpoint(): string {
-  return getEnvVarValue("OIDC_ISSUER_DISCOVERY_ENDPOINT");
+export function getOIDCIssuer(): string {
+  return getEnvVarValue("OIDC_ISSUER");
+}
+
+export function getTokenTtlInSecs(): string {
+  return process.env.TOKEN_TTL_IN_SECS || "300";
 }

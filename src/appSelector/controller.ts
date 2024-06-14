@@ -62,6 +62,8 @@ export async function appSelectorPostController(
         vtr: VECTORS_OF_TRUST,
       });
 
+      console.log(req)
+
       res.redirect(authorizationUrl);
     } else {
       console.log("LOGIN NOT REQUIRED")
