@@ -21,14 +21,14 @@ describe("controller.ts", () => {
   it("should redirect to the page for selecting a document", async () => {
     const req = getMockReq({
       body: {
-        "select-app-choice": "any-app",
+        "select-app-choice": "govuk-build",
       },
     });
     const { res } = getMockRes();
 
     await appSelectorPostController(req, res);
 
-    expect(res.redirect).toHaveBeenCalledWith("/select-document?app=any-app");
+    expect(res.redirect).toHaveBeenCalledWith("/select-document?app=govuk-build");
   });
 
   it("should re-render the form for selecting an app when no choice was selected", async () => {
