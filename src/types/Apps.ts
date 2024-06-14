@@ -7,6 +7,7 @@ export interface App {
     login: boolean;
 }
 
+// REMEMBER TO USE THIS CONSTANT IN THE CREDENTIAL OFFER VIEWER
 export const apps: Apps = {
     "govuk-build": {
         path: "https://mobile.build.account.gov.uk/wallet/",

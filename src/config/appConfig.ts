@@ -45,3 +45,18 @@ export function getAccessTokenTtlInSecs(): string {
 export function getDidController(): string {
   return getEnvVarValue("DID_CONTROLLER");
 }
+
+export function getOIDCClientId(): string {
+  return getEnvVarValue("OIDC_CLIENT_ID");
+}
+
+export function getOIDCPrivateKey(): string {
+  return getEnvVarValue("OIDC_PRIVATE_KEY");
+}
+
+export function getOIDCRedirectUri(): string {
+  return getEnvVarValue("OIDC_REDIRECT_URI");
+}
+export function getOIDCIssuerDiscoveryEndpoint(): string {
+  return getEnvVarValue("OIDC_ISSUER_DISCOVERY_ENDPOINT");
+}

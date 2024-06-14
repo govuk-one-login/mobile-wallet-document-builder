@@ -10,6 +10,10 @@ import { stsStubDidDocumentRouter } from "./stsStubDidDocument/router";
 import { documentSelectorRouter } from "./documentSelector/router";
 import { ninoDocumentBuilderRouter } from "./ninoDocumentBuilder/router";
 import { loggerMiddleware } from "./utils/logger";
+import {getOIDCConfig} from "./config/oidc";
+import {auth} from "./middleware/auth";
+import cookieParser from "cookie-parser";
+import {returnFromAuthRouter} from "./returnFromAuth/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
@@ -24,6 +28,9 @@ const APP_VIEWS = [
 export async function createApp(): Promise<express.Application> {
   const app: express.Application = express();
 
+  app.use(cookieParser());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(auth(getOIDCConfig()));
   app.use(loggerMiddleware);
   app.use((req, res, next) => {
     req.log = req.log.child({
@@ -44,7 +51,7 @@ export async function createApp(): Promise<express.Application> {
     })
   );
 
-  app.use(express.urlencoded({ extended: true }));
+  app.use(returnFromAuthRouter);
   app.use(appSelectorRouter);
   app.use(documentSelectorRouter);
   app.use(dbsDocumentBuilderRouter);
