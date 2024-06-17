@@ -1,7 +1,5 @@
 import express from "express";
-import {
-returnFromAuthGetController,
-} from "./controller";
+import { returnFromAuthGetController } from "./controller";
 
 const router = express.Router();
 

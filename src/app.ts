@@ -10,10 +10,10 @@ import { stsStubDidDocumentRouter } from "./stsStubDidDocument/router";
 import { documentSelectorRouter } from "./documentSelector/router";
 import { ninoDocumentBuilderRouter } from "./ninoDocumentBuilder/router";
 import { loggerMiddleware } from "./utils/logger";
-import {getOIDCConfig} from "./config/oidc";
-import {auth} from "./middleware/auth";
+import { getOIDCConfig } from "./config/oidc";
+import { auth } from "./middleware/auth";
 import cookieParser from "cookie-parser";
-import {returnFromAuthRouter} from "./returnFromAuth/router";
+import { returnFromAuthRouter } from "./returnFromAuth/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),

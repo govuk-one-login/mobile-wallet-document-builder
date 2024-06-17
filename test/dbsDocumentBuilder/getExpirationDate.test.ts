@@ -13,7 +13,7 @@ describe("getExpirationDate.ts", () => {
   });
 
   it("should generate a valid expiration date", () => {
-   const expirationDate = getExpirationDate();
-   expect(expirationDate).toEqual("2025-04-05");
+    const expirationDate = getExpirationDate();
+    expect(expirationDate).toEqual("2025-04-05");
   });
-})
+});

@@ -6,7 +6,7 @@ export async function documentSelectorGetController(
   res: Response
 ): Promise<void> {
   try {
-    const selectedApp = req.query.app;
+    const selectedApp = req.cookies.app;
     res.render("select-document-form.njk", { selectedApp: selectedApp });
   } catch (error) {
     logger.error(error, "An error happened rendering document selection page");

@@ -46,6 +46,10 @@ export function getDidController(): string {
   return getEnvVarValue("DID_CONTROLLER");
 }
 
+export function getBaseUrl(): string {
+  return getEnvVarValue("BASE_URL");
+}
+
 export function getOIDCClientId(): string {
   return getEnvVarValue("OIDC_CLIENT_ID");
 }
@@ -54,13 +58,6 @@ export function getOIDCPrivateKey(): string {
   return getEnvVarValue("OIDC_PRIVATE_KEY");
 }
 
-export function getOIDCRedirectUri(): string {
-  return getEnvVarValue("OIDC_REDIRECT_URI");
-}
-export function getOIDCIssuer(): string {
-  return getEnvVarValue("OIDC_ISSUER");
-}
-
-export function getTokenTtlInSecs(): string {
-  return process.env.TOKEN_TTL_IN_SECS || "300";
+export function getOIDCDiscoveryEndpoint(): string {
+  return getEnvVarValue("OIDC_DISCOVERY_ENDPOINT");
 }

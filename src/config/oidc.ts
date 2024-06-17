@@ -1,47 +1,45 @@
 import { AuthMiddlewareConfiguration } from "../types/AuthMiddlewareConfiguration";
 import {
-    getOIDCRedirectUri,
-    getOIDCPrivateKey,
-    getOIDCClientId, getOIDCIssuer,
+  getBaseUrl,
+  getOIDCPrivateKey,
+  getOIDCClientId,
+  getOIDCDiscoveryEndpoint,
 } from "./appConfig";
-import {Client, ClientMetadata, Issuer} from "openid-client";
-import {readPrivateKey} from "../appSelector/readPrivateKey";
+import { Client, ClientMetadata, Issuer } from "openid-client";
+import { readPrivateKey } from "../appSelector/readPrivateKey";
 
-const SCOPES = [
-    "openid", // Always included
-    "wallet-subject-id", // Returns the user's walletSubjectId
-];
+const SCOPES = ["openid", "wallet-subject-id"];
 
 export function getOIDCConfig(): AuthMiddlewareConfiguration {
-    return {
-        clientId: getOIDCClientId(),
-        privateKey: getOIDCPrivateKey(),
-        discoveryEndpoint: getOIDCIssuer(),
-        redirectUri: getOIDCRedirectUri(),
-    } as AuthMiddlewareConfiguration;
+  return {
+    clientId: getOIDCClientId(),
+    privateKey: getOIDCPrivateKey(),
+    discoveryEndpoint: getOIDCDiscoveryEndpoint(),
+    redirectUri: getBaseUrl() + "/return-from-auth",
+  } as AuthMiddlewareConfiguration;
 }
 
 async function getIssuer(discoveryUri: string) {
-    return await Issuer.discover(discoveryUri);
+  return await Issuer.discover(discoveryUri);
 }
 
-export async function getOIDCClient(config: AuthMiddlewareConfiguration): Promise<Client> {
-    const jwks = [readPrivateKey(config.privateKey).export({format: "jwk"})];
-    const issuer = await getIssuer(config.discoveryEndpoint);
+export async function getOIDCClient(
+  config: AuthMiddlewareConfiguration
+): Promise<Client> {
+  const jwks = [readPrivateKey(config.privateKey).export({ format: "jwk" })];
+  const issuer = await getIssuer(config.discoveryEndpoint);
 
-    const clientMetadata: ClientMetadata = {
-        client_id: config.clientId,
-        redirect_uris: [config.redirectUri],
-        response_types: ["code"],
-        token_endpoint_auth_method: "private_key_jwt",
-        token_endpoint_auth_signing_alg: "PS256",
-        id_token_signed_response_alg: "ES256",
-        scopes: SCOPES.join(" "),
-    };
+  const clientMetadata: ClientMetadata = {
+    client_id: config.clientId,
+    redirect_uris: [config.redirectUri],
+    response_types: ["code"],
+    token_endpoint_auth_method: "private_key_jwt",
+    token_endpoint_auth_signing_alg: "PS256",
+    id_token_signed_response_alg: "ES256",
+    scopes: SCOPES.join(" "),
+  };
 
-    // what is the point of adding the jwks?
-    // JWK Set formatted object with private keys used for signing client assertions or decrypting responses
-    return new issuer.Client(clientMetadata, {
-        keys: jwks
-    });
+  return new issuer.Client(clientMetadata, {
+    keys: jwks,
+  });
 }

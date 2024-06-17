@@ -28,7 +28,9 @@ describe("controller.ts", () => {
 
     await appSelectorPostController(req, res);
 
-    expect(res.redirect).toHaveBeenCalledWith("/select-document?app=govuk-build");
+    expect(res.redirect).toHaveBeenCalledWith(
+      "/select-document?app=govuk-build"
+    );
   });
 
   it("should re-render the form for selecting an app when no choice was selected", async () => {
