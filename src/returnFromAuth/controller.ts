@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
 import { CallbackParamsType, TokenSet } from "openid-client";
+import { getCookieExpiry } from "../utils/getCookieExpiry";
 
 export async function returnFromAuthGetController(
   req: Request,
@@ -24,9 +25,11 @@ export async function returnFromAuthGetController(
 
     res.cookie("access_token", tokenResponse.access_token, {
       httpOnly: true,
+      maxAge: getCookieExpiry(),
     });
     res.cookie("id_token", tokenResponse.id_token, {
       httpOnly: true,
+      maxAge: getCookieExpiry(),
     });
 
     res.redirect(`/select-document`);

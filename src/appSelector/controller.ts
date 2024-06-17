@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
+import { getCookieExpiry } from "../utils/getCookieExpiry";
 
 export async function appSelectorGetController(
   req: Request,
@@ -22,6 +23,7 @@ export async function appSelectorPostController(
 
     res.cookie("app", selectedApp, {
       httpOnly: true,
+      maxAge: getCookieExpiry(),
     });
 
     if (selectedApp) {

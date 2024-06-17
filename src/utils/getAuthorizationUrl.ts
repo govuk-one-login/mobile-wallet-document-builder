@@ -1,5 +1,6 @@
 import { generators } from "openid-client";
 import e from "express";
+import { getCookieExpiry } from "./getCookieExpiry";
 // import {createHash} from "node:crypto";
 
 const VECTORS_OF_TRUST = `["Cl"]`;
@@ -14,9 +15,11 @@ export function getAuthorizationUrl(req: e.Request, res: e.Response) {
 
   res.cookie("nonce", nonce, {
     httpOnly: true,
+    maxAge: getCookieExpiry(),
   });
   res.cookie("state", state, {
     httpOnly: true,
+    maxAge: getCookieExpiry(),
   });
 
   return req.oidc.authorizationUrl({
