@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../utils/logger";
 import { getAuthorizationUrl } from "../utils/getAuthorizationUrl";
-import { requiresLogin } from "../utils/requiresLogin";
 import { getBaseUrl } from "../config/appConfig";
+import { apps } from "../types/Apps";
+
+export function requiresLogin(selectedApp: string) {
+  return apps[selectedApp].login;
+}
 
 export async function requiresAuth(
   req: Request,
