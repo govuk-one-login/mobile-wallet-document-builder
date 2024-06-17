@@ -9,7 +9,7 @@ import {
 } from "@aws-sdk/client-kms";
 import { getKmsConfig } from "../config/aws";
 import format from "ecdsa-sig-formatter";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
 
 export class KmsService {
   constructor(

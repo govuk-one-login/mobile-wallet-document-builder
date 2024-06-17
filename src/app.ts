@@ -9,7 +9,7 @@ import path from "path";
 import { stsStubDidDocumentRouter } from "./stsStubDidDocument/router";
 import { documentSelectorRouter } from "./documentSelector/router";
 import { ninoDocumentBuilderRouter } from "./ninoDocumentBuilder/router";
-import { loggerMiddleware } from "./utils/logger";
+import { loggerMiddleware } from "./middleware/logger";
 import { getOIDCConfig } from "./config/oidc";
 import { auth } from "./middleware/auth";
 import cookieParser from "cookie-parser";

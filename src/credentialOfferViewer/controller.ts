@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import QRCode from "qrcode";
 import { getCredentialOffer } from "./services/credentialOfferService";
 import { getCustomCredentialOfferUri } from "./helpers/customCredentialOfferUri";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
 
 export async function credentialOfferViewerController(
   req: Request,

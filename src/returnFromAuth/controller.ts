@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
 import { CallbackParamsType, TokenSet } from "openid-client";
 
 export async function returnFromAuthGetController(

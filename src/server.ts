@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { createApp } from "./app";
 import { getPortNumber } from "./config/appConfig";
-import { logger } from "./utils/logger";
+import { logger } from "./middleware/logger";
 
 (async () => {
   const port = getPortNumber();

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getCriEndpoint } from "../../config/appConfig";
 import { CredentialOfferResponse } from "../types/CredentialOfferResponse";
-import { logger } from "../../utils/logger";
+import { logger } from "../../middleware/logger";
 
 const CREDENTIAL_OFFER_PATH = "/credential_offer";
 

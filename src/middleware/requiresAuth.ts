@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { logger } from "../utils/logger";
+import { logger } from "./logger";
 import { getAuthorizationUrl } from "../utils/getAuthorizationUrl";
 import { getBaseUrl } from "../config/appConfig";
 import { apps } from "../types/Apps";
