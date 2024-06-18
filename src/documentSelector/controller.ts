@@ -6,8 +6,7 @@ export async function documentSelectorGetController(
   res: Response
 ): Promise<void> {
   try {
-    const selectedApp = req.cookies.app;
-    res.render("select-document-form.njk", { selectedApp: selectedApp });
+    res.render("select-document-form.njk");
   } catch (error) {
     logger.error(error, "An error happened rendering document selection page");
     res.render("500.njk");
@@ -19,13 +18,12 @@ export async function documentSelectorPostController(
   res: Response
 ): Promise<void> {
   try {
-    const selectedApp = req.query.app;
     const selectedDocument = req.body["select-document-choice"];
 
     if (selectedDocument && selectedDocument === "nino") {
-      res.redirect(`/build-nino-document?app=${selectedApp}`);
+      res.redirect(`/build-nino-document`);
     } else if (selectedDocument && selectedDocument === "dbs") {
-      res.redirect(`/build-dbs-document?app=${selectedApp}`);
+      res.redirect(`/build-dbs-document`);
     } else {
       res.render("select-document-form.njk", {
         isInvalid: selectedDocument === undefined,

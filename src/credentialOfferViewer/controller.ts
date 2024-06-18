@@ -10,7 +10,7 @@ export async function credentialOfferViewerController(
 ): Promise<void> {
   try {
     const { documentId } = req.params;
-    const selectedApp = req.query.app as string;
+    const selectedApp = req.cookies.app as string;
     const credentialType = req.query.type as string;
     const errorScenario = req.query.error as string;
     const walletSubjectId = "walletSubjectIdPlaceholder";

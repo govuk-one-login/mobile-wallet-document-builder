@@ -6,7 +6,7 @@
 {% extends "base.njk" %}
 {% block content %}
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
-    <form action="/build-dbs-document/?app={{ selectedApp }}" method="post">
+    <form action="/build-dbs-document" method="post">
         {% call govukFieldset({
             "legend": {
             "text": "Please enter the Clear Basic DBS Check document details:",
