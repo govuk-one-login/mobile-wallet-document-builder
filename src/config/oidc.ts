@@ -6,7 +6,7 @@ import {
   getOIDCDiscoveryEndpoint,
 } from "./appConfig";
 import { Client, ClientMetadata, Issuer } from "openid-client";
-import { readPrivateKey } from "../appSelector/readPrivateKey";
+import {createPrivateKey} from "node:crypto";
 
 const SCOPES = ["openid", "wallet-subject-id"];
 
@@ -19,6 +19,14 @@ export function getOIDCConfig(): AuthMiddlewareConfiguration {
   } as AuthMiddlewareConfiguration;
 }
 
+function readPrivateKey(privateKey: string) {
+  return createPrivateKey({
+    key: Buffer.from(privateKey, "base64"),
+    type: "pkcs8",
+    format: "der",
+  });
+}
+
 async function getIssuer(discoveryUri: string) {
   return await Issuer.discover(discoveryUri);
 }
@@ -26,7 +34,7 @@ async function getIssuer(discoveryUri: string) {
 export async function getOIDCClient(
   config: AuthMiddlewareConfiguration
 ): Promise<Client> {
-  const jwks = [readPrivateKey(config.privateKey).export({ format: "jwk" })];
+  const jwk = [readPrivateKey(config.privateKey).export({ format: "jwk" })];
   const issuer = await getIssuer(config.discoveryEndpoint);
 
   const clientMetadata: ClientMetadata = {
@@ -40,6 +48,6 @@ export async function getOIDCClient(
   };
 
   return new issuer.Client(clientMetadata, {
-    keys: jwks,
+    keys: jwk,
   });
 }
