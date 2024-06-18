@@ -59,7 +59,7 @@ export function getOIDCPrivateKey(): string {
 }
 
 export function getOIDCDiscoveryEndpoint(): string {
-  return getEnvVarValue("OIDC_DISCOVERY_ENDPOINT");
+  return getEnvVarValue("OIDC_ISSUER_DISCOVERY_ENDPOINT");
 }
 
 export function getCookieTtlInSecs(): string {
