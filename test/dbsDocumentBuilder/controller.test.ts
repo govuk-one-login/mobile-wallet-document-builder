@@ -30,7 +30,7 @@ describe("controller.ts", () => {
     expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk");
   });
 
-  it("should redirect to the credential offer page with 'selected-app', 'BasicCheckCredential' and 'ERROR:500' in the query params", async () => {
+  it("should redirect to the credential offer page with 'BasicCheckCredential' and 'ERROR:500' in the query params", async () => {
     const requestBody = {
       "issuance-day": "16",
       "issuance-month": "1",
