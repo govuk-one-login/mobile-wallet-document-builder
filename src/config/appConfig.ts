@@ -54,8 +54,8 @@ export function getOIDCClientId(): string {
   return getEnvVarValue("OIDC_CLIENT_ID");
 }
 
-export function getOIDCPrivateKey(): string {
-  return getEnvVarValue("OIDC_PRIVATE_KEY");
+export function getClientSigningKeyId(): string {
+  return getEnvVarValue("CLIENT_SIGNING_KEY_ID");
 }
 
 export function getOIDCDiscoveryEndpoint(): string {
@@ -64,4 +64,8 @@ export function getOIDCDiscoveryEndpoint(): string {
 
 export function getCookieTtlInSecs(): string {
   return getEnvVarValue("COOKIE_TTL_IN_SECS");
+}
+
+export function getTokenTtlInSecs(): string {
+  return getEnvVarValue("TOKEN_TTL_IN_SECS");
 }

@@ -70,11 +70,9 @@ Mappings:
       FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
     staging:
       FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
-  
   ElasticLoadBalancerAccountIds:
     eu-west-2:
       AccountId: 652711504416
-
   DidController:
     dev:
       Controller: "did:web:wallet-api.mobile.dev.account.gov.uk"
@@ -82,6 +80,20 @@ Mappings:
       Controller: "did:web:wallet-api.mobile.build.account.gov.uk"
     staging:
       Controller: "did:web:wallet-api.mobile.staging.account.gov.uk"
+  ClientId:
+    dev:
+      Id: "TEST_CLIENT_ID"
+    build:
+      Id: "awOuCb_sWF1rLi15JpFOi-HqEnQ"
+    staging:
+      Id: "awOuCb_sWF1rLi15JpFOi-HqEnQ"
+  OidcIssuerDiscoveryEndpoint:
+    dev:
+      Endpoint: ""
+    build:
+      Endpoint: "https://oidc.integration.account.gov.uk"
+    staging:
+      Endpoint: "https://oidc.integration.account.gov.uk"
 
 Resources:
 
@@ -420,6 +432,21 @@ Resources:
               Value: 180
             - Name: DID_CONTROLLER
               Value: !FindInMap [DidController, !Ref Environment, Controller]
+            - Name: BASE_URL
+              Value: !Sub
+                - "https://${FEURL}"
+                - FEURL:
+                    !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
+            - Name: OIDC_CLIENT_ID
+              Value: !FindInMap [ ClientId, !Ref Environment, Id ]
+            - Name: CLIENT_SIGNING_KEY_ID
+              Value: !Ref ClientSigningKey
+            - Name: OIDC_ISSUER_DISCOVERY_ENDPOINT
+              Value: !FindInMap [ OidcIssuerDiscoveryEndpoint, !Ref Environment, Endpoint ]
+            - Name: COOKIE_TTL_IN_SECS
+              Value: 3600
+            - Name: TOKEN_TTL_IN_SECS
+              Value: 300
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp
@@ -521,7 +548,7 @@ Resources:
   StsStubSigningKey:
     Type: AWS::KMS::Key
     Properties:
-      Description: Asymmetric key for signing tokens
+      Description: ECC asymmetric key for signing tokens
       Enabled: true
       EnableKeyRotation: false
       KeyPolicy:
@@ -551,6 +578,40 @@ Resources:
     Properties:
       AliasName: alias/sts-stub-signing-key
       TargetKeyId: !Ref StsStubSigningKey
+
+  ClientSigningKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: RSA asymmetric key for signing tokens
+      Enabled: true
+      EnableKeyRotation: false
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+            Action:
+              - "kms:*"
+            Resource:
+              - "*"
+          - Effect: Allow
+            Principal:
+              AWS: !GetAtt WalletFEECSTaskRole.Arn
+            Action:
+              - 'kms:Sign'
+              - 'kms:GetPublicKey'
+            Resource:
+              - "*"
+      KeySpec: RSA_2048
+      KeyUsage: SIGN_VERIFY
+      MultiRegion: false
+
+  ClientSigningKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: alias/client-signing-key
+      TargetKeyId: !Ref ClientSigningKey
 
   DocumentDatabaseKmsKey:
     Type: AWS::KMS::Key

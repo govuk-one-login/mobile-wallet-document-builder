@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
 import { TokenSet } from "openid-client";
 import { getCookieExpiry } from "../utils/getCookieExpiry";
+import {buildAssertionJwt} from "./buildAssertionJwt";
+import {getClientSigningKeyId, getStsSigningKeyId} from "../config/appConfig";
 
 export async function returnFromAuthGetController(
   req: Request,
@@ -13,12 +15,30 @@ export async function returnFromAuthGetController(
         res.status(500);
       }
 
+    const clientAssertion = await buildAssertionJwt(
+        req.oidc.metadata.client_id!,
+        req.oidc.issuer.metadata.token_endpoint!,
+        getClientSigningKeyId()
+  );
+
+    console.log("clientAssertion", clientAssertion)
+
     // Exchange the access code in the url parameters for an access token
     const tokenSet: TokenSet = await req.oidc.callback(
       req.oidc.metadata.redirect_uris![0],
       req.oidc.callbackParams(req),  // Get all parameters to pass to the token exchange endpoint
-      { nonce: req.cookies.nonce, state: req.cookies.state }
+      { nonce: req.cookies.nonce, state: req.cookies.state },
+    {
+      exchangeBody: {
+        client_assertion_type:
+            "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                client_assertion: clientAssertion,
+      },
+    }
     );
+
+    console.log("clientAssertion", tokenSet)
+
 
     if (!tokenSet.access_token) {
       logger.error("No access token received");
