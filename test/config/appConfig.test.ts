@@ -10,7 +10,8 @@ import {
   getBaseUrl,
   getOIDCClientId,
   getOIDCPrivateKey,
-  getOIDCDiscoveryEndpoint, getCookieTtlInSecs,
+  getOIDCDiscoveryEndpoint,
+  getCookieTtlInSecs,
 } from "../../src/config/appConfig";
 
 describe("appConfig.ts", () => {
@@ -74,7 +75,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if ACCESS_TOKEN_TTL_IN_SECS environment variable is not set", () => {
     expect(() => getAccessTokenTtlInSecs()).toThrow(
-        new Error("ACCESS_TOKEN_TTL_IN_SECS environment variable not set")
+      new Error("ACCESS_TOKEN_TTL_IN_SECS environment variable not set")
     );
   });
 
@@ -85,7 +86,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if DID_CONTROLLER environment variable is not set", () => {
     expect(() => getDidController()).toThrow(
-        new Error("DID_CONTROLLER environment variable not set")
+      new Error("DID_CONTROLLER environment variable not set")
     );
   });
 
@@ -96,7 +97,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if BASE_URL environment variable is not set", () => {
     expect(() => getBaseUrl()).toThrow(
-        new Error("BASE_URL environment variable not set")
+      new Error("BASE_URL environment variable not set")
     );
   });
 
@@ -107,7 +108,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if OIDC_CLIENT_ID environment variable is not set", () => {
     expect(() => getOIDCClientId()).toThrow(
-        new Error("OIDC_CLIENT_ID environment variable not set")
+      new Error("OIDC_CLIENT_ID environment variable not set")
     );
   });
 
@@ -118,7 +119,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if OIDC_PRIVATE_KEY environment variable is not set", () => {
     expect(() => getOIDCPrivateKey()).toThrow(
-        new Error("OIDC_PRIVATE_KEY environment variable not set")
+      new Error("OIDC_PRIVATE_KEY environment variable not set")
     );
   });
 
@@ -129,7 +130,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable is not set", () => {
     expect(() => getOIDCDiscoveryEndpoint()).toThrow(
-        new Error("OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable not set")
+      new Error("OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable not set")
     );
   });
 
@@ -140,7 +141,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if COOKIE_TTL_IN_SECS environment variable is not set", () => {
     expect(() => getCookieTtlInSecs()).toThrow(
-        new Error("COOKIE_TTL_IN_SECS environment variable not set")
+      new Error("COOKIE_TTL_IN_SECS environment variable not set")
     );
   });
 

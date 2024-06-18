@@ -17,7 +17,10 @@ export class KmsService {
     private readonly kmsClient: KMSClient = new KMSClient(getKmsConfig())
   ) {}
 
-  async sign(message: string, signingAlgorithm: SigningAlgorithmSpec): Promise<string> {
+  async sign(
+    message: string,
+    signingAlgorithm: SigningAlgorithmSpec
+  ): Promise<string> {
     const signCommandInput: SignCommandInput = {
       Message: Buffer.from(message),
       KeyId: this.keyId,
@@ -38,11 +41,12 @@ export class KmsService {
       throw new Error("No signature returned");
     }
 
-    const base64EncodedSignature =
-        Buffer.from(response.Signature).toString("base64url");
+    const base64EncodedSignature = Buffer.from(response.Signature).toString(
+      "base64url"
+    );
 
     if (signingAlgorithm.startsWith("RSA")) {
-      return base64EncodedSignature
+      return base64EncodedSignature;
     } else {
       return format.derToJose(base64EncodedSignature, "ES256");
     }

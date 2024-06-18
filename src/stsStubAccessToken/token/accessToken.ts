@@ -3,7 +3,7 @@ import { Jwt } from "../types/Jwt";
 import { PreAuthorizedCodePayload } from "../types/PreAuthorizedCodePayload";
 import { KmsService } from "../../services/kmsService";
 import { randomUUID, UUID } from "node:crypto";
-import {base64Encoder} from "../../utils/base64Encoder";
+import { base64Encoder } from "../../utils/base64Encoder";
 
 const ACCESS_TOKEN_SIGNING_ALGORITHM = "ES256";
 const ACCESS_TOKEN_JWT_TYPE = "JWT";
@@ -55,8 +55,10 @@ export async function createSignedAccessToken(
   const encodedHeader = base64Encoder(header);
   const encodedPayload = base64Encoder(payload);
   const message = `${encodedHeader}.${encodedPayload}`;
-  const signature = await kmsService.sign(message, ACCESS_TOKEN_KMS_SIGNING_ALGORITHM);
+  const signature = await kmsService.sign(
+    message,
+    ACCESS_TOKEN_KMS_SIGNING_ALGORITHM
+  );
 
   return `${encodedHeader}.${encodedPayload}.${signature}`;
 }
-
