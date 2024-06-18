@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
-import { CallbackParamsType, TokenSet } from "openid-client";
+import { TokenSet } from "openid-client";
 import { getCookieExpiry } from "../utils/getCookieExpiry";
 
 export async function returnFromAuthGetController(
@@ -8,26 +8,33 @@ export async function returnFromAuthGetController(
   res: Response
 ): Promise<void> {
   try {
-    const queryParams: CallbackParamsType = req.oidc.callbackParams(req);
-    if (queryParams.error) {
+    if (req.query.error) {
       logger.error(`${req.query.error} - ${req.query.error_description}`);
-      if (queryParams.error === "access_denied") {
-        res.status(403);
+        res.status(500);
       }
-      res.status(500);
-    }
 
-    const tokenResponse: TokenSet = await req.oidc.callback(
+    // Exchange the access code in the url parameters for an access token
+    const tokenSet: TokenSet = await req.oidc.callback(
       req.oidc.metadata.redirect_uris![0],
-      queryParams,
+      req.oidc.callbackParams(req),  // Get all parameters to pass to the token exchange endpoint
       { nonce: req.cookies.nonce, state: req.cookies.state }
     );
 
-    res.cookie("access_token", tokenResponse.access_token, {
+    if (!tokenSet.access_token) {
+      logger.error("No access token received");
+      res.status(500);
+    }
+
+    if (!tokenSet.id_token) {
+      logger.error("No id token received");
+      res.status(500);
+    }
+
+    res.cookie("access_token", tokenSet.access_token, {
       httpOnly: true,
       maxAge: getCookieExpiry(),
     });
-    res.cookie("id_token", tokenResponse.id_token, {
+    res.cookie("id_token", tokenSet.id_token, {
       httpOnly: true,
       maxAge: getCookieExpiry(),
     });

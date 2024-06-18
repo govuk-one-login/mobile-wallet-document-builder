@@ -47,6 +47,5 @@ describe("controller.ts", () => {
     });
     expect(res.redirect).not.toHaveBeenCalled();
     expect(res.cookie).not.toHaveBeenCalled( )
-
   });
 });
