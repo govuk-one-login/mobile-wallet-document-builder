@@ -9,9 +9,10 @@ import {
   getDidController,
   getBaseUrl,
   getOIDCClientId,
-  getOIDCPrivateKey,
   getOIDCDiscoveryEndpoint,
   getCookieTtlInSecs,
+  getClientSigningKeyId,
+  getTokenTtlInSecs,
 } from "../../src/config/appConfig";
 
 describe("appConfig.ts", () => {
@@ -117,15 +118,15 @@ describe("appConfig.ts", () => {
     expect(getOIDCClientId()).toEqual("test-client-id");
   });
 
-  it("should throw an error if OIDC_PRIVATE_KEY environment variable is not set", () => {
-    expect(() => getOIDCPrivateKey()).toThrow(
-      new Error("OIDC_PRIVATE_KEY environment variable not set")
+  it("should throw an error if CLIENT_SIGNING_KEY_ID environment variable is not set", () => {
+    expect(() => getClientSigningKeyId()).toThrow(
+      new Error("CLIENT_SIGNING_KEY_ID environment variable not set")
     );
   });
 
-  it("should return OIDC_PRIVATE_KEY environment variable value if set", () => {
-    process.env.OIDC_PRIVATE_KEY = "test-private-key";
-    expect(getOIDCPrivateKey()).toEqual("test-private-key");
+  it("should return CLIENT_SIGNING_KEY_ID environment variable value if set", () => {
+    process.env.CLIENT_SIGNING_KEY_ID = "test-client-key-id";
+    expect(getClientSigningKeyId()).toEqual("test-client-key-id");
   });
 
   it("should throw an error if OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable is not set", () => {
@@ -148,5 +149,16 @@ describe("appConfig.ts", () => {
   it("should return COOKIE_TTL_IN_SECS environment variable value if set", () => {
     process.env.COOKIE_TTL_IN_SECS = "200";
     expect(getCookieTtlInSecs()).toEqual("200");
+  });
+
+  it("should throw an error if TOKEN_TTL_IN_SECS environment variable is not set", () => {
+    expect(() => getTokenTtlInSecs()).toThrow(
+      new Error("TOKEN_TTL_IN_SECS environment variable not set")
+    );
+  });
+
+  it("should return TOKEN_TTL_IN_SECS environment variable value if set", () => {
+    process.env.TOKEN_TTL_IN_SECS = "200";
+    expect(getTokenTtlInSecs()).toEqual("200");
   });
 });
