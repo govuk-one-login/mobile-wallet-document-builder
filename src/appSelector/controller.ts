@@ -21,12 +21,11 @@ export async function appSelectorPostController(
   try {
     const selectedApp = req.body["select-app-choice"];
 
-    res.cookie("app", selectedApp, {
-      httpOnly: true,
-      maxAge: getCookieExpiry(),
-    });
-
     if (selectedApp) {
+      res.cookie("app", selectedApp, {
+        httpOnly: true,
+        maxAge: getCookieExpiry(),
+      });
       res.redirect(`/select-document`);
     } else {
       res.render("select-app-form.njk", {

@@ -2,7 +2,7 @@ process.env.ENVIRONMENT = "local";
 process.env.OIDC_CLIENT_ID = "client_id";
 process.env.OIDC_PRIVATE_KEY = "private_key";
 process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT = "discovery_endpoint";
-process.env.OIDC_REDIRECT_URI = "redirect_uri";
+process.env.BASE_URL = "redirect_uri";
 
 import { createApp } from "../src/app";
 import { expect } from "@jest/globals";

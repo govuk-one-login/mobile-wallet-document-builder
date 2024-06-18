@@ -4,6 +4,8 @@ import {
 } from "../../src/appSelector/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
+process.env.COOKIE_TTL_IN_SECS = "100";
+
 describe("controller.ts", () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -28,8 +30,9 @@ describe("controller.ts", () => {
 
     await appSelectorPostController(req, res);
 
+    expect(res.cookie).toHaveBeenCalledWith( "app", "govuk-build", {"httpOnly": true, "maxAge": 100000})
     expect(res.redirect).toHaveBeenCalledWith(
-      "/select-document?app=govuk-build"
+      "/select-document"
     );
   });
 
@@ -43,5 +46,7 @@ describe("controller.ts", () => {
       isInvalid: true,
     });
     expect(res.redirect).not.toHaveBeenCalled();
+    expect(res.cookie).not.toHaveBeenCalled( )
+
   });
 });
