@@ -10,35 +10,27 @@ describe("controller.ts", () => {
   });
 
   it("should render the form for selecting a document", async () => {
-    const req = getMockReq({
-      query: {
-        app: "test-build",
-      },
-    });
+    const req = getMockReq();
     const { res } = getMockRes();
 
     await documentSelectorGetController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
-      selectedApp: "test-build",
-    });
+    expect(res.render).toHaveBeenCalledWith("select-document-form.njk");
+
   });
 
   it("should redirect to the DBS document form page when DBS is selected", async () => {
     const req = getMockReq({
       body: {
         "select-document-choice": "dbs",
-      },
-      query: {
-        app: "any-app",
-      },
+      }
     });
     const { res } = getMockRes();
 
     await documentSelectorPostController(req, res);
 
     expect(res.redirect).toHaveBeenCalledWith(
-      "/build-dbs-document?app=any-app"
+      "/build-dbs-document"
     );
   });
 
@@ -46,26 +38,19 @@ describe("controller.ts", () => {
     const req = getMockReq({
       body: {
         "select-document-choice": "nino",
-      },
-      query: {
-        app: "any-app",
-      },
+      }
     });
     const { res } = getMockRes();
 
     await documentSelectorPostController(req, res);
 
     expect(res.redirect).toHaveBeenCalledWith(
-      "/build-nino-document?app=any-app"
+      "/build-nino-document"
     );
   });
 
   it("should re-render the form for selecting a document when no choice was selected", async () => {
-    const req = getMockReq({
-      query: {
-        app: "any-app",
-      },
-    });
+    const req = getMockReq();
     const { res } = getMockRes();
 
     await documentSelectorPostController(req, res);
