@@ -4,6 +4,7 @@ import { TokenSet } from "openid-client";
 import { getCookieExpiry } from "../utils/getCookieExpiry";
 import { buildClientAssertion } from "./clientAssertion/buildClientAssertion";
 import { getClientSigningKeyId } from "../config/appConfig";
+import {Jwt} from "../types/Jwt";
 
 export async function returnFromAuthGetController(
   req: Request,
@@ -15,7 +16,7 @@ export async function returnFromAuthGetController(
       res.status(500);
     }
 
-    const clientAssertion = await buildClientAssertion(
+    const clientAssertion: Jwt = await buildClientAssertion(
       req.oidc.metadata.client_id!,
       req.oidc.issuer.metadata.token_endpoint!,
       getClientSigningKeyId()

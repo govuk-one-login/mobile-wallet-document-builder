@@ -7,7 +7,7 @@ process.env.COOKIE_TTL_IN_SECS = "100";
 process.env.CLIENT_SIGNING_KEY_ID = "14122ec4-cdd0-4154-8275-04363c15fbd9";
 
 jest.mock("../../src/returnFromAuth/clientAssertion/buildClientAssertion", () => ({
-  buildAssertionJwt: jest.fn(),
+  buildClientAssertion: jest.fn(),
 }));
 
 describe("controller.ts", () => {

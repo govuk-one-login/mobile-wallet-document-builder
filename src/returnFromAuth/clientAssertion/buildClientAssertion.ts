@@ -3,6 +3,7 @@ import random = generators.random;
 import { KmsService } from "../../services/kmsService";
 import { base64Encoder } from "../../utils/base64Encoder";
 import { getTokenTtlInSecs } from "../../config/appConfig";
+import {Jwt} from "../../types/Jwt";
 
 const TOKEN_SIGNING_ALGORITHM = "RS512";
 const TOKEN_JWT_TYPE = "JWT";
@@ -13,7 +14,7 @@ export async function buildClientAssertion(
   tokenEndpoint: string,
   signingKeyId: string,
   kmsService = new KmsService(signingKeyId)
-) {
+): Promise<Jwt> {
   const header = { alg: TOKEN_SIGNING_ALGORITHM, typ: TOKEN_JWT_TYPE };
 
   const timeNow = new Date().getTime();
