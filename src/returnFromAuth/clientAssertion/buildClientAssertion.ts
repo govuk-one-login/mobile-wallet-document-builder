@@ -1,8 +1,8 @@
 import { generators } from "openid-client";
 import random = generators.random;
-import { KmsService } from "../services/kmsService";
-import { base64Encoder } from "../utils/base64Encoder";
-import { getTokenTtlInSecs } from "../config/appConfig";
+import { KmsService } from "../../services/kmsService";
+import { base64Encoder } from "../../utils/base64Encoder";
+import { getTokenTtlInSecs } from "../../config/appConfig";
 
 const TOKEN_SIGNING_ALGORITHM = "RS512";
 const TOKEN_JWT_TYPE = "JWT";
