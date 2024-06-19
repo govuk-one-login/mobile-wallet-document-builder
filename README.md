@@ -71,7 +71,7 @@ To start the LocalStack container and provision a local version of the **documen
 You will need to have Docker Desktop or alternative like installed.
 
 #### Setting up with an auth server stub
-To issue a credential offer locally you will need to run this application together with a stub of the auth server.
+To test locally with an app that requires the user to be logged in (e.g. staging app), you will need to run this application together with a stub of the auth server.
 
 In the `.env` file, update the values of the following environment variables:
 - `OIDC_CLIENT_ID`: test client ID required by the auth server's stub
