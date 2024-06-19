@@ -36,8 +36,6 @@ Conditions:
 
   IsBuild: !Equals [ !Ref Environment, build ]
 
-  IsDev: !Equals [ !Ref Environment, dev ]
-
   UsePermissionsBoundary:
     Fn::Not:
       - Fn::Equals:
@@ -80,14 +78,10 @@ Mappings:
       Controller: "did:web:wallet-api.mobile.dev.account.gov.uk"
     build:
       Controller: "did:web:wallet-api.mobile.build.account.gov.uk"
-    staging:
-      Controller: "did:web:wallet-api.mobile.staging.account.gov.uk"
   OidcIssuerDiscoveryEndpoint:
     dev:
       Endpoint: ""
     build:
-      Endpoint: "https://oidc.integration.account.gov.uk"
-    staging:
       Endpoint: "https://oidc.integration.account.gov.uk"
 
 Resources:
@@ -433,11 +427,7 @@ Resources:
                 - FEURL:
                     !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
             - Name: OIDC_CLIENT_ID
-              Value:  !If [
-                IsDev,
-                "TEST_CLIENT_ID",
-                !Sub "{{resolve:ssm:/${AWS::StackName}/Config/OIDC/Client/Id}}",
-              ]
+              Value: !Sub "{{resolve:ssm:/${AWS::StackName}/Config/OIDC/Client/Id}}"
             - Name: CLIENT_SIGNING_KEY_ID
               Value: !Ref ClientSigningKey
             - Name: OIDC_ISSUER_DISCOVERY_ENDPOINT
