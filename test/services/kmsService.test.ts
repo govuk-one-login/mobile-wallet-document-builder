@@ -15,34 +15,37 @@ let kmsService: KmsService;
 
 describe("kmsService.ts", () => {
   beforeEach(() => {
-    kmsService = new KmsService(
-      "mock_key_id",
-      new KMSClient()
-    );
+    kmsService = new KmsService("mock_key_id", new KMSClient());
     mockKmsClient.reset();
   });
 
   it("should throw an error when an error happens when calling KMS to sign token", async () => {
     mockKmsClient.on(SignCommand).rejects(new Error("SOME_KMS_ERROR"));
 
-    await expect(kmsService.sign("mock_message_to_sign", SIGNING_ALGORITHM_RSA)).rejects.toThrow(
-      "SOME_KMS_ERROR"
-    );
+    await expect(
+      kmsService.sign("mock_message_to_sign", SIGNING_ALGORITHM_RSA)
+    ).rejects.toThrow("SOME_KMS_ERROR");
   });
 
   it("should throw an error when KMS response has no signature", async () => {
     mockKmsClient.on(SignCommand).resolves({ Signature: undefined });
 
-    await expect(kmsService.sign("mock_message_to_sign", SIGNING_ALGORITHM_RSA)).rejects.toThrow(
-      "No signature returned"
-    );
+    await expect(
+      kmsService.sign("mock_message_to_sign", SIGNING_ALGORITHM_RSA)
+    ).rejects.toThrow("No signature returned");
   });
 
   it("should decode DER signature when signing algorithm is EC and should return a base64 encoded signature", async () => {
-    const mockSignature = Buffer.from("yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw", 'base64');
+    const mockSignature = Buffer.from(
+      "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw",
+      "base64"
+    );
     const mockSignatureDer = format.joseToDer(mockSignature, "ES256");
     mockKmsClient.on(SignCommand).resolves({ Signature: mockSignatureDer });
-    const response = await kmsService.sign("mock_message_to_sign", SIGNING_ALGORITHM_EC);
+    const response = await kmsService.sign(
+      "mock_message_to_sign",
+      SIGNING_ALGORITHM_EC
+    );
 
     expect(response).toEqual(
       "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw"
@@ -50,12 +53,18 @@ describe("kmsService.ts", () => {
   });
 
   it("should NOT decode DER signature when signing algorithm is RSA and should return a base64 encoded signature", async () => {
-    const mockSignature = Buffer.from("yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw", 'base64');
+    const mockSignature = Buffer.from(
+      "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw",
+      "base64"
+    );
     mockKmsClient.on(SignCommand).resolves({ Signature: mockSignature });
-    const response = await kmsService.sign("mock_message_to_sign", SIGNING_ALGORITHM_RSA);
+    const response = await kmsService.sign(
+      "mock_message_to_sign",
+      SIGNING_ALGORITHM_RSA
+    );
 
     expect(response).toEqual(
-        "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw"
+      "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw"
     );
   });
 

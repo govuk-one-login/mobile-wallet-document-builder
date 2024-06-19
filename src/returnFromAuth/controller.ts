@@ -4,7 +4,7 @@ import { TokenSet } from "openid-client";
 import { getCookieExpiry } from "../utils/getCookieExpiry";
 import { buildClientAssertion } from "./clientAssertion/buildClientAssertion";
 import { getClientSigningKeyId } from "../config/appConfig";
-import {Jwt} from "../types/Jwt";
+import { Jwt } from "../types/Jwt";
 
 export async function returnFromAuthGetController(
   req: Request,

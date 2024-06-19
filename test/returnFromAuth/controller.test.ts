@@ -6,9 +6,12 @@ import * as assertionJwt from "../../src/returnFromAuth/clientAssertion/buildCli
 process.env.COOKIE_TTL_IN_SECS = "100";
 process.env.CLIENT_SIGNING_KEY_ID = "14122ec4-cdd0-4154-8275-04363c15fbd9";
 
-jest.mock("../../src/returnFromAuth/clientAssertion/buildClientAssertion", () => ({
-  buildClientAssertion: jest.fn(),
-}));
+jest.mock(
+  "../../src/returnFromAuth/clientAssertion/buildClientAssertion",
+  () => ({
+    buildClientAssertion: jest.fn(),
+  })
+);
 
 describe("controller.ts", () => {
   const loggerErrorSpy = jest
@@ -42,8 +45,11 @@ describe("controller.ts", () => {
       oidc: {
         callbackParams: jest.fn(),
         callback: jest.fn().mockImplementation(() => callback),
-        metadata: { client_id: "test_client_id", redirect_uris: ["http://localost:3000/test"] },
-        issuer:  { metadata: { token_endpoint: "http://localost:8000/token" }},
+        metadata: {
+          client_id: "test_client_id",
+          redirect_uris: ["http://localost:3000/test"],
+        },
+        issuer: { metadata: { token_endpoint: "http://localost:8000/token" } },
       },
     });
     const { res } = getMockRes();
@@ -64,8 +70,11 @@ describe("controller.ts", () => {
       oidc: {
         callbackParams: jest.fn(),
         callback: jest.fn().mockImplementation(() => callback),
-        metadata: { client_id: "test_client_id", redirect_uris: ["http://localost:3000/test"] },
-        issuer:  { metadata: { token_endpoint: "http://localost:8000/token" }},
+        metadata: {
+          client_id: "test_client_id",
+          redirect_uris: ["http://localost:3000/test"],
+        },
+        issuer: { metadata: { token_endpoint: "http://localost:8000/token" } },
       },
     });
     const { res } = getMockRes();
@@ -83,8 +92,11 @@ describe("controller.ts", () => {
       oidc: {
         callbackParams: jest.fn(),
         callback: jest.fn().mockImplementation(() => callback),
-        metadata: { client_id: "test_client_id", redirect_uris: ["http://localost:3000/test"] },
-        issuer:  { metadata: { token_endpoint: "http://localost:8000/token" }},
+        metadata: {
+          client_id: "test_client_id",
+          redirect_uris: ["http://localost:3000/test"],
+        },
+        issuer: { metadata: { token_endpoint: "http://localost:8000/token" } },
       },
     });
     const { res } = getMockRes();

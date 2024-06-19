@@ -3,7 +3,7 @@ import random = generators.random;
 import { KmsService } from "../../services/kmsService";
 import { base64Encoder } from "../../utils/base64Encoder";
 import { getTokenTtlInSecs } from "../../config/appConfig";
-import {Jwt} from "../../types/Jwt";
+import { Jwt } from "../../types/Jwt";
 
 const TOKEN_SIGNING_ALGORITHM = "RS512";
 const TOKEN_JWT_TYPE = "JWT";
