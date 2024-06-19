@@ -56,7 +56,7 @@ describe("accessToken.ts", () => {
         "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2tfa2V5X2lkIn0.eyJhdWQiOiJtb2NrX2F1ZGllbmNlIiwiY19ub25jZSI6IjFhMGZhYzA1LTRiMzgtNDgwZi05Y2JkLWIwNDZlYWJlMWUyMiIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsibW9ja19jcmVkZW50aWFsX2lkZW50aWZpZXIiXSwiaXNzIjoibW9ja19pc3N1ZXIiLCJzdWIiOiJtb2NrX3dhbGxldF9zdWJqZWN0X2lkIn0.mocked_signature"
       );
       expect(mockKmsService.sign).toHaveBeenCalledWith(
-        "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2tfa2V5X2lkIn0.eyJhdWQiOiJtb2NrX2F1ZGllbmNlIiwiY19ub25jZSI6IjFhMGZhYzA1LTRiMzgtNDgwZi05Y2JkLWIwNDZlYWJlMWUyMiIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsibW9ja19jcmVkZW50aWFsX2lkZW50aWZpZXIiXSwiaXNzIjoibW9ja19pc3N1ZXIiLCJzdWIiOiJtb2NrX3dhbGxldF9zdWJqZWN0X2lkIn0"
+        "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2tfa2V5X2lkIn0.eyJhdWQiOiJtb2NrX2F1ZGllbmNlIiwiY19ub25jZSI6IjFhMGZhYzA1LTRiMzgtNDgwZi05Y2JkLWIwNDZlYWJlMWUyMiIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsibW9ja19jcmVkZW50aWFsX2lkZW50aWZpZXIiXSwiaXNzIjoibW9ja19pc3N1ZXIiLCJzdWIiOiJtb2NrX3dhbGxldF9zdWJqZWN0X2lkIn0", "ECDSA_SHA_256"
       );
     });
   });

@@ -15,6 +15,7 @@ export async function returnFromAuthGetController(
       res.status(500);
     }
 
+    // Build client assertion JWT needed in the /token request
     const clientAssertion = await buildAssertionJwt(
       req.oidc.metadata.client_id!,
       req.oidc.issuer.metadata.token_endpoint!,
