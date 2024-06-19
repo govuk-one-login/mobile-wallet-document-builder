@@ -71,11 +71,18 @@ To start the LocalStack container and provision a local version of the **documen
 You will need to have Docker Desktop or alternative like installed.
 
 #### Setting up with an auth server stub
+To issue a credential offer locally you will need to run this application together with a stub of the auth server.
+
 In the `.env` file, update the values of the following environment variables:
-- `OIDC_CLIENT_ID`: `TEST_CLIENT_ID`
+- `OIDC_CLIENT_ID`: test client ID required by the auth server's stub
 - `OIDC_ISSUER_DISCOVERY_ENDPOINT`: auth server's stub endpoint
 
-You will also need to give the auth server's stub the client's public key.
+You will also need to give the auth server's stub the client's public key. This can be retrieved from local KMS by running these commands:
+```
+aws kms get-public-key --endpoint-url=http://localhost:4561 --region eu-west-2 --key-id alias/localClientSigningKeyAlias --output text --query PublicKey | base64 --decode > SamplePublicKey.der
+
+openssl ec -pubin -inform DER -outform PEM -in SamplePublicKey.der -pubout -out SamplePublicKey.pem
+```
 
 #### Running the Application
 Run the application with:
