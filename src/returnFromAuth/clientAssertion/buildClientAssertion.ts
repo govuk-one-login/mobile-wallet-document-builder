@@ -8,7 +8,7 @@ const TOKEN_SIGNING_ALGORITHM = "RS512";
 const TOKEN_JWT_TYPE = "JWT";
 const TOKEN_KMS_SIGNING_ALGORITHM = "RSASSA_PKCS1_V1_5_SHA_512";
 
-export async function buildAssertionJwt(
+export async function buildClientAssertion(
   clientId: string,
   tokenEndpoint: string,
   signingKeyId: string,

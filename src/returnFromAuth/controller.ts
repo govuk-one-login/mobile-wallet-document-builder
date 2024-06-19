@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
 import { TokenSet } from "openid-client";
 import { getCookieExpiry } from "../utils/getCookieExpiry";
-import { buildAssertionJwt } from "./buildAssertionJwt";
+import { buildClientAssertion } from "./clientAssertion/buildClientAssertion";
 import { getClientSigningKeyId } from "../config/appConfig";
 
 export async function returnFromAuthGetController(
@@ -15,8 +15,7 @@ export async function returnFromAuthGetController(
       res.status(500);
     }
 
-    // Build client assertion JWT needed in the /token request
-    const clientAssertion = await buildAssertionJwt(
+    const clientAssertion = await buildClientAssertion(
       req.oidc.metadata.client_id!,
       req.oidc.issuer.metadata.token_endpoint!,
       getClientSigningKeyId()

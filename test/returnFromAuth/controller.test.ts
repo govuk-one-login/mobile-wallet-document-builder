@@ -1,12 +1,12 @@
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import { returnFromAuthGetController } from "../../src/returnFromAuth/controller";
 import { logger } from "../../src/middleware/logger";
-import * as assertionJwt from "../../src/returnFromAuth/buildAssertionJwt";
+import * as assertionJwt from "../../src/returnFromAuth/clientAssertion/buildClientAssertion";
 
 process.env.COOKIE_TTL_IN_SECS = "100";
 process.env.CLIENT_SIGNING_KEY_ID = "14122ec4-cdd0-4154-8275-04363c15fbd9";
 
-jest.mock("../../src/returnFromAuth/buildAssertionJwt", () => ({
+jest.mock("../../src/returnFromAuth/clientAssertion/buildClientAssertion", () => ({
   buildAssertionJwt: jest.fn(),
 }));
 
@@ -19,7 +19,7 @@ describe("controller.ts", () => {
     loggerErrorSpy.mockReset();
   });
 
-  const buildAssertionJwt = assertionJwt.buildAssertionJwt as jest.Mock;
+  const buildAssertionJwt = assertionJwt.buildClientAssertion as jest.Mock;
 
   it("should return 500 when the auth server responds with an error", async () => {
     const req = getMockReq({
