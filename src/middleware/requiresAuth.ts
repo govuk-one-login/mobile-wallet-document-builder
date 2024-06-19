@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "./logger";
-import { getBaseUrl } from "../config/appConfig";
+import { getSelfUrl } from "../config/appConfig";
 import { apps } from "../types/Apps";
 import { generators } from "openid-client";
 import e from "express";
@@ -25,7 +25,7 @@ export async function requiresAuth(
   );
 
   if (selectedApp === undefined) {
-    res.redirect(getBaseUrl() + "/select-app");
+    res.redirect(getSelfUrl() + "/select-app");
   } else if (requiresLogin(selectedApp) && isAuthenticated === undefined) {
     await redirectToLogIn(req, res);
   } else {

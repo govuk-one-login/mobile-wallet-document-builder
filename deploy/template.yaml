@@ -432,7 +432,7 @@ Resources:
               Value: 180
             - Name: DID_CONTROLLER
               Value: !FindInMap [DidController, !Ref Environment, Controller]
-            - Name: BASE_URL
+            - Name: SELF
               Value: !Sub
                 - "https://${FEURL}"
                 - FEURL:
@@ -445,8 +445,6 @@ Resources:
               Value: !FindInMap [ OidcIssuerDiscoveryEndpoint, !Ref Environment, Endpoint ]
             - Name: COOKIE_TTL_IN_SECS
               Value: 3600
-            - Name: TOKEN_TTL_IN_SECS
-              Value: 300
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp

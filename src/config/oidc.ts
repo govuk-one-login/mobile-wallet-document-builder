@@ -1,6 +1,6 @@
 import { AuthMiddlewareConfiguration } from "../types/AuthMiddlewareConfiguration";
 import {
-  getBaseUrl,
+  getSelfUrl,
   getOIDCClientId,
   getOIDCDiscoveryEndpoint,
 } from "./appConfig";
@@ -12,7 +12,7 @@ export function getOIDCConfig(): AuthMiddlewareConfiguration {
   return {
     clientId: getOIDCClientId(),
     discoveryEndpoint: getOIDCDiscoveryEndpoint(),
-    redirectUri: getBaseUrl() + "/return-from-auth",
+    redirectUri: getSelfUrl() + "/return-from-auth",
   } as AuthMiddlewareConfiguration;
 }
 

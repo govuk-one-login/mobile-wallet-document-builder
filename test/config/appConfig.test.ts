@@ -7,12 +7,11 @@ import {
   getPortNumber,
   getAccessTokenTtlInSecs,
   getDidController,
-  getBaseUrl,
+  getSelfUrl,
   getOIDCClientId,
   getOIDCDiscoveryEndpoint,
   getCookieTtlInSecs,
   getClientSigningKeyId,
-  getTokenTtlInSecs,
 } from "../../src/config/appConfig";
 
 describe("appConfig.ts", () => {
@@ -96,15 +95,15 @@ describe("appConfig.ts", () => {
     expect(getDidController()).toEqual("test-did-controller");
   });
 
-  it("should throw an error if BASE_URL environment variable is not set", () => {
-    expect(() => getBaseUrl()).toThrow(
-      new Error("BASE_URL environment variable not set")
+  it("should throw an error if SELF environment variable is not set", () => {
+    expect(() => getSelfUrl()).toThrow(
+      new Error("SELF environment variable not set")
     );
   });
 
-  it("should return BASE_URL environment variable value if set", () => {
-    process.env.BASE_URL = "test-url";
-    expect(getBaseUrl()).toEqual("test-url");
+  it("should return SELF environment variable value if set", () => {
+    process.env.SELF = "test-url";
+    expect(getSelfUrl()).toEqual("test-url");
   });
 
   it("should throw an error if OIDC_CLIENT_ID environment variable is not set", () => {
@@ -149,16 +148,5 @@ describe("appConfig.ts", () => {
   it("should return COOKIE_TTL_IN_SECS environment variable value if set", () => {
     process.env.COOKIE_TTL_IN_SECS = "200";
     expect(getCookieTtlInSecs()).toEqual("200");
-  });
-
-  it("should throw an error if TOKEN_TTL_IN_SECS environment variable is not set", () => {
-    expect(() => getTokenTtlInSecs()).toThrow(
-      new Error("TOKEN_TTL_IN_SECS environment variable not set")
-    );
-  });
-
-  it("should return TOKEN_TTL_IN_SECS environment variable value if set", () => {
-    process.env.TOKEN_TTL_IN_SECS = "200";
-    expect(getTokenTtlInSecs()).toEqual("200");
   });
 });

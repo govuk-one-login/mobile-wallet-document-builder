@@ -46,8 +46,8 @@ export function getDidController(): string {
   return getEnvVarValue("DID_CONTROLLER");
 }
 
-export function getBaseUrl(): string {
-  return getEnvVarValue("BASE_URL");
+export function getSelfUrl(): string {
+  return getEnvVarValue("SELF");
 }
 
 export function getOIDCClientId(): string {
@@ -64,8 +64,4 @@ export function getOIDCDiscoveryEndpoint(): string {
 
 export function getCookieTtlInSecs(): string {
   return getEnvVarValue("COOKIE_TTL_IN_SECS");
-}
-
-export function getTokenTtlInSecs(): string {
-  return getEnvVarValue("TOKEN_TTL_IN_SECS");
 }

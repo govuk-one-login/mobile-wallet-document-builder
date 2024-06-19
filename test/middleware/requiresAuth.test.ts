@@ -2,7 +2,7 @@ import { NextFunction } from "express";
 import { requiresAuth } from "../../src/middleware/requiresAuth";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
-process.env.BASE_URL = "http://localhost:3000";
+process.env.SELF = "http://localhost:3000";
 process.env.COOKIE_TTL_IN_SECS = "100";
 
 describe("requiresAuth.ts", () => {

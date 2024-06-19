@@ -2,7 +2,7 @@ import { getOIDCClient, getOIDCConfig } from "../../src/config/oidc";
 
 process.env.OIDC_CLIENT_ID = "test-client-id";
 process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT = "http://localhost:8000";
-process.env.BASE_URL = "http://localhost:3000";
+process.env.SELF = "http://localhost:3000";
 
 jest.mock("openid-client", () => ({
   Issuer: {

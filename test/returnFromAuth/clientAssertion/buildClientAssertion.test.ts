@@ -2,8 +2,6 @@ import { buildClientAssertion } from "../../../src/returnFromAuth/clientAssertio
 import { KmsService } from "../../../src/services/kmsService";
 import * as jose from "jose";
 
-process.env.TOKEN_TTL_IN_SECS = "300";
-
 describe("buildClientAssertion.ts", () => {
   jest.useFakeTimers().setSystemTime(new Date("2024-06-19"));
 
