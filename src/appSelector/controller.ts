@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
 import { getCookieExpiry } from "../utils/getCookieExpiry";
-import {isAuthenticated} from "../utils/isAuthenticated";
+import { isAuthenticated } from "../utils/isAuthenticated";
 
 export async function appSelectorGetController(
   req: Request,
@@ -9,7 +9,7 @@ export async function appSelectorGetController(
 ): Promise<void> {
   try {
     res.render("select-app-form.njk", {
-      authenticated: isAuthenticated(req, res)
+      authenticated: isAuthenticated(req),
     });
   } catch (error) {
     logger.error(error, "An error happened rendering app selection page");
@@ -33,7 +33,7 @@ export async function appSelectorPostController(
     } else {
       res.render("select-app-form.njk", {
         isInvalid: selectedApp === undefined,
-      authenticated: isAuthenticated(req, res)
+        authenticated: isAuthenticated(req),
       });
     }
   } catch (error) {

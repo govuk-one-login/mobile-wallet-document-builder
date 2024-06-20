@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
-import {isAuthenticated} from "../utils/isAuthenticated";
+import { isAuthenticated } from "../utils/isAuthenticated";
 
 const CREDENTIAL_TYPE = CredentialType.socialSecurityCredential;
 
@@ -14,7 +14,7 @@ export async function ninoDocumentBuilderGetController(
 ): Promise<void> {
   try {
     res.render("nino-document-details-form.njk", {
-      authenticated: isAuthenticated(req, res)
+      authenticated: isAuthenticated(req),
     });
   } catch (error) {
     logger.error(error, "An error happened rendering NINO document page");

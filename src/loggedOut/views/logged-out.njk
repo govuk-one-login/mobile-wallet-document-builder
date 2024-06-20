@@ -1,0 +1,13 @@
+{% extends "base.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% set pageTitleName = "You have signed out" %}
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">You have signed out</h1>
+            <p class="govuk-body">
+                Go back to <a href="/select-app" class="govuk-link">the homepage to start again</a>.
+            </p>
+        </div>
+    </div>
+{% endblock %}

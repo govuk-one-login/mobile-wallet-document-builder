@@ -3,7 +3,7 @@ import QRCode from "qrcode";
 import { getCredentialOffer } from "./services/credentialOfferService";
 import { getCustomCredentialOfferUri } from "./helpers/customCredentialOfferUri";
 import { logger } from "../middleware/logger";
-import {isAuthenticated} from "../utils/isAuthenticated";
+import { isAuthenticated } from "../utils/isAuthenticated";
 
 export async function credentialOfferViewerController(
   req: Request,
@@ -31,8 +31,7 @@ export async function credentialOfferViewerController(
     const qrCode = await QRCode.toDataURL(credentialOfferUri);
 
     res.render("credential-offer.njk", {
-
-      authenticated: isAuthenticated(req, res),
+      authenticated: isAuthenticated(req),
 
       universalLink: credentialOfferUri,
       qrCode,

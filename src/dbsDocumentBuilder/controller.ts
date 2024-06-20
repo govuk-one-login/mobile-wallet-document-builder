@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
-import {isAuthenticated} from "../utils/isAuthenticated";
+import { isAuthenticated } from "../utils/isAuthenticated";
 
 const CREDENTIAL_TYPE = CredentialType.basicCheckCredential;
 
@@ -14,7 +14,7 @@ export async function dbsDocumentBuilderGetController(
 ): Promise<void> {
   try {
     res.render("dbs-document-details-form.njk", {
-      authenticated: isAuthenticated(req, res)
+      authenticated: isAuthenticated(req),
     });
   } catch (error) {
     logger.error(error, "An error happened rendering DBS document page");
