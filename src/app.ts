@@ -14,6 +14,7 @@ import { getOIDCConfig } from "./config/oidc";
 import { auth } from "./middleware/auth";
 import cookieParser from "cookie-parser";
 import { returnFromAuthRouter } from "./returnFromAuth/router";
+import {logoutRouter} from "./logout/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
@@ -60,6 +61,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(documentRouter);
   app.use(stsStubAccessTokenRouter);
   app.use(stsStubDidDocumentRouter);
+  app.use(logoutRouter);
 
   return app;
 }
