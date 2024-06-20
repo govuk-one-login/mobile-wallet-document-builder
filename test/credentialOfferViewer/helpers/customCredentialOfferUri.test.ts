@@ -89,7 +89,7 @@ describe("customCredentialOfferUri.ts", () => {
 
     expect(() => {
       getCustomCredentialOfferUri(credentialOfferUri, selectedApp, error);
-    }).toThrow("Path not found");
+    }).toThrow("App not found");
   });
 
   it("should throw an error if the URI returned by the CRI is invalid", async () => {
