@@ -545,7 +545,7 @@ Resources:
   StsStubSigningKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: alias/sts-stub-signing-key
+      AliasName: !Sub "alias/sts-stub-signing-key-${AWS::StackName}"
       TargetKeyId: !Ref StsStubSigningKey
 
   ClientSigningKey:
@@ -579,7 +579,7 @@ Resources:
   ClientSigningKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: alias/client-signing-key
+      AliasName: !Sub "alias/client-assertion-signing-key-${AWS::StackName}"
       TargetKeyId: !Ref ClientSigningKey
 
   DocumentDatabaseKmsKey:
