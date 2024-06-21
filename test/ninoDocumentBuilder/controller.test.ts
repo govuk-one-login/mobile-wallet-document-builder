@@ -21,13 +21,22 @@ describe("controller.ts", () => {
 
   const saveDocument = databaseService.saveDocument as jest.Mock;
 
-  it("should render the form for inputting NINO document details", async () => {
-    const req = getMockReq();
+  it("should render the form for inputting NINO document details when user is not authenticated (no id_token in cookies)", async () => {
+    const req = getMockReq({cookies: {}});
     const { res } = getMockRes();
 
     await ninoDocumentBuilderGetController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("nino-document-details-form.njk");
+    expect(res.render).toHaveBeenCalledWith("nino-document-details-form.njk", {"authenticated": false});
+  });
+
+  it("should render the form for inputting NINO document details when user is authenticated", async () => {
+    const req = getMockReq({cookies: {id_token: "id_token"}});
+    const { res } = getMockRes();
+
+    await ninoDocumentBuilderGetController(req, res);
+
+    expect(res.render).toHaveBeenCalledWith("nino-document-details-form.njk", {"authenticated": true});
   });
 
   it("should redirect to the credential offer page with 'SocialSecurityCredential' and 'ERROR:401' in the query params", async () => {

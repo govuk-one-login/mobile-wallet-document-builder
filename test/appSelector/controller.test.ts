@@ -11,13 +11,26 @@ describe("controller.ts", () => {
     jest.clearAllMocks();
   });
 
-  it("should render the form for selecting an app", async () => {
-    const req = getMockReq();
+  it("should render the form for selecting an app when user is not authenticated (no id_token in cookies)", async () => {
+    const req = getMockReq({cookies: {}});
     const { res } = getMockRes();
 
     await appSelectorGetController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("select-app-form.njk");
+    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {authenticated: false});
+  });
+
+  it("should render the form for selecting an app when user is authenticated", async () => {
+    const req = getMockReq({
+      cookies: {
+        id_token: "id_token"
+      }
+    });
+    const { res } = getMockRes();
+
+    await appSelectorGetController(req, res);
+
+    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {authenticated: true});
   });
 
   it("should redirect to the page for selecting a document", async () => {
@@ -45,6 +58,7 @@ describe("controller.ts", () => {
 
     expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
       isInvalid: true,
+      authenticated: false,
     });
     expect(res.redirect).not.toHaveBeenCalled();
     expect(res.cookie).not.toHaveBeenCalled();
