@@ -8,7 +8,7 @@ import {
   getAccessTokenTtlInSecs,
   getStsSigningKeyId,
 } from "../config/appConfig";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
 import { PREAUTHORIZED_CODE_ERRORS } from "./types/PreAuthorizedCodeErrors";
 
 const WALLET_SUBJECT_ID = "walletSubjectIdPlaceholder";

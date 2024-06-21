@@ -9,7 +9,7 @@ import {
 import { DbsDocument } from "../dbsDocumentBuilder/models/dbsDocument";
 import { NinoDocument } from "../ninoDocumentBuilder/models/ninoDocument";
 import { UUID } from "node:crypto";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
 
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());
 const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);

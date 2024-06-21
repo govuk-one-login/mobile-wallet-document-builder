@@ -45,3 +45,23 @@ export function getAccessTokenTtlInSecs(): string {
 export function getDidController(): string {
   return getEnvVarValue("DID_CONTROLLER");
 }
+
+export function getSelfUrl(): string {
+  return getEnvVarValue("SELF");
+}
+
+export function getOIDCClientId(): string {
+  return getEnvVarValue("OIDC_CLIENT_ID");
+}
+
+export function getClientSigningKeyId(): string {
+  return getEnvVarValue("CLIENT_SIGNING_KEY_ID");
+}
+
+export function getOIDCDiscoveryEndpoint(): string {
+  return getEnvVarValue("OIDC_ISSUER_DISCOVERY_ENDPOINT");
+}
+
+export function getCookieTtlInSecs(): string {
+  return getEnvVarValue("COOKIE_TTL_IN_SECS");
+}

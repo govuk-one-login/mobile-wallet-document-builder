@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
+import { getCookieExpiry } from "../utils/getCookieExpiry";
 
 export async function appSelectorGetController(
   req: Request,
@@ -21,7 +22,11 @@ export async function appSelectorPostController(
     const selectedApp = req.body["select-app-choice"];
 
     if (selectedApp) {
-      res.redirect(`/select-document?app=${selectedApp}`);
+      res.cookie("app", selectedApp, {
+        httpOnly: true,
+        maxAge: getCookieExpiry(),
+      });
+      res.redirect(`/select-document`);
     } else {
       res.render("select-app-form.njk", {
         isInvalid: selectedApp === undefined,

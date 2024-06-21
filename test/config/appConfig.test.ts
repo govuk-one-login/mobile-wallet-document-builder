@@ -5,6 +5,13 @@ import {
   getLocalStackEndpoint,
   getCriEndpoint,
   getPortNumber,
+  getAccessTokenTtlInSecs,
+  getDidController,
+  getSelfUrl,
+  getOIDCClientId,
+  getOIDCDiscoveryEndpoint,
+  getCookieTtlInSecs,
+  getClientSigningKeyId,
 } from "../../src/config/appConfig";
 
 describe("appConfig.ts", () => {
@@ -64,5 +71,82 @@ describe("appConfig.ts", () => {
 
   it("should return the LocalStack endpoint value", () => {
     expect(getLocalStackEndpoint()).toEqual("http://localhost:4561");
+  });
+
+  it("should throw an error if ACCESS_TOKEN_TTL_IN_SECS environment variable is not set", () => {
+    expect(() => getAccessTokenTtlInSecs()).toThrow(
+      new Error("ACCESS_TOKEN_TTL_IN_SECS environment variable not set")
+    );
+  });
+
+  it("should return ACCESS_TOKEN_TTL_IN_SECS environment variable value if set", () => {
+    process.env.ACCESS_TOKEN_TTL_IN_SECS = "300";
+    expect(getAccessTokenTtlInSecs()).toEqual("300");
+  });
+
+  it("should throw an error if DID_CONTROLLER environment variable is not set", () => {
+    expect(() => getDidController()).toThrow(
+      new Error("DID_CONTROLLER environment variable not set")
+    );
+  });
+
+  it("should return DID_CONTROLLER environment variable value if set", () => {
+    process.env.DID_CONTROLLER = "test-did-controller";
+    expect(getDidController()).toEqual("test-did-controller");
+  });
+
+  it("should throw an error if SELF environment variable is not set", () => {
+    expect(() => getSelfUrl()).toThrow(
+      new Error("SELF environment variable not set")
+    );
+  });
+
+  it("should return SELF environment variable value if set", () => {
+    process.env.SELF = "test-url";
+    expect(getSelfUrl()).toEqual("test-url");
+  });
+
+  it("should throw an error if OIDC_CLIENT_ID environment variable is not set", () => {
+    expect(() => getOIDCClientId()).toThrow(
+      new Error("OIDC_CLIENT_ID environment variable not set")
+    );
+  });
+
+  it("should return OIDC_CLIENT_ID environment variable value if set", () => {
+    process.env.OIDC_CLIENT_ID = "test-client-id";
+    expect(getOIDCClientId()).toEqual("test-client-id");
+  });
+
+  it("should throw an error if CLIENT_SIGNING_KEY_ID environment variable is not set", () => {
+    expect(() => getClientSigningKeyId()).toThrow(
+      new Error("CLIENT_SIGNING_KEY_ID environment variable not set")
+    );
+  });
+
+  it("should return CLIENT_SIGNING_KEY_ID environment variable value if set", () => {
+    process.env.CLIENT_SIGNING_KEY_ID = "test-client-key-id";
+    expect(getClientSigningKeyId()).toEqual("test-client-key-id");
+  });
+
+  it("should throw an error if OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable is not set", () => {
+    expect(() => getOIDCDiscoveryEndpoint()).toThrow(
+      new Error("OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable not set")
+    );
+  });
+
+  it("should return OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable value if set", () => {
+    process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT = "test-discovery-endpoint";
+    expect(getOIDCDiscoveryEndpoint()).toEqual("test-discovery-endpoint");
+  });
+
+  it("should throw an error if COOKIE_TTL_IN_SECS environment variable is not set", () => {
+    expect(() => getCookieTtlInSecs()).toThrow(
+      new Error("COOKIE_TTL_IN_SECS environment variable not set")
+    );
+  });
+
+  it("should return COOKIE_TTL_IN_SECS environment variable value if set", () => {
+    process.env.COOKIE_TTL_IN_SECS = "200";
+    expect(getCookieTtlInSecs()).toEqual("200");
   });
 });

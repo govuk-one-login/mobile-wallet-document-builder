@@ -35,8 +35,10 @@ describe("controller.ts", () => {
       params: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       },
-      query: {
+      cookies: {
         app: "test-build",
+      },
+      query: {
         type: "BasicCheckCredential",
         error: "",
       },
@@ -79,8 +81,10 @@ describe("controller.ts", () => {
       params: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       },
-      query: {
+      cookies: {
         app: "test-build",
+      },
+      query: {
         type: "BasicCheckCredential",
         error: "ERROR:500",
       },
