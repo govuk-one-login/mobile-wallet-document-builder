@@ -47,42 +47,24 @@ Mappings:
     dev:
       BEURL: "example-credential-issuer.mobile.dev.account.gov.uk"
       FEURL: "stub-credential-issuer.mobile.dev.account.gov.uk"
+      FrontImageRepository: arn:aws:ecr:eu-west-2:671524980203:repository/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry
+      DidController: "did:web:wallet-api.mobile.dev.account.gov.uk"
+      OidcIssuerEndpoint: "https://oidc.integration.account.gov.uk"
     build:
       BEURL: "example-credential-issuer.mobile.build.account.gov.uk"
       FEURL: "stub-credential-issuer.mobile.build.account.gov.uk"
-    staging:
-      BEURL: "example-credential-issuer.mobile.staging.account.gov.uk"
-      FEURL: "stub-credential-issuer.mobile.staging.account.gov.uk"
+      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
+      DidController: "did:web:wallet-api.mobile.build.account.gov.uk"
+      OidcIssuerEndpoint: "https://oidc.integration.account.gov.uk"
   # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
   # PlatformConfiguration:
   #   dev:
   #     CSLSEGRESS: "This should not ever be set; the dev account is not configured to egress logs."
   #   build:
   #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
-  #   staging:
-  #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
-  #   integration:
-  #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
-  ECSConfiguration:
-    dev:
-      FrontImageRepository: arn:aws:ecr:eu-west-2:671524980203:repository/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry
-    build:
-      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
-    staging:
-      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
   ElasticLoadBalancerAccountIds:
     eu-west-2:
       AccountId: 652711504416
-  DidController:
-    dev:
-      Controller: "did:web:wallet-api.mobile.dev.account.gov.uk"
-    build:
-      Controller: "did:web:wallet-api.mobile.build.account.gov.uk"
-  OidcIssuerDiscoveryEndpoint:
-    dev:
-      Endpoint: ""
-    build:
-      Endpoint: "https://oidc.integration.account.gov.uk"
 
 Resources:
 
@@ -420,7 +402,7 @@ Resources:
             - Name: ACCESS_TOKEN_TTL_IN_SECS
               Value: 180
             - Name: DID_CONTROLLER
-              Value: !FindInMap [DidController, !Ref Environment, Controller]
+              Value: !FindInMap [EnvironmentVariables, !Ref Environment, DidController]
             - Name: SELF
               Value: !Sub
                 - "https://${FEURL}"
@@ -431,7 +413,7 @@ Resources:
             - Name: CLIENT_SIGNING_KEY_ID
               Value: !Ref ClientSigningKey
             - Name: OIDC_ISSUER_DISCOVERY_ENDPOINT
-              Value: !FindInMap [ OidcIssuerDiscoveryEndpoint, !Ref Environment, Endpoint ]
+              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, OidcIssuerEndpoint ]
             - Name: COOKIE_TTL_IN_SECS
               Value: 3600
           PortMappings:
@@ -481,7 +463,7 @@ Resources:
                   - "ecr:GetDownloadUrlForLayer"
                   - "ecr:BatchCheckLayerAvailability"
                 Resource:
-                  - !FindInMap [ ECSConfiguration, !Ref Environment, FrontImageRepository ]
+                  - !FindInMap [ EnvironmentVariables, !Ref Environment, FrontImageRepository ]
               - Effect: Allow
                 Action:
                   - "ecr:GetAuthorizationToken"
@@ -563,7 +545,7 @@ Resources:
   StsStubSigningKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: alias/sts-stub-signing-key
+      AliasName: !Sub "alias/sts-stub-signing-key-${AWS::StackName}"
       TargetKeyId: !Ref StsStubSigningKey
 
   ClientSigningKey:
@@ -597,7 +579,7 @@ Resources:
   ClientSigningKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: alias/client-signing-key
+      AliasName: !Sub "alias/client-assertion-signing-key-${AWS::StackName}"
       TargetKeyId: !Ref ClientSigningKey
 
   DocumentDatabaseKmsKey:
