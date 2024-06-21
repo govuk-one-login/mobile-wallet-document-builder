@@ -1,24 +1,10 @@
 import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
 import { getSelfUrl } from "../config/appConfig";
+import { deleteCookies } from "./utils/deleteCookies";
 
 const COOKIES_TO_DELETE = ["id_token", "access_token", "app"];
 
-export function deleteCookies(
-  req: Request,
-  res: Response,
-  cookieNames: string[]
-): void {
-  if (req.cookies) {
-    if (cookieNames) {
-      for (const cookieName of Object.keys(req.cookies)) {
-        if (cookieNames.includes(cookieName)) {
-          res.clearCookie(cookieName);
-        }
-      }
-    }
-  }
-}
 export async function logoutGetController(
   req: Request,
   res: Response
