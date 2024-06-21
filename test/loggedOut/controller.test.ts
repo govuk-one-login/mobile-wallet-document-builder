@@ -1,5 +1,5 @@
 import { getMockReq, getMockRes } from "@jest-mock/express";
-import {loggedOutGetController} from "../../src/loggedOut/controller";
+import { loggedOutGetController } from "../../src/loggedOut/controller";
 
 describe("controller.ts", () => {
   afterEach(() => {
