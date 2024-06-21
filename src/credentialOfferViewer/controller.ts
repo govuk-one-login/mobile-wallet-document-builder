@@ -32,7 +32,6 @@ export async function credentialOfferViewerController(
 
     res.render("credential-offer.njk", {
       authenticated: isAuthenticated(req),
-
       universalLink: credentialOfferUri,
       qrCode,
     });

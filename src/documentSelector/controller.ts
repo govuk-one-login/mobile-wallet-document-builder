@@ -30,6 +30,7 @@ export async function documentSelectorPostController(
     } else {
       res.render("select-document-form.njk", {
         isInvalid: selectedDocument === undefined,
+        authenticated: isAuthenticated(req),
       });
     }
   } catch (error) {
