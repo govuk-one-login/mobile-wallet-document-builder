@@ -10,21 +10,25 @@ describe("controller.ts", () => {
   });
 
   it("should render the form for selecting a document when user is not authenticated (no id_token in cookies)", async () => {
-    const req = getMockReq({cookies: {}});
+    const req = getMockReq({ cookies: {} });
     const { res } = getMockRes();
 
     await documentSelectorGetController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {"authenticated": false});
+    expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
+      authenticated: false,
+    });
   });
 
   it("should render the form for selecting a document when user is authenticated", async () => {
-    const req = getMockReq({cookies: {id_token: "id_token"}});
+    const req = getMockReq({ cookies: { id_token: "id_token" } });
     const { res } = getMockRes();
 
     await documentSelectorGetController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {"authenticated": true});
+    expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
+      authenticated: true,
+    });
   });
 
   it("should redirect to the DBS document form page when DBS is selected", async () => {

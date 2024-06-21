@@ -22,21 +22,25 @@ describe("controller.ts", () => {
   const saveDocument = databaseService.saveDocument as jest.Mock;
 
   it("should render the form for inputting DBS document details when user is not authenticated (no id_token in cookies)", async () => {
-    const req = getMockReq({cookies: {}});
+    const req = getMockReq({ cookies: {} });
     const { res } = getMockRes();
 
     await dbsDocumentBuilderGetController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {"authenticated": false});
+    expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
+      authenticated: false,
+    });
   });
 
   it("should render the form for inputting DBS document details when user is authenticated", async () => {
-    const req = getMockReq({cookies: {id_token: "id_token"}});
+    const req = getMockReq({ cookies: { id_token: "id_token" } });
     const { res } = getMockRes();
 
     await dbsDocumentBuilderGetController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {"authenticated": true});
+    expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
+      authenticated: true,
+    });
   });
 
   it("should redirect to the credential offer page with 'BasicCheckCredential' and 'ERROR:500' in the query params", async () => {

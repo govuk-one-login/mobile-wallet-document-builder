@@ -37,7 +37,7 @@ describe("controller.ts", () => {
       },
       cookies: {
         app: "test-build",
-        id_token: "id_token"
+        id_token: "id_token",
       },
       query: {
         type: "BasicCheckCredential",

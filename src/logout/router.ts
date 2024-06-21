@@ -1,6 +1,6 @@
 import express from "express";
 import { logoutGetController } from "./controller";
-import {requiresAuth} from "../middleware/requiresAuth";
+import { requiresAuth } from "../middleware/requiresAuth";
 
 const router = express.Router();
 

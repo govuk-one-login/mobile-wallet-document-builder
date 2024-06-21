@@ -12,25 +12,29 @@ describe("controller.ts", () => {
   });
 
   it("should render the form for selecting an app when user is not authenticated (no id_token in cookies)", async () => {
-    const req = getMockReq({cookies: {}});
+    const req = getMockReq({ cookies: {} });
     const { res } = getMockRes();
 
     await appSelectorGetController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {authenticated: false});
+    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
+      authenticated: false,
+    });
   });
 
   it("should render the form for selecting an app when user is authenticated", async () => {
     const req = getMockReq({
       cookies: {
-        id_token: "id_token"
-      }
+        id_token: "id_token",
+      },
     });
     const { res } = getMockRes();
 
     await appSelectorGetController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {authenticated: true});
+    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
+      authenticated: true,
+    });
   });
 
   it("should redirect to the page for selecting a document", async () => {
