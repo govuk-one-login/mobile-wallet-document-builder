@@ -1,7 +1,6 @@
 {% extends "govuk/template.njk" %}
 {% from "govuk/components/header/macro.njk" import govukHeader %}
 {% block head %}<link href="/public/stylesheets/application.css" rel="stylesheet">{% endblock %}
-{% set pageTitleName = "Base" %}
 {% block header %}
     {% if authenticated %}
         {{ govukHeader({
