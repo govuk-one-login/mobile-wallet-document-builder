@@ -1,5 +1,7 @@
 FROM node:20-alpine
 
+RUN apk update && apk upgrade busybox
+
 WORKDIR /app
 COPY src/ src/
 COPY .env.example .env
