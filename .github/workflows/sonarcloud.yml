@@ -5,11 +5,7 @@ on:
     branches:
       - main
   pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - ready_for_review
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   sonarcloud:
@@ -28,7 +24,9 @@ jobs:
       - name: Generate coverage report
         run: npm run test:cov
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@e44258b109568baa0df60ed515909fc6c72cba92 # pin@master
+        uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1 # pin@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ./
