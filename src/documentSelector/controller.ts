@@ -30,7 +30,6 @@ export async function documentSelectorPostController(
       });
     }
   } catch (error) {
-    console.log('ok')
     logger.error(
       error,
       "An error happened processing request to select document"
