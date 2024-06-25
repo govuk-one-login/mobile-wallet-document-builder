@@ -37,6 +37,7 @@ describe("controller.ts", () => {
       },
       cookies: {
         app: "test-build",
+        id_token: "id_token",
       },
       query: {
         type: "BasicCheckCredential",
@@ -70,6 +71,7 @@ describe("controller.ts", () => {
       ""
     );
     expect(res.render).toHaveBeenCalledWith("credential-offer.njk", {
+      authenticated: true,
       qrCode: "data:image/png;base64,iVBORw0KGgoAAAANSU",
       universalLink:
         "https://mobile.build.account.gov.uk/test-wallet/add?credential_offer=testCredentialOffer",

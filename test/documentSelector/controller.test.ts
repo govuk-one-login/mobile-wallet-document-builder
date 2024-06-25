@@ -9,13 +9,26 @@ describe("controller.ts", () => {
     jest.clearAllMocks();
   });
 
-  it("should render the form for selecting a document", async () => {
-    const req = getMockReq();
+  it("should render the form for selecting a document when user is not authenticated (no id_token in cookies)", async () => {
+    const req = getMockReq({ cookies: {} });
     const { res } = getMockRes();
 
     await documentSelectorGetController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("select-document-form.njk");
+    expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
+      authenticated: false,
+    });
+  });
+
+  it("should render the form for selecting a document when user is authenticated", async () => {
+    const req = getMockReq({ cookies: { id_token: "id_token" } });
+    const { res } = getMockRes();
+
+    await documentSelectorGetController(req, res);
+
+    expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
+      authenticated: true,
+    });
   });
 
   it("should redirect to the DBS document form page when DBS is selected", async () => {
@@ -51,6 +64,7 @@ describe("controller.ts", () => {
     await documentSelectorPostController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
+      authenticated: false,
       isInvalid: true,
     });
     expect(res.redirect).not.toHaveBeenCalled();

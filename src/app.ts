@@ -14,6 +14,9 @@ import { getOIDCConfig } from "./config/oidc";
 import { auth } from "./middleware/auth";
 import cookieParser from "cookie-parser";
 import { returnFromAuthRouter } from "./returnFromAuth/router";
+import { logoutRouter } from "./logout/router";
+import { loggedOutRouter } from "./loggedOut/router";
+import { noCacheMiddleware } from "./middleware/noCache";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
@@ -22,6 +25,7 @@ const APP_VIEWS = [
   path.join(__dirname, "../src/ninoDocumentBuilder/views"),
   path.join(__dirname, "../src/appSelector/views"),
   path.join(__dirname, "../src/documentSelector/views"),
+  path.join(__dirname, "../src/loggedOut/views"),
   path.resolve("node_modules/govuk-frontend/"),
 ];
 
@@ -32,6 +36,8 @@ export async function createApp(): Promise<express.Application> {
   app.use(express.urlencoded({ extended: true }));
   app.use(auth(getOIDCConfig()));
   app.use(loggerMiddleware);
+  app.use(noCacheMiddleware);
+
   app.use((req, res, next) => {
     req.log = req.log.child({
       trace: res.locals.trace,
@@ -60,6 +66,8 @@ export async function createApp(): Promise<express.Application> {
   app.use(documentRouter);
   app.use(stsStubAccessTokenRouter);
   app.use(stsStubDidDocumentRouter);
+  app.use(logoutRouter);
+  app.use(loggedOutRouter);
 
   return app;
 }

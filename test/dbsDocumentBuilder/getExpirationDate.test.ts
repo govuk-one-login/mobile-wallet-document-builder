@@ -1,4 +1,4 @@
-import { getExpirationDate } from "../../src/dbsDocumentBuilder/getExpirationDate";
+import { getExpirationDate } from "../../src/dbsDocumentBuilder/utils/getExpirationDate";
 
 describe("getExpirationDate.ts", () => {
   beforeEach(() => {
