@@ -11,6 +11,7 @@
     "build:ts": "node_modules/.bin/tsc",
     "start": "node dist/server.js",
     "test": "node_modules/.bin/jest",
+    "test:cov": "jest --coverage",
     "test:unit": "node_modules/.bin/jest --testPathPattern=test/unit",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --ext .ts . --fix",
