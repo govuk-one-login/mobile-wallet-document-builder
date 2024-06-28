@@ -8,5 +8,9 @@ ARG PORT
 RUN npm update -g
 RUN npm install --ignore-scripts && npm run build
 
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot \
+USER nonroot
+
 EXPOSE $PORT
 CMD npm run start
