@@ -3,7 +3,6 @@ import { logger } from "./logger";
 import { getSelfUrl } from "../config/appConfig";
 import { apps } from "../types/Apps";
 import { generators } from "openid-client";
-import e from "express";
 import { getCookieExpiry } from "../utils/getCookieExpiry";
 
 const VECTORS_OF_TRUST = `["Cl"]`;
@@ -33,7 +32,7 @@ export async function requiresAuth(
   }
 }
 
-export function getAuthorizationUrl(req: e.Request, res: e.Response) {
+export function getAuthorizationUrl(req: Request, res: Response) {
   const nonce = generators.nonce();
   const state = generators.state();
 
