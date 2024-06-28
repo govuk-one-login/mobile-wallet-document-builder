@@ -17,7 +17,7 @@ export async function returnFromAuthGetController(
     }
 
     const clientAssertion: Jwt = await buildClientAssertion(
-      req.oidc.metadata.client_id!,
+      req.oidc.metadata.client_id,
       req.oidc.issuer.metadata.token_endpoint!,
       getClientSigningKeyId()
     );
