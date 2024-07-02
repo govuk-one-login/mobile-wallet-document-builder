@@ -69,7 +69,7 @@ export class KmsService {
       throw new Error("No public key returned");
     }
 
-    return this.parsePublicKey(response.PublicKey as Uint8Array);
+    return this.parsePublicKey(response.PublicKey);
   }
 
   private parsePublicKey(publicKeyRaw: Uint8Array) {
