@@ -1,4 +1,6 @@
-FROM node:20.5.1-alpine3.17@sha256:ca274cb63ae61f501edb8a5abc29d926f8169793655a4cf39dc7fd8de0a4bca9
+FROM node:20.15.0-alpine3.20@sha256:df01469346db2bf1cfc1f7261aeab86b2960efa840fe2bd46d83ff339f463665
+
+RUN apk update && apk upgrade busybox
 
 WORKDIR /app
 COPY src/ src/
