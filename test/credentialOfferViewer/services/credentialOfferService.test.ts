@@ -1,6 +1,7 @@
 process.env.MOCK_CRI_URL = "http://localhost:1234";
 import { getCredentialOffer } from "../../../src/credentialOfferViewer/services/credentialOfferService";
 import axios, { AxiosResponse } from "axios";
+import { PLACEHOLDER_WALLET_SUBJECT_ID } from "../../testConfig";
 
 jest.mock("axios");
 
@@ -12,7 +13,7 @@ describe("credentialOfferService.ts", () => {
   const mockedAxios = axios as jest.Mocked<typeof axios>;
 
   it("should fetch and return the credential offer URI", async () => {
-    const walletSubjectId = "walletSubjectIdPlaceholder";
+    const walletSubjectId = PLACEHOLDER_WALLET_SUBJECT_ID;
     const documentId = "2e0fac05-4b38-480f-9cbd-b046eabe1e46";
     const credentialType = "BasicCheckCredential";
     const criResponseMocked = {
@@ -36,7 +37,7 @@ describe("credentialOfferService.ts", () => {
         params: {
           credentialType: "BasicCheckCredential",
           documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-          walletSubjectId: "walletSubjectIdPlaceholder",
+          walletSubjectId: PLACEHOLDER_WALLET_SUBJECT_ID,
         },
       }
     );
@@ -47,7 +48,7 @@ describe("credentialOfferService.ts", () => {
   });
 
   it("should catch an axios error and throw it", async () => {
-    const walletSubjectId = "walletSubjectIdPlaceholder";
+    const walletSubjectId = PLACEHOLDER_WALLET_SUBJECT_ID;
     const documentId = "2e0fac05-4b38-480f-9cbd-b046eabe1e46";
     const credentialType = "BasicCheckCredential";
     mockedAxios.isAxiosError.mockReturnValue(true);
@@ -59,7 +60,7 @@ describe("credentialOfferService.ts", () => {
   });
 
   it("should catch a non-axios error and throw it", async () => {
-    const walletSubjectId = "walletSubjectIdPlaceholder";
+    const walletSubjectId = PLACEHOLDER_WALLET_SUBJECT_ID;
     const documentId = "2e0fac05-4b38-480f-9cbd-b046eabe1e46";
     const credentialType = "BasicCheckCredential";
     mockedAxios.isAxiosError.mockReturnValue(false);

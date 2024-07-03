@@ -4,6 +4,7 @@ import { getCredentialOffer } from "./services/credentialOfferService";
 import { getCustomCredentialOfferUri } from "./helpers/customCredentialOfferUri";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
+import { getPlaceholderWalletSubjectId } from "../config/appConfig";
 
 export async function credentialOfferViewerController(
   req: Request,
@@ -14,7 +15,7 @@ export async function credentialOfferViewerController(
     const selectedApp = req.cookies.app as string;
     const credentialType = req.query.type as string;
     const errorScenario = req.query.error as string;
-    const walletSubjectId = "walletSubjectIdPlaceholder";
+    const walletSubjectId = getPlaceholderWalletSubjectId();
 
     const response = await getCredentialOffer(
       walletSubjectId,

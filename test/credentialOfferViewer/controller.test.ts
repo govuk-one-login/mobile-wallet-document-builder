@@ -4,6 +4,7 @@ import * as customCredentialOfferUri from "../../src/credentialOfferViewer/helpe
 
 import QRCode from "qrcode";
 import { getMockReq, getMockRes } from "@jest-mock/express";
+import { PLACEHOLDER_WALLET_SUBJECT_ID } from "../testConfig";
 
 jest.mock(
   "../../src/credentialOfferViewer/services/credentialOfferService",
@@ -61,7 +62,7 @@ describe("controller.ts", () => {
     await credentialOfferViewerController(req, res);
 
     expect(getCredentialOffer).toHaveBeenCalledWith(
-      "walletSubjectIdPlaceholder",
+      PLACEHOLDER_WALLET_SUBJECT_ID,
       "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       "BasicCheckCredential"
     );
