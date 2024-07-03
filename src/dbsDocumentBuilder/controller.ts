@@ -5,6 +5,7 @@ import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
+import { getPlaceholderWalletSubjectId } from "../config/appConfig";
 
 const CREDENTIAL_TYPE = CredentialType.basicCheckCredential;
 
@@ -31,7 +32,7 @@ export async function dbsDocumentBuilderPostController(
     logger.info(`Processing DBS document with documentId ${documentId}`);
     const selectedError = req.body["throwError"];
     const document = DbsDocument.fromRequestBody(req.body, CREDENTIAL_TYPE);
-    const walletSubjectId = "walletSubjectIdPlaceholder";
+    const walletSubjectId = getPlaceholderWalletSubjectId();
     await saveDocument(document, documentId, walletSubjectId);
 
     res.redirect(

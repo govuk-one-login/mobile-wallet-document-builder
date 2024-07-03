@@ -8,6 +8,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { saveDocument, getDocument } from "../../src/services/databaseService";
 import "aws-sdk-client-mock-jest";
+import { PLACEHOLDER_WALLET_SUBJECT_ID } from "../testConfig";
 
 describe("databaseService.ts", () => {
   it("should save a document to the database table", async () => {
@@ -30,7 +31,7 @@ describe("databaseService.ts", () => {
       TableName: "testTable",
       Item: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        walletSubjectId: "walletSubjectIdPlaceholder",
+        walletSubjectId: PLACEHOLDER_WALLET_SUBJECT_ID,
         vc: JSON.stringify(document),
       },
     };
@@ -45,7 +46,7 @@ describe("databaseService.ts", () => {
       saveDocument(
         document,
         "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        "walletSubjectIdPlaceholder"
+        PLACEHOLDER_WALLET_SUBJECT_ID
       )
     ).resolves.not.toThrow();
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
@@ -71,7 +72,7 @@ describe("databaseService.ts", () => {
       TableName: "testTable",
       Item: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        walletSubjectId: "walletSubjectIdPlaceholder",
+        walletSubjectId: PLACEHOLDER_WALLET_SUBJECT_ID,
         vc: JSON.stringify(document),
       },
     };
@@ -82,7 +83,7 @@ describe("databaseService.ts", () => {
       saveDocument(
         document,
         "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        "walletSubjectIdPlaceholder"
+        PLACEHOLDER_WALLET_SUBJECT_ID
       )
     ).rejects.toThrow("SOME_DATABASE_ERROR");
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);

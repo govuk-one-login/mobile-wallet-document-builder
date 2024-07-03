@@ -12,6 +12,7 @@ import {
   getOIDCDiscoveryEndpoint,
   getCookieTtlInSecs,
   getClientSigningKeyId,
+  getPlaceholderWalletSubjectId,
 } from "../../src/config/appConfig";
 
 describe("appConfig.ts", () => {
@@ -148,5 +149,11 @@ describe("appConfig.ts", () => {
   it("should return COOKIE_TTL_IN_SECS environment variable value if set", () => {
     process.env.COOKIE_TTL_IN_SECS = "200";
     expect(getCookieTtlInSecs()).toEqual("200");
+  });
+
+  it("should return valid wallet subject id", () => {
+    expect(getPlaceholderWalletSubjectId()).toEqual(
+      "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i"
+    );
   });
 });

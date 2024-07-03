@@ -6,12 +6,11 @@ import {
 } from "./token/validateTokenRequest";
 import {
   getAccessTokenTtlInSecs,
+  getPlaceholderWalletSubjectId,
   getStsSigningKeyId,
 } from "../config/appConfig";
 import { logger } from "../middleware/logger";
 import { PREAUTHORIZED_CODE_ERRORS } from "./types/PreAuthorizedCodeErrors";
-
-const WALLET_SUBJECT_ID = "walletSubjectIdPlaceholder";
 
 export async function stsStubAccessTokenController(
   req: Request,
@@ -40,7 +39,7 @@ export async function stsStubAccessTokenController(
     logger.info(`Valid pre-authorized code received: ${preAuthorizedCode}`);
 
     const accessToken = await getJwtAccessToken(
-      WALLET_SUBJECT_ID,
+      getPlaceholderWalletSubjectId(),
       payload,
       getStsSigningKeyId()
     );
