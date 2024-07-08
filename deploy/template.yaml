@@ -47,7 +47,7 @@ Mappings:
       FEURL: "stub-credential-issuer.mobile.dev.account.gov.uk"
       FrontImageRepository: arn:aws:ecr:eu-west-2:671524980203:repository/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry
       DidController: "did:web:wallet-api.mobile.dev.account.gov.uk"
-      OidcIssuerEndpoint: "https://oidc.integration.account.gov.uk"
+      OidcIssuerEndpoint: "https://auth-stub.mobile.build.account.gov.uk"
     build:
       BEURL: "example-credential-issuer.mobile.build.account.gov.uk"
       FEURL: "stub-credential-issuer.mobile.build.account.gov.uk"
