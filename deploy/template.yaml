@@ -13,6 +13,7 @@ Parameters:
     AllowedValues:
       - "dev"
       - "build"
+      - "staging"
   VpcStackName:
     Description: >
       The name of the stack that defines the VPC in which this container will
@@ -32,7 +33,9 @@ Parameters:
 Conditions:
   StackNameIsWalletDocBuilderFE: !Equals [ !Ref "AWS::StackName", wallet-doc-builder-fe ]
 
-  IsBuild: !Equals [ !Ref Environment, build ]
+  IsBuildOrStaging: !Or
+    - !Equals [ !Ref Environment, build ]
+    - !Equals [ !Ref Environment, staging ]
 
   UsePermissionsBoundary:
     Fn::Not:
@@ -43,16 +46,22 @@ Conditions:
 Mappings:
   EnvironmentVariables:
     dev:
-      BEURL: "example-credential-issuer.mobile.dev.account.gov.uk"
-      FEURL: "stub-credential-issuer.mobile.dev.account.gov.uk"
+      CredentialIssuerUrl: "example-credential-issuer.mobile.dev.account.gov.uk"
+      SelfUrl: "stub-credential-issuer.mobile.dev.account.gov.uk"
       FrontImageRepository: arn:aws:ecr:eu-west-2:671524980203:repository/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry
       DidController: "did:web:wallet-api.mobile.dev.account.gov.uk"
-      OidcIssuerEndpoint: "https://auth-stub.mobile.build.account.gov.uk"
+      OidcIssuerEndpoint: "https://auth-stub.mobile.dev.account.gov.uk"
     build:
-      BEURL: "example-credential-issuer.mobile.build.account.gov.uk"
-      FEURL: "stub-credential-issuer.mobile.build.account.gov.uk"
+      CredentialIssuerUrl: "example-credential-issuer.mobile.build.account.gov.uk"
+      SelfUrl: "stub-credential-issuer.mobile.build.account.gov.uk"
       FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
       DidController: "did:web:wallet-api.mobile.build.account.gov.uk"
+      OidcIssuerEndpoint: "https://auth-stub.mobile.build.account.gov.uk"
+    staging:
+      CredentialIssuerUrl: "example-credential-issuer.mobile.staging.account.gov.uk"
+      SelfUrl: "stub-credential-issuer.mobile.staging.account.gov.uk"
+      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
+      DidController: "did:web:wallet-api.mobile.staging.account.gov.uk"
       OidcIssuerEndpoint: "https://oidc.integration.account.gov.uk"
   # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
   # PlatformConfiguration:
@@ -295,11 +304,11 @@ Resources:
     Properties:
       DomainName: !If 
         - StackNameIsWalletDocBuilderFE
-        - !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
+        - !FindInMap [ EnvironmentVariables, !Ref Environment, SelfUrl ]
         - !Sub
-          - "${AWS::StackName}-${FEURL}"
-          - FEURL:
-              !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
+          - "${AWS::StackName}-${SelfUrl}"
+          - SelfUrl:
+              !FindInMap [ EnvironmentVariables, !Ref Environment, SelfUrl ]
       DomainNameConfigurations:
         - CertificateArn: !Sub "{{resolve:ssm:/${Environment}/Platform/ACM/PrimaryZoneWildcardCertificateARN}}"
           EndpointType: REGIONAL
@@ -400,11 +409,11 @@ Resources:
               Value: !Ref DocumentDatabase
             - Name: ENVIRONMENT
               Value: !Sub "${Environment}"
-            - Name: MOCK_CRI_URL
+            - Name: CREDENTIAL_ISSUER_URL
               Value: !Sub 
-                      - "https://${BEURL}"
-                      - BEURL:
-                          !FindInMap [ EnvironmentVariables, !Ref Environment, BEURL ]
+                      - "https://${CredentialIssuerUrl}"
+                      - CredentialIssuerUrl:
+                          !FindInMap [ EnvironmentVariables, !Ref Environment, CredentialIssuerUrl ]
             - Name: STS_SIGNING_KEY_ID
               Value: !Ref StsStubSigningKey
             - Name: ACCESS_TOKEN_TTL_IN_SECS
@@ -413,9 +422,9 @@ Resources:
               Value: !FindInMap [EnvironmentVariables, !Ref Environment, DidController]
             - Name: SELF
               Value: !Sub
-                - "https://${FEURL}"
-                - FEURL:
-                    !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
+                - "https://${SelfUrl}"
+                - SelfUrl:
+                    !FindInMap [ EnvironmentVariables, !Ref Environment, SelfUrl ]
             - Name: OIDC_CLIENT_ID
               Value: !Sub "{{resolve:ssm:/${AWS::StackName}/Config/OIDC/Client/Id}}"
             - Name: CLIENT_SIGNING_KEY_ID
@@ -653,7 +662,7 @@ Resources:
 # ALARMS
 
   DocBuilderLowContainerTaskCountAlarm:
-    Condition: IsBuild
+    Condition: IsBuildOrStaging
     DependsOn:
        - WalletFECluster
        - WalletFEECSService
@@ -689,7 +698,7 @@ Resources:
             Stat: Minimum
 
   BE5XXErrorAlarm:
-    Condition: IsBuild
+    Condition: IsBuildOrStaging
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmName: !Sub "${AWS::StackName}-BE5XXErrorAlarm"

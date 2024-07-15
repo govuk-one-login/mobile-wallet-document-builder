@@ -1,4 +1,4 @@
-process.env.MOCK_CRI_URL = "http://localhost:1234";
+process.env.CREDENTIAL_ISSUER_URL = "http://localhost:1234";
 import { getCredentialOffer } from "../../../src/credentialOfferViewer/services/credentialOfferService";
 import axios, { AxiosResponse } from "axios";
 import { PLACEHOLDER_WALLET_SUBJECT_ID } from "../../testConfig";

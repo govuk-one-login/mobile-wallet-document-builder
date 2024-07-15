@@ -23,7 +23,7 @@ export function getEnvironment(): string {
 }
 
 export function getCriEndpoint(): string {
-  return getEnvVarValue("MOCK_CRI_URL");
+  return getEnvVarValue("CREDENTIAL_ISSUER_URL");
 }
 
 export function getAwsRegion(): string {
