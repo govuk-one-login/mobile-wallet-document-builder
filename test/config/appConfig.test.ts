@@ -49,14 +49,14 @@ describe("appConfig.ts", () => {
     expect(getEnvironment()).toEqual("local");
   });
 
-  it("should throw an error if MOCK_CRI_URL environment variable is not set", () => {
+  it("should throw an error if CREDENTIAL_ISSUER_URL environment variable is not set", () => {
     expect(() => getCriEndpoint()).toThrow(
-      new Error("MOCK_CRI_URL environment variable not set")
+      new Error("CREDENTIAL_ISSUER_URL environment variable not set")
     );
   });
 
-  it("should return MOCK_CRI_URL environment variable value if set", () => {
-    process.env.MOCK_CRI_URL = "http://localhost:1234";
+  it("should return CREDENTIAL_ISSUER_URL environment variable value if set", () => {
+    process.env.CREDENTIAL_ISSUER_URL = "http://localhost:1234";
     expect(getCriEndpoint()).toEqual("http://localhost:1234");
   });
 
