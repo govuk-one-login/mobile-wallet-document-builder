@@ -136,7 +136,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/apigateway/${AWS::StackName}-WalletFE-API-GW-AccessLogs
-      RetentionInDays: 14
+      RetentionInDays: 7
 
   WalletFEECSAccessLogsGroup:
     Type: AWS::Logs::LogGroup
