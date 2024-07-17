@@ -16,7 +16,7 @@ const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
 export async function saveDocument(
   document: DbsDocument | NinoDocument,
-  documentId: UUID,
+  documentId: UUID
 ): Promise<void> {
   const tableName = getDocumentsTableName();
 
