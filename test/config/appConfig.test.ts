@@ -12,7 +12,7 @@ import {
   getOIDCDiscoveryEndpoint,
   getCookieTtlInSecs,
   getClientSigningKeyId,
-  getPlaceholderWalletSubjectId,
+  getHardcodedWalletSubjectId,
 } from "../../src/config/appConfig";
 
 describe("appConfig.ts", () => {
@@ -152,7 +152,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should return valid wallet subject id", () => {
-    expect(getPlaceholderWalletSubjectId()).toEqual(
+    expect(getHardcodedWalletSubjectId()).toEqual(
       "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i"
     );
   });

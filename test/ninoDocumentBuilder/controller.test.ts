@@ -5,7 +5,6 @@ import {
   ninoDocumentBuilderGetController,
   ninoDocumentBuilderPostController,
 } from "../../src/ninoDocumentBuilder/controller";
-import { PLACEHOLDER_WALLET_SUBJECT_ID } from "../testConfig";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
@@ -86,8 +85,7 @@ describe("controller.ts", () => {
     );
     expect(saveDocument).toHaveBeenCalledWith(
       ninoDocument,
-      "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-      PLACEHOLDER_WALLET_SUBJECT_ID
+      "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
     );
   });
 

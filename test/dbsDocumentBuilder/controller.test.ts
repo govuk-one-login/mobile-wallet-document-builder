@@ -5,7 +5,6 @@ import {
 import { DbsDocument } from "../../src/dbsDocumentBuilder/models/dbsDocument";
 import * as databaseService from "../../src/services/databaseService";
 import { getMockReq, getMockRes } from "@jest-mock/express";
-import { PLACEHOLDER_WALLET_SUBJECT_ID } from "../testConfig";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
@@ -120,8 +119,7 @@ describe("controller.ts", () => {
     );
     expect(saveDocument).toHaveBeenCalledWith(
       dbsDocument,
-      "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-      PLACEHOLDER_WALLET_SUBJECT_ID
+      "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
     );
   });
 
