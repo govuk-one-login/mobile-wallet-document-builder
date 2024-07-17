@@ -21,8 +21,11 @@ export async function credentialOfferViewerController(
       { method: "GET", via: "header" }
     );
 
-    const walletSubjectId = userInfo.wallet_subject_id as string;
+    if (!userInfo.wallet_subject_id) {
+      throw new Error("wallet_subject_id not in user info");
+    }
 
+    const walletSubjectId = userInfo.wallet_subject_id as string;
     const response = await getCredentialOffer(
       walletSubjectId,
       documentId,
