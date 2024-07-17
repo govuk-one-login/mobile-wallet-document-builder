@@ -66,6 +66,7 @@ export function getCookieTtlInSecs(): string {
   return getEnvVarValue("COOKIE_TTL_IN_SECS");
 }
 
-export function getPlaceholderWalletSubjectId(): string {
+export function getHardcodedWalletSubjectId(): string {
+  // This value must match the wallet_subject_id in the auth stub's user info
   return "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i";
 }
