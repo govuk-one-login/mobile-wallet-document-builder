@@ -6,7 +6,7 @@ import { documentRouter } from "./document/router";
 import { stsStubAccessTokenRouter } from "./stsStubAccessToken/router";
 import nunjucks from "nunjucks";
 import path from "path";
-import { stsStubDidDocumentRouter } from "./stsStubDidDocument/router";
+import { stsStubJwksRouter } from "./stsStubJwks/router";
 import { documentSelectorRouter } from "./documentSelector/router";
 import { ninoDocumentBuilderRouter } from "./ninoDocumentBuilder/router";
 import { loggerMiddleware } from "./middleware/logger";
@@ -65,7 +65,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(credentialOfferViewerRouter);
   app.use(documentRouter);
   app.use(stsStubAccessTokenRouter);
-  app.use(stsStubDidDocumentRouter);
+  app.use(stsStubJwksRouter);
   app.use(logoutRouter);
   app.use(loggedOutRouter);
 

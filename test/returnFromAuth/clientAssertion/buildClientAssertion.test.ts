@@ -10,7 +10,6 @@ describe("buildClientAssertion.ts", () => {
       sign: jest.fn(() => Promise.resolve("mocked_signature")),
     };
 
-    console.log(Date.now());
     const response = await buildClientAssertion(
       "test_client_id",
       "http://localost:8000/token",
