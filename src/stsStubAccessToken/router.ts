@@ -3,6 +3,6 @@ import { stsStubAccessTokenController } from "./controller";
 
 const router = express.Router();
 
-router.post("/sts-stub/token", stsStubAccessTokenController);
+router.post("/token", stsStubAccessTokenController);
 
 export { router as stsStubAccessTokenRouter };
