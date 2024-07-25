@@ -36,16 +36,6 @@ export async function returnFromAuthGetController(
       }
     );
 
-    if (!tokenSet.access_token) {
-      logger.error("No access token received");
-      res.status(500);
-    }
-
-    if (!tokenSet.id_token) {
-      logger.error("No id token received");
-      res.status(500);
-    }
-
     res.cookie("access_token", tokenSet.access_token, {
       httpOnly: true,
       maxAge: getCookieExpiry(),

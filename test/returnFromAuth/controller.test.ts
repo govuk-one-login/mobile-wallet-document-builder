@@ -39,53 +39,6 @@ describe("controller.ts", () => {
     expect(res.status).toHaveBeenCalledWith(500);
   });
 
-  it("should return 500 when the token response does not have an access token", async () => {
-    const callback = { id_token: "id_token" };
-    const req = getMockReq({
-      oidc: {
-        callbackParams: jest.fn(),
-        callback: jest.fn().mockImplementation(() => callback),
-        metadata: {
-          client_id: "test_client_id",
-          redirect_uris: ["http://localost:3000/test"],
-        },
-        issuer: { metadata: { token_endpoint: "http://localost:8000/token" } },
-      },
-    });
-    const { res } = getMockRes();
-    buildAssertionJwt.mockImplementationOnce(() => "clientAssertionJWT");
-
-    await returnFromAuthGetController(req, res);
-
-    expect(loggerErrorSpy).toHaveBeenNthCalledWith(
-      1,
-      "No access token received"
-    );
-    expect(res.status).toHaveBeenCalledWith(500);
-  });
-
-  it("should return 500 when the token response does not have an id token", async () => {
-    const callback = { access_token: "access_token" };
-    const req = getMockReq({
-      oidc: {
-        callbackParams: jest.fn(),
-        callback: jest.fn().mockImplementation(() => callback),
-        metadata: {
-          client_id: "test_client_id",
-          redirect_uris: ["http://localost:3000/test"],
-        },
-        issuer: { metadata: { token_endpoint: "http://localost:8000/token" } },
-      },
-    });
-    const { res } = getMockRes();
-    buildAssertionJwt.mockImplementationOnce(() => "clientAssertionJWT");
-
-    await returnFromAuthGetController(req, res);
-
-    expect(loggerErrorSpy).toHaveBeenNthCalledWith(1, "No id token received");
-    expect(res.status).toHaveBeenCalledWith(500);
-  });
-
   it("should return 200 and redirect to /select-document", async () => {
     const callback = { access_token: "access_token", id_token: "id_token" };
     const req = getMockReq({
