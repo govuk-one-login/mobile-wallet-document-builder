@@ -6,7 +6,6 @@ import {
   getCriEndpoint,
   getPortNumber,
   getAccessTokenTtlInSecs,
-  getDidController,
   getSelfUrl,
   getOIDCClientId,
   getOIDCDiscoveryEndpoint,
@@ -83,17 +82,6 @@ describe("appConfig.ts", () => {
   it("should return ACCESS_TOKEN_TTL_IN_SECS environment variable value if set", () => {
     process.env.ACCESS_TOKEN_TTL_IN_SECS = "300";
     expect(getAccessTokenTtlInSecs()).toEqual("300");
-  });
-
-  it("should throw an error if DID_CONTROLLER environment variable is not set", () => {
-    expect(() => getDidController()).toThrow(
-      new Error("DID_CONTROLLER environment variable not set")
-    );
-  });
-
-  it("should return DID_CONTROLLER environment variable value if set", () => {
-    process.env.DID_CONTROLLER = "test-did-controller";
-    expect(getDidController()).toEqual("test-did-controller");
   });
 
   it("should throw an error if SELF environment variable is not set", () => {
