@@ -16,12 +16,18 @@ export async function credentialOfferViewerController(
     const credentialType = req.query.type as string;
     const errorScenario = req.query.error as string;
 
-    const userInfo: UserInfo = await req.oidc.userinfo(
-      req.cookies.access_token,
-      { method: "GET", via: "header" }
-    );
+    let walletSubjectId;
+    if (selectedApp.includes("staging")) {
+      const userInfo: UserInfo = await req.oidc.userinfo(
+        req.cookies.access_token,
+        { method: "GET", via: "header" }
+      );
+      walletSubjectId = userInfo.wallet_subject_id;
+    } else {
+      walletSubjectId =
+        "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i";
+    }
 
-    const walletSubjectId = userInfo.wallet_subject_id;
     const response = await getCredentialOffer(
       walletSubjectId,
       documentId,
