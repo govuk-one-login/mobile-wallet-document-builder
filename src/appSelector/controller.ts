@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
 import { getCookieExpiry } from "../utils/getCookieExpiry";
 import { isAuthenticated } from "../utils/isAuthenticated";
+import { getEnvironment } from "../config/appConfig";
+
+const ENVIRONMENT = getEnvironment();
 
 export async function appSelectorGetController(
   req: Request,
@@ -9,6 +12,8 @@ export async function appSelectorGetController(
 ): Promise<void> {
   try {
     res.render("select-app-form.njk", {
+      isStaging: ENVIRONMENT === "staging",
+      isNotStaging: ENVIRONMENT !== "staging",
       authenticated: isAuthenticated(req),
     });
   } catch (error) {
@@ -33,6 +38,8 @@ export async function appSelectorPostController(
     } else {
       res.render("select-app-form.njk", {
         isInvalid: selectedApp === undefined,
+        isStaging: ENVIRONMENT === "staging",
+        isNotStaging: ENVIRONMENT !== "staging",
         authenticated: isAuthenticated(req),
       });
     }
