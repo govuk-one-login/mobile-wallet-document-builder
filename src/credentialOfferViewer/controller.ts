@@ -5,6 +5,7 @@ import { getCustomCredentialOfferUri } from "./helpers/customCredentialOfferUri"
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { UserInfo } from "./types/UserInfo";
+import { apps } from "../config/appConfig";
 
 export async function credentialOfferViewerController(
   req: Request,
@@ -16,17 +17,11 @@ export async function credentialOfferViewerController(
     const credentialType = req.query.type as string;
     const errorScenario = req.query.error as string;
 
-    let walletSubjectId;
-    if (selectedApp.includes("staging")) {
-      const userInfo: UserInfo = await req.oidc.userinfo(
-        req.cookies.access_token,
-        { method: "GET", via: "header" }
-      );
-      walletSubjectId = userInfo.wallet_subject_id;
-    } else {
-      walletSubjectId =
-        "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i";
-    }
+    const userInfo: UserInfo = await req.oidc.userinfo(
+      req.cookies.access_token,
+      { method: "GET", via: "header" }
+    );
+    const walletSubjectId = userInfo.wallet_subject_id;
 
     const response = await getCredentialOffer(
       walletSubjectId,
@@ -37,6 +32,7 @@ export async function credentialOfferViewerController(
     const credentialOfferUri = getCustomCredentialOfferUri(
       response["credential_offer_uri"],
       selectedApp,
+      apps,
       errorScenario
     );
 

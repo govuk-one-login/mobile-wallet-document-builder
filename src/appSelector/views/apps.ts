@@ -1,25 +1,11 @@
-export const stagingApps = [
-  {
-    value: "govuk-staging",
-    text: "GOV.UK App (Staging)",
-  },
-  {
-    value: "wallet-test-staging",
-    text: "Wallet Test App (Staging)",
-  },
-];
+import { App } from "../../config/appConfig";
 
-export const nonStagingApps = [
-  {
-    value: "govuk-build",
-    text: "GOV.UK App (Build)",
-  },
-  {
-    value: "wallet-test-dev",
-    text: "Wallet Test App (Dev)",
-  },
-  {
-    value: "wallet-test-build",
-    text: "Wallet Test App (Build)",
-  },
-];
+export const stagingApps = (apps: App[]) => {
+  const filteredApps = apps.filter((app) => app.environment === "staging");
+  return filteredApps.map((app) => ({ text: app.text, value: app.value }));
+};
+
+export const nonStagingApps = (apps: App[]) => {
+  const filteredApps = apps.filter((app) => app.environment !== "staging");
+  return filteredApps.map((app) => ({ text: app.text, value: app.value }));
+};

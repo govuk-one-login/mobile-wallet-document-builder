@@ -21,20 +21,6 @@ describe("requiresAuth.ts", () => {
     expect(nextFunction).not.toHaveBeenCalled();
   });
 
-  it("should not redirect to auth server to log in if selected app does not require logging in", () => {
-    const req = getMockReq({
-      cookies: {
-        app: "govuk-build",
-      },
-    });
-    const { res } = getMockRes();
-    const nextFunction: NextFunction = jest.fn();
-
-    requiresAuth(req, res, nextFunction);
-
-    expect(nextFunction).toHaveBeenCalled();
-  });
-
   it("should redirect to auth server to log in if user is not authenticated", () => {
     const req = getMockReq({
       cookies: {

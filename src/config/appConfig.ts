@@ -1,3 +1,10 @@
+export interface App {
+    path: string;
+    environment: string;
+    value: string;
+    text: string;
+}
+
 function getEnvVarValue(variableName: string): string {
   const variableValue = process.env[variableName];
   if (!variableValue) {
@@ -62,7 +69,44 @@ export function getCookieTtlInSecs(): string {
   return getEnvVarValue("COOKIE_TTL_IN_SECS");
 }
 
+export function getCookieExpiry() {
+  return Number(getCookieTtlInSecs()) * 1000;
+}
+
 export function getHardcodedWalletSubjectId(): string {
   // This value must match the wallet_subject_id in the auth stub's user info
   return "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i";
 }
+
+export const apps: App[] = [
+  {
+    path: "https://mobile.build.account.gov.uk/wallet/",
+    environment: "build",
+    value: "govuk-build",
+    text: "GOV.UK App (Build)",
+  },
+  {
+    path: "https://mobile.staging.account.gov.uk/wallet/",
+    environment: "staging",
+    value: "govuk-staging",
+    text: "GOV.UK App (Staging)",
+  },
+  {
+    path: "https://mobile.dev.account.gov.uk/wallet-test/",
+    environment: "build",
+    value: "wallet-test-dev",
+    text: "Wallet Test App (Dev)",
+  },
+  {
+    path: "https://mobile.build.account.gov.uk/wallet-test/",
+    environment: "build",
+    value: "wallet-test-build",
+    text: "Wallet Test App (Build)",
+  },
+  {
+    path: "https://mobile.staging.account.gov.uk/wallet-test/",
+    environment: "staging",
+    value: "wallet-test-staging",
+    text: "Wallet Test App (Staging)",
+  },
+];

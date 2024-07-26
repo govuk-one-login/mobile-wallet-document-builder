@@ -1,4 +1,4 @@
-import { getNameParts } from "../../src/helpers/getNameParts";
+import { getNameParts } from "../../src/utils/getNameParts";
 
 describe("getNameParts.ts", () => {
   it("should return the name parts in the correct format [multiple names]", () => {
