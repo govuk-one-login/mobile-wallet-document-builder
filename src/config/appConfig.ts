@@ -65,12 +65,9 @@ export function getOIDCDiscoveryEndpoint(): string {
   return getEnvVarValue("OIDC_ISSUER_DISCOVERY_ENDPOINT");
 }
 
-export function getCookieTtlInSecs(): string {
-  return getEnvVarValue("COOKIE_TTL_IN_SECS");
-}
-
 export function getCookieExpiry() {
-  return Number(getCookieTtlInSecs()) * 1000;
+  const ttl = getEnvVarValue("COOKIE_TTL_IN_SECS");
+  return Number(ttl) * 1000;
 }
 
 export function getHardcodedWalletSubjectId(): string {
