@@ -17,7 +17,7 @@ import { returnFromAuthRouter } from "./returnFromAuth/router";
 import { logoutRouter } from "./logout/router";
 import { loggedOutRouter } from "./loggedOut/router";
 import { noCacheMiddleware } from "./middleware/noCache";
-import {walletStubRouter} from "./walletStub/router";
+import {proofJwtRouter} from "./proofJwt/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
@@ -69,7 +69,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(stsStubJwksRouter);
   app.use(logoutRouter);
   app.use(loggedOutRouter);
-  app.use(walletStubRouter);
+  app.use(proofJwtRouter);
 
   return app;
 }

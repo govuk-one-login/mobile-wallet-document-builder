@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getProofJwt } from "./proofJwt";
 
-export async function walletStubController(
+export async function proofJwtController(
   req: Request,
   res: Response
 ): Promise<Response> {

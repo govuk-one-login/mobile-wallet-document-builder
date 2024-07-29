@@ -24,6 +24,7 @@
     "@aws-sdk/client-kms": "^3.533.0",
     "@aws-sdk/lib-dynamodb": "^3.523.0",
     "axios": "^1.6.7",
+    "bs58": "^6.0.0",
     "cookie-parser": "^1.4.6",
     "copyfiles": "2.4.1",
     "ecdsa-sig-formatter": "^1.0.11",
