@@ -5,9 +5,6 @@
 {% extends "base.njk" %}
 {% set pageTitle = "Please select an app and environment:" %}
 {% set showError = isInvalid %}
-{% set showStagingApp = isStaging %}
-{% set showNonStagingApp = isNotStaging %}
-
 {% block content %}
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
     <form action="/select-app" method="post">
@@ -25,23 +22,23 @@
                 {
                 value: "govuk-build",
                 text: "GOV.UK App (Build)"
-                } if showNonStagingApp,
+                },
                 {
                 value: "govuk-staging",
                 text: "GOV.UK App (Staging)"
-                } if showStagingApp,
+                },
                 {
                 value: "wallet-test-dev",
                 text: "Wallet Test App (Dev)"
-                } if showNonStagingApp,
+                },
                 {
                 value: "wallet-test-build",
                 text: "Wallet Test App (Build)"
-                } if showNonStagingApp,
+                },
                 {
                 value: "wallet-test-staging",
                 text: "Wallet Test App (Staging)"
-                } if showStagingApp
+                }
                 ],
                 errorMessage: {
                 text: "You must choose an option",
