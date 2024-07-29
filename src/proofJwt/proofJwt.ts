@@ -8,8 +8,7 @@ import {
 } from "@aws-sdk/client-kms";
 import { getKmsConfig } from "../config/aws";
 import format from 'ecdsa-sig-formatter';
-import {exportJWK, importX509, JWK} from "jose";
-import {createPublicKey} from "node:crypto";
+import {createPublicKey, JsonWebKey} from "node:crypto";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bs58 = require("bs58");
 
@@ -19,27 +18,9 @@ const KEY_ID = "2ced22e2-c15b-4e02-aa5f-7a10a2eaccc7";
 
 export async function getProofJwt(nonce: string): Promise<string> {
   const kmsService = new ProofJwtKmsService(KEY_ID)
-  const publicKey = await kmsService.getPublicKey();
-  console.log(publicKey)
-
-  const algorithm = 'ES256'
-
-  const x509 = `-----BEGIN CERTIFICATE-----
-  MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEXOW0ZG089cZwzm04c5Czvij9rjNJW6lyPxe8AcOyJuY2dPQKsEVhj/4LZVzLxsL983z95jwFe3j9ikz4tShnhg==
------END CERTIFICATE-----`
-  //
-  // const x509 = `-----BEGIN CERTIFICATE-----
-  // ${publicKey}
-  // -----END CERTIFICATE-----`
-
-
-  const ecPublicKey = await importX509(x509, algorithm, {extractable: true})
-  console.log(ecPublicKey)
-  const publicJwk2 = await exportJWK(ecPublicKey)
-  console.log(publicJwk2)
-
-  const didKey = createDidKey(publicJwk2);
-
+  const publicKeyRaw = await kmsService.getPublicKey();
+  const publicKeyJwk = createJwkFromRawPublicKey(publicKeyRaw)
+  const didKey = createDidKey(publicKeyJwk);
 
   const header = {alg: ACCESS_TOKEN_SIGNING_ALGORITHM, typ: ACCESS_TOKEN_JWT_TYPE, kid: didKey};
   const encodedHeader = base64Encoder(header);
@@ -90,7 +71,7 @@ export class ProofJwtKmsService {
 
     try {
       const response: GetPublicKeyResponse = await this.kmsClient.send(command);
-      return Buffer.from(response.PublicKey as Uint8Array).toString("base64");
+      return response.PublicKey!
     } catch (error) {
       console.log(`Error fetching public key: ${error as Error}`);
       throw error;
@@ -98,7 +79,7 @@ export class ProofJwtKmsService {
   }
 }
 
-export function createDidKey(publicKeyJwk: JWK): string {
+export function createDidKey(publicKeyJwk: JsonWebKey): string {
   const publicKeyBuffer = getPublicKeyFromJwk(publicKeyJwk);
   const compressedPublicKey = compress(publicKeyBuffer);
 
@@ -111,7 +92,7 @@ export function createDidKey(publicKeyJwk: JWK): string {
   return `did:key:z${base58EncodedKey}`;
 }
 
-function getPublicKeyFromJwk(publicKeyJwk: JWK) {
+function getPublicKeyFromJwk(publicKeyJwk: JsonWebKey) {
   return Buffer.concat([
     Buffer.from(publicKeyJwk.x!, "base64"),
     Buffer.from(publicKeyJwk.y!, "base64"),
@@ -133,4 +114,31 @@ function compressEcPoint(x: Uint8Array, y: Uint8Array) {
 
   compressedKey.set(x, 1);
   return compressedKey;
+}
+
+export const createJwkFromRawPublicKey = (
+    rawPublicKey: Uint8Array,
+): JsonWebKey => {
+  const stringPublicKey = uint8ArrayToBase64(rawPublicKey)
+
+  const formattedPublicKey =
+      '-----BEGIN PUBLIC KEY-----\n' +
+      stringPublicKey +
+      '\n-----END PUBLIC KEY-----'
+
+  try {
+    const jsonWebKey = createPublicKey(formattedPublicKey).export({
+      format: 'jwk'
+    })
+    return jsonWebKey
+  } catch (error) {
+    console.log(error)
+    throw new Error(
+        'Could not create JWK from raw public key'
+    )
+  }
+}
+
+export const uint8ArrayToBase64 = (uint8Array: Uint8Array) => {
+  return Buffer.from(uint8Array).toString('base64')
 }
