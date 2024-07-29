@@ -1,20 +1,12 @@
 import {
-  AppSelectorConfig,
   appSelectorGetController,
   appSelectorPostController,
 } from "../../src/appSelector/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
+process.env.COOKIE_TTL_IN_SECS = "100";
+
 describe("controller.ts", () => {
-  let config: AppSelectorConfig;
-
-  beforeEach(async () => {
-    config = {
-      environment: "test",
-      cookieExpiry: 100000,
-    };
-  });
-
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -23,11 +15,10 @@ describe("controller.ts", () => {
     const req = getMockReq({ cookies: {} });
     const { res } = getMockRes();
 
-    await appSelectorGetController(config)(req, res);
+    await appSelectorGetController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
       authenticated: false,
-      apps: expect.any(Array),
     });
   });
 
@@ -39,11 +30,10 @@ describe("controller.ts", () => {
     });
     const { res } = getMockRes();
 
-    await appSelectorGetController(config)(req, res);
+    await appSelectorGetController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
       authenticated: true,
-      apps: expect.any(Array),
     });
   });
 
@@ -55,7 +45,7 @@ describe("controller.ts", () => {
     });
     const { res } = getMockRes();
 
-    await appSelectorPostController(config)(req, res);
+    await appSelectorPostController(req, res);
 
     expect(res.cookie).toHaveBeenCalledWith("app", "govuk-build", {
       httpOnly: true,
@@ -68,66 +58,13 @@ describe("controller.ts", () => {
     const req = getMockReq();
     const { res } = getMockRes();
 
-    await appSelectorPostController(config)(req, res);
+    await appSelectorPostController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
       isInvalid: true,
       authenticated: false,
-      apps: expect.any(Array),
     });
     expect(res.redirect).not.toHaveBeenCalled();
     expect(res.cookie).not.toHaveBeenCalled();
-  });
-
-  it("should call render function with staging apps only when environment is staging", async () => {
-    const req = getMockReq({ cookies: {} });
-    const { res } = getMockRes();
-    const config: AppSelectorConfig = {
-      environment: "build",
-    };
-
-    await appSelectorGetController(config)(req, res);
-
-    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
-      authenticated: false,
-      apps: [
-        {
-          text: "GOV.UK App (Build)",
-          value: "govuk-build",
-        },
-        {
-          text: "Wallet Test App (Dev)",
-          value: "wallet-test-dev",
-        },
-        {
-          text: "Wallet Test App (Build)",
-          value: "wallet-test-build",
-        },
-      ],
-    });
-  });
-
-  it("should call render function with non-staging apps only when environment is NOT staging", async () => {
-    const req = getMockReq({ cookies: {} });
-    const { res } = getMockRes();
-    const config: AppSelectorConfig = {
-      environment: "staging",
-    };
-
-    await appSelectorGetController(config)(req, res);
-
-    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
-      authenticated: false,
-      apps: [
-        {
-          text: "GOV.UK App (Staging)",
-          value: "govuk-staging",
-        },
-        {
-          text: "Wallet Test App (Staging)",
-          value: "wallet-test-staging",
-        },
-      ],
-    });
   });
 });
