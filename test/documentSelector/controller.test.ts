@@ -9,18 +9,25 @@ describe("controller.ts", () => {
     jest.clearAllMocks();
   });
 
-  it("should render the form for selecting a document", async () => {
-    const req = getMockReq({
-      query: {
-        app: "test-build",
-      },
-    });
+  it("should render the form for selecting a document when user is not authenticated (no id_token in cookies)", async () => {
+    const req = getMockReq({ cookies: {} });
     const { res } = getMockRes();
 
     await documentSelectorGetController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
-      selectedApp: "test-build",
+      authenticated: false,
+    });
+  });
+
+  it("should render the form for selecting a document when user is authenticated", async () => {
+    const req = getMockReq({ cookies: { id_token: "id_token" } });
+    const { res } = getMockRes();
+
+    await documentSelectorGetController(req, res);
+
+    expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
+      authenticated: true,
     });
   });
 
@@ -29,17 +36,12 @@ describe("controller.ts", () => {
       body: {
         "select-document-choice": "dbs",
       },
-      query: {
-        app: "any-app",
-      },
     });
     const { res } = getMockRes();
 
     await documentSelectorPostController(req, res);
 
-    expect(res.redirect).toHaveBeenCalledWith(
-      "/build-dbs-document?app=any-app"
-    );
+    expect(res.redirect).toHaveBeenCalledWith("/build-dbs-document");
   });
 
   it("should redirect to the NINO document form page when NINO is selected", async () => {
@@ -47,30 +49,22 @@ describe("controller.ts", () => {
       body: {
         "select-document-choice": "nino",
       },
-      query: {
-        app: "any-app",
-      },
     });
     const { res } = getMockRes();
 
     await documentSelectorPostController(req, res);
 
-    expect(res.redirect).toHaveBeenCalledWith(
-      "/build-nino-document?app=any-app"
-    );
+    expect(res.redirect).toHaveBeenCalledWith("/build-nino-document");
   });
 
   it("should re-render the form for selecting a document when no choice was selected", async () => {
-    const req = getMockReq({
-      query: {
-        app: "any-app",
-      },
-    });
+    const req = getMockReq();
     const { res } = getMockRes();
 
     await documentSelectorPostController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
+      authenticated: false,
       isInvalid: true,
     });
     expect(res.redirect).not.toHaveBeenCalled();

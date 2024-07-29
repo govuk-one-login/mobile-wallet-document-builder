@@ -9,20 +9,22 @@ import {
 } from "@aws-sdk/client-kms";
 import { getKmsConfig } from "../config/aws";
 import format from "ecdsa-sig-formatter";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
 
 export class KmsService {
   constructor(
     private readonly keyId: string,
-    private readonly signingAlgorithm: SigningAlgorithmSpec = "ECDSA_SHA_256",
     private readonly kmsClient: KMSClient = new KMSClient(getKmsConfig())
   ) {}
 
-  async sign(message: string): Promise<string> {
+  async sign(
+    message: string,
+    signingAlgorithm: SigningAlgorithmSpec
+  ): Promise<string> {
     const signCommandInput: SignCommandInput = {
       Message: Buffer.from(message),
       KeyId: this.keyId,
-      SigningAlgorithm: this.signingAlgorithm,
+      SigningAlgorithm: signingAlgorithm,
       MessageType: "RAW",
     };
     const command: SignCommand = new SignCommand(signCommandInput);
@@ -39,13 +41,15 @@ export class KmsService {
       throw new Error("No signature returned");
     }
 
-    return this.parseSignature(response.Signature);
-  }
+    const base64EncodedSignature = Buffer.from(response.Signature).toString(
+      "base64url"
+    );
 
-  private parseSignature(rawSignature: Uint8Array): string {
-    const base64EncodedSignature =
-      Buffer.from(rawSignature).toString("base64url");
-    return format.derToJose(base64EncodedSignature, "ES256");
+    if (signingAlgorithm.startsWith("RSA")) {
+      return base64EncodedSignature;
+    } else {
+      return format.derToJose(base64EncodedSignature, "ES256");
+    }
   }
 
   public async getPublicKey() {
@@ -65,7 +69,7 @@ export class KmsService {
       throw new Error("No public key returned");
     }
 
-    return this.parsePublicKey(response.PublicKey as Uint8Array);
+    return this.parsePublicKey(response.PublicKey);
   }
 
   private parsePublicKey(publicKeyRaw: Uint8Array) {

@@ -2,7 +2,7 @@ import { DbsCredentialSubject } from "../types/DbsCredentialSubject";
 import { DbsInputData } from "../types/DbsInputData";
 import { getNameParts } from "../../helpers/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
-import { getExpirationDate } from "../getExpirationDate";
+import { getExpirationDate } from "../utils/getExpirationDate";
 
 export class DbsDocument {
   public readonly type: string[];

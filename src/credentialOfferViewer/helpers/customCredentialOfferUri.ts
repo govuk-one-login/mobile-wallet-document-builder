@@ -1,14 +1,5 @@
 import { CredentialOffer } from "../types/CredentialOfferResponse";
-
-type DeepLinkPaths = Map<string, string>;
-
-const DEEP_LINK_PATHS: DeepLinkPaths = new Map([
-  ["govuk-build", "https://mobile.build.account.gov.uk/wallet/"],
-  ["govuk-staging", "https://mobile.staging.account.gov.uk/wallet/"],
-  ["wallet-test-dev", "https://mobile.dev.account.gov.uk/wallet-test/"],
-  ["wallet-test-build", "https://mobile.build.account.gov.uk/wallet-test/"],
-  ["wallet-test-staging", "https://mobile.staging.account.gov.uk/wallet-test/"],
-]);
+import { apps } from "../../types/Apps";
 
 const WALLET_URI_PATH_SPLITTER = "https://mobile.account.gov.uk/wallet/";
 const CREDENTIAL_OFFER_SPLITTER = "credential_offer=";
@@ -58,15 +49,14 @@ export function getCustomCredentialOfferUri(
   selectedApp: string,
   errorScenario: string
 ) {
-  const selectedAppPath = DEEP_LINK_PATHS.get(selectedApp);
-  if (!selectedAppPath) {
-    throw new Error("Path not found");
+  const app = apps[selectedApp];
+  if (!app) {
+    throw new Error("App not found");
   }
 
-  const newCredentialOfferUri = replaceUriPath(
-    credentialOfferUri,
-    selectedAppPath
-  );
+  const appPath = app.path;
+
+  const newCredentialOfferUri = replaceUriPath(credentialOfferUri, appPath);
 
   if (!errorScenario) {
     return newCredentialOfferUri;

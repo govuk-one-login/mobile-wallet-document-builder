@@ -6,7 +6,7 @@ import {
 import { LocalStackAwsConfig } from "../types/LocalStackAwsConfig";
 import { DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
 import { KMSClientConfig } from "@aws-sdk/client-kms";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
 
 export function getLocalStackAwsConfig(): LocalStackAwsConfig {
   return {

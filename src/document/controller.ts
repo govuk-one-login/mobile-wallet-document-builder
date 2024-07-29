@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { getDocument } from "../services/databaseService";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
 import { NinoDocument } from "../ninoDocumentBuilder/models/ninoDocument";
 import { DbsDocument } from "../dbsDocumentBuilder/models/dbsDocument";
 

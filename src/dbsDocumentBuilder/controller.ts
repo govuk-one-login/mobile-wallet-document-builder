@@ -3,7 +3,8 @@ import { DbsDocument } from "./models/dbsDocument";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
+import { isAuthenticated } from "../utils/isAuthenticated";
 
 const CREDENTIAL_TYPE = CredentialType.basicCheckCredential;
 
@@ -12,8 +13,9 @@ export async function dbsDocumentBuilderGetController(
   res: Response
 ): Promise<void> {
   try {
-    const selectedApp = req.query.app;
-    res.render("dbs-document-details-form.njk", { selectedApp: selectedApp });
+    res.render("dbs-document-details-form.njk", {
+      authenticated: isAuthenticated(req),
+    });
   } catch (error) {
     logger.error(error, "An error happened rendering DBS document page");
     res.render("500.njk");
@@ -27,14 +29,12 @@ export async function dbsDocumentBuilderPostController(
   try {
     const documentId = randomUUID();
     logger.info(`Processing DBS document with documentId ${documentId}`);
-    const selectedApp = req.query.app;
     const selectedError = req.body["throwError"];
     const document = DbsDocument.fromRequestBody(req.body, CREDENTIAL_TYPE);
-    const walletSubjectId = "walletSubjectIdPlaceholder";
-    await saveDocument(document, documentId, walletSubjectId);
+    await saveDocument(document, documentId);
 
     res.redirect(
-      `/view-credential-offer/${documentId}?app=${selectedApp}&type=${CREDENTIAL_TYPE}&error=${selectedError}`
+      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`
     );
   } catch (error) {
     logger.error(error, "An error happened processing DBS document request");

@@ -1,13 +1,15 @@
 import { Request, Response } from "express";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
+import { isAuthenticated } from "../utils/isAuthenticated";
 
 export async function documentSelectorGetController(
   req: Request,
   res: Response
 ): Promise<void> {
   try {
-    const selectedApp = req.query.app;
-    res.render("select-document-form.njk", { selectedApp: selectedApp });
+    res.render("select-document-form.njk", {
+      authenticated: isAuthenticated(req),
+    });
   } catch (error) {
     logger.error(error, "An error happened rendering document selection page");
     res.render("500.njk");
@@ -19,16 +21,16 @@ export async function documentSelectorPostController(
   res: Response
 ): Promise<void> {
   try {
-    const selectedApp = req.query.app;
     const selectedDocument = req.body["select-document-choice"];
 
     if (selectedDocument && selectedDocument === "nino") {
-      res.redirect(`/build-nino-document?app=${selectedApp}`);
+      res.redirect(`/build-nino-document`);
     } else if (selectedDocument && selectedDocument === "dbs") {
-      res.redirect(`/build-dbs-document?app=${selectedApp}`);
+      res.redirect(`/build-dbs-document`);
     } else {
       res.render("select-document-form.njk", {
         isInvalid: selectedDocument === undefined,
+        authenticated: isAuthenticated(req),
       });
     }
   } catch (error) {

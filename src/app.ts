@@ -6,10 +6,17 @@ import { documentRouter } from "./document/router";
 import { stsStubAccessTokenRouter } from "./stsStubAccessToken/router";
 import nunjucks from "nunjucks";
 import path from "path";
-import { stsStubDidDocumentRouter } from "./stsStubDidDocument/router";
+import { stsStubJwksRouter } from "./stsStubJwks/router";
 import { documentSelectorRouter } from "./documentSelector/router";
 import { ninoDocumentBuilderRouter } from "./ninoDocumentBuilder/router";
-import { loggerMiddleware } from "./utils/logger";
+import { loggerMiddleware } from "./middleware/logger";
+import { getOIDCConfig } from "./config/oidc";
+import { auth } from "./middleware/auth";
+import cookieParser from "cookie-parser";
+import { returnFromAuthRouter } from "./returnFromAuth/router";
+import { logoutRouter } from "./logout/router";
+import { loggedOutRouter } from "./loggedOut/router";
+import { noCacheMiddleware } from "./middleware/noCache";
 import {walletStubRouter} from "./walletStub/router";
 
 const APP_VIEWS = [
@@ -19,13 +26,19 @@ const APP_VIEWS = [
   path.join(__dirname, "../src/ninoDocumentBuilder/views"),
   path.join(__dirname, "../src/appSelector/views"),
   path.join(__dirname, "../src/documentSelector/views"),
+  path.join(__dirname, "../src/loggedOut/views"),
   path.resolve("node_modules/govuk-frontend/"),
 ];
 
 export async function createApp(): Promise<express.Application> {
   const app: express.Application = express();
 
+  app.use(cookieParser());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(auth(getOIDCConfig()));
   app.use(loggerMiddleware);
+  app.use(noCacheMiddleware);
+
   app.use((req, res, next) => {
     req.log = req.log.child({
       trace: res.locals.trace,
@@ -45,7 +58,7 @@ export async function createApp(): Promise<express.Application> {
     })
   );
 
-  app.use(express.urlencoded({ extended: true }));
+  app.use(returnFromAuthRouter);
   app.use(appSelectorRouter);
   app.use(documentSelectorRouter);
   app.use(dbsDocumentBuilderRouter);
@@ -53,7 +66,9 @@ export async function createApp(): Promise<express.Application> {
   app.use(credentialOfferViewerRouter);
   app.use(documentRouter);
   app.use(stsStubAccessTokenRouter);
-  app.use(stsStubDidDocumentRouter);
+  app.use(stsStubJwksRouter);
+  app.use(logoutRouter);
+  app.use(loggedOutRouter);
   app.use(walletStubRouter);
 
   return app;

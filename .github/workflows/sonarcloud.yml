@@ -5,6 +5,7 @@ on:
     branches:
       - main
   pull_request:
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   sonarcloud:
@@ -12,18 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # pin@v3
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # pin@v3
         with:
           ref: ${{ inputs.gitRef || github.ref }}
-      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # pin@v3
+      - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # pin@v3
         with:
           node-version-file: .node-version
       - name: Install dependencies
         run: npm install
-      # - name: Generate coverage report
-      #   run: npm run test:coverage
+      - name: Generate coverage report
+        run: npm run test:cov
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216 # pin@master
+        uses: SonarSource/sonarcloud-github-action@e44258b109568baa0df60ed515909fc6c72cba92 # pin@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ./

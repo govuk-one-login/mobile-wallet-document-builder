@@ -30,7 +30,6 @@ describe("databaseService.ts", () => {
       TableName: "testTable",
       Item: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        walletSubjectId: "walletSubjectIdPlaceholder",
         vc: JSON.stringify(document),
       },
     };
@@ -42,11 +41,7 @@ describe("databaseService.ts", () => {
     });
 
     await expect(
-      saveDocument(
-        document,
-        "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        "walletSubjectIdPlaceholder"
-      )
+      saveDocument(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46")
     ).resolves.not.toThrow();
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });
@@ -71,7 +66,6 @@ describe("databaseService.ts", () => {
       TableName: "testTable",
       Item: {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        walletSubjectId: "walletSubjectIdPlaceholder",
         vc: JSON.stringify(document),
       },
     };
@@ -79,11 +73,7 @@ describe("databaseService.ts", () => {
     dynamoDbMock.on(PutCommand).rejectsOnce("SOME_DATABASE_ERROR");
 
     await expect(
-      saveDocument(
-        document,
-        "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        "walletSubjectIdPlaceholder"
-      )
+      saveDocument(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46")
     ).rejects.toThrow("SOME_DATABASE_ERROR");
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });
@@ -118,7 +108,6 @@ describe("databaseService.ts", () => {
       Item: {
         vc: JSON.stringify(document),
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        walletSubjectId: "testWalletSubjectId",
       },
     });
 
@@ -127,7 +116,6 @@ describe("databaseService.ts", () => {
     expect(response).toEqual({
       vc: JSON.stringify(document),
       documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-      walletSubjectId: "testWalletSubjectId",
     });
     expect(databaseMockClient).toHaveReceivedCommandWith(
       GetCommand,

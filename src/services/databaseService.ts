@@ -9,15 +9,14 @@ import {
 import { DbsDocument } from "../dbsDocumentBuilder/models/dbsDocument";
 import { NinoDocument } from "../ninoDocumentBuilder/models/ninoDocument";
 import { UUID } from "node:crypto";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
 
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());
 const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
 export async function saveDocument(
   document: DbsDocument | NinoDocument,
-  documentId: UUID,
-  walletSubjectId: string
+  documentId: UUID
 ): Promise<void> {
   const tableName = getDocumentsTableName();
 
@@ -25,7 +24,6 @@ export async function saveDocument(
     TableName: tableName,
     Item: {
       documentId: documentId,
-      walletSubjectId: walletSubjectId,
       vc: JSON.stringify(document),
     },
   });

@@ -14,7 +14,6 @@ Parameters:
       - "dev"
       - "build"
       - "staging"
-      # - "integration"
   VpcStackName:
     Description: >
       The name of the stack that defines the VPC in which this container will
@@ -34,7 +33,9 @@ Parameters:
 Conditions:
   StackNameIsWalletDocBuilderFE: !Equals [ !Ref "AWS::StackName", wallet-doc-builder-fe ]
 
-  IsBuild: !Equals [ !Ref Environment, build ]
+  IsBuildOrStaging: !Or
+    - !Equals [ !Ref Environment, build ]
+    - !Equals [ !Ref Environment, staging ]
 
   UsePermissionsBoundary:
     Fn::Not:
@@ -45,43 +46,29 @@ Conditions:
 Mappings:
   EnvironmentVariables:
     dev:
-      BEURL: "example-credential-issuer.mobile.dev.account.gov.uk"
-      FEURL: "stub-credential-issuer.mobile.dev.account.gov.uk"
+      CredentialIssuerUrl: "example-credential-issuer.mobile.dev.account.gov.uk"
+      SelfUrl: "stub-credential-issuer.mobile.dev.account.gov.uk"
+      FrontImageRepository: arn:aws:ecr:eu-west-2:671524980203:repository/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry
+      OidcIssuerEndpoint: "https://auth-stub.mobile.dev.account.gov.uk"
     build:
-      BEURL: "example-credential-issuer.mobile.build.account.gov.uk"
-      FEURL: "stub-credential-issuer.mobile.build.account.gov.uk"
+      CredentialIssuerUrl: "example-credential-issuer.mobile.build.account.gov.uk"
+      SelfUrl: "stub-credential-issuer.mobile.build.account.gov.uk"
+      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
+      OidcIssuerEndpoint: "https://auth-stub.mobile.build.account.gov.uk"
     staging:
-      BEURL: "example-credential-issuer.mobile.staging.account.gov.uk"
-      FEURL: "stub-credential-issuer.mobile.staging.account.gov.uk"
+      CredentialIssuerUrl: "example-credential-issuer.mobile.staging.account.gov.uk"
+      SelfUrl: "stub-credential-issuer.mobile.staging.account.gov.uk"
+      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
+      OidcIssuerEndpoint: "https://oidc.integration.account.gov.uk"
   # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
   # PlatformConfiguration:
   #   dev:
   #     CSLSEGRESS: "This should not ever be set; the dev account is not configured to egress logs."
   #   build:
   #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
-  #   staging:
-  #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
-  #   integration:
-  #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
-  ECSConfiguration:
-    dev:
-      FrontImageRepository: arn:aws:ecr:eu-west-2:671524980203:repository/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry
-    build:
-      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
-    staging:
-      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
-  
   ElasticLoadBalancerAccountIds:
     eu-west-2:
       AccountId: 652711504416
-
-  DidController:
-    dev:
-      Controller: "did:web:wallet-api.mobile.dev.account.gov.uk"
-    build:
-      Controller: "did:web:wallet-api.mobile.build.account.gov.uk"
-    staging:
-      Controller: "did:web:wallet-api.mobile.staging.account.gov.uk"
 
 Resources:
 
@@ -146,6 +133,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/apigateway/${AWS::StackName}-WalletFE-API-GW-AccessLogs
+      RetentionInDays: 14
 
   WalletFEECSAccessLogsGroup:
     Type: AWS::Logs::LogGroup
@@ -185,6 +173,15 @@ Resources:
               - s3:PutObject
             Resource:
               - !Sub arn:aws:s3:::${WalletFEAccessLogsBucket}/wallet-stub-front-${Environment}/AWSLogs/${AWS::AccountId}/*
+          - Effect: Deny
+            Sid: AllowSSLRequestsOnly
+            Principal: "*"
+            Action: s3:*
+            Resource:
+              - !Sub arn:aws:s3:::${WalletFEAccessLogsBucket}/wallet-stub-front-${Environment}/AWSLogs/${AWS::AccountId}/*
+            Condition:
+              Bool:
+                  aws:SecureTransport": false
 
 # LOADBALANCER RESOURCES
 
@@ -304,11 +301,11 @@ Resources:
     Properties:
       DomainName: !If 
         - StackNameIsWalletDocBuilderFE
-        - !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
+        - !FindInMap [ EnvironmentVariables, !Ref Environment, SelfUrl ]
         - !Sub
-          - "${AWS::StackName}-${FEURL}"
-          - FEURL:
-              !FindInMap [ EnvironmentVariables, !Ref Environment, FEURL ]
+          - "${AWS::StackName}-${SelfUrl}"
+          - SelfUrl:
+              !FindInMap [ EnvironmentVariables, !Ref Environment, SelfUrl ]
       DomainNameConfigurations:
         - CertificateArn: !Sub "{{resolve:ssm:/${Environment}/Platform/ACM/PrimaryZoneWildcardCertificateARN}}"
           EndpointType: REGIONAL
@@ -409,17 +406,28 @@ Resources:
               Value: !Ref DocumentDatabase
             - Name: ENVIRONMENT
               Value: !Sub "${Environment}"
-            - Name: MOCK_CRI_URL
+            - Name: CREDENTIAL_ISSUER_URL
               Value: !Sub 
-                      - "https://${BEURL}"
-                      - BEURL:
-                          !FindInMap [ EnvironmentVariables, !Ref Environment, BEURL ]
+                      - "https://${CredentialIssuerUrl}"
+                      - CredentialIssuerUrl:
+                          !FindInMap [ EnvironmentVariables, !Ref Environment, CredentialIssuerUrl ]
             - Name: STS_SIGNING_KEY_ID
               Value: !Ref StsStubSigningKey
             - Name: ACCESS_TOKEN_TTL_IN_SECS
               Value: 180
-            - Name: DID_CONTROLLER
-              Value: !FindInMap [DidController, !Ref Environment, Controller]
+            - Name: SELF
+              Value: !Sub
+                - "https://${SelfUrl}"
+                - SelfUrl:
+                    !FindInMap [ EnvironmentVariables, !Ref Environment, SelfUrl ]
+            - Name: OIDC_CLIENT_ID
+              Value: !Sub "{{resolve:ssm:/${AWS::StackName}/Config/OIDC/Client/Id}}"
+            - Name: CLIENT_SIGNING_KEY_ID
+              Value: !Ref ClientSigningKey
+            - Name: OIDC_ISSUER_DISCOVERY_ENDPOINT
+              Value: !FindInMap [ EnvironmentVariables, !Ref Environment, OidcIssuerEndpoint ]
+            - Name: COOKIE_TTL_IN_SECS
+              Value: 3600
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp
@@ -467,7 +475,7 @@ Resources:
                   - "ecr:GetDownloadUrlForLayer"
                   - "ecr:BatchCheckLayerAvailability"
                 Resource:
-                  - !FindInMap [ ECSConfiguration, !Ref Environment, FrontImageRepository ]
+                  - !FindInMap [ EnvironmentVariables, !Ref Environment, FrontImageRepository ]
               - Effect: Allow
                 Action:
                   - "ecr:GetAuthorizationToken"
@@ -521,7 +529,7 @@ Resources:
   StsStubSigningKey:
     Type: AWS::KMS::Key
     Properties:
-      Description: Asymmetric key for signing tokens
+      Description: ECC asymmetric key for signing tokens
       Enabled: true
       EnableKeyRotation: false
       KeyPolicy:
@@ -549,8 +557,42 @@ Resources:
   StsStubSigningKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: alias/sts-stub-signing-key
+      AliasName: !Sub "alias/sts-stub-signing-key-${AWS::StackName}"
       TargetKeyId: !Ref StsStubSigningKey
+
+  ClientSigningKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: RSA asymmetric key for signing tokens
+      Enabled: true
+      EnableKeyRotation: false
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+            Action:
+              - "kms:*"
+            Resource:
+              - "*"
+          - Effect: Allow
+            Principal:
+              AWS: !GetAtt WalletFEECSTaskRole.Arn
+            Action:
+              - 'kms:Sign'
+              - 'kms:GetPublicKey'
+            Resource:
+              - "*"
+      KeySpec: RSA_2048
+      KeyUsage: SIGN_VERIFY
+      MultiRegion: false
+
+  ClientSigningKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub "alias/client-assertion-signing-key-${AWS::StackName}"
+      TargetKeyId: !Ref ClientSigningKey
 
   DocumentDatabaseKmsKey:
     Type: AWS::KMS::Key
@@ -615,7 +657,7 @@ Resources:
 # ALARMS
 
   DocBuilderLowContainerTaskCountAlarm:
-    Condition: IsBuild
+    Condition: IsBuildOrStaging
     DependsOn:
        - WalletFECluster
        - WalletFEECSService
@@ -651,7 +693,7 @@ Resources:
             Stat: Minimum
 
   BE5XXErrorAlarm:
-    Condition: IsBuild
+    Condition: IsBuildOrStaging
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmName: !Sub "${AWS::StackName}-BE5XXErrorAlarm"

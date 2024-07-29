@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import QRCode from "qrcode";
 import { getCredentialOffer } from "./services/credentialOfferService";
 import { getCustomCredentialOfferUri } from "./helpers/customCredentialOfferUri";
-import { logger } from "../utils/logger";
+import { logger } from "../middleware/logger";
+import { isAuthenticated } from "../utils/isAuthenticated";
+import { UserInfo } from "./types/UserInfo";
 
 export async function credentialOfferViewerController(
   req: Request,
@@ -10,10 +12,21 @@ export async function credentialOfferViewerController(
 ): Promise<void> {
   try {
     const { documentId } = req.params;
-    const selectedApp = req.query.app as string;
+    const selectedApp = req.cookies.app as string;
     const credentialType = req.query.type as string;
     const errorScenario = req.query.error as string;
-    const walletSubjectId = "walletSubjectIdPlaceholder";
+
+    let walletSubjectId;
+    if (selectedApp.includes("staging")) {
+      const userInfo: UserInfo = await req.oidc.userinfo(
+        req.cookies.access_token,
+        { method: "GET", via: "header" }
+      );
+      walletSubjectId = userInfo.wallet_subject_id;
+    } else {
+      walletSubjectId =
+        "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i";
+    }
 
     const response = await getCredentialOffer(
       walletSubjectId,
@@ -30,6 +43,7 @@ export async function credentialOfferViewerController(
     const qrCode = await QRCode.toDataURL(credentialOfferUri);
 
     res.render("credential-offer.njk", {
+      authenticated: isAuthenticated(req),
       universalLink: credentialOfferUri,
       qrCode,
     });

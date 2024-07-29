@@ -21,22 +21,29 @@ describe("controller.ts", () => {
 
   const saveDocument = databaseService.saveDocument as jest.Mock;
 
-  it("should render the form for inputting NINO document details", async () => {
-    const req = getMockReq({
-      query: {
-        app: "any-app",
-      },
-    });
+  it("should render the form for inputting NINO document details when user is not authenticated (no id_token in cookies)", async () => {
+    const req = getMockReq({ cookies: {} });
     const { res } = getMockRes();
 
     await ninoDocumentBuilderGetController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("nino-document-details-form.njk", {
-      selectedApp: "any-app",
+      authenticated: false,
     });
   });
 
-  it("should redirect to the credential offer page with 'selected-app', 'SocialSecurityCredential' and 'ERROR:401' in the query params", async () => {
+  it("should render the form for inputting NINO document details when user is authenticated", async () => {
+    const req = getMockReq({ cookies: { id_token: "id_token" } });
+    const { res } = getMockRes();
+
+    await ninoDocumentBuilderGetController(req, res);
+
+    expect(res.render).toHaveBeenCalledWith("nino-document-details-form.njk", {
+      authenticated: true,
+    });
+  });
+
+  it("should redirect to the credential offer page with 'SocialSecurityCredential' and 'ERROR:401' in the query params", async () => {
     const requestBody = {
       title: "Ms",
       givenName: "Irene",
@@ -46,9 +53,6 @@ describe("controller.ts", () => {
     };
     const req = getMockReq({
       body: requestBody,
-      query: {
-        app: "selected-app",
-      },
     });
     const { res } = getMockRes();
     const ninoDocument = {
@@ -73,7 +77,7 @@ describe("controller.ts", () => {
     await ninoDocumentBuilderPostController(req, res);
 
     expect(res.redirect).toHaveBeenCalledWith(
-      "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?app=selected-app&type=SocialSecurityCredential&error=ERROR:401"
+      "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=SocialSecurityCredential&error=ERROR:401"
     );
     expect(NinoDocument.fromRequestBody).toHaveBeenCalledWith(
       requestBody,
@@ -81,8 +85,7 @@ describe("controller.ts", () => {
     );
     expect(saveDocument).toHaveBeenCalledWith(
       ninoDocument,
-      "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-      "walletSubjectIdPlaceholder"
+      "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
     );
   });
 
@@ -95,9 +98,6 @@ describe("controller.ts", () => {
     };
     const req = getMockReq({
       body: requestBody,
-      query: {
-        app: "any-app",
-      },
     });
     const { res } = getMockRes();
     const ninoDocument = {
