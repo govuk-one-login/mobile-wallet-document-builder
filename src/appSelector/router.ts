@@ -6,7 +6,7 @@ import {
 
 const router = express.Router();
 
-router.get("/select-app", appSelectorGetController);
-router.post("/select-app", appSelectorPostController);
+router.get("/select-app", appSelectorGetController());
+router.post("/select-app", appSelectorPostController());
 
 export { router as appSelectorRouter };
