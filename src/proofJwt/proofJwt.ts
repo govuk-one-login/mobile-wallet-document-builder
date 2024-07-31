@@ -16,7 +16,7 @@ const ACCESS_TOKEN_SIGNING_ALGORITHM = "ES256";
 const ACCESS_TOKEN_JWT_TYPE = "JWT";
 const KEY_ID = "2ced22e2-c15b-4e02-aa5f-7a10a2eaccc7";
 
-export async function getProofJwt(nonce: string): Promise<string> {
+export async function getProofJwt(nonce: string, audience: string): Promise<string> {
   const kmsService = new ProofJwtKmsService(KEY_ID)
   const publicKeyRaw = await kmsService.getPublicKey();
   const publicKeyJwk = createJwkFromRawPublicKey(publicKeyRaw)
@@ -24,7 +24,7 @@ export async function getProofJwt(nonce: string): Promise<string> {
 
   const header = {alg: ACCESS_TOKEN_SIGNING_ALGORITHM, typ: ACCESS_TOKEN_JWT_TYPE, kid: didKey};
   const encodedHeader = base64Encoder(header);
-  const payload = {iss: "urn:fdc:gov:uk:wallet", aud: "urn:fdc:gov:uk:example-credential-issuer", iat: Date.now(), nonce: nonce};
+  const payload = {iss: "urn:fdc:gov:uk:wallet", aud: audience, iat: Date.now(), nonce: nonce};
   const encodedPayload = base64Encoder(payload);
   const message = `${encodedHeader}.${encodedPayload}`;
 

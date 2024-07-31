@@ -6,9 +6,9 @@ export async function proofJwtController(
   res: Response
 ): Promise<Response> {
   try {
-    const { nonce } = req.params;
+    const { nonce, audience } = req.query;
 
-    const proofJwt = await getProofJwt(nonce);
+    const proofJwt = await getProofJwt(nonce as string, audience as string);
 
     return res.status(200).json({proofJwt});
   } catch (error) {
