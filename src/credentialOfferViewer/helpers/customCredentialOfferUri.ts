@@ -1,7 +1,7 @@
 import { CredentialOffer } from "../types/CredentialOfferResponse";
 import { App } from "../../config/appConfig";
 
-const WALLET_URI_PATH_SPLITTER = "https://mobile.account.gov.uk/wallet/";
+const WALLET_URI_PATH_SPLITTER = "account.gov.uk/wallet/";
 const CREDENTIAL_OFFER_SPLITTER = "credential_offer=";
 
 function isInvalidUri(uriParts: string[]) {

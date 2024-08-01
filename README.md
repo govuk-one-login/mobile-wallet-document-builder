@@ -66,7 +66,7 @@ Default output format [None]:
 ####  Setting up LocalStack
 This app uses LocalStack to run AWS services locally on port `4561`.
 
-To start the LocalStack container and provision a local version of the **documents** DynamoDB table, run `docker-compose up`.
+To start the LocalStack container and provision a local version of the **documents** DynamoDB table, run `docker compose up`.
 
 You will need to have Docker Desktop or alternative like installed.
 
@@ -79,9 +79,9 @@ In the `.env` file, update the values of the following environment variables:
 
 When LocalStack is started, it creates the client's signing key in KMS. You will need to give the auth server stub the client's public key. This can be retrieved from local KMS by running these commands:
 ```
-aws kms get-public-key --endpoint-url=http://localhost:4561 --region eu-west-2 --key-id alias/localClientSigningKeyAlias --output text --query PublicKey | base64 --decode > SamplePublicKey.der
+aws kms get-public-key --endpoint-url=http://localhost:4561 --region eu-west-2 --key-id alias/localClientSigningKeyAlias --output text --query PublicKey | base64 --decode > LocalClientSigningKey.der
 
-openssl ec -pubin -inform DER -outform PEM -in SamplePublicKey.der -pubout -out SamplePublicKey.pem
+openssl rsa -pubin -inform DER -outform PEM -in LocalClientSigningKey.der -pubout -out LocalClientSigningKey.pem
 ```
 
 #### Running the Application
