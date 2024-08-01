@@ -9,7 +9,7 @@ import {
   getSelfUrl,
   getOIDCClientId,
   getOIDCDiscoveryEndpoint,
-  getCookieTtlInSecs,
+  getCookieExpiry,
   getClientSigningKeyId,
   getHardcodedWalletSubjectId,
 } from "../../src/config/appConfig";
@@ -129,14 +129,14 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if COOKIE_TTL_IN_SECS environment variable is not set", () => {
-    expect(() => getCookieTtlInSecs()).toThrow(
+    expect(() => getCookieExpiry()).toThrow(
       new Error("COOKIE_TTL_IN_SECS environment variable not set")
     );
   });
 
   it("should return COOKIE_TTL_IN_SECS environment variable value if set", () => {
     process.env.COOKIE_TTL_IN_SECS = "200";
-    expect(getCookieTtlInSecs()).toEqual("200");
+    expect(getCookieExpiry()).toEqual(200000);
   });
 
   it("should return valid wallet subject id", () => {

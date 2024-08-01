@@ -1,6 +1,6 @@
 import { DbsCredentialSubject } from "../types/DbsCredentialSubject";
 import { DbsInputData } from "../types/DbsInputData";
-import { getNameParts } from "../../helpers/getNameParts";
+import { getNameParts } from "../../utils/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
 import { getExpirationDate } from "../utils/getExpirationDate";
 

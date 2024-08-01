@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 
-export async function documentSelectorGetController(
+export function documentSelectorGetController(
   req: Request,
   res: Response
-): Promise<void> {
+): void {
   try {
     res.render("select-document-form.njk", {
       authenticated: isAuthenticated(req),
@@ -16,10 +16,10 @@ export async function documentSelectorGetController(
   }
 }
 
-export async function documentSelectorPostController(
+export function documentSelectorPostController(
   req: Request,
   res: Response
-): Promise<void> {
+): void {
   try {
     const selectedDocument = req.body["select-document-choice"];
 

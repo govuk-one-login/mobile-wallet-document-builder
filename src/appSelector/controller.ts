@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
-import { getCookieExpiry } from "../utils/getCookieExpiry";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
-import { getEnvironment } from "../config/appConfig";
+import { apps, getEnvironment, getCookieExpiry } from "../config/appConfig";
 import { nonStagingApps, stagingApps } from "./views/apps";
 
 export interface AppSelectorConfig {
@@ -19,7 +18,10 @@ export function appSelectorGetController(
   return function (req: Request, res: Response): void {
     try {
       res.render("select-app-form.njk", {
-        apps: config.environment === "staging" ? stagingApps : nonStagingApps,
+        apps:
+          config.environment === "staging"
+            ? stagingApps(apps)
+            : nonStagingApps(apps),
         authenticated: isAuthenticated(req),
       });
     } catch (error) {
@@ -48,7 +50,10 @@ export function appSelectorPostController(
       } else {
         res.render("select-app-form.njk", {
           isInvalid: selectedApp === undefined,
-          apps: config.environment === "staging" ? stagingApps : nonStagingApps,
+          apps:
+            config.environment === "staging"
+              ? stagingApps(apps)
+              : nonStagingApps(apps),
           authenticated: isAuthenticated(req),
         });
       }

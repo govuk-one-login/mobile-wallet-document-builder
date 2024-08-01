@@ -5,10 +5,7 @@ import { deleteCookies } from "./utils/deleteCookies";
 
 const COOKIES_TO_DELETE = ["id_token", "access_token", "app"];
 
-export async function logoutGetController(
-  req: Request,
-  res: Response
-): Promise<void> {
+export function logoutGetController(req: Request, res: Response): void {
   try {
     const idToken = req.cookies.id_token;
     const state = req.cookies.state;

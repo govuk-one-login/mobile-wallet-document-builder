@@ -3,7 +3,7 @@ import {
   SocialSecurityRecord,
 } from "../types/NinoCredentialSubject";
 import { NinoInputData } from "../types/NinoInputData";
-import { getNameParts } from "../../helpers/getNameParts";
+import { getNameParts } from "../../utils/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
 
 export function getSocialSecurityRecord(input: NinoInputData) {
