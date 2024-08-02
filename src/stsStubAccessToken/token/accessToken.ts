@@ -10,30 +10,30 @@ const ACCESS_TOKEN_JWT_TYPE = "JWT";
 const ACCESS_TOKEN_KMS_SIGNING_ALGORITHM = "ECDSA_SHA_256";
 
 export async function getJwtAccessToken(
-    walletSubjectId: string,
-    payload: PreAuthorizedCodePayload,
-    signingKeyId: string,
-    kmsService = new KmsService(signingKeyId)
+  walletSubjectId: string,
+  payload: PreAuthorizedCodePayload,
+  signingKeyId: string,
+  kmsService = new KmsService(signingKeyId)
 ): Promise<Jwt> {
   const accessTokenPayload = createAccessTokenPayload(
-      walletSubjectId,
-      payload,
-      randomUUID()
+    walletSubjectId,
+    payload,
+    randomUUID()
   );
 
   return await createSignedAccessToken(
-      accessTokenPayload,
-      signingKeyId,
-      ACCESS_TOKEN_SIGNING_ALGORITHM,
-      ACCESS_TOKEN_JWT_TYPE,
-      kmsService
+    accessTokenPayload,
+    signingKeyId,
+    ACCESS_TOKEN_SIGNING_ALGORITHM,
+    ACCESS_TOKEN_JWT_TYPE,
+    kmsService
   );
 }
 
 export function createAccessTokenPayload(
-    walletSubjectId: string,
-    payload: PreAuthorizedCodePayload,
-    c_nonce: UUID
+  walletSubjectId: string,
+  payload: PreAuthorizedCodePayload,
+  c_nonce: UUID
 ): AccessTokenPayload {
   return {
     sub: walletSubjectId,
@@ -45,11 +45,11 @@ export function createAccessTokenPayload(
 }
 
 export async function createSignedAccessToken(
-    payload: AccessTokenPayload,
-    keyId: string,
-    alg: string,
-    typ: string,
-    kmsService: KmsService
+  payload: AccessTokenPayload,
+  keyId: string,
+  alg: string,
+  typ: string,
+  kmsService: KmsService
 ): Promise<Jwt> {
   const header = { alg, typ, kid: keyId };
   const encodedHeader = base64Encoder(header);

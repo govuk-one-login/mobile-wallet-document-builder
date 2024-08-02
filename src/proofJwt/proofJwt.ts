@@ -7,8 +7,8 @@ import {
   SigningAlgorithmSpec,
 } from "@aws-sdk/client-kms";
 import { getKmsConfig } from "../config/aws";
-import format from 'ecdsa-sig-formatter';
-import {createPublicKey, JsonWebKey} from "node:crypto";
+import format from "ecdsa-sig-formatter";
+import { createPublicKey, JsonWebKey } from "node:crypto";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bs58 = require("bs58");
 
@@ -16,15 +16,27 @@ const ACCESS_TOKEN_SIGNING_ALGORITHM = "ES256";
 const ACCESS_TOKEN_JWT_TYPE = "JWT";
 const KEY_ID = "2ced22e2-c15b-4e02-aa5f-7a10a2eaccc7";
 
-export async function getProofJwt(nonce: string, audience: string): Promise<string> {
-  const kmsService = new ProofJwtKmsService(KEY_ID)
+export async function getProofJwt(
+  nonce: string,
+  audience: string
+): Promise<string> {
+  const kmsService = new ProofJwtKmsService(KEY_ID);
   const publicKeyRaw = await kmsService.getPublicKey();
-  const publicKeyJwk = createJwkFromRawPublicKey(publicKeyRaw)
+  const publicKeyJwk = createJwkFromRawPublicKey(publicKeyRaw);
   const didKey = createDidKey(publicKeyJwk);
 
-  const header = {alg: ACCESS_TOKEN_SIGNING_ALGORITHM, typ: ACCESS_TOKEN_JWT_TYPE, kid: didKey};
+  const header = {
+    alg: ACCESS_TOKEN_SIGNING_ALGORITHM,
+    typ: ACCESS_TOKEN_JWT_TYPE,
+    kid: didKey,
+  };
   const encodedHeader = base64Encoder(header);
-  const payload = {iss: "urn:fdc:gov:uk:wallet", aud: audience, iat: Date.now(), nonce: nonce};
+  const payload = {
+    iss: "urn:fdc:gov:uk:wallet",
+    aud: audience,
+    iat: Date.now(),
+    nonce: nonce,
+  };
   const encodedPayload = base64Encoder(payload);
   const message = `${encodedHeader}.${encodedPayload}`;
 
@@ -39,9 +51,9 @@ function base64Encoder(object: object) {
 
 export class ProofJwtKmsService {
   constructor(
-      private readonly keyId: string,
-      private readonly signingAlgorithm: SigningAlgorithmSpec = "ECDSA_SHA_256",
-      private readonly kmsClient: KMSClient = new KMSClient(getKmsConfig())
+    private readonly keyId: string,
+    private readonly signingAlgorithm: SigningAlgorithmSpec = "ECDSA_SHA_256",
+    private readonly kmsClient: KMSClient = new KMSClient(getKmsConfig())
   ) {}
 
   async sign(message: string): Promise<string> {
@@ -54,10 +66,11 @@ export class ProofJwtKmsService {
 
     try {
       const response: SignCommandOutput = await this.kmsClient.send(command);
-      console.log(response)
-     const base64EncodedSignature = Buffer.from(response.Signature!).toString("base64url");
-     return format.derToJose(base64EncodedSignature, 'ES256');
-
+      console.log(response);
+      const base64EncodedSignature = Buffer.from(response.Signature!).toString(
+        "base64url"
+      );
+      return format.derToJose(base64EncodedSignature, "ES256");
     } catch (error) {
       console.log(`Error signing token: ${error as Error}`);
       throw error;
@@ -71,7 +84,7 @@ export class ProofJwtKmsService {
 
     try {
       const response: GetPublicKeyResponse = await this.kmsClient.send(command);
-      return response.PublicKey!
+      return response.PublicKey!;
     } catch (error) {
       console.log(`Error fetching public key: ${error as Error}`);
       throw error;
@@ -117,28 +130,26 @@ function compressEcPoint(x: Uint8Array, y: Uint8Array) {
 }
 
 export const createJwkFromRawPublicKey = (
-    rawPublicKey: Uint8Array,
+  rawPublicKey: Uint8Array
 ): JsonWebKey => {
-  const stringPublicKey = uint8ArrayToBase64(rawPublicKey)
+  const stringPublicKey = uint8ArrayToBase64(rawPublicKey);
 
   const formattedPublicKey =
-      '-----BEGIN PUBLIC KEY-----\n' +
-      stringPublicKey +
-      '\n-----END PUBLIC KEY-----'
+    "-----BEGIN PUBLIC KEY-----\n" +
+    stringPublicKey +
+    "\n-----END PUBLIC KEY-----";
 
   try {
     const jsonWebKey = createPublicKey(formattedPublicKey).export({
-      format: 'jwk'
-    })
-    return jsonWebKey
+      format: "jwk",
+    });
+    return jsonWebKey;
   } catch (error) {
-    console.log(error)
-    throw new Error(
-        'Could not create JWK from raw public key'
-    )
+    console.log(error);
+    throw new Error("Could not create JWK from raw public key");
   }
-}
+};
 
 export const uint8ArrayToBase64 = (uint8Array: Uint8Array) => {
-  return Buffer.from(uint8Array).toString('base64')
-}
+  return Buffer.from(uint8Array).toString("base64");
+};

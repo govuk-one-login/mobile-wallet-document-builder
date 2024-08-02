@@ -1,8 +1,8 @@
 export interface App {
-    path: string;
-    environment: string;
-    value: string;
-    text: string;
+  path: string;
+  environment: string;
+  value: string;
+  text: string;
 }
 
 function getEnvVarValue(variableName: string): string {

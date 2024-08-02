@@ -17,7 +17,7 @@ import { returnFromAuthRouter } from "./returnFromAuth/router";
 import { logoutRouter } from "./logout/router";
 import { loggedOutRouter } from "./loggedOut/router";
 import { noCacheMiddleware } from "./middleware/noCache";
-import {proofJwtRouter} from "./proofJwt/router";
+import { proofJwtRouter } from "./proofJwt/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
