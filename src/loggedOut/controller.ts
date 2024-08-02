@@ -1,9 +1,5 @@
 import { Request, Response } from "express";
 
-export async function loggedOutGetController(
-  req: Request,
-  res: Response
-): Promise<void> {
-  res.status(401);
+export function loggedOutGetController(req: Request, res: Response): void {
   res.render("logged-out.njk");
 }

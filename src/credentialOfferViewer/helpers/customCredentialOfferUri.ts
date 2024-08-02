@@ -1,7 +1,7 @@
 import { CredentialOffer } from "../types/CredentialOfferResponse";
-import { apps } from "../../types/Apps";
+import { App } from "../../config/appConfig";
 
-const WALLET_URI_PATH_SPLITTER = "https://mobile.account.gov.uk/wallet/";
+const WALLET_URI_PATH_SPLITTER = "account.gov.uk/wallet/";
 const CREDENTIAL_OFFER_SPLITTER = "credential_offer=";
 
 function isInvalidUri(uriParts: string[]) {
@@ -47,14 +47,11 @@ function replacePreAuthorizedCodeWithError(
 export function getCustomCredentialOfferUri(
   credentialOfferUri: string,
   selectedApp: string,
+  allApps: App[],
   errorScenario: string
 ) {
-  const app = apps[selectedApp];
-  if (!app) {
-    throw new Error("App not found");
-  }
-
-  const appPath = app.path;
+  const app = allApps.filter((app) => app.value === selectedApp);
+  const appPath = app[0].path;
 
   const newCredentialOfferUri = replaceUriPath(credentialOfferUri, appPath);
 

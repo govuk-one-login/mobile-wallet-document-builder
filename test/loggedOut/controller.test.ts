@@ -13,6 +13,5 @@ describe("controller.ts", () => {
     await loggedOutGetController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("logged-out.njk");
-    expect(res.status).toHaveBeenCalledWith(401);
   });
 });

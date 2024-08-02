@@ -1,10 +1,10 @@
-{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% extends "base.njk" %}
 {% set pageTitle = "Please select an app and environment:" %}
 {% set showError = isInvalid %}
+{% set appOptions = apps %}
+
 {% block content %}
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
     <form action="/select-app" method="post">
@@ -18,28 +18,7 @@
                 classes: "govuk-fieldset__legend--m"
                 }
                 },
-                items: [
-                {
-                value: "govuk-build",
-                text: "GOV.UK App (Build)"
-                },
-                {
-                value: "govuk-staging",
-                text: "GOV.UK App (Staging)"
-                },
-                {
-                value: "wallet-test-dev",
-                text: "Wallet Test App (Dev)"
-                },
-                {
-                value: "wallet-test-build",
-                text: "Wallet Test App (Build)"
-                },
-                {
-                value: "wallet-test-staging",
-                text: "Wallet Test App (Staging)"
-                }
-                ],
+                items: appOptions,
                 errorMessage: {
                 text: "You must choose an option",
                 attributes: { "data-pw": "working-camera-error-message" }

@@ -1,21 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "./logger";
-import { getSelfUrl } from "../config/appConfig";
-import { apps } from "../types/Apps";
+import { getSelfUrl, getCookieExpiry } from "../config/appConfig";
 import { generators } from "openid-client";
-import { getCookieExpiry } from "../utils/getCookieExpiry";
 
 const VECTORS_OF_TRUST = `["Cl"]`;
 
-export function requiresLogin(selectedApp: string) {
-  return apps[selectedApp].login;
-}
-
-export async function requiresAuth(
+export function requiresAuth(
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> {
+): void {
   const isAuthenticated = req.cookies["id_token"];
   const selectedApp = req.cookies["app"];
 
@@ -25,8 +19,8 @@ export async function requiresAuth(
 
   if (selectedApp === undefined) {
     res.redirect(getSelfUrl() + "/select-app");
-  } else if (requiresLogin(selectedApp) && isAuthenticated === undefined) {
-    await redirectToLogIn(req, res);
+  } else if (isAuthenticated === undefined) {
+    redirectToLogIn(req, res);
   } else {
     next();
   }
@@ -58,7 +52,7 @@ export function getAuthorizationUrl(req: Request, res: Response) {
   });
 }
 
-async function redirectToLogIn(req: Request, res: Response): Promise<void> {
+function redirectToLogIn(req: Request, res: Response): void {
   const authorizationUrl = getAuthorizationUrl(req, res);
   return res.redirect(authorizationUrl);
 }

@@ -71,7 +71,7 @@ To start the LocalStack container and provision a local version of the **documen
 You will need to have Docker Desktop or alternative like installed.
 
 #### Setting up with an auth server stub
-To test locally with an app that requires the user to be logged in (e.g. staging app), you will need to run this application together with a stub of the auth server.
+To test locally, you will need to run this application together with a stub of the auth server.
 
 In the `.env` file, update the values of the following environment variables:
 - `OIDC_CLIENT_ID`: test client ID required by the auth server's stub
@@ -119,7 +119,6 @@ To get the public key JWKs (STS Stub):
 ```
 curl -X GET http://localhost:8888/.well-known/jwks.json | jq
 ```
-
 
 #### Reading from the Database
 To check that an item was saved to the DynamoDB **documents** table, run `aws --endpoint-url=http://localhost:4561 --region eu-west-2 dynamodb query --table-name documents --key-condition-expression "documentId = :documentId" --expression-attribute-values "{ \":documentId\" : { \"S\" : \"86bd9f55-d675-4a16-963a-56ac17c8597c\" } }"`, replacing the **documentId** with the relevant one.
