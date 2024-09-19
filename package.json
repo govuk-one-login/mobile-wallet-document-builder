@@ -28,7 +28,7 @@
     "cookie-parser": "^1.4.6",
     "copyfiles": "2.4.1",
     "ecdsa-sig-formatter": "^1.0.11",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "govuk-frontend": "4.7.0",
     "jose": "^5.2.3",
     "nunjucks": "3.2.4",
