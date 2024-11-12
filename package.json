@@ -15,7 +15,8 @@
     "test:unit": "node_modules/.bin/jest --testPathPattern=test/unit",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --ext .ts . --fix",
-    "format": "prettier --ignore-path .gitignore --write \"*/**/*.{ts,json}\""
+    "format": "prettier --ignore-path .gitignore --write \"*/**/*.{ts,json}\"",
+    "verify-setup": "node verify-setup.js"
   },
   "author": "",
   "license": "MIT",
