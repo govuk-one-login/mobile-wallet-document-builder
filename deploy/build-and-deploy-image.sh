@@ -13,7 +13,7 @@ then
     echo "Attempting to log into ECR in the dev account"
     aws ecr get-login-password --region eu-west-2 --profile $AWS_PROFILE | docker login --username AWS --password-stdin 671524980203.dkr.ecr.eu-west-2.amazonaws.com
 
-    echo "Attempting to push image to the auth stub image registry in ECR"
+    echo "Attempting to push image to the Document Builder image registry in ECR"
     docker push "$DOCKER_IMAGE_PATH"
 
     echo "Updating image path in template.yaml to point at the newly pushed image"
