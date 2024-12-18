@@ -6,7 +6,7 @@ if [ $# -ge 2 ]
 then
     TAG="$1"
     AWS_PROFILE="$2"
-    echo "Attempting to build docker image for the auth stub with tag: \"$1\""
+    echo "Attempting to build docker image for the Document Builder with tag: \"$1\""
     DOCKER_IMAGE_PATH="671524980203.dkr.ecr.eu-west-2.amazonaws.com/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry:$TAG"
     docker build -t "$DOCKER_IMAGE_PATH" --platform Linux/X86_64 ..
 
