@@ -145,7 +145,7 @@ for the Mobile Platform dev AWS account (which can be found in your `~/.aws/cred
 ```
 
 This will build the docker image, log into ECR, push the image to ECR, and update the `template.yaml` to specify this
-image for the Auth Stub ECS task.
+image for the Document Builder ECS task.
 
 You can then build the template and deploy the stack:
 
