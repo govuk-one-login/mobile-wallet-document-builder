@@ -137,7 +137,7 @@ Jest is test runner, and it is configured in [jest.config.ts](./jest.config.ts).
 > For the following it is required to have a containerisation service (e.g. Docker Desktop) running and to be logged
 > into the Mobile Platform dev AWS account
 
-Run the script to build and push the Auth Stub docker image, specifying your desired tag and the name of your AWS profile
+Run the script to build and push the Document Builder docker image, specifying your desired tag and the name of your AWS profile
 for the Mobile Platform dev AWS account (which can be found in your `~/.aws/credentials` file):
 
 ```shell
