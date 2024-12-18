@@ -134,6 +134,15 @@ Jest is test runner, and it is configured in [jest.config.ts](./jest.config.ts).
 
 ## Deploy a stack in dev
 
+The first time a brand new stack is deployed into the DEV account an SSM parameter needs to be created to hold the OIDC Client Id:
+
+```shell
+aws ssm put-parameter --name "/SOME-STACK-NAME/Config/OIDC/Client/Id" --value "SOME_CLIENT_ID" --type String
+```
+
+where `SOME-STACk-NAME` is your proposed stack name (it won't exist yet though), and `SOME_CLIENT_ID` is the OIDC client Id.
+The usual non-production deployment client ID is `TEST_CLIENT_ID`.
+
 > For the following it is required to have a containerisation service (e.g. Docker Desktop) running and to be logged
 > into the Mobile Platform dev AWS account
 
