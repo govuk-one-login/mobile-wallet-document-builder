@@ -21,5 +21,5 @@ then
 
     echo "Success! You can now build and deploy the SAM template."
 else
-    echo "Please specify a tag for the docker image and your AWS profile for the Mobile Platform dev account, e.g. ./build-and-push-auth-stub-docker-image.sh image-tag profile-name"
+    echo "Please specify a tag for the docker image and your AWS profile for the Mobile Platform dev account, e.g. ./build-and-deploy-image.sh image-tag profile-name"
 fi
