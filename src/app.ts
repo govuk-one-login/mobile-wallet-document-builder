@@ -18,7 +18,7 @@ import { logoutRouter } from "./logout/router";
 import { loggedOutRouter } from "./loggedOut/router";
 import { noCacheMiddleware } from "./middleware/noCache";
 import { proofJwtRouter } from "./proofJwt/router";
-import {photoDocumentBuilderRouter} from "./photoDocumentBuilder/router";
+import { photoDocumentBuilderRouter } from "./photoDocumentBuilder/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
@@ -65,7 +65,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(documentSelectorRouter);
   app.use(dbsDocumentBuilderRouter);
   app.use(ninoDocumentBuilderRouter);
-  app.use(photoDocumentBuilderRouter)
+  app.use(photoDocumentBuilderRouter);
   app.use(credentialOfferViewerRouter);
   app.use(documentRouter);
   app.use(stsStubAccessTokenRouter);

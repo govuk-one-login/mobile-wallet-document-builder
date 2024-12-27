@@ -29,7 +29,7 @@ export function documentSelectorPostController(
       res.redirect(`/build-dbs-document`);
     } else if (selectedDocument === "photo") {
       res.redirect(`/build-photo-document`);
-    }else {
+    } else {
       res.render("select-document-form.njk", {
         isInvalid: selectedDocument === undefined,
         authenticated: isAuthenticated(req),

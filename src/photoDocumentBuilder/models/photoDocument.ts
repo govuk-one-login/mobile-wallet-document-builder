@@ -1,10 +1,10 @@
 import { PhotoInputData } from "../types/PhotoInputData";
 import { getNameParts } from "../../utils/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
-import {CredentialSubject} from "../../types/CredentialSubject";
-import {promises as fs} from "fs";
-import {PhotoCredentialSubject} from "../types/PhotoCredentialSubject";
+import { CredentialSubject } from "../../types/CredentialSubject";
+import { PhotoCredentialSubject } from "../types/PhotoCredentialSubject";
 import path from "path";
+import { readFileSync } from "node:fs";
 
 export class PhotoDocument {
   public readonly type: string[];
@@ -39,7 +39,8 @@ export class PhotoDocument {
           ),
         },
       ],
-      // photo: await this.readInPhoto(),
+      // TODO: Make it possible to upload image through the UI
+      photo: this.imageToDataURI(),
     };
 
     return new PhotoDocument(type, credentialSubject);
@@ -52,14 +53,11 @@ export class PhotoDocument {
     }
   }
 
-  // private static async readInPhoto(): Promise<Buffer> {
-  //     try {
-  //       const data = await fs.readFile(path.resolve(__dirname, "./photo.jpg"));
-  //       console.log(data);
-  //       return data;
-  //     } catch (error) {
-  //       console.log(error);
-  //       throw error;
-  //     }
-  // }
+  private static imageToDataURI() {
+    const filePath = path.resolve(__dirname, "../photo.jpg");
+
+    const base64Image = readFileSync(filePath).toString("base64");
+
+    return `data:image/jpg;base64,${base64Image}`;
+  }
 }

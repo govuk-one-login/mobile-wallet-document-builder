@@ -103,7 +103,7 @@ To start and test the credential offer endpoint, go to:
 
 To get a document's details, hit the following endpoint:
 
-[http://localhost:8888/document/:documentId](http://localhost:8888/document/:documentId)
+[http://localhost:8888/document/:documentId](http://localhost:8888/document/6a17d07e-5dc5-424c-9600-9fbc7b3d37e4)
 
 To swap a pre-authorized code for an access token (STS Stub):
 ```

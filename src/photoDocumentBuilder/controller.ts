@@ -30,8 +30,11 @@ export async function photoDocumentBuilderPostController(
     const documentId = randomUUID();
     logger.info(`Processing Photo document with documentId ${documentId}`);
     const selectedError = req.body["throwError"];
-    console.log(req.body)
-    const document = await PhotoDocument.fromRequestBody(req.body, CREDENTIAL_TYPE);
+    console.log(req.body);
+    const document = await PhotoDocument.fromRequestBody(
+      req.body,
+      CREDENTIAL_TYPE
+    );
     await saveDocument(document, documentId);
 
     res.redirect(
