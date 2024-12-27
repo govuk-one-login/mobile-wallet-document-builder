@@ -23,11 +23,13 @@ export function documentSelectorPostController(
   try {
     const selectedDocument = req.body["select-document-choice"];
 
-    if (selectedDocument && selectedDocument === "nino") {
+    if (selectedDocument === "nino") {
       res.redirect(`/build-nino-document`);
-    } else if (selectedDocument && selectedDocument === "dbs") {
+    } else if (selectedDocument === "dbs") {
       res.redirect(`/build-dbs-document`);
-    } else {
+    } else if (selectedDocument === "photo") {
+      res.redirect(`/build-photo-document`);
+    }else {
       res.render("select-document-form.njk", {
         isInvalid: selectedDocument === undefined,
         authenticated: isAuthenticated(req),
