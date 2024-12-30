@@ -38,9 +38,14 @@ export async function credentialOfferViewerController(
 
     const qrCode = await QRCode.toDataURL(credentialOfferUri);
 
+    const urlParams = (new URL(response["credential_offer_uri"])).searchParams
+    const credentialOffer = JSON.parse(urlParams.get("credential_offer") ?? "{}" )
+    const preAuthorizedCode = credentialOffer["grants"]["urn:ietf:params:oauth:grant-type:pre-authorized_code"]["pre-authorized_code"]
+
     res.render("credential-offer.njk", {
       authenticated: isAuthenticated(req),
       universalLink: credentialOfferUri,
+      preAuthorizedCode,
       qrCode,
     });
   } catch (error) {

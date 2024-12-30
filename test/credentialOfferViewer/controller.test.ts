@@ -55,7 +55,7 @@ describe("controller.ts", () => {
 
     const credentialOfferMocked = {
       credential_offer_uri:
-        "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer",
+        "https://mobile.test.account.gov.uk/wallet/add?credential_offer=%7B%22credentials%22%3A%5B%22SocialSecurityCredential%22%5D%2C%22grants%22%3A%7B%22urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Apre-authorized_code%22%3A%7B%22pre-authorized_code%22%3A%22eyJraWQiOiI5YmM4Y2I2MDQxYzExZTdiYjU1YWYyNDQzNzM4NmU4MTY1MWRhMDlkOTQxN2NjMTgzNTQ3ZjQ1NTliMDk2OWUyIiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJhdWQiOiJodHRwczovL3N0dWItY3JlZGVudGlhbC1pc3N1ZXIubW9iaWxlLmRldi5hY2NvdW50Lmdvdi51ayIsImNsaWVudElkIjoiVEVTVF9DTElFTlRfSUQiLCJpc3MiOiJodHRwczovL3dhbGxldC1jcmVkLWlzc3Vlci1kZHVuZm9yZC1leGFtcGxlLWNyZWRlbnRpYWwtaXNzdWVyLm1vYmlsZS5kZXYuYWNjb3VudC5nb3YudWsiLCJjcmVkZW50aWFsX2lkZW50aWZpZXJzIjpbImEyZmNkYzdlLTgxZWYtNDYxZi04ZjI1LThmYTlhMDY5NzIwMCJdLCJleHAiOjE3MzU1NjEyNjMsImlhdCI6MTczNTU2MDk2M30.S_-QI3ZGuenm3wX_0jnB7Nl-Pt3v_L1bGzgx6Zbig8YfwRALyzHp1btrszfhA0mhZg8mbu4IelMj8Nf_tn-TaQ%22%7D%7D%2C%22credential_issuer%22%3A%22https%3A%2F%2Fwallet-cred-issuer-ddunford-example-credential-issuer.mobile.dev.account.gov.uk%22%2C%22credentialIssuer%22%3A%22https%3A%2F%2Fwallet-cred-issuer-ddunford-example-credential-issuer.mobile.dev.account.gov.uk%22%7D",
     };
     const qrCodeMocked =
       "data:image/png;base64,iVBORw0KGgoAAAANSU" as unknown as void;
@@ -74,7 +74,7 @@ describe("controller.ts", () => {
       "BasicCheckCredential"
     );
     expect(getCustomCredentialOfferUri).toHaveBeenCalledWith(
-      "https://mobile.test.account.gov.uk/wallet/add?credential_offer=testCredentialOffer",
+      "https://mobile.test.account.gov.uk/wallet/add?credential_offer=%7B%22credentials%22%3A%5B%22SocialSecurityCredential%22%5D%2C%22grants%22%3A%7B%22urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Apre-authorized_code%22%3A%7B%22pre-authorized_code%22%3A%22eyJraWQiOiI5YmM4Y2I2MDQxYzExZTdiYjU1YWYyNDQzNzM4NmU4MTY1MWRhMDlkOTQxN2NjMTgzNTQ3ZjQ1NTliMDk2OWUyIiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJhdWQiOiJodHRwczovL3N0dWItY3JlZGVudGlhbC1pc3N1ZXIubW9iaWxlLmRldi5hY2NvdW50Lmdvdi51ayIsImNsaWVudElkIjoiVEVTVF9DTElFTlRfSUQiLCJpc3MiOiJodHRwczovL3dhbGxldC1jcmVkLWlzc3Vlci1kZHVuZm9yZC1leGFtcGxlLWNyZWRlbnRpYWwtaXNzdWVyLm1vYmlsZS5kZXYuYWNjb3VudC5nb3YudWsiLCJjcmVkZW50aWFsX2lkZW50aWZpZXJzIjpbImEyZmNkYzdlLTgxZWYtNDYxZi04ZjI1LThmYTlhMDY5NzIwMCJdLCJleHAiOjE3MzU1NjEyNjMsImlhdCI6MTczNTU2MDk2M30.S_-QI3ZGuenm3wX_0jnB7Nl-Pt3v_L1bGzgx6Zbig8YfwRALyzHp1btrszfhA0mhZg8mbu4IelMj8Nf_tn-TaQ%22%7D%7D%2C%22credential_issuer%22%3A%22https%3A%2F%2Fwallet-cred-issuer-ddunford-example-credential-issuer.mobile.dev.account.gov.uk%22%2C%22credentialIssuer%22%3A%22https%3A%2F%2Fwallet-cred-issuer-ddunford-example-credential-issuer.mobile.dev.account.gov.uk%22%7D",
       "some-staging-app",
       expect.any(Array),
       ""
@@ -84,6 +84,7 @@ describe("controller.ts", () => {
       qrCode: "data:image/png;base64,iVBORw0KGgoAAAANSU",
       universalLink:
         "https://mobile.build.account.gov.uk/test-wallet/add?credential_offer=testCredentialOffer",
+      preAuthorizedCode: "eyJraWQiOiI5YmM4Y2I2MDQxYzExZTdiYjU1YWYyNDQzNzM4NmU4MTY1MWRhMDlkOTQxN2NjMTgzNTQ3ZjQ1NTliMDk2OWUyIiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJhdWQiOiJodHRwczovL3N0dWItY3JlZGVudGlhbC1pc3N1ZXIubW9iaWxlLmRldi5hY2NvdW50Lmdvdi51ayIsImNsaWVudElkIjoiVEVTVF9DTElFTlRfSUQiLCJpc3MiOiJodHRwczovL3dhbGxldC1jcmVkLWlzc3Vlci1kZHVuZm9yZC1leGFtcGxlLWNyZWRlbnRpYWwtaXNzdWVyLm1vYmlsZS5kZXYuYWNjb3VudC5nb3YudWsiLCJjcmVkZW50aWFsX2lkZW50aWZpZXJzIjpbImEyZmNkYzdlLTgxZWYtNDYxZi04ZjI1LThmYTlhMDY5NzIwMCJdLCJleHAiOjE3MzU1NjEyNjMsImlhdCI6MTczNTU2MDk2M30.S_-QI3ZGuenm3wX_0jnB7Nl-Pt3v_L1bGzgx6Zbig8YfwRALyzHp1btrszfhA0mhZg8mbu4IelMj8Nf_tn-TaQ",
     });
   });
 
