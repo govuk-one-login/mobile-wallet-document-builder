@@ -20,7 +20,7 @@ export async function getProofJwt(
   nonce: string,
   audience: string
 ): Promise<string> {
-  const proofJwtSigningKey = getProofJwtSigningKey()
+  const proofJwtSigningKey = getProofJwtSigningKey();
   const kmsService = new ProofJwtKmsService(proofJwtSigningKey);
   const publicKeyRaw = await kmsService.getPublicKey();
   const publicKeyJwk = createJwkFromRawPublicKey(publicKeyRaw);
