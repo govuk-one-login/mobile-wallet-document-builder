@@ -434,8 +434,6 @@ Resources:
               Value: !FindInMap [ EnvironmentVariables, !Ref Environment, OidcIssuerEndpoint ]
             - Name: COOKIE_TTL_IN_SECS
               Value: 3600
-            - Name: PROOF_JWT_SIGNING_KEY
-              Value: !Ref StsStubSigningKey
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp

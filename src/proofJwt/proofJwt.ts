@@ -9,19 +9,18 @@ import {
 import { getKmsConfig } from "../config/aws";
 import format from "ecdsa-sig-formatter";
 import { createPublicKey, JsonWebKey } from "node:crypto";
-import { getProofJwtSigningKey } from "../config/appConfig";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bs58 = require("bs58");
 
 const ACCESS_TOKEN_SIGNING_ALGORITHM = "ES256";
 const ACCESS_TOKEN_JWT_TYPE = "JWT";
+const KEY_ID = "2ced22e2-c15b-4e02-aa5f-7a10a2eaccc7";
 
 export async function getProofJwt(
   nonce: string,
   audience: string
 ): Promise<string> {
-  const proofJwtSigningKey = getProofJwtSigningKey();
-  const kmsService = new ProofJwtKmsService(proofJwtSigningKey);
+  const kmsService = new ProofJwtKmsService(KEY_ID);
   const publicKeyRaw = await kmsService.getPublicKey();
   const publicKeyJwk = createJwkFromRawPublicKey(publicKeyRaw);
   const didKey = createDidKey(publicKeyJwk);

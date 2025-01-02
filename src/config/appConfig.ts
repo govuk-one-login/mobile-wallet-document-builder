@@ -65,10 +65,6 @@ export function getOIDCDiscoveryEndpoint(): string {
   return getEnvVarValue("OIDC_ISSUER_DISCOVERY_ENDPOINT");
 }
 
-export function getProofJwtSigningKey(): string {
-  return getEnvVarValue("PROOF_JWT_SIGNING_KEY");
-}
-
 export function getCookieExpiry() {
   const ttl = getEnvVarValue("COOKIE_TTL_IN_SECS");
   return Number(ttl) * 1000;
