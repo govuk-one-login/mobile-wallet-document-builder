@@ -14,13 +14,13 @@ const bs58 = require("bs58");
 
 const ACCESS_TOKEN_SIGNING_ALGORITHM = "ES256";
 const ACCESS_TOKEN_JWT_TYPE = "JWT";
-const KEY_ID = "2ced22e2-c15b-4e02-aa5f-7a10a2eaccc7";
 
 export async function getProofJwt(
   nonce: string,
-  audience: string
+  audience: string,
+  keyId: string
 ): Promise<string> {
-  const kmsService = new ProofJwtKmsService(KEY_ID);
+  const kmsService = new ProofJwtKmsService(keyId);
   const publicKeyRaw = await kmsService.getPublicKey();
   const publicKeyJwk = createJwkFromRawPublicKey(publicKeyRaw);
   const didKey = createDidKey(publicKeyJwk);
