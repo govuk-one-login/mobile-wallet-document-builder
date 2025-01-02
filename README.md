@@ -156,6 +156,17 @@ for the Mobile Platform dev AWS account (which can be found in your `~/.aws/cred
 This will build the docker image, log into ECR, push the image to ECR, and update the `template.yaml` to specify this
 image for the Document Builder ECS task.
 
+If using your own deployed version of the Example CRI and Auth Stub, the following mapping values in the template need to be updated:
+
+ ```yaml
+ Mappings:
+   EnvironmentVariables:
+     dev:
+       CredentialIssuerUrl: "<stack-name->example-credential-issuer.mobile.dev.account.gov.uk"
+       ...
+       OidcIssuerEndpoint: "https://<stack-name->.mobile.dev.account.gov.uk"
+ ```
+
 You can then build the template and deploy the stack:
 
 ```bash
