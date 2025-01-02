@@ -162,9 +162,9 @@ If using your own deployed version of the Example CRI and Auth Stub, the followi
  Mappings:
    EnvironmentVariables:
      dev:
-       CredentialIssuerUrl: "<stack-name->example-credential-issuer.mobile.dev.account.gov.uk"
+       CredentialIssuerUrl: "<cri-stack-name->example-credential-issuer.mobile.dev.account.gov.uk"
        ...
-       OidcIssuerEndpoint: "https://<stack-name->.mobile.dev.account.gov.uk"
+       OidcIssuerEndpoint: "https://<auth-stub-stack-name->.mobile.dev.account.gov.uk"
  ```
 
 You can then build the template and deploy the stack:
