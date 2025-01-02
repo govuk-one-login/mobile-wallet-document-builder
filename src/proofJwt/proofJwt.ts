@@ -9,12 +9,13 @@ import {
 import { getKmsConfig } from "../config/aws";
 import format from "ecdsa-sig-formatter";
 import { createPublicKey, JsonWebKey } from "node:crypto";
+import { getStsSigningKeyId } from "../config/appConfig";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bs58 = require("bs58");
 
 const ACCESS_TOKEN_SIGNING_ALGORITHM = "ES256";
 const ACCESS_TOKEN_JWT_TYPE = "JWT";
-const KEY_ID = "2ced22e2-c15b-4e02-aa5f-7a10a2eaccc7";
+const KEY_ID = getStsSigningKeyId() // re-using the mock STS signing key to avoid creating a new one
 
 export async function getProofJwt(
   nonce: string,
