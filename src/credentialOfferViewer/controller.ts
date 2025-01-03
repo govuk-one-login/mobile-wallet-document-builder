@@ -5,11 +5,12 @@ import { getCustomCredentialOfferUri } from "./helpers/customCredentialOfferUri"
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { UserInfo } from "./types/UserInfo";
-import { apps, getSelfUrl } from "../config/appConfig";
-import axios from "axios";
-import { GrantType } from "../stsStubAccessToken/token/validateTokenRequest";
+import { apps } from "../config/appConfig";
 import { decodeJwt } from "jose";
 import { getCredential } from "./services/credentialService";
+import { extractPreAuthCode } from "./helpers/extractPreAuthCode";
+import { getAccessToken } from "./services/accessTokenService";
+import { getProofJwt } from "./services/proofJwtService";
 
 export async function credentialOfferViewerController(
   req: Request,
@@ -42,42 +43,20 @@ export async function credentialOfferViewerController(
 
     const qrCode = await QRCode.toDataURL(credentialOfferUri);
 
-    const urlParams = new URL(credentialOfferResponse["credential_offer_uri"])
-      .searchParams;
-    const credentialOffer = JSON.parse(urlParams.get("credential_offer")!);
-    const preAuthorizedCode =
-      credentialOffer["grants"][
-        "urn:ietf:params:oauth:grant-type:pre-authorized_code"
-      ]["pre-authorized_code"];
+    const preAuthorizedCode = extractPreAuthCode(credentialOfferResponse);
 
-    const tokenResponse = await axios.post(
-      `${getSelfUrl()}/token`,
-      {
-        grant_type: GrantType.PREAUTHORIZED_CODE,
-        "pre-authorized_code": preAuthorizedCode,
-      },
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
-    );
+    const accessToken = await getAccessToken(preAuthorizedCode);
 
-    const accessToken = tokenResponse.data.access_token;
     const tokenClaims = decodeJwt(accessToken);
-    logger.debug(`Token Claims:${JSON.stringify(tokenClaims)}`);
-    const proofJwtResponse = await axios.get(
-      `${getSelfUrl()}/proof-jwt?nonce=${tokenClaims.c_nonce}&audience=${
-        tokenClaims.aud
-      }`
-    );
-    const proofJwt = proofJwtResponse.data.proofJwt;
-    const proofJwtClaims = decodeJwt(proofJwt);
-    logger.debug(`proofJwtClaims:${JSON.stringify(proofJwtClaims)}`);
-    const credential = await getCredential(accessToken, proofJwt);
-    const credentialClaims = JSON.stringify(decodeJwt(credential));
 
-    logger.debug(`Credential Claims:${credentialClaims}`);
+    const proofJwt = await getProofJwt(
+      tokenClaims.c_nonce as string,
+      tokenClaims.aud as string
+    );
+
+    const credential = await getCredential(accessToken, proofJwt);
+
+    const credentialClaims = decodeJwt(credential);
 
     res.render("credential-offer.njk", {
       authenticated: isAuthenticated(req),
@@ -85,7 +64,9 @@ export async function credentialOfferViewerController(
       preAuthorizedCode,
       qrCode,
       credential,
-      credentialClaims,
+      credentialClaims: JSON.stringify(credentialClaims),
+      accessToken,
+      tokenClaims: JSON.stringify(tokenClaims),
     });
   } catch (error) {
     logger.error(
