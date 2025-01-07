@@ -99,25 +99,25 @@ npm run dev
 
 To start and test the credential offer endpoint, go to:
 
-[http://localhost:8888/select-app](http://localhost:8888/select-app)
+[http://localhost:8001/select-app](http://localhost:8001/select-app)
 
 To get a document's details, hit the following endpoint:
 
-[http://localhost:8888/document/:documentId](http://localhost:8888/document/:documentId)
+[http://localhost:8001/document/:documentId](http://localhost:8001/document/:documentId)
 
 To swap a pre-authorized code for an access token (STS Stub):
 ```
-curl -d "grant_type=urn:ietf:params:oauth:grant-type:pre-authorized_code&pre-authorized_code=eyJraWQiOiJmZjI3NWI5Mi0wZGVmLTRkZmMtYjBmNi04N2M5NmIyNmM2YzciLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJ1cm46ZmRjOmdvdjp1azp3YWxsZXQiLCJjbGllbnRJZCI6IkVYQU1QTEVfQ1JJIiwiaXNzIjoidXJuOmZkYzpnb3Y6dWs6ZXhhbXBsZS1jcmVkZW50aWFsLWlzc3VlciIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsiYmYyODVjOTctMzFkNS00NGEwLWFkZGQtNDNmM2I0YmIzYmMwIl0sImV4cCI6MTcxMjMwNDMwOCwiaWF0IjoxNzEyMzA0MDA4fQ.2-qE4IKUJpUPo04O4m34W13o8f8V6zNuuJ0RBoSyPcBTZFtuJVTHM_4lhiGrOH9vysS8LxTYSSeyv7FugH4RJw" -X POST http://localhost:8888/token | jq
+curl -d "grant_type=urn:ietf:params:oauth:grant-type:pre-authorized_code&pre-authorized_code=eyJraWQiOiJmZjI3NWI5Mi0wZGVmLTRkZmMtYjBmNi04N2M5NmIyNmM2YzciLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJ1cm46ZmRjOmdvdjp1azp3YWxsZXQiLCJjbGllbnRJZCI6IkVYQU1QTEVfQ1JJIiwiaXNzIjoidXJuOmZkYzpnb3Y6dWs6ZXhhbXBsZS1jcmVkZW50aWFsLWlzc3VlciIsImNyZWRlbnRpYWxfaWRlbnRpZmllcnMiOlsiYmYyODVjOTctMzFkNS00NGEwLWFkZGQtNDNmM2I0YmIzYmMwIl0sImV4cCI6MTcxMjMwNDMwOCwiaWF0IjoxNzEyMzA0MDA4fQ.2-qE4IKUJpUPo04O4m34W13o8f8V6zNuuJ0RBoSyPcBTZFtuJVTHM_4lhiGrOH9vysS8LxTYSSeyv7FugH4RJw" -X POST http://localhost:8001/token | jq
 ```
 
 To get a proof JWT for a given nonce and audience:
 ```
-curl -X GET http://localhost:8888/proof-jwt/?nonce=45ec1dd6-75f1-499a-8ec1-98c7d7086b91&audience=http://localhost:8080 | jq
+curl -X GET http://localhost:8001/proof-jwt/?nonce=45ec1dd6-75f1-499a-8ec1-98c7d7086b91&audience=http://localhost:8080 | jq
 ```
 
 To get the public key JWKs (STS Stub):
 ```
-curl -X GET http://localhost:8888/.well-known/jwks.json | jq
+curl -X GET http://localhost:8001/.well-known/jwks.json | jq
 ```
 
 #### Reading from the Database
