@@ -27,10 +27,10 @@ export async function credentialViewerController(
     res.render("credential.njk", {
       authenticated: isAuthenticated(req),
       preAuthorizedCode,
+      accessToken,
+      accessTokenClaims: JSON.stringify(accessTokenClaims),
       credential,
       credentialClaims: JSON.stringify(credentialClaims),
-      accessToken,
-      tokenClaims: JSON.stringify(accessTokenClaims),
     });
   } catch (error) {
     logger.error("An error happened:", error);
