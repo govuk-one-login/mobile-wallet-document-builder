@@ -1,10 +1,10 @@
-import {Request, Response} from "express";
-import {logger} from "../middleware/logger";
-import {isAuthenticated} from "../utils/isAuthenticated";
-import {decodeJwt} from "jose";
+import { Request, Response } from "express";
+import { logger } from "../middleware/logger";
+import { isAuthenticated } from "../utils/isAuthenticated";
+import { decodeJwt } from "jose";
 import axios from "axios";
-import {getCriEndpoint, getSelfUrl} from "../config/appConfig";
-import {GrantType} from "../stsStubAccessToken/token/validateTokenRequest";
+import { getCriEndpoint, getSelfUrl } from "../config/appConfig";
+import { GrantType } from "../stsStubAccessToken/token/validateTokenRequest";
 
 export async function credentialViewerController(
   req: Request,
@@ -14,16 +14,14 @@ export async function credentialViewerController(
     const preAuthorizedCode = extractPreAuthCode(req.query.offer as string);
 
     const accessToken = await getAccessToken(preAuthorizedCode);
-
-    const tokenClaims = decodeJwt(accessToken);
+    const accessTokenClaims = decodeJwt(accessToken);
 
     const proofJwt = await getProofJwt(
-      tokenClaims.c_nonce as string,
-      tokenClaims.aud as string
+      accessTokenClaims.c_nonce as string,
+      accessTokenClaims.aud as string
     );
 
     const credential = await getCredential(accessToken, proofJwt);
-
     const credentialClaims = decodeJwt(credential);
 
     res.render("credential.njk", {
@@ -32,21 +30,22 @@ export async function credentialViewerController(
       credential,
       credentialClaims: JSON.stringify(credentialClaims),
       accessToken,
-      tokenClaims: JSON.stringify(tokenClaims),
+      tokenClaims: JSON.stringify(accessTokenClaims),
     });
   } catch (error) {
-    logger.error(
-      error,
-      "An error happened processing credential offer request"
-    );
+    logger.error("An error happened:", error);
     res.render("500.njk");
   }
 }
 
 function extractPreAuthCode(credentialOfferUri: string) {
-  const credentialOfferString = credentialOfferUri.split("add?credential_offer=")[1]
-  const credentialOffer = JSON.parse(credentialOfferString)
-  return credentialOffer.grants["urn:ietf:params:oauth:grant-type:pre-authorized_code"]["pre-authorized_code"];
+  const credentialOfferString = credentialOfferUri.split(
+    "add?credential_offer="
+  )[1];
+  const credentialOffer = JSON.parse(credentialOfferString);
+  return credentialOffer.grants[
+    "urn:ietf:params:oauth:grant-type:pre-authorized_code"
+  ]["pre-authorized_code"];
 }
 
 export async function getAccessToken(
@@ -77,43 +76,26 @@ export async function getProofJwt(
   return proofJwtResponse.data.proofJwt;
 }
 
-const CREDENTIAL_PATH = "/credential";
-
 export async function getCredential(
   accessToken: string,
   proofJwt: string
 ): Promise<string> {
-  try {
-    const criUrl = getCriEndpoint();
-    const credentialUrl = criUrl + CREDENTIAL_PATH;
+  const criUrl = getCriEndpoint();
+  const credentialUrl = criUrl + "/credential";
 
-    const response = await axios.post(
-      credentialUrl,
-      {
-        proof: {
-          proof_type: "jwt",
-          jwt: proofJwt,
-        },
+  const response = await axios.post(
+    credentialUrl,
+    {
+      proof: {
+        proof_type: "jwt",
+        jwt: proofJwt,
       },
-      {
-        headers: {
-          Authorization: `BEARER ${accessToken}`,
-        },
-      }
-    );
-
-    logger.info(`Fetched credential with accessToken ${accessToken}`);
-
-    return response.data.credential;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      logger.error(`Error fetching credential with accessToken ${accessToken}`);
-      logger.error(error);
-    } else {
-      logger.error(
-        `Unexpected error happened fetching credential with accessToken ${accessToken}`
-      );
+    },
+    {
+      headers: {
+        Authorization: `BEARER ${accessToken}`,
+      },
     }
-    throw error;
-  }
+  );
+  return response.data.credential;
 }

@@ -72,7 +72,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(logoutRouter);
   app.use(loggedOutRouter);
   app.use(proofJwtRouter);
-  app.use(credentialViewerRouter)
+  app.use(credentialViewerRouter);
 
   return app;
 }
