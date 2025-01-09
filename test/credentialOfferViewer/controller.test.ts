@@ -84,8 +84,6 @@ describe("controller.ts", () => {
       qrCode: "data:image/png;base64,iVBORw0KGgoAAAANSU",
       universalLink:
         "https://mobile.build.account.gov.uk/test-wallet/add?credential_offer=testCredentialOffer",
-      preAuthorizedCode:
-        "eyJraWQiOiI5YmM4Y2I2MDQxYzExZTdiYjU1YWYyNDQzNzM4NmU4MTY1MWRhMDlkOTQxN2NjMTgzNTQ3ZjQ1NTliMDk2OWUyIiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJhdWQiOiJodHRwczovL3N0dWItY3JlZGVudGlhbC1pc3N1ZXIubW9iaWxlLmRldi5hY2NvdW50Lmdvdi51ayIsImNsaWVudElkIjoiVEVTVF9DTElFTlRfSUQiLCJpc3MiOiJodHRwczovL3dhbGxldC1jcmVkLWlzc3Vlci1kZHVuZm9yZC1leGFtcGxlLWNyZWRlbnRpYWwtaXNzdWVyLm1vYmlsZS5kZXYuYWNjb3VudC5nb3YudWsiLCJjcmVkZW50aWFsX2lkZW50aWZpZXJzIjpbImEyZmNkYzdlLTgxZWYtNDYxZi04ZjI1LThmYTlhMDY5NzIwMCJdLCJleHAiOjE3MzU1NjEyNjMsImlhdCI6MTczNTU2MDk2M30.S_-QI3ZGuenm3wX_0jnB7Nl-Pt3v_L1bGzgx6Zbig8YfwRALyzHp1btrszfhA0mhZg8mbu4IelMj8Nf_tn-TaQ",
     });
   });
 
