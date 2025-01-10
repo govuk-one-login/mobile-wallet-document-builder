@@ -29,6 +29,7 @@ describe("controller.ts", () => {
   const { res } = getMockRes();
 
   it("should render the credential page", async () => {
+    // arrange
     const accessToken =
       "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjJjZWQyMmUyLWMxNWItNGUwMi1hYTVmLTdhMTBhMmVhY2NjNyJ9.eyJzdWIiOiJ1cm46ZmRjOndhbGxldC5hY2NvdW50Lmdvdi51azoyMDI0OkR0UFQ4eC1kcF83M3RubFkzS05UaUNpdHppTjlHRWhlckQxNmJxeE50OWkiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwODAiLCJjcmVkZW50aWFsX2lkZW50aWZpZXJzIjpbIjM2ODRlYzZkLTkyZGQtNDJhOC1iZjRjLWZhMjAwYTgzYjkyYyJdLCJjX25vbmNlIjoiMmQ4NzJkYzUtMDdlNi00ZmU4LWI1Y2ItYWQ4OWNiYzY4MzcyIn0.4tIHPhrWzRJhhE8f4OnqRda-y8M10H42r5J5KVPS7iLrFR1amJzCMd3O0KEjVke2ISam9qKe50J9p4qs3O5N-A";
     const mockTokenResponse = {
@@ -56,8 +57,10 @@ describe("controller.ts", () => {
     } as AxiosResponse;
     mockedAxios.post.mockResolvedValueOnce(mockCredentialResponse);
 
+    // act
     await credentialViewerController(req, res);
 
+    // assert
     expect(mockedAxios.post).toHaveBeenNthCalledWith(
       1,
       "https://doc-builder.test/token",
@@ -68,7 +71,8 @@ describe("controller.ts", () => {
       },
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     );
-    expect(mockedAxios.post).lastCalledWith(
+    expect(mockedAxios.post).toHaveBeenNthCalledWith(
+      2,
       "https://example-cri.test/credential",
       {
         proof: {
@@ -83,7 +87,7 @@ describe("controller.ts", () => {
         },
       }
     );
-    expect(mockedAxios.get).toHaveBeenLastCalledWith(
+    expect(mockedAxios.get).toHaveBeenCalledWith(
       "https://doc-builder.test/proof-jwt?nonce=2d872dc5-07e6-4fe8-b5cb-ad89cbc68372&audience=http://localhost:8080"
     );
     expect(res.render).toHaveBeenCalledWith("credential.njk", {
@@ -100,10 +104,13 @@ describe("controller.ts", () => {
   });
 
   it("should render an error page when an error happens", async () => {
+    // arrange
     mockedAxios.post.mockRejectedValueOnce("SOME_ERROR");
 
+    // act
     await credentialViewerController(req, res);
 
+    // assert
     expect(res.render).toHaveBeenCalledWith("500.njk");
   });
 });
