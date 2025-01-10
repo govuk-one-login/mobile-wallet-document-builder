@@ -2,7 +2,7 @@ import { JWTPayload, decodeJwt } from "jose";
 import { PreAuthorizedCodePayload } from "../types/PreAuthorizedCodePayload";
 import { logger } from "../../middleware/logger";
 
-enum GrantType {
+export enum GrantType {
   PREAUTHORIZED_CODE = "urn:ietf:params:oauth:grant-type:pre-authorized_code",
 }
 export function validateGrantType(grantType: string): boolean {

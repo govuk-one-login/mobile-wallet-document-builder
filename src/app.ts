@@ -18,6 +18,7 @@ import { logoutRouter } from "./logout/router";
 import { loggedOutRouter } from "./loggedOut/router";
 import { noCacheMiddleware } from "./middleware/noCache";
 import { proofJwtRouter } from "./proofJwt/router";
+import { credentialViewerRouter } from "./credentialViewer/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
@@ -27,6 +28,7 @@ const APP_VIEWS = [
   path.join(__dirname, "../src/appSelector/views"),
   path.join(__dirname, "../src/documentSelector/views"),
   path.join(__dirname, "../src/loggedOut/views"),
+  path.join(__dirname, "../src/credentialViewer/views"),
   path.resolve("node_modules/govuk-frontend/"),
 ];
 
@@ -70,6 +72,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(logoutRouter);
   app.use(loggedOutRouter);
   app.use(proofJwtRouter);
+  app.use(credentialViewerRouter);
 
   return app;
 }

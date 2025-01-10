@@ -66,7 +66,6 @@ export class ProofJwtKmsService {
 
     try {
       const response: SignCommandOutput = await this.kmsClient.send(command);
-      console.log(response);
       const base64EncodedSignature = Buffer.from(response.Signature!).toString(
         "base64url"
       );
