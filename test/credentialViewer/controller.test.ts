@@ -1,23 +1,17 @@
 process.env.SELF = "http://localhost:8001";
 process.env.CREDENTIAL_ISSUER_URL = "http://localhost:1234";
-
 import { credentialViewerController } from "../../src/credentialViewer/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import axios, { AxiosResponse } from "axios";
 
 jest.mock("axios");
-
-export const WALLET_SUBJECT_ID: string =
-  "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i";
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe("controller.ts", () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  const mockedAxios = axios as jest.Mocked<typeof axios>;
-
-  const userinfo = { wallet_subject_id: WALLET_SUBJECT_ID };
+  const userinfo = {
+    wallet_subject_id:
+      "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i",
+  };
   const req = getMockReq({
     cookies: {
       app: "some-staging-app",
@@ -77,24 +71,11 @@ describe("controller.ts", () => {
     });
   });
 
-  // it("should render an error page when an error happens", async () => {
-  //   const req = getMockReq({
-  //     params: {
-  //       documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-  //     },
-  //     cookies: {
-  //       app: "test-build",
-  //     },
-  //     query: {
-  //       type: "BasicCheckCredential",
-  //       error: "ERROR:500",
-  //     },
-  //   });
-  //   const { res } = getMockRes();
-  //   getCredentialOffer.mockRejectedValueOnce(new Error("SOME_ERROR"));
-  //
-  //   await credentialOfferViewerController(req, res);
-  //
-  //   expect(res.render).toHaveBeenCalledWith("500.njk");
-  // });
+  it("should render an error page when an error happens", async () => {
+    mockedAxios.post.mockRejectedValueOnce("SOME_ERROR");
+
+    await credentialViewerController(req, res);
+
+    expect(res.render).toHaveBeenCalledWith("500.njk");
+  });
 });
