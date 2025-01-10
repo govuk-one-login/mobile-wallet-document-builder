@@ -29,6 +29,7 @@ export async function credentialViewerController(
       preAuthorizedCode,
       accessToken,
       accessTokenClaims: JSON.stringify(accessTokenClaims),
+      proofJwt,
       credential,
       credentialClaims: JSON.stringify(credentialClaims),
     });
