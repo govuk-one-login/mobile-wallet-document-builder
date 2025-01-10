@@ -9,19 +9,18 @@ import {
 import { getKmsConfig } from "../config/aws";
 import format from "ecdsa-sig-formatter";
 import { createPublicKey, JsonWebKey } from "node:crypto";
-import { getStsSigningKeyId } from "../config/appConfig";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bs58 = require("bs58");
 
 const ACCESS_TOKEN_SIGNING_ALGORITHM = "ES256";
 const ACCESS_TOKEN_JWT_TYPE = "JWT";
-const KEY_ID = getStsSigningKeyId() // re-using the mock STS signing key to avoid creating a new one
 
 export async function getProofJwt(
   nonce: string,
-  audience: string
+  audience: string,
+  keyId: string
 ): Promise<string> {
-  const kmsService = new ProofJwtKmsService(KEY_ID);
+  const kmsService = new ProofJwtKmsService(keyId);
   const publicKeyRaw = await kmsService.getPublicKey();
   const publicKeyJwk = createJwkFromRawPublicKey(publicKeyRaw);
   const didKey = createDidKey(publicKeyJwk);
@@ -67,7 +66,6 @@ export class ProofJwtKmsService {
 
     try {
       const response: SignCommandOutput = await this.kmsClient.send(command);
-      console.log(response);
       const base64EncodedSignature = Buffer.from(response.Signature!).toString(
         "base64url"
       );

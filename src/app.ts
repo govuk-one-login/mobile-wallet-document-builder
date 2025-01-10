@@ -18,6 +18,7 @@ import { logoutRouter } from "./logout/router";
 import { loggedOutRouter } from "./loggedOut/router";
 import { noCacheMiddleware } from "./middleware/noCache";
 import { proofJwtRouter } from "./proofJwt/router";
+import { credentialViewerRouter } from "./credentialViewer/router";
 import { photoDocumentBuilderRouter } from "./photoDocumentBuilder/router";
 
 const APP_VIEWS = [
@@ -25,10 +26,11 @@ const APP_VIEWS = [
   path.join(__dirname, "../src/credentialOfferViewer/views"),
   path.join(__dirname, "../src/dbsDocumentBuilder/views"),
   path.join(__dirname, "../src/ninoDocumentBuilder/views"),
-  path.join(__dirname, "../src/photoDocumentBuilder/views"),
   path.join(__dirname, "../src/appSelector/views"),
   path.join(__dirname, "../src/documentSelector/views"),
   path.join(__dirname, "../src/loggedOut/views"),
+  path.join(__dirname, "../src/credentialViewer/views"),
+  path.join(__dirname, "../src/photoDocumentBuilder/views"),
   path.resolve("node_modules/govuk-frontend/"),
 ];
 
@@ -65,7 +67,6 @@ export async function createApp(): Promise<express.Application> {
   app.use(documentSelectorRouter);
   app.use(dbsDocumentBuilderRouter);
   app.use(ninoDocumentBuilderRouter);
-  app.use(photoDocumentBuilderRouter);
   app.use(credentialOfferViewerRouter);
   app.use(documentRouter);
   app.use(stsStubAccessTokenRouter);
@@ -73,6 +74,8 @@ export async function createApp(): Promise<express.Application> {
   app.use(logoutRouter);
   app.use(loggedOutRouter);
   app.use(proofJwtRouter);
+  app.use(credentialViewerRouter);
+  app.use(photoDocumentBuilderRouter);
 
   return app;
 }

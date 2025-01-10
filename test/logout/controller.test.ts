@@ -9,7 +9,7 @@ jest.mock("../../src/logout/utils/deleteCookies", () => ({
 
 const deleteCookies = utils.deleteCookies as jest.Mock;
 
-process.env.SELF = "http://localhost:8888";
+process.env.SELF = "http://localhost:8001";
 
 describe("controller.ts", () => {
   afterEach(() => {
