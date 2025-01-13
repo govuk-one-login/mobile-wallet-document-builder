@@ -4,7 +4,9 @@ import { CredentialType } from "../../types/CredentialType";
 import { CredentialSubject } from "../../types/CredentialSubject";
 import { PhotoCredentialSubject } from "../types/PhotoCredentialSubject";
 import path from "path";
-import { readFileSync } from "node:fs";
+import {readFileSync, write} from "node:fs";
+import { promisify } from 'util';
+import * as fs from "node:fs";
 
 export class PhotoDocument {
   public readonly type: string[];
@@ -40,7 +42,7 @@ export class PhotoDocument {
         },
       ],
       // TODO: Make it possible to upload image through the UI
-      photo: this.imageToDataURI(),
+      photo: this.imageToBase64(),
     };
 
     return new PhotoDocument(type, credentialSubject);
@@ -53,11 +55,40 @@ export class PhotoDocument {
     }
   }
 
-  private static imageToDataURI() {
-    const filePath = path.resolve(__dirname, "../photo.jpg");
+  private static imageToBase64() {
+    const filePath = path.resolve(__dirname, "../photo.jpeg");
 
-    const base64Image = readFileSync(filePath).toString("base64");
+    let base64Image = readFileSync(filePath).toString("base64");
+    base64Image = base64Image+"rwe"
 
-    return `data:image/jpg;base64,${base64Image}`;
+
+    isImage(base64Image)
+
+    console.log(base64Image)
+
+    return base64Image;
   }
 }
+
+async function isImage(base64Image: string) {
+  let type;
+  if (base64Image.startsWith('/')) {
+    type = 'jpg'
+  } else if (base64Image.startsWith('i')) {
+    type = 'png'
+  } else {
+    console.error("Invalid string")
+    throw new Error();
+  }
+
+  console.log(type)
+
+  const buffer = Buffer.from(base64Image, "base64");
+
+  const fileName = "test." + type
+
+  fs.writeFileSync(fileName, buffer);
+
+}
+
+
