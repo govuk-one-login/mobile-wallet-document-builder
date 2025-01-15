@@ -157,75 +157,94 @@
                 "spellcheck": false,
                 "value": "25057386"
             }) }}
-            {% call govukFieldset({
-                "legend": {
-                "text": "Service History",
-                "classes": "govuk-fieldset__legend--s"
-                }
-                }) %}
-                {{ govukDateInput({
-                    "id": "start-date",
-                    "namePrefix": "startDate",
-                    "fieldset": {
-                        "legend": {
-                            "text": "Start date"
-                        }
+            <p class="govuk-label--s">Service History</p>
+            <script>
+function deleteServiceHistory(elem) {
+  console.log(elem);
+ elem.parentNode.removeChild(elem);
+}
+
+
+function addServiceHistory() {
+const container = document.createElement('div');
+container.innerHTML = `
+
+        {% call govukFieldset({
+
+            }) %}
+            {{ govukDateInput({
+                "id": "start-date",
+                "namePrefix": "startDate",
+                "fieldset": {
+                    "legend": {
+                        "text": "Start date"
+                    }
+                },
+                "items": [
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "day",
+                        "value": "22"
                     },
-                    "items": [
-                        {
-                            "classes": "govuk-input--width-2",
-                            "name": "day",
-                            "value": "22"
-                        },
-                        {
-                            "classes": "govuk-input--width-2",
-                            "name": "month",
-                            "value": "09"
-                        },
-                        {
-                            "classes": "govuk-input--width-3",
-                            "name": "year",
-                            "value": "1996"
-                        }
-                    ]
-                }) }}
-                {{ govukDateInput({
-                    "id": "end-date",
-                    "namePrefix": "endDate",
-                    "fieldset": {
-                        "legend": {
-                            "text": "End date"
-                        }
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "month",
+                        "value": "09"
                     },
-                    "items": [
-                        {
-                            "classes": "govuk-input--width-2",
-                            "name": "day",
-                            "value": "10"
-                        },
-                        {
-                            "classes": "govuk-input--width-2",
-                            "name": "month",
-                            "value": "04"
-                        },
-                        {
-                            "classes": "govuk-input--width-3",
-                            "name": "year",
-                            "value": "1999"
-                        }
-                    ]
-                }) }}
-                {{ govukInput({
-                    "label": {
-                        "text": "Service branch"
+                    {
+                        "classes": "govuk-input--width-3",
+                        "name": "year",
+                        "value": "1996"
+                    }
+                ]
+            }) }}
+            {{ govukDateInput({
+                "id": "end-date",
+                "namePrefix": "endDate",
+                "fieldset": {
+                    "legend": {
+                        "text": "End date"
+                    }
+                },
+                "items": [
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "day",
+                        "value": "10"
                     },
-                    "id": "service-branch",
-                    "name": "serviceBranch",
-                    "classes": "govuk-!-width-one-third",
-                    "spellcheck": false,
-                    "value": "HM Naval Service"
-                }) }}
-            {% endcall %}
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "month",
+                        "value": "04"
+                    },
+                    {
+                        "classes": "govuk-input--width-3",
+                        "name": "year",
+                        "value": "1999"
+                    }
+                ]
+            }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Service branch"
+                },
+                "id": "service-branch",
+                "name": "serviceBranch",
+                "classes": "govuk-!-width-one-third",
+                "spellcheck": false,
+                "value": "HM Naval Service"
+            }) }}
+            <button class="govuk-button govuk-button--secondary" onclick="deleteServiceHistory(this.parentNode.parentNode)" type="button">Delete</button>
+        {% endcall %}
+`;
+
+document.getElementById("service-history").appendChild(container);
+}
+            </script>
+            <div id="service-history"></div>
+            <button class="govuk-button govuk-button--secondary"
+                    onclick="addServiceHistory()"
+                    type="button">Add</button>
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
             {{ govukSelect({
                 "id": "throw-error",
