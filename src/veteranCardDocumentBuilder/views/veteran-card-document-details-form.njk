@@ -158,92 +158,17 @@
                 "spellcheck": false,
                 "value": "25057386"
             }) }}
-            <p class="govuk-label--s">Add your service history</p>
-            <script>
-                 function deleteServiceHistory(elem) {
-                      elem.parentNode.removeChild(elem);
-                 }
-
-                 function addServiceHistory() {
-                      const container = document.createElement('div');
-                      container.innerHTML = `
-
-        {% call govukFieldset({
-
-            }) %}
-            {{ govukDateInput({
-                "id": "service-history-start-date",
-                "namePrefix": "serviceHistoryStartDate",
-                "fieldset": {
-                    "legend": {
-                        "text": "Start date"
-                    }
-                },
-                "items": [
-                    {
-                        "classes": "govuk-input--width-2",
-                        "name": "day",
-                        "value": "22"
-                    },
-                    {
-                        "classes": "govuk-input--width-2",
-                        "name": "month",
-                        "value": "09"
-                    },
-                    {
-                        "classes": "govuk-input--width-3",
-                        "name": "year",
-                        "value": "1996"
-                    }
-                ]
-            }) }}
-            {{ govukDateInput({
-                "id": "service-history-end-date",
-                "namePrefix": "serviceHistoryEndDate",
-                "fieldset": {
-                    "legend": {
-                        "text": "End date"
-                    }
-                },
-                "items": [
-                    {
-                        "classes": "govuk-input--width-2",
-                        "name": "day",
-                        "value": "10"
-                    },
-                    {
-                        "classes": "govuk-input--width-2",
-                        "name": "month",
-                        "value": "04"
-                    },
-                    {
-                        "classes": "govuk-input--width-3",
-                        "name": "year",
-                        "value": "1999"
-                    }
-                ]
-            }) }}
             {{ govukInput({
                 "label": {
-                    "text": "Service branch"
+                    "text": "Service branch",
+                    "classes": "govuk-label--s"
                 },
-                "id": "service-history-branch",
-                "name": "serviceHistoryBranch",
+                "id": "service-branch",
+                "name": "serviceBranch",
                 "classes": "govuk-!-width-one-third",
                 "spellcheck": false,
                 "value": "HM Naval Service"
             }) }}
-            <button class="govuk-button govuk-button--secondary" onclick="deleteServiceHistory(this.parentNode.parentNode)" type="button">Delete</button>
-        {% endcall %}
-`;
-
-                      document.getElementById("service-history").appendChild(container);
-                 }
-            </script>
-            <div id="service-history"></div>
-            <button class="govuk-button govuk-button--secondary"
-                    onclick="addServiceHistory()"
-                    type="button" disabled=true>Add</button>
             {{ govukFileUpload({
                 "id": "photo",
                 "name": "photo",
@@ -279,7 +204,7 @@
                     },
                     {
                         "value": "ERROR:CLIENT",
-                        "text": "400 (invalid client)"
+                        "text": "400 (invalid client) "
                     },
                     {
                         "value": "ERROR:GRANT",
