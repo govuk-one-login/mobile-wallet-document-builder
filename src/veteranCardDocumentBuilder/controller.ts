@@ -30,13 +30,14 @@ export async function veteranCardDocumentBuilderPostController(
   res: Response
 ): Promise<void> {
   try {
-    const documentId = randomUUID();
-    const selectedError = req.body["throwError"];
     const document = VeteranCardDocument.fromRequestBody(
       req.body,
       CREDENTIAL_TYPE
     );
+    const documentId = randomUUID();
     await saveDocument(document, documentId);
+
+    const selectedError = req.body["throwError"];
 
     res.redirect(
       `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`

@@ -2,7 +2,6 @@ import { VeteranCardInputData } from "../types/VeteranCardInputData";
 import { getNameParts } from "../../utils/getNameParts";
 import { CredentialSubject } from "../../types/CredentialSubject";
 import { VeteranCredentialSubject } from "../types/VeteranCredentialSubject";
-import { base64Photo } from "../base64Photo";
 import { CredentialType } from "../../types/CredentialType";
 
 export class VeteranCardDocument {
@@ -25,7 +24,7 @@ export class VeteranCardDocument {
     input: VeteranCardInputData,
     credentialType: CredentialType
   ): VeteranCardDocument {
-    this.trimRequestBody(input);
+    trimRequestBody(input);
 
     const type = ["VerifiableCredential", credentialType];
     const credentialSubject: VeteranCredentialSubject = {
@@ -36,7 +35,7 @@ export class VeteranCardDocument {
       ],
       birthDate: [
         {
-          value: this.getFormattedDate(
+          value: getFormattedDate(
             input["dateOfBirth-year"],
             input["dateOfBirth-month"],
             input["dateOfBirth-day"]
@@ -45,39 +44,39 @@ export class VeteranCardDocument {
       ],
       veteranCard: [
         {
-          expiryDate: this.getFormattedDate(
+          expiryDate: getFormattedDate(
             input["cardExpiryDate-year"],
             input["cardExpiryDate-month"],
             input["cardExpiryDate-day"]
           ),
-          serviceStart: this.getFormattedDate(
+          serviceStart: getFormattedDate(
             input["serviceStartDate-year"],
             input["serviceStartDate-month"],
             input["serviceStartDate-day"]
           ),
-          serviceEnd: this.getFormattedDate(
+          serviceEnd: getFormattedDate(
             input["serviceEndDate-year"],
             input["serviceEndDate-month"],
             input["serviceEndDate-day"]
           ),
           serviceNumber: input.serviceNumber,
           serviceBranch: input.serviceBranch,
-          photo: base64Photo,
+          photo: "",
         },
       ],
     };
 
     return new VeteranCardDocument(type, credentialSubject);
   }
+}
 
-  private static getFormattedDate(year: string, month: string, day: string) {
-    return `${year}-${month}-${day}`;
+function trimRequestBody(input: VeteranCardInputData) {
+  for (const key in input) {
+    const trimmed = input[key as keyof VeteranCardInputData]!.trim();
+    input[key as keyof VeteranCardInputData] = trimmed;
   }
+}
 
-  private static trimRequestBody(input: VeteranCardInputData) {
-    for (const key in input) {
-      const trimmed = input[key as keyof VeteranCardInputData]!.trim();
-      input[key as keyof VeteranCardInputData] = trimmed;
-    }
-  }
+function getFormattedDate(year: string, month: string, day: string) {
+  return `${year}-${month}-${day}`;
 }
