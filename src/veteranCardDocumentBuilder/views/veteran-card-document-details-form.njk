@@ -3,6 +3,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
 {% extends "base.njk" %}
 {% set pageTitle = "Please enter the Veteran Card document details:" %}
 {% block content %}
@@ -157,17 +158,15 @@
                 "spellcheck": false,
                 "value": "25057386"
             }) }}
-            <p class="govuk-label--s">Service History</p>
+            <p class="govuk-label--s">Add your service history</p>
             <script>
-function deleteServiceHistory(elem) {
-  console.log(elem);
- elem.parentNode.removeChild(elem);
-}
+                 function deleteServiceHistory(elem) {
+                      elem.parentNode.removeChild(elem);
+                 }
 
-
-function addServiceHistory() {
-const container = document.createElement('div');
-container.innerHTML = `
+                 function addServiceHistory() {
+                      const container = document.createElement('div');
+                      container.innerHTML = `
 
         {% call govukFieldset({
 
@@ -238,13 +237,28 @@ container.innerHTML = `
         {% endcall %}
 `;
 
-document.getElementById("service-history").appendChild(container);
-}
+                      document.getElementById("service-history").appendChild(container);
+                 }
             </script>
             <div id="service-history"></div>
             <button class="govuk-button govuk-button--secondary"
                     onclick="addServiceHistory()"
                     type="button">Add</button>
+            {{ govukFileUpload({
+                "id": "photo",
+                "name": "photo",
+                "label": {
+                    "text": "Upload your photo",
+                    "classes": "govuk-label--s"
+                },
+                "hint": {
+                    "text": "Your photo must be no more than 1MB. The file must be in jpg or png format."
+                },
+                "disabled": true,
+                "attributes": {
+                    "accept": ".jpg,.png"
+                }
+            }) }}
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
             {{ govukSelect({
                 "id": "throw-error",
