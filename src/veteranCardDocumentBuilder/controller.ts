@@ -6,7 +6,7 @@ import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 
-const CREDENTIAL_TYPE = CredentialType.veteranCard;
+const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
 export async function veteranCardDocumentBuilderGetController(
   req: Request,
