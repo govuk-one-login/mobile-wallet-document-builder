@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   localstack:
     container_name: localstack_documentBuilder
@@ -8,5 +6,8 @@ services:
       - "4561:4566"
     environment:
       - SERVICES=dynamodb,kms
+      - AWS_ACCESS_KEY_ID=na
+      - AWS_SECRET_ACCESS_KEY=na
+      - AWS_DEFAULT_REGION=eu-west-2
     volumes:
       - ./localstack/provision.sh:/etc/localstack/init/ready.d/init-aws.sh
