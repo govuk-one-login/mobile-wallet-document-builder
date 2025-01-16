@@ -1,4 +1,5 @@
 import { CredentialSubject } from "../../types/CredentialSubject";
+import { BirthDate } from "../../types/BirthDate";
 
 export interface DbsCredentialSubject extends CredentialSubject {
   birthDate?: BirthDate[];
@@ -14,10 +15,6 @@ export interface BasicCheckRecord {
   certificateType: string;
   outcome: string;
   policeRecordsCheck: string;
-}
-
-export interface BirthDate {
-  value?: string;
 }
 
 export interface Address {
