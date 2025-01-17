@@ -22,7 +22,9 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.621.0",
     "@aws-sdk/client-kms": "^3.621.0",
+    "@aws-sdk/client-s3": "^3.729.0",
     "@aws-sdk/lib-dynamodb": "^3.621.0",
+    "@aws-sdk/s3-request-presigner": "^3.730.0",
     "axios": "^1.7.4",
     "bs58": "^6.0.0",
     "cookie-parser": "^1.4.7",

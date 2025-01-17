@@ -1,6 +1,7 @@
 #!/bin/sh
 
 export TABLE_NAME=documents
+export BUCKET_NAME=images
 
 aws --endpoint-url=http://localhost:4566 dynamodb create-table \
     --table-name $TABLE_NAME \

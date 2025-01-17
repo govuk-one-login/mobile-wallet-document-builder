@@ -652,6 +652,34 @@ Resources:
         - Key: Environment
           Value: !Ref "Environment"
 
+# S3 RESOURCES
+
+DocumentBucket:
+  Type: AWS::S3::Bucket
+  Properties:
+    BucketName: !Sub wallet-stub-back-doc-builder-${AWS::StackName}-images
+    AccessControl: Private
+    VersioningConfiguration:
+      Status: Enabled
+    BucketEncryption:
+      ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+    PublicAccessBlockConfiguration:
+      BlockPublicAcls: true
+      BlockPublicPolicy: true
+      IgnorePublicAcls: true
+      RestrictPublicBuckets: true
+  Tags:
+    - Key: Product
+      Value: GOV.UK Sign In
+    - Key: System
+      Value: Mobile Wallet
+    - Key: Owner
+      Value: Mobile Wallet Team
+    - Key: Environment
+      Value: !Ref "Environment"
+
 # WAF ASSOCIATION
 
   DocBuilderWebAclAssociation:

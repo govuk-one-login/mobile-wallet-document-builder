@@ -1,6 +1,7 @@
 import { getDocumentsTableName } from "../config/appConfig";
-import { getDatabaseConfig } from "../config/aws";
+import {getDatabaseConfig} from "../config/aws";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+
 import {
   PutCommand,
   DynamoDBDocumentClient,
@@ -13,6 +14,7 @@ import { logger } from "../middleware/logger";
 
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());
 const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
+
 
 export async function saveDocument(
   document: DbsDocument | NinoDocument,
@@ -67,3 +69,4 @@ export async function getDocument(
     throw error;
   }
 }
+
