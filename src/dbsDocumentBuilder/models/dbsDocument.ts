@@ -2,6 +2,7 @@ import { DbsCredentialSubject } from "../types/DbsCredentialSubject";
 import { DbsInputData } from "../types/DbsInputData";
 import { getNameParts } from "../../utils/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
+import { trimRequestBody } from "../../utils/trimRequestBody";
 
 export class DbsDocument {
   public readonly type: string[];
@@ -23,7 +24,7 @@ export class DbsDocument {
     input: DbsInputData,
     credentialType: CredentialType
   ): DbsDocument {
-    this.trimRequestBody(input);
+    trimRequestBody(input);
 
     const type = ["VerifiableCredential", credentialType];
     const credentialSubject: DbsCredentialSubject = {
@@ -57,13 +58,6 @@ export class DbsDocument {
     };
 
     return new DbsDocument(type, credentialSubject);
-  }
-
-  private static trimRequestBody(input: DbsInputData) {
-    for (const key in input) {
-      const trimmed = input[key as keyof DbsInputData]!.trim();
-      input[key as keyof DbsInputData] = trimmed;
-    }
   }
 }
 
