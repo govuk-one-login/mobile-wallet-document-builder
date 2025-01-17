@@ -3,6 +3,8 @@ import { getNameParts } from "../../utils/getNameParts";
 import { CredentialSubject } from "../../types/CredentialSubject";
 import { VeteranCredentialSubject } from "../types/VeteranCredentialSubject";
 import { CredentialType } from "../../types/CredentialType";
+import { trimRequestBody } from "../../utils/trimRequestBody";
+import { getFormattedDate } from "../../utils/getFormattedDate";
 
 export class VeteranCardDocument {
   public readonly type: string[];
@@ -58,15 +60,4 @@ export class VeteranCardDocument {
 
     return new VeteranCardDocument(type, credentialSubject);
   }
-}
-
-function trimRequestBody(input: VeteranCardInputData) {
-  for (const key in input) {
-    const trimmed = input[key as keyof VeteranCardInputData]!.trim();
-    input[key as keyof VeteranCardInputData] = trimmed;
-  }
-}
-
-function getFormattedDate(year: string, month: string, day: string) {
-  return `${year}-${month}-${day}`;
 }
