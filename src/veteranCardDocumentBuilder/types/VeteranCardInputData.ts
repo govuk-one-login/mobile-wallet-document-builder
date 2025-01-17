@@ -7,12 +7,6 @@ export interface VeteranCardInputData {
   "cardExpiryDate-day": string;
   "cardExpiryDate-month": string;
   "cardExpiryDate-year": string;
-  "serviceStartDate-day": string;
-  "serviceStartDate-month": string;
-  "serviceStartDate-year": string;
-  "serviceEndDate-day": string;
-  "serviceEndDate-month": string;
-  "serviceEndDate-year": string;
   serviceNumber: string;
   serviceBranch: string;
   throwError: string;

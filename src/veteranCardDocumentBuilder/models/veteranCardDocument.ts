@@ -49,16 +49,6 @@ export class VeteranCardDocument {
             input["cardExpiryDate-month"],
             input["cardExpiryDate-day"]
           ),
-          serviceStart: getFormattedDate(
-            input["serviceStartDate-year"],
-            input["serviceStartDate-month"],
-            input["serviceStartDate-day"]
-          ),
-          serviceEnd: getFormattedDate(
-            input["serviceEndDate-year"],
-            input["serviceEndDate-month"],
-            input["serviceEndDate-day"]
-          ),
           serviceNumber: input.serviceNumber,
           serviceBranch: input.serviceBranch,
           photo: "",

@@ -8,8 +8,6 @@ export interface VeteranCredentialSubject extends CredentialSubject {
 
 export interface VeteranCard {
   expiryDate: string;
-  serviceStart: string;
-  serviceEnd: string;
   serviceNumber: string;
   serviceBranch: string;
   photo: string;

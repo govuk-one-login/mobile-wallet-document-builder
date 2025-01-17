@@ -29,12 +29,6 @@ describe("controller.ts", () => {
     "cardExpiryDate-day": "08",
     "cardExpiryDate-month": "04",
     "cardExpiryDate-year": "2029",
-    "serviceStartDate-day": "22",
-    "serviceStartDate-month": "09",
-    "serviceStartDate-year": "1996",
-    "serviceEndDate-day": "30",
-    "serviceEndDate-month": "11",
-    "serviceEndDate-year": "2007",
     serviceNumber: "25057386",
     serviceBranch: "HM Naval Service",
     throwError: "ERROR:401",
@@ -69,8 +63,6 @@ describe("controller.ts", () => {
       veteranCard: [
         {
           expiryDate: "2029-04-08",
-          serviceStart: "1996-09-22",
-          serviceEnd: "2007-11-30",
           serviceNumber: "25057386",
           serviceBranch: "HM Naval Service",
           photo: "",
