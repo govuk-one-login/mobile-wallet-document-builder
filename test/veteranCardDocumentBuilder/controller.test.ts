@@ -21,60 +21,59 @@ describe("controller.ts", () => {
   });
 
   const requestBody = {
-    "issuance-day": "16",
-    "issuance-month": "1",
-    "issuance-year": "2024",
-    firstName: "Sarah Elizabeth",
-    lastName: "Edwards",
-    "birth-day": "6",
-    "birth-month": "3",
-    "birth-year": "1980",
-    subBuildingName: "Flat 11",
-    buildingName: "Blashford",
-    streetName: "Adelaide Road",
-    addressLocality: "London",
-    addressCountry: "GB",
-    postalCode: "NW3 3RX",
-    certificateNumber: "009878863",
-    applicationNumber: "E0023455534",
+    givenName: "Sarah Elizabeth",
+    familyName: "Edwards-Smith",
+    "dateOfBirth-day": "06",
+    "dateOfBirth-month": "03",
+    "dateOfBirth-year": "1975",
+    "cardExpiryDate-day": "08",
+    "cardExpiryDate-month": "04",
+    "cardExpiryDate-year": "2029",
+    "serviceStartDate-day": "22",
+    "serviceStartDate-month": "09",
+    "serviceStartDate-year": "1996",
+    "serviceEndDate-day": "30",
+    "serviceEndDate-month": "11",
+    "serviceEndDate-year": "2007",
+    serviceNumber: "25057386",
+    serviceBranch: "HM Naval Service",
     throwError: "ERROR:401",
   };
 
   const veteranCardDocument = {
-    type: ["VerifiableCredential", "BasicCheckCredential"],
+    type: ["VerifiableCredential", "digitalVeteranCard"],
     credentialSubject: {
-      issuanceDate: "2024-1-16",
-      expirationDate: "2025-3-6",
       name: [
         {
           nameParts: [
-            { type: "GivenName", value: "Sarah" },
             {
+              value: "Sarah",
               type: "GivenName",
-              value: "Elizabeth",
             },
-            { type: "FamilyName", value: "Edwards" },
+            {
+              value: "Elizabeth",
+              type: "GivenName",
+            },
+            {
+              value: "Edwards-Smith",
+              type: "FamilyName",
+            },
           ],
         },
       ],
-      birthDate: [{ value: "2024-1-16" }],
-      address: [
+      birthDate: [
         {
-          addressCountry: "GB",
-          addressLocality: "London",
-          buildingName: "Blashford",
-          postalCode: "NW3 3RX",
-          streetName: "Adelaide Road",
-          subBuildingName: "Flat 11",
+          value: "1975-03-06",
         },
       ],
-      basicCheckRecord: [
+      veteranCard: [
         {
-          applicationNumber: "E0023455534",
-          certificateNumber: "009878863",
-          certificateType: "basic",
-          outcome: "Result clear",
-          policeRecordsCheck: "Clear",
+          expiryDate: "2029-04-08",
+          serviceStart: "1996-09-22",
+          serviceEnd: "2007-11-30",
+          serviceNumber: "25057386",
+          serviceBranch: "HM Naval Service",
+          photo: "",
         },
       ],
     },
