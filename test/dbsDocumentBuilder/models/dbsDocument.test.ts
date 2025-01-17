@@ -35,6 +35,7 @@ describe("dbsDocument.ts", () => {
         postalCode: "   NW3 3RX    ",
         certificateNumber: "   009878863",
         applicationNumber: "E0023455534   ",
+        throwError: "",
       };
 
       const document = DbsDocument.fromRequestBody(
@@ -101,6 +102,7 @@ describe("dbsDocument.ts", () => {
         postalCode: "NW3 3RX",
         certificateNumber: "",
         applicationNumber: "",
+        throwError: "",
       };
 
       const document = DbsDocument.fromRequestBody(
@@ -163,6 +165,7 @@ describe("dbsDocument.ts", () => {
         postalCode: "NW3 3RX",
         certificateNumber: "009878863",
         applicationNumber: "E0023455534",
+        throwError: "",
       };
 
       const document = DbsDocument.fromRequestBody(
