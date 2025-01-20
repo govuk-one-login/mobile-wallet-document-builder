@@ -2,8 +2,6 @@ import { DbsCredentialSubject } from "../types/DbsCredentialSubject";
 import { DbsInputData } from "../types/DbsInputData";
 import { getNameParts } from "../../utils/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
-import { trimRequestBody } from "../../utils/trimRequestBody";
-import { getFormattedDate } from "../../utils/getFormattedDate";
 
 export class DbsDocument {
   public readonly type: string[];
@@ -29,20 +27,12 @@ export class DbsDocument {
 
     const type = ["VerifiableCredential", credentialType];
     const credentialSubject: DbsCredentialSubject = {
-      issuanceDate: getFormattedDate(
-        input["issuance-year"],
-        input["issuance-month"],
-        input["issuance-day"]
-      ),
+      issuanceDate: `${input["issuance-year"]}-${input["issuance-month"]}-${input["issuance-day"]}`,
       expirationDate: getExpirationDate(),
       name: [{ nameParts: getNameParts(input.firstName, input.lastName) }],
       birthDate: [
         {
-          value: getFormattedDate(
-            input["birth-year"],
-            input["birth-month"],
-            input["birth-day"]
-          ),
+          value: `${input["birth-year"]}-${input["birth-month"]}-${input["birth-day"]}`,
         },
       ],
       address: [
@@ -67,6 +57,13 @@ export class DbsDocument {
     };
 
     return new DbsDocument(type, credentialSubject);
+  }
+}
+
+function trimRequestBody(input: DbsInputData) {
+  for (const key in input) {
+    const trimmed = input[key as keyof DbsInputData]!.trim();
+    input[key as keyof DbsInputData] = trimmed;
   }
 }
 

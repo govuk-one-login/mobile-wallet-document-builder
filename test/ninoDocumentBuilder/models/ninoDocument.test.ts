@@ -11,7 +11,6 @@ describe("ninoDocument.ts", () => {
       givenName: " Irene  ",
       familyName: " Adler  ",
       nino: " QQ123456A   ",
-      throwError: "",
     };
 
     const ninoDocument = NinoDocument.fromRequestBody(
@@ -42,7 +41,6 @@ describe("ninoDocument.ts", () => {
       givenName: "Katie Scarlett",
       familyName: "O'Hara Hamilton",
       nino: "QQ123456A",
-      throwError: "",
     };
 
     const socialSecurityRecord = getSocialSecurityRecord(documentDetails);
@@ -56,7 +54,6 @@ describe("ninoDocument.ts", () => {
       givenName: "Katie Scarlett",
       familyName: "O'Hara Hamilton",
       nino: "",
-      throwError: "",
     };
 
     const socialSecurityRecord = getSocialSecurityRecord(documentDetails);

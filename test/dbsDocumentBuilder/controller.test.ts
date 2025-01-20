@@ -61,7 +61,6 @@ describe("controller.ts", () => {
       postalCode: "NW3 3RX",
       certificateNumber: "009878863",
       applicationNumber: "E0023455534",
-      throwError: "ERROR:500",
     };
     const req = getMockReq({
       body: requestBody,

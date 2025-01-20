@@ -5,7 +5,6 @@ import {
 import { NinoInputData } from "../types/NinoInputData";
 import { getNameParts } from "../../utils/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
-import { trimRequestBody } from "../../utils/trimRequestBody";
 
 export class NinoDocument {
   public readonly type: string[];
@@ -44,6 +43,13 @@ export class NinoDocument {
     };
 
     return new NinoDocument(type, credentialSubject);
+  }
+}
+
+function trimRequestBody(input: NinoInputData) {
+  for (const key in input) {
+    const trimmed = input[key as keyof NinoInputData]!.trim();
+    input[key as keyof NinoInputData] = trimmed;
   }
 }
 
