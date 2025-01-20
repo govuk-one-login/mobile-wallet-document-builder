@@ -5,6 +5,7 @@ import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
+import { temporaryBase64Photo } from "./temporaryBase64Photo";
 
 const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
@@ -32,7 +33,8 @@ export async function veteranCardDocumentBuilderPostController(
   try {
     const document = VeteranCardDocument.fromRequestBody(
       req.body,
-      CREDENTIAL_TYPE
+      CREDENTIAL_TYPE,
+      temporaryBase64Photo
     );
     const documentId = randomUUID();
     await saveDocument(document, documentId);

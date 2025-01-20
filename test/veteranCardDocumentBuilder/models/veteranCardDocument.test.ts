@@ -30,7 +30,8 @@ describe("veteranCardDocument.ts", () => {
 
       const document = VeteranCardDocument.fromRequestBody(
         documentDetails,
-        CredentialType.digitalVeteranCard
+        CredentialType.digitalVeteranCard,
+        "mockBase64Photo"
       );
 
       expect(document).toEqual({
@@ -48,7 +49,7 @@ describe("veteranCardDocument.ts", () => {
           veteranCard: [
             {
               expiryDate: "2029-04-08",
-              photo: "",
+              photo: "mockBase64Photo",
               serviceBranch: "HM Naval Service",
               serviceNumber: "25057386",
             },
@@ -75,7 +76,8 @@ describe("veteranCardDocument.ts", () => {
 
       const document = VeteranCardDocument.fromRequestBody(
         documentDetails,
-        CredentialType.digitalVeteranCard
+        CredentialType.digitalVeteranCard,
+        "mockBase64Photo"
       );
 
       expect(document).toEqual({
@@ -88,7 +90,7 @@ describe("veteranCardDocument.ts", () => {
               expiryDate: "2029-04-08",
               serviceNumber: "25057386",
               serviceBranch: "HM Naval Service",
-              photo: "",
+              photo: "mockBase64Photo",
             },
           ],
         },
@@ -112,7 +114,8 @@ describe("veteranCardDocument.ts", () => {
 
       const document = VeteranCardDocument.fromRequestBody(
         documentDetails,
-        CredentialType.digitalVeteranCard
+        CredentialType.digitalVeteranCard,
+        "mockBase64Photo"
       );
 
       expect(document).toEqual({
@@ -132,7 +135,7 @@ describe("veteranCardDocument.ts", () => {
               expiryDate: "2029-04-08",
               serviceNumber: "",
               serviceBranch: "HM Naval Service",
-              photo: "",
+              photo: "mockBase64Photo",
             },
           ],
         },
@@ -156,7 +159,8 @@ describe("veteranCardDocument.ts", () => {
 
       const document = VeteranCardDocument.fromRequestBody(
         documentDetails,
-        CredentialType.digitalVeteranCard
+        CredentialType.digitalVeteranCard,
+        "mockBase64Photo"
       );
 
       expect(document).toEqual({
@@ -176,7 +180,7 @@ describe("veteranCardDocument.ts", () => {
               expiryDate: "--",
               serviceNumber: "25057386",
               serviceBranch: "HM Naval Service",
-              photo: "",
+              photo: "mockBase64Photo",
             },
           ],
         },

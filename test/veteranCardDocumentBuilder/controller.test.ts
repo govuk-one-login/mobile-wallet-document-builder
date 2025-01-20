@@ -5,6 +5,7 @@ import {
 import { VeteranCardDocument } from "../../src/veteranCardDocumentBuilder/models/veteranCardDocument";
 import * as databaseService from "../../src/services/databaseService";
 import { getMockReq, getMockRes } from "@jest-mock/express";
+import { temporaryBase64Photo } from "../../src/veteranCardDocumentBuilder/temporaryBase64Photo";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
@@ -65,7 +66,7 @@ describe("controller.ts", () => {
           expiryDate: "2029-04-08",
           serviceNumber: "25057386",
           serviceBranch: "HM Naval Service",
-          photo: "",
+          photo: temporaryBase64Photo,
         },
       ],
     },
@@ -115,7 +116,8 @@ describe("controller.ts", () => {
     );
     expect(VeteranCardDocument.fromRequestBody).toHaveBeenCalledWith(
       requestBody,
-      "digitalVeteranCard"
+      "digitalVeteranCard",
+      temporaryBase64Photo
     );
     expect(saveDocument).toHaveBeenCalledWith(
       veteranCardDocument,
