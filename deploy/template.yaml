@@ -525,6 +525,15 @@ Resources:
                   - 'kms:Encrypt'
                   - 'kms:GenerateDataKey'
                 Resource: !GetAtt DocumentDatabaseKmsKey.Arn
+        - PolicyName: AccessS3
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:PutObject'
+                  - 's3:GetObject'
+                Resource: !GetAtt PhotosBucket.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
@@ -654,10 +663,10 @@ Resources:
 
 # S3 RESOURCES
 
-DocumentBucket:
+PhotosBucket:
   Type: AWS::S3::Bucket
   Properties:
-    BucketName: !Sub wallet-stub-back-doc-builder-${AWS::StackName}-images
+    BucketName: !Sub "${AWS::StackName}-photos"
     AccessControl: Private
     VersioningConfiguration:
       Status: Enabled
