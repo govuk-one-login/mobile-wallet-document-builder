@@ -2,6 +2,7 @@ import { DbsCredentialSubject } from "../types/DbsCredentialSubject";
 import { DbsInputData } from "../types/DbsInputData";
 import { getNameParts } from "../../utils/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
+import { getExpirationDate } from "../utils/getExpirationDate";
 
 export class DbsDocument {
   public readonly type: string[];
@@ -23,7 +24,7 @@ export class DbsDocument {
     input: DbsInputData,
     credentialType: CredentialType
   ): DbsDocument {
-    trimRequestBody(input);
+    this.trimRequestBody(input);
 
     const type = ["VerifiableCredential", credentialType];
     const credentialSubject: DbsCredentialSubject = {
@@ -58,25 +59,11 @@ export class DbsDocument {
 
     return new DbsDocument(type, credentialSubject);
   }
-}
 
-function trimRequestBody(input: DbsInputData) {
-  for (const key in input) {
-    const trimmed = input[key as keyof DbsInputData]!.trim();
-    input[key as keyof DbsInputData] = trimmed;
+  private static trimRequestBody(input: DbsInputData) {
+    for (const key in input) {
+      const trimmed = input[key as keyof DbsInputData]!.trim();
+      input[key as keyof DbsInputData] = trimmed;
+    }
   }
-}
-
-export function getExpirationDate() {
-  const nextYear = new Date().getFullYear() + 1;
-  const dateInOneYearTimestamp = new Date().setFullYear(nextYear);
-  const year = new Date(dateInOneYearTimestamp).getFullYear();
-  const monthTwoDigits = (
-    "0" +
-    (new Date(dateInOneYearTimestamp).getMonth() + 1)
-  ).slice(-2);
-  const dayTwoDigits = ("0" + new Date(dateInOneYearTimestamp).getDate()).slice(
-    -2
-  );
-  return `${year}-${monthTwoDigits}-${dayTwoDigits}`;
 }

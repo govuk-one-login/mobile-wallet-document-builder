@@ -43,12 +43,13 @@ describe("controller.ts", () => {
     });
   });
 
-  it("should redirect to the credential offer page with 'SocialSecurityCredential' in the query params", async () => {
+  it("should redirect to the credential offer page with 'SocialSecurityCredential' and 'ERROR:401' in the query params", async () => {
     const requestBody = {
       title: "Ms",
       givenName: "Irene",
       familyName: "Adler",
       nino: "QQ123456A",
+      throwError: "ERROR:401",
     };
     const req = getMockReq({
       body: requestBody,

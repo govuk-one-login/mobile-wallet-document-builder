@@ -6,6 +6,16 @@ import { NinoInputData } from "../types/NinoInputData";
 import { getNameParts } from "../../utils/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
 
+export function getSocialSecurityRecord(input: NinoInputData) {
+  const socialSecurityRecord: SocialSecurityRecord[] = [];
+  if (input.nino) {
+    socialSecurityRecord.push({
+      personalNumber: input.nino,
+    });
+  }
+  return socialSecurityRecord;
+}
+
 export class NinoDocument {
   public readonly type: string[];
   public readonly credentialSubject: NinoCredentialSubject;
@@ -26,7 +36,7 @@ export class NinoDocument {
     input: NinoInputData,
     credentialType: CredentialType
   ): NinoDocument {
-    trimRequestBody(input);
+    this.trimRequestBody(input);
 
     const type = ["VerifiableCredential", credentialType];
     const credentialSubject: NinoCredentialSubject = {
@@ -44,21 +54,11 @@ export class NinoDocument {
 
     return new NinoDocument(type, credentialSubject);
   }
-}
 
-function trimRequestBody(input: NinoInputData) {
-  for (const key in input) {
-    const trimmed = input[key as keyof NinoInputData]!.trim();
-    input[key as keyof NinoInputData] = trimmed;
+  private static trimRequestBody(input: NinoInputData) {
+    for (const key in input) {
+      const trimmed = input[key as keyof NinoInputData]!.trim();
+      input[key as keyof NinoInputData] = trimmed;
+    }
   }
-}
-
-export function getSocialSecurityRecord(input: NinoInputData) {
-  const socialSecurityRecord: SocialSecurityRecord[] = [];
-  if (input.nino) {
-    socialSecurityRecord.push({
-      personalNumber: input.nino,
-    });
-  }
-  return socialSecurityRecord;
 }
