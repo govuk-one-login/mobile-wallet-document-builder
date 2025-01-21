@@ -535,14 +535,19 @@ Resources:
                 Action:
                   - 's3:PutObject'
                   - 's3:GetObject'
-                Resource: !GetAtt PhotosBucket.Arn
+                Resource:
+                  - !Sub
+                    - arn:aws:s3:::${TargetBucket}/*
+                    - TargetBucket: !Ref PhotosBucket
+                  - !Sub
+                    - arn:aws:s3:::${TargetBucket}
+                    - TargetBucket: !Ref PhotosBucket
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
         - !Ref AWS::NoValue
 
   # KMS RESOURCES
-
   StsStubSigningKey:
     Type: AWS::KMS::Key
     Properties:
@@ -664,32 +669,49 @@ Resources:
           Value: !Ref "Environment"
 
 # S3 RESOURCES
+  PhotosBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-photos"
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: Product
+          Value: GOV.UK Sign In
+        - Key: System
+          Value: Mobile Wallet
+        - Key: Owner
+          Value: Mobile Wallet Team
+        - Key: Environment
+          Value: !Ref "Environment"
 
-PhotosBucket:
-  Type: AWS::S3::Bucket
-  Properties:
-    BucketName: !Sub "${AWS::StackName}-photos"
-    AccessControl: Private
-    VersioningConfiguration:
-      Status: Enabled
-    BucketEncryption:
-      ServerSideEncryptionConfiguration:
-        - ServerSideEncryptionByDefault:
-            SSEAlgorithm: AES256
-    PublicAccessBlockConfiguration:
-      BlockPublicAcls: true
-      BlockPublicPolicy: true
-      IgnorePublicAcls: true
-      RestrictPublicBuckets: true
-  Tags:
-    - Key: Product
-      Value: GOV.UK Sign In
-    - Key: System
-      Value: Mobile Wallet
-    - Key: Owner
-      Value: Mobile Wallet Team
-    - Key: Environment
-      Value: !Ref "Environment"
+  PhotosBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref PhotosBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowSSLRequestsOnly
+            Effect: Deny
+            Principal:
+              AWS: '*'
+            Action: '*'
+            Resource: !Sub
+              - arn:aws:s3:::${bucketName}/*
+              - bucketName: !Ref PhotosBucket
+            Condition:
+              Bool:
+                aws:SecureTransport: false
 
 # WAF ASSOCIATION
 
