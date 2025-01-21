@@ -1,4 +1,3 @@
-process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 import { mockClient } from "aws-sdk-client-mock";
 import {
@@ -11,12 +10,13 @@ import { uploadPhoto, getPhoto } from "../../src/services/s3Service";
 import "aws-sdk-client-mock-jest";
 
 describe("s3Service.ts", () => {
-  const bucketName = process.env.PHOTOS_BUCKET_NAME!; //(non-null assertion operator) TO BE REMOVED
+  const bucketName = "bucketName";
   const imageName = "fileName";
   const imageBuffer = Buffer.alloc(10);
+  const mimeType = "image/jpeg";
 
   describe("Upload Photo", () => {
-    it("should save a photo to the s3 bucket", async () => {
+    it("should save the photo to the S3 bucket", async () => {
       const s3Mock = mockClient(S3Client);
       s3Mock.on(PutObjectCommand).resolvesOnce({
         $metadata: {
@@ -25,7 +25,7 @@ describe("s3Service.ts", () => {
       });
 
       await expect(
-        uploadPhoto(imageBuffer, imageName, bucketName)
+        uploadPhoto(imageBuffer, imageName, bucketName, mimeType)
       ).resolves.not.toThrow();
       expect(s3Mock).toHaveReceivedCommandWith(PutObjectCommand, {
         Bucket: bucketName,
@@ -33,12 +33,13 @@ describe("s3Service.ts", () => {
         Body: imageBuffer,
       });
     });
-    it("should throw an error caught when trying to save a photo to the s3 bucket", async () => {
+
+    it("should throw the error throw by the S3 client when trying to upload the photo", async () => {
       const s3Mock = mockClient(S3Client);
       s3Mock.on(PutObjectCommand).rejectsOnce("SOME_S3_ERROR");
 
       await expect(
-        uploadPhoto(imageBuffer, imageName, bucketName)
+        uploadPhoto(imageBuffer, imageName, bucketName, mimeType)
       ).rejects.toThrow("SOME_S3_ERROR");
       expect(s3Mock).toHaveReceivedCommandWith(PutObjectCommand, {
         Bucket: bucketName,
@@ -47,6 +48,7 @@ describe("s3Service.ts", () => {
       });
     });
   });
+
   describe("Get Photo", () => {
     const mockS3Response = (content: string) => {
       return {
@@ -54,13 +56,14 @@ describe("s3Service.ts", () => {
       };
     };
 
-    it("should get a photo from the s3 bucket", async () => {
+    it("should get the photo from the S3 bucket", async () => {
       const s3Mock = mockClient(S3Client);
       s3Mock.on(GetObjectCommand).resolvesOnce({
         Body: mockS3Response("base64image"),
       } as GetObjectCommandOutput);
 
       const response = await getPhoto(imageName, bucketName);
+
       expect(response).toEqual("base64image");
     });
 
@@ -71,16 +74,18 @@ describe("s3Service.ts", () => {
         .resolvesOnce({ Body: undefined } as GetObjectCommandOutput);
 
       const response = await getPhoto(imageName, bucketName);
+
       expect(response).toEqual(undefined);
     });
 
-    it("it should throw the error thrown by the S3 client", async () => {
+    it("should throw the error throw by the S3 client when trying to get the photo", async () => {
       const s3Mock = mockClient(S3Client);
       s3Mock.on(GetObjectCommand).rejectsOnce("Error getting image");
 
       await expect(getPhoto(imageName, bucketName)).rejects.toThrow(
         "Error getting image"
       );
+
       expect(s3Mock).toHaveReceivedCommandWith(GetObjectCommand, {
         Bucket: bucketName,
         Key: imageName,

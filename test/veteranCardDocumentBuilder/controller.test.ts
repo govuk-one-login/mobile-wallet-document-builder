@@ -1,3 +1,5 @@
+process.env.PHOTOS_BUCKET_NAME = "photosBucket";
+process.env.ENVIRONMENT = "local";
 import {
   veteranCardDocumentBuilderGetController,
   veteranCardDocumentBuilderPostController,
@@ -12,6 +14,9 @@ jest.mock("node:crypto", () => ({
 }));
 jest.mock("../../src/services/databaseService", () => ({
   saveDocument: jest.fn(),
+}));
+jest.mock("../../src/services/s3Service", () => ({
+  uploadPhoto: jest.fn(),
 }));
 
 const saveDocument = databaseService.saveDocument as jest.Mock;
