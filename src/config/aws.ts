@@ -6,6 +6,7 @@ import {
 import { LocalStackAwsConfig } from "../types/LocalStackAwsConfig";
 import { DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
 import { KMSClientConfig } from "@aws-sdk/client-kms";
+import { S3ClientConfig } from "@aws-sdk/client-s3";
 import { logger } from "../middleware/logger";
 
 export function getLocalStackAwsConfig(): LocalStackAwsConfig {
@@ -33,6 +34,17 @@ export function getDatabaseConfig(): DynamoDBClientConfig {
 export function getKmsConfig(): KMSClientConfig {
   if (getEnvironment() === "local") {
     logger.info("Running KMS locally");
+    return getLocalStackAwsConfig();
+  }
+
+  return {
+    region: getAwsRegion(),
+  };
+}
+
+export function getS3Config(): S3ClientConfig {
+  if (getEnvironment() === "local") {
+    logger.info("Running S3 locally");
     return getLocalStackAwsConfig();
   }
 

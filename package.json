@@ -22,6 +22,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.621.0",
     "@aws-sdk/client-kms": "^3.621.0",
+    "@aws-sdk/client-s3": "^3.731.1",
     "@aws-sdk/lib-dynamodb": "^3.621.0",
     "axios": "^1.7.4",
     "bs58": "^6.0.0",
@@ -47,8 +48,8 @@
     "@types/qrcode": "^1.5.5",
     "@typescript-eslint/eslint-plugin": "6.13.1",
     "@typescript-eslint/parser": "6.13.1",
-    "aws-sdk-client-mock": "^4.0.1",
-    "aws-sdk-client-mock-jest": "^4.0.1",
+    "aws-sdk-client-mock": "^4.1.0",
+    "aws-sdk-client-mock-jest": "^4.1.0",
     "dotenv": "^16.4.4",
     "eslint": "8.52.0",
     "eslint-config-prettier": "9.1.0",
