@@ -5,7 +5,6 @@ import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import { temporaryBase64Photo } from "./temporaryBase64Photo";
 import { readFileSync } from "fs";
 import path from "path";
 import { uploadPhoto } from "../services/s3Service";
@@ -43,8 +42,7 @@ export async function veteranCardDocumentBuilderPostController(
 
     const document = VeteranCardDocument.fromRequestBody(
       req.body,
-      CREDENTIAL_TYPE,
-      temporaryBase64Photo
+      CREDENTIAL_TYPE
     );
 
     await saveDocument(document, documentId);

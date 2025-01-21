@@ -1,12 +1,11 @@
 import { VeteranCardInputData } from "../types/VeteranCardInputData";
 import { getNameParts } from "../../utils/getNameParts";
-import { CredentialSubject } from "../../types/CredentialSubject";
 import { VeteranCredentialSubject } from "../types/VeteranCredentialSubject";
 import { CredentialType } from "../../types/CredentialType";
 
 export class VeteranCardDocument {
   public readonly type: string[];
-  public readonly credentialSubject: CredentialSubject;
+  public readonly credentialSubject: VeteranCredentialSubject;
 
   constructor(type: string[], credentialSubject: VeteranCredentialSubject) {
     this.type = type;
@@ -19,12 +18,10 @@ export class VeteranCardDocument {
    * @returns a document
    * @param input {VeteranCardInputData}
    * @param credentialType {CredentialType}
-   * @param photo {string}
    */
   static fromRequestBody(
     input: VeteranCardInputData,
-    credentialType: CredentialType,
-    photo: string
+    credentialType: CredentialType
   ): VeteranCardDocument {
     trimRequestBody(input);
 
@@ -53,7 +50,7 @@ export class VeteranCardDocument {
           ),
           serviceNumber: input.serviceNumber,
           serviceBranch: input.serviceBranch,
-          photo: photo,
+          photo: "",
         },
       ],
     };
