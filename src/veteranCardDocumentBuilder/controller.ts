@@ -6,6 +6,10 @@ import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { temporaryBase64Photo } from "./temporaryBase64Photo";
+import { readFileSync } from "fs";
+import path from "path";
+import { uploadPhoto } from "../services/s3Service";
+import { getPhotosBucketName } from "../config/appConfig";
 
 const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
@@ -31,12 +35,18 @@ export async function veteranCardDocumentBuilderPostController(
   res: Response
 ): Promise<void> {
   try {
+    const staticPhotoBuffer = getImageBuffer();
+    const documentId = randomUUID();
+    const bucketName = getPhotosBucketName();
+    const mimeType = "image/jpeg";
+    await uploadPhoto(staticPhotoBuffer, documentId, bucketName, mimeType);
+
     const document = VeteranCardDocument.fromRequestBody(
       req.body,
       CREDENTIAL_TYPE,
       temporaryBase64Photo
     );
-    const documentId = randomUUID();
+
     await saveDocument(document, documentId);
 
     const selectedError = req.body["throwError"];
@@ -51,4 +61,9 @@ export async function veteranCardDocumentBuilderPostController(
     );
     res.render("500.njk");
   }
+}
+
+function getImageBuffer(): Buffer {
+  const filePath = path.resolve(__dirname, "../photo.jpg");
+  return readFileSync(filePath);
 }

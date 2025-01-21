@@ -11,27 +11,31 @@ const s3Client = new S3Client(getS3Config());
 export async function uploadPhoto(
   imageBuffer: Buffer,
   imageName: string,
-  bucketName: string
+  bucketName: string,
+  contentType: string
 ): Promise<void> {
-  const uploadParams = {
+  const putObjectCommandInput = {
     Bucket: bucketName,
     Key: imageName,
     Body: imageBuffer,
+    ContentType: contentType,
   };
 
-  await s3Client.send(new PutObjectCommand(uploadParams));
+  await s3Client.send(new PutObjectCommand(putObjectCommandInput));
 }
 
 export async function getPhoto(
   imageName: string,
   bucketName: string
 ): Promise<string | undefined> {
-  const getObjectParams = {
+  const getObjectCommandInput = {
     Bucket: bucketName,
     Key: imageName,
   };
 
-  const response = await s3Client.send(new GetObjectCommand(getObjectParams));
+  const response = await s3Client.send(
+    new GetObjectCommand(getObjectCommandInput)
+  );
   if (response.Body === undefined) {
     logger.info(`Object with key ${imageName} not found`);
     return undefined;
