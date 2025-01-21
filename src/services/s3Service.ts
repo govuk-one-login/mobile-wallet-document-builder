@@ -40,5 +40,5 @@ export async function getPhoto(
     logger.info(`Object with key ${imageName} not found`);
     return undefined;
   }
-  return await response.Body.transformToString();
+  return await response.Body.transformToString("base64");
 }
