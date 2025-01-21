@@ -1,4 +1,4 @@
-import { saveDocument } from "../../src/services/databaseService";
+
 
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
@@ -8,7 +8,7 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   GetObjectCommandOutput,
-  NoSuchKey,
+
 } from "@aws-sdk/client-s3";
 import { uploadPhoto, getPhoto } from "../../src/services/s3Service";
 import "aws-sdk-client-mock-jest";
