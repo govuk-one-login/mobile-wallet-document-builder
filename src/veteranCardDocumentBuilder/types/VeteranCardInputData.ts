@@ -1,0 +1,13 @@
+export interface VeteranCardInputData {
+  givenName: string;
+  familyName: string;
+  "dateOfBirth-day": string;
+  "dateOfBirth-month": string;
+  "dateOfBirth-year": string;
+  "cardExpiryDate-day": string;
+  "cardExpiryDate-month": string;
+  "cardExpiryDate-year": string;
+  serviceNumber: string;
+  serviceBranch: string;
+  throwError: string;
+}
