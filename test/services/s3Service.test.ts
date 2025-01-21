@@ -1,5 +1,3 @@
-
-
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 import { mockClient } from "aws-sdk-client-mock";
@@ -8,7 +6,6 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   GetObjectCommandOutput,
-
 } from "@aws-sdk/client-s3";
 import { uploadPhoto, getPhoto } from "../../src/services/s3Service";
 import "aws-sdk-client-mock-jest";
@@ -59,11 +56,9 @@ describe("s3Service.ts", () => {
 
     it("should get a photo from the s3 bucket", async () => {
       const s3Mock = mockClient(S3Client);
-      s3Mock
-        .on(GetObjectCommand)
-        .resolvesOnce({
-          Body: mockS3Response("base64image"),
-        } as GetObjectCommandOutput);
+      s3Mock.on(GetObjectCommand).resolvesOnce({
+        Body: mockS3Response("base64image"),
+      } as GetObjectCommandOutput);
 
       const response = await getPhoto(imageName, bucketName);
       expect(response).toEqual("base64image");
