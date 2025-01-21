@@ -19,12 +19,7 @@ export async function uploadPhoto(
     Body: imageBuffer,
   };
 
-  try {
-    await s3Client.send(new PutObjectCommand(uploadParams));
-  } catch (error) {
-    logger.error(`Failed to upload image to S3: ${error}`);
-    throw error;
-  }
+  await s3Client.send(new PutObjectCommand(uploadParams));
 }
 
 export async function getPhoto(
@@ -36,15 +31,10 @@ export async function getPhoto(
     Key: imageName,
   };
 
-  try {
-    const response = await s3Client.send(new GetObjectCommand(getObjectParams));
-    if (response.Body === undefined) {
-      logger.info(`Object with key ${imageName} not found`);
-      return undefined;
-    }
-    return await response.Body.transformToString();
-  } catch (error) {
-    logger.error(`Failed to get image from S3: ${error}`);
-    throw error;
+  const response = await s3Client.send(new GetObjectCommand(getObjectParams));
+  if (response.Body === undefined) {
+    logger.info(`Object with key ${imageName} not found`);
+    return undefined;
   }
+  return await response.Body.transformToString();
 }
