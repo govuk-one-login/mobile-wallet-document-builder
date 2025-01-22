@@ -9,12 +9,12 @@ import {
 import { uploadPhoto, getPhoto } from "../../src/services/s3Service";
 import "aws-sdk-client-mock-jest";
 
-describe("s3Service.ts", () => {
-  const bucketName = "bucketName";
-  const imageName = "fileName";
-  const imageBuffer = Buffer.alloc(10);
-  const mimeType = "image/jpeg";
+const bucketName = "bucketName";
+const imageName = "fileName";
+const imageBuffer = Buffer.alloc(10);
+const mimeType = "image/jpeg";
 
+describe("s3Service.ts", () => {
   describe("Upload Photo", () => {
     it("should save the photo to the S3 bucket", async () => {
       const s3Mock = mockClient(S3Client);
@@ -34,13 +34,13 @@ describe("s3Service.ts", () => {
       });
     });
 
-    it("should throw the error throw by the S3 client when trying to upload the photo", async () => {
+    it("should throw the error throw by the S3 client", async () => {
       const s3Mock = mockClient(S3Client);
-      s3Mock.on(PutObjectCommand).rejectsOnce("SOME_S3_ERROR");
+      s3Mock.on(PutObjectCommand).rejectsOnce("MOCK_S3_PUT_OBJECT_ERROR");
 
       await expect(
         uploadPhoto(imageBuffer, imageName, bucketName, mimeType)
-      ).rejects.toThrow("SOME_S3_ERROR");
+      ).rejects.toThrow("MOCK_S3_PUT_OBJECT_ERROR");
       expect(s3Mock).toHaveReceivedCommandWith(PutObjectCommand, {
         Bucket: bucketName,
         Key: imageName,
@@ -78,14 +78,13 @@ describe("s3Service.ts", () => {
       expect(response).toEqual(undefined);
     });
 
-    it("should throw the error throw by the S3 client when trying to get the photo", async () => {
+    it("should throw the error throw by the S3 client", async () => {
       const s3Mock = mockClient(S3Client);
-      s3Mock.on(GetObjectCommand).rejectsOnce("Error getting image");
+      s3Mock.on(GetObjectCommand).rejectsOnce("MOCK_S3_GET_OBJECT_ERROR");
 
       await expect(getPhoto(imageName, bucketName)).rejects.toThrow(
-        "Error getting image"
+        "MOCK_S3_GET_OBJECT_ERROR"
       );
-
       expect(s3Mock).toHaveReceivedCommandWith(GetObjectCommand, {
         Bucket: bucketName,
         Key: imageName,

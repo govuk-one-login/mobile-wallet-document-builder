@@ -21,13 +21,68 @@ jest.mock("../../src/services/s3Service", () => ({
 const saveDocument = databaseService.saveDocument as jest.Mock;
 const uploadPhoto = s3Service.uploadPhoto as jest.Mock;
 
+const requestBody = {
+  givenName: "Sarah Elizabeth",
+  familyName: "Edwards-Smith",
+  "dateOfBirth-day": "06",
+  "dateOfBirth-month": "03",
+  "dateOfBirth-year": "1975",
+  "cardExpiryDate-day": "08",
+  "cardExpiryDate-month": "04",
+  "cardExpiryDate-year": "2029",
+  serviceNumber: "25057386",
+  serviceBranch: "HM Naval Service",
+  throwError: "",
+};
+
+const veteranCardDocument = {
+  type: ["VerifiableCredential", "digitalVeteranCard"],
+  credentialSubject: {
+    name: [
+      {
+        nameParts: [
+          {
+            value: "Sarah",
+            type: "GivenName",
+          },
+          {
+            value: "Elizabeth",
+            type: "GivenName",
+          },
+          {
+            value: "Edwards-Smith",
+            type: "FamilyName",
+          },
+        ],
+      },
+    ],
+    birthDate: [
+      {
+        value: "1975-03-06",
+      },
+    ],
+    veteranCard: [
+      {
+        expiryDate: "2029-04-08",
+        serviceNumber: "25057386",
+        serviceBranch: "HM Naval Service",
+        photo: "",
+      },
+    ],
+  },
+};
+
+jest
+  .spyOn(VeteranCardDocument, "fromRequestBody")
+  .mockReturnValueOnce(veteranCardDocument);
+
 describe("controller.ts", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   describe("Get Controller", () => {
-    it("should render the form for inputting Veteran Card document details when user is not authenticated (no id_token in cookies)", async () => {
+    it("should render the form for inputting the Veteran Card document details when the user is not authenticated (no id_token in cookies)", async () => {
       const req = getMockReq({ cookies: {} });
       const { res } = getMockRes();
 
@@ -41,7 +96,7 @@ describe("controller.ts", () => {
       );
     });
 
-    it("should render the form for inputting Veteran Card document details when user is authenticated", async () => {
+    it("should render the form for inputting the Veteran Card document details when the user is authenticated", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
@@ -57,60 +112,17 @@ describe("controller.ts", () => {
   });
 
   describe("Post Controller", () => {
-    const requestBody = {
-      givenName: "Sarah Elizabeth",
-      familyName: "Edwards-Smith",
-      "dateOfBirth-day": "06",
-      "dateOfBirth-month": "03",
-      "dateOfBirth-year": "1975",
-      "cardExpiryDate-day": "08",
-      "cardExpiryDate-month": "04",
-      "cardExpiryDate-year": "2029",
-      serviceNumber: "25057386",
-      serviceBranch: "HM Naval Service",
-      throwError: "",
-    };
+    it("should render the error page when an error happens trying to process the request", async () => {
+      const req = getMockReq({
+        body: requestBody,
+      });
+      const { res } = getMockRes();
+      saveDocument.mockRejectedValueOnce(new Error("SOME_DATABASE_ERROR"));
 
-    const veteranCardDocument = {
-      type: ["VerifiableCredential", "digitalVeteranCard"],
-      credentialSubject: {
-        name: [
-          {
-            nameParts: [
-              {
-                value: "Sarah",
-                type: "GivenName",
-              },
-              {
-                value: "Elizabeth",
-                type: "GivenName",
-              },
-              {
-                value: "Edwards-Smith",
-                type: "FamilyName",
-              },
-            ],
-          },
-        ],
-        birthDate: [
-          {
-            value: "1975-03-06",
-          },
-        ],
-        veteranCard: [
-          {
-            expiryDate: "2029-04-08",
-            serviceNumber: "25057386",
-            serviceBranch: "HM Naval Service",
-            photo: "",
-          },
-        ],
-      },
-    };
+      await veteranCardDocumentBuilderPostController(req, res);
 
-    jest
-      .spyOn(VeteranCardDocument, "fromRequestBody")
-      .mockReturnValueOnce(veteranCardDocument);
+      expect(res.render).toHaveBeenCalledWith("500.njk");
+    });
 
     it("should redirect to the credential offer page with 'digitalVeteranCard' in the query params when the document and photo are stored successfully", async () => {
       const req = getMockReq({
@@ -166,18 +178,6 @@ describe("controller.ts", () => {
       expect(res.redirect).toHaveBeenCalledWith(
         "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=ERROR:401"
       );
-    });
-
-    it("should render the error page when an error happens trying to process the request", async () => {
-      const req = getMockReq({
-        body: requestBody,
-      });
-      const { res } = getMockRes();
-      saveDocument.mockRejectedValueOnce(new Error("SOME_DATABASE_ERROR"));
-
-      await veteranCardDocumentBuilderPostController(req, res);
-
-      expect(res.render).toHaveBeenCalledWith("500.njk");
     });
   });
 });

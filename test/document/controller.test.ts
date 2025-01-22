@@ -7,10 +7,11 @@ import { getMockReq, getMockRes } from "@jest-mock/express";
 jest.mock("../../src/services/databaseService", () => ({
   getDocument: jest.fn(),
 }));
-
 jest.mock("../../src/services/s3Service", () => ({
   getPhoto: jest.fn(),
 }));
+const getDocument = documentStore.getDocument as jest.Mock;
+const getPhoto = s3Service.getPhoto as jest.Mock;
 
 const ninoDocument = {
   type: ["VerifiableCredential", "SocialSecurityCredential"],
@@ -44,12 +45,53 @@ const veteranCardDocument = {
   },
 };
 
-const getDocument = documentStore.getDocument as jest.Mock;
-const getPhoto = s3Service.getPhoto as jest.Mock;
-
 describe("controller.ts", () => {
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it("should return 500 if an error happens when trying to process the request", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq({
+      params: { documentId: "testDocumentId" },
+    });
+    const getDocument = documentStore.getDocument as jest.Mock;
+    getDocument.mockRejectedValueOnce(new Error("SOME_ERROR"));
+
+    await documentController(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+  });
+
+  it("should return 204 if the NINO document was not found", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq({
+      params: { documentId: "testDocumentId" },
+    });
+    getDocument.mockReturnValueOnce(undefined);
+
+    await documentController(req, res);
+
+    expect(getDocument).toHaveBeenCalledWith("testDocumentId");
+    expect(getPhoto).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(204);
+  });
+
+  it("should return 204 if the Veteran Card photo was not found", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq({
+      params: { documentId: "testDocumentId" },
+    });
+    getDocument.mockReturnValueOnce({
+      vc: JSON.stringify(veteranCardDocument),
+    });
+    getPhoto.mockReturnValueOnce(undefined);
+
+    await documentController(req, res);
+
+    expect(getDocument).toHaveBeenCalledWith("testDocumentId");
+    expect(getPhoto).toHaveBeenCalledWith("testDocumentId", "photosBucket");
+    expect(res.status).toHaveBeenCalledWith(204);
   });
 
   it("should return 200 and the NINO document as JSON", async () => {
@@ -63,10 +105,10 @@ describe("controller.ts", () => {
 
     await documentController(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(ninoDocument);
     expect(getDocument).toHaveBeenCalledWith("testDocumentId");
     expect(getPhoto).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(ninoDocument);
   });
 
   it("should return 200 and the Veteran Card document as JSON", async () => {
@@ -86,52 +128,9 @@ describe("controller.ts", () => {
     veteranCardDocumentWithPhoto.credentialSubject.veteranCard[0].photo =
       mockedPhoto;
 
+    expect(getDocument).toHaveBeenCalledWith("testDocumentId");
+    expect(getPhoto).toHaveBeenCalledWith("testDocumentId", "photosBucket");
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(veteranCardDocumentWithPhoto);
-    expect(getDocument).toHaveBeenCalledWith("testDocumentId");
-    expect(getPhoto).toHaveBeenCalledWith("testDocumentId", "photosBucket");
-  });
-
-  it("should return 204 if the NINO document was not found", async () => {
-    const { res } = getMockRes();
-    const req = getMockReq({
-      params: { documentId: "testDocumentId" },
-    });
-    getDocument.mockReturnValueOnce(undefined);
-
-    await documentController(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(204);
-    expect(getDocument).toHaveBeenCalledWith("testDocumentId");
-    expect(getPhoto).not.toHaveBeenCalled();
-  });
-
-  it("should return 204 if the Veteran Card photo was not found", async () => {
-    const { res } = getMockRes();
-    const req = getMockReq({
-      params: { documentId: "testDocumentId" },
-    });
-    getDocument.mockReturnValueOnce({
-      vc: JSON.stringify(veteranCardDocument),
-    });
-    getPhoto.mockReturnValueOnce(undefined);
-
-    await documentController(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(204);
-    expect(getPhoto).toHaveBeenCalledWith("testDocumentId", "photosBucket");
-  });
-
-  it("should return 500 if an error happens", async () => {
-    const { res } = getMockRes();
-    const req = getMockReq({
-      params: { documentId: "testDocumentId" },
-    });
-    const getDocument = documentStore.getDocument as jest.Mock;
-    getDocument.mockRejectedValueOnce(new Error("SOME_ERROR"));
-
-    await documentController(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
   });
 });
