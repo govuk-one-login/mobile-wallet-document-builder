@@ -1,9 +1,15 @@
+process.env.PHOTOS_BUCKET_NAME = "photosBucket";
+
 import { documentController } from "../../src/document/controller";
 import * as documentStore from "../../src/services/databaseService";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
 jest.mock("../../src/services/databaseService", () => ({
   getDocument: jest.fn(),
+}));
+
+jest.mock("../../src/services/s3Service", () => ({
+  getPhoto: jest.fn(),
 }));
 
 describe("controller.ts", () => {
