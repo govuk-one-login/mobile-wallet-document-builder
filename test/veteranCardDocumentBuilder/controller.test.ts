@@ -66,7 +66,7 @@ const veteranCardDocument = {
         expiryDate: "2029-04-08",
         serviceNumber: "25057386",
         serviceBranch: "HM Naval Service",
-        photo: "",
+        photo: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       },
     ],
   },
@@ -134,7 +134,8 @@ describe("controller.ts", () => {
 
       expect(VeteranCardDocument.fromRequestBody).toHaveBeenCalledWith(
         requestBody,
-        "digitalVeteranCard"
+        "digitalVeteranCard",
+        "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46"
       );
       expect(uploadPhoto).toHaveBeenCalledWith(
         expect.any(Buffer),
@@ -163,7 +164,8 @@ describe("controller.ts", () => {
 
       expect(VeteranCardDocument.fromRequestBody).toHaveBeenCalledWith(
         requestBodyWithError,
-        "digitalVeteranCard"
+        "digitalVeteranCard",
+        "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46"
       );
       expect(uploadPhoto).toHaveBeenCalledWith(
         expect.any(Buffer),

@@ -39,10 +39,12 @@ export async function veteranCardDocumentBuilderPostController(
     const bucketName = getPhotosBucketName();
     const mimeType = "image/jpeg";
     await uploadPhoto(staticPhotoBuffer, documentId, bucketName, mimeType);
+    const s3Uri = `s3://${bucketName}/${documentId}`;
 
     const document = VeteranCardDocument.fromRequestBody(
       req.body,
-      CREDENTIAL_TYPE
+      CREDENTIAL_TYPE,
+      s3Uri
     );
 
     await saveDocument(document, documentId);
@@ -62,6 +64,6 @@ export async function veteranCardDocumentBuilderPostController(
 }
 
 function getImageBuffer(): Buffer {
-  const filePath = path.resolve(__dirname, "../photo.jpg");
+  const filePath = path.resolve(__dirname, "../resources/photo.jpg");
   return readFileSync(filePath);
 }

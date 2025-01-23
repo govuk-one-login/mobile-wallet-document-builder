@@ -12,6 +12,8 @@ describe("veteranCardDocument.ts", () => {
     jest.useRealTimers();
   });
 
+  const photoUri = "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46";
+
   describe("VeteranCardDocument", () => {
     it("should return the Veteran Card document in the correct format and without any whitespaces", () => {
       const documentDetails = {
@@ -30,7 +32,8 @@ describe("veteranCardDocument.ts", () => {
 
       const document = VeteranCardDocument.fromRequestBody(
         documentDetails,
-        CredentialType.digitalVeteranCard
+        CredentialType.digitalVeteranCard,
+        photoUri
       );
 
       expect(document).toEqual({
@@ -48,7 +51,7 @@ describe("veteranCardDocument.ts", () => {
           veteranCard: [
             {
               expiryDate: "2029-04-08",
-              photo: "",
+              photo: photoUri,
               serviceBranch: "HM Naval Service",
               serviceNumber: "25057386",
             },
@@ -75,7 +78,8 @@ describe("veteranCardDocument.ts", () => {
 
       const document = VeteranCardDocument.fromRequestBody(
         documentDetails,
-        CredentialType.digitalVeteranCard
+        CredentialType.digitalVeteranCard,
+        photoUri
       );
 
       expect(document).toEqual({
@@ -88,7 +92,7 @@ describe("veteranCardDocument.ts", () => {
               expiryDate: "2029-04-08",
               serviceNumber: "25057386",
               serviceBranch: "HM Naval Service",
-              photo: "",
+              photo: photoUri,
             },
           ],
         },
@@ -112,7 +116,8 @@ describe("veteranCardDocument.ts", () => {
 
       const document = VeteranCardDocument.fromRequestBody(
         documentDetails,
-        CredentialType.digitalVeteranCard
+        CredentialType.digitalVeteranCard,
+        photoUri
       );
 
       expect(document).toEqual({
@@ -132,7 +137,7 @@ describe("veteranCardDocument.ts", () => {
               expiryDate: "2029-04-08",
               serviceNumber: "",
               serviceBranch: "HM Naval Service",
-              photo: "",
+              photo: photoUri,
             },
           ],
         },
@@ -156,7 +161,8 @@ describe("veteranCardDocument.ts", () => {
 
       const document = VeteranCardDocument.fromRequestBody(
         documentDetails,
-        CredentialType.digitalVeteranCard
+        CredentialType.digitalVeteranCard,
+        photoUri
       );
 
       expect(document).toEqual({
@@ -176,7 +182,7 @@ describe("veteranCardDocument.ts", () => {
               expiryDate: "--",
               serviceNumber: "25057386",
               serviceBranch: "HM Naval Service",
-              photo: "",
+              photo: photoUri,
             },
           ],
         },

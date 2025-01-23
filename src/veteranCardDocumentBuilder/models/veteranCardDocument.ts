@@ -18,10 +18,12 @@ export class VeteranCardDocument {
    * @returns a document
    * @param input {VeteranCardInputData}
    * @param credentialType {CredentialType}
+   * @param photoLocation {string}
    */
   static fromRequestBody(
     input: VeteranCardInputData,
-    credentialType: CredentialType
+    credentialType: CredentialType,
+    photoLocation: string
   ): VeteranCardDocument {
     trimRequestBody(input);
 
@@ -50,7 +52,7 @@ export class VeteranCardDocument {
           ),
           serviceNumber: input.serviceNumber,
           serviceBranch: input.serviceBranch,
-          photo: "",
+          photo: photoLocation,
         },
       ],
     };
