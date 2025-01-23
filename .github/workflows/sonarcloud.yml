@@ -18,7 +18,7 @@ jobs:
           ref: ${{ inputs.gitRef || github.ref }}
       - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # pin@v3
         with:
-          node-version-file: .node-version
+          node-version-file: .nvmrc
       - name: Install dependencies
         run: npm install
       - name: Generate coverage report
