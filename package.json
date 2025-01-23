@@ -4,7 +4,7 @@
   "description": "A service for filling in the content of documents, storing them and, through integration with a wallet credential issuer, providing the links needed to load those documents into the GOV.UK Wallet",
   "repository": "https://github.com/govuk-one-login/mobile-wallet-document-builder",
   "scripts": {
-    "build": "npx tsc && npm run build-sass && npm run copy-assets && cp src/photo.jpg dist/",
+    "build": "npx tsc && npm run build-sass && npm run copy-assets && cp src/resources/photo.jpg dist/",
     "build-sass": "rm -rf dist/public/style.css && sass --no-source-map src/assets/scss/application.scss dist/public/stylesheets/application.css --style compressed",
     "copy-assets": "mkdir -p dist && copyfiles -u 1 src/**/*.njk dist/ && cp node_modules/govuk-frontend/govuk/all.js dist/public/scripts && rm -rf dist/assets && cp -rf node_modules/govuk-frontend/govuk/assets dist/assets",
     "dev": "nodemon -e js,ts --watch src --exec \"npm run build:ts && npm run start\"",
