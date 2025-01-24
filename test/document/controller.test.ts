@@ -1,4 +1,3 @@
-process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 import { documentController } from "../../src/document/controller";
 import * as documentStore from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
@@ -63,7 +62,7 @@ describe("controller.ts", () => {
     expect(res.status).toHaveBeenCalledWith(500);
   });
 
-  it("should return 204 if the NINO document was not found", async () => {
+  it("should return 404 if the NINO document was not found", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
       params: { documentId: "testDocumentId" },
@@ -74,10 +73,10 @@ describe("controller.ts", () => {
 
     expect(getDocument).toHaveBeenCalledWith("testDocumentId");
     expect(getPhoto).not.toHaveBeenCalled();
-    expect(res.status).toHaveBeenCalledWith(204);
+    expect(res.status).toHaveBeenCalledWith(404);
   });
 
-  it("should return 204 if the Veteran Card photo was not found", async () => {
+  it("should return 404 if the Veteran Card photo was not found", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
       params: { documentId: "testDocumentId" },
@@ -91,7 +90,7 @@ describe("controller.ts", () => {
 
     expect(getDocument).toHaveBeenCalledWith("testDocumentId");
     expect(getPhoto).toHaveBeenCalledWith("fileName", "photosBucketName");
-    expect(res.status).toHaveBeenCalledWith(204);
+    expect(res.status).toHaveBeenCalledWith(404);
   });
 
   it("should return 200 and the NINO document as JSON", async () => {

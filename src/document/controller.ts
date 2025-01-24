@@ -5,7 +5,6 @@ import { NinoDocument } from "../ninoDocumentBuilder/models/ninoDocument";
 import { DbsDocument } from "../dbsDocumentBuilder/models/dbsDocument";
 import { VeteranCardDocument } from "../veteranCardDocumentBuilder/models/veteranCardDocument";
 import { getPhoto } from "../services/s3Service";
-import { getPhotosBucketName } from "../config/appConfig";
 import { CredentialType } from "../types/CredentialType";
 
 export async function documentController(
@@ -17,7 +16,8 @@ export async function documentController(
 
     const databaseItem = await getDocument(documentId);
     if (!databaseItem) {
-      return res.status(204).send();
+      logger.info(`Document with ID ${documentId} not found`);
+      return res.status(404).send();
     }
     const documentString = databaseItem.vc as string;
     const document: NinoDocument | DbsDocument | VeteranCardDocument =
@@ -31,7 +31,8 @@ export async function documentController(
 
       const photo = await getPhoto(fileName, bucketName);
       if (!photo) {
-        return res.status(204).send();
+        logger.info(`Photo for document with ID ${documentId} not found`);
+        return res.status(404).send();
       }
       (document as VeteranCardDocument).credentialSubject.veteranCard[0].photo =
         photo;
