@@ -8,10 +8,10 @@ openssl rsa -pubin -inform DER -outform PEM -in LocalClientSigningKey.der -pubou
 rm LocalClientSigningKey.der
 
 echo "Updating Auth Stub's environment variables to point to locally running Document Builder"
-REGISTERED_REDIRECT_URIS="'["http://localhost:8001/return-from-auth"]'"
+REGISTERED_REDIRECT_URIS='["http://localhost:8001/return-from-auth"]'
 sed -i '' "s|^REGISTERED_REDIRECT_URIS=[^=]*$|REGISTERED_REDIRECT_URIS=${REGISTERED_REDIRECT_URIS}|" ../mobile-platform-back/auth-stub/.env
 
-REGISTERED_POST_LOGOUT_REDIRECT_URIS="'["http://localhost:8001/logged-out"]'"
+REGISTERED_POST_LOGOUT_REDIRECT_URIS='["http://localhost:8001/logged-out"]'
 sed -i '' "s|^REGISTERED_POST_LOGOUT_REDIRECT_URIS=[^=]*$|REGISTERED_POST_LOGOUT_REDIRECT_URIS=${REGISTERED_POST_LOGOUT_REDIRECT_URIS}|" ../mobile-platform-back/auth-stub/.env
 
 AUTH_STUB_BASE_URL="http://localhost:8000"
