@@ -16,7 +16,7 @@ export async function documentController(
 
     const databaseItem = await getDocument(documentId);
     if (!databaseItem) {
-      logger.info(`Document with ID ${documentId} not found`);
+      logger.error(`Document with ID ${documentId} not found`);
       return res.status(404).send();
     }
     const documentString = databaseItem.vc as string;
@@ -31,7 +31,7 @@ export async function documentController(
 
       const photo = await getPhoto(fileName, bucketName);
       if (!photo) {
-        logger.info(`Photo for document with ID ${documentId} not found`);
+        logger.error(`Photo for document with ID ${documentId} not found`);
         return res.status(404).send();
       }
       (document as VeteranCardDocument).credentialSubject.veteranCard[0].photo =
