@@ -74,11 +74,15 @@ npm run localstack:up
 
 #### Set up the authorization server stub
 
-Running locally requires running this application together with a stub of the authorization server, such as [this one](https://github.com/govuk-one-login/mobile-platform-back/tree/main/auth-stub). 
+Running locally requires running this application together with a stub of the authorization server, such 
+as [this one](https://github.com/govuk-one-login/mobile-platform-back/tree/main/auth-stub).
+
 To configure this stub to work with the Document Builder, run:
 ```
 bash configure_auth_stub.sh
 ```
+
+Both repositories must be in the same directory for the script to work.
 
 ### Run
 
@@ -121,7 +125,8 @@ image for the Document Builder ECS task.
 
 ### Update the SAM template
 
-If using your own deployed version of the Example CRI and Auth Stub, the following mapping values in the template must be updated:
+If using your own deployed version of the [Example CRI](https://github.com/govuk-one-login/mobile-wallet-example-credential-issuer) 
+and [Auth Stub](https://github.com/govuk-one-login/mobile-platform-back/tree/main/auth-stub), the following mapping values in the template must be updated:
 
  ```yaml
  Mappings:
