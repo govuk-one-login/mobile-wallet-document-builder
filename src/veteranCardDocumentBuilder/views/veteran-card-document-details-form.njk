@@ -1,0 +1,168 @@
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% extends "base.njk" %}
+{% set pageTitle = "Please enter the Veteran Card document details:" %}
+{% block content %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
+    <form action="/build-veteran-card-document" method="post">
+        {% call govukFieldset({
+            legend: {
+            text: "Please enter the Veteran Card document details:",
+            classes: "govuk-fieldset__legend--m",
+            isPageHeading: true
+            } }) %}
+            {{ govukInput({
+                "label": {
+                    "text": "Given name",
+                    "classes": "govuk-label--s"
+                },
+                "classes": "govuk-input--width-20",
+                "id": "given-name",
+                "name": "givenName",
+                "autocomplete": "given-name",
+                "spellcheck": false,
+                "value": "Sarah Elizabeth"
+            }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Family name",
+                    "classes": "govuk-label--s"
+                },
+                "classes": "govuk-input--width-20",
+                "id": "family-name",
+                "name": "familyName",
+                "autocomplete": "family-name",
+                "spellcheck": false,
+                "value": "Edwards"
+            }) }}
+            {{ govukDateInput({
+                "id": "date-of-birth",
+                "namePrefix": "dateOfBirth",
+                "fieldset": {
+                    "legend": {
+                        "text": "Date of birth",
+                        "classes": "govuk-label--s"
+                    }
+                },
+                "items": [
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "day",
+                        "value": "06"
+                    },
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "month",
+                        "value": "03"
+                    },
+                    {
+                        "classes": "govuk-input--width-3",
+                        "name": "year",
+                        "value": "1975"
+                    }
+                ]
+            }) }}
+            {{ govukDateInput({
+                "id": "card-expiry-date",
+                "namePrefix": "cardExpiryDate",
+                "fieldset": {
+                    "legend": {
+                        "text": "Card expiry date",
+                        "classes": "govuk-fieldset__legend--s"
+                    }
+                },
+                "items": [
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "day",
+                        "value": "08"
+                    },
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "month",
+                        "value": "04"
+                    },
+                    {
+                        "classes": "govuk-input--width-3",
+                        "name": "year",
+                        "value": "2029"
+                    }
+                ]
+            }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Service number",
+                    "classes": "govuk-label--s"
+                },
+                "id": "service-number",
+                "name": "serviceNumber",
+                "classes": "govuk-!-width-one-third",
+                "spellcheck": false,
+                "value": "25057386"
+            }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Service branch",
+                    "classes": "govuk-label--s"
+                },
+                "id": "service-branch",
+                "name": "serviceBranch",
+                "classes": "govuk-!-width-one-third",
+                "spellcheck": false,
+                "value": "HM Naval Service"
+            }) }}
+            {{ govukFileUpload({
+                "id": "photo",
+                "name": "photo",
+                "label": {
+                    "text": "Upload your photo",
+                    "classes": "govuk-label--s"
+                },
+                "hint": {
+                    "text": "Your photo must be no more than 1MB. The file must be in jpg or png format."
+                },
+                "disabled": true,
+                "attributes": {
+                    "accept": ".jpg,.png"
+                }
+            }) }}
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+            {{ govukSelect({
+                "id": "throw-error",
+                "name": "throwError",
+                "label": {
+                    "text": "Throw an error",
+                    "classes": "govuk-label--s"
+                },
+                "items": [
+                    {
+                        "value": "",
+                        "text": "No error",
+                        "selected": true
+                    },
+                    {
+                        "value": "ERROR:401",
+                        "text": "401"
+                    },
+                    {
+                        "value": "ERROR:CLIENT",
+                        "text": "400 (invalid client) "
+                    },
+                    {
+                        "value": "ERROR:GRANT",
+                        "text": "400 (invalid grant)"
+                    },
+                    {
+                        "value": "ERROR:500",
+                        "text": "500"
+                    }
+                ]
+            }) }}
+        {% endcall %}
+        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+    </form>
+{% endblock %}

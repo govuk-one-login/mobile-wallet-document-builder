@@ -25,6 +25,10 @@ export function getDocumentsTableName(): string {
   return getEnvVarValue("DOCUMENTS_TABLE_NAME");
 }
 
+export function getPhotosBucketName(): string {
+  return getEnvVarValue("PHOTOS_BUCKET_NAME");
+}
+
 export function getEnvironment(): string {
   return getEnvVarValue("ENVIRONMENT");
 }
