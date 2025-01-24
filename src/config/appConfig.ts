@@ -41,10 +41,6 @@ export function getAwsRegion(): string {
   return process.env.AWS_REGION || "eu-west-2";
 }
 
-export function getLocalStackEndpoint(): string {
-  return `http://localhost:4561`;
-}
-
 export function getStsSigningKeyId(): string {
   return getEnvVarValue("STS_SIGNING_KEY_ID");
 }

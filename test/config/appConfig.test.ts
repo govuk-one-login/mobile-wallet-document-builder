@@ -2,7 +2,6 @@ import {
   getAwsRegion,
   getDocumentsTableName,
   getEnvironment,
-  getLocalStackEndpoint,
   getCriEndpoint,
   getPortNumber,
   getAccessTokenTtlInSecs,
@@ -67,10 +66,6 @@ describe("appConfig.ts", () => {
   it("should return AWS_REGION environment variable value if set", () => {
     process.env.AWS_REGION = "eu-west-3";
     expect(getAwsRegion()).toEqual("eu-west-3");
-  });
-
-  it("should return the LocalStack endpoint value", () => {
-    expect(getLocalStackEndpoint()).toEqual("http://localhost:4561");
   });
 
   it("should throw an error if ACCESS_TOKEN_TTL_IN_SECS environment variable is not set", () => {
