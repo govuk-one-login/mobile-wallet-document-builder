@@ -3,11 +3,11 @@ set -eu
 
 echo "Getting client public signing key"
 aws kms get-public-key --endpoint-url=http://localhost:4561 --region eu-west-2 --key-id alias/localClientSigningKeyAlias --output text --query PublicKey | base64 --decode > LocalClientSigningKey.der
-echo "Copying client public signing key to Auth Stub"
+echo "Copying client public signing key to locally running auth stub"
 openssl rsa -pubin -inform DER -outform PEM -in LocalClientSigningKey.der -pubout -out ../mobile-platform-back/auth-stub/src/client-keys/dev/exampleCri.pem
 rm LocalClientSigningKey.der
 
-echo "Updating Auth Stub's environment variables to point to locally running Document Builder"
+echo "Updating locally running auth stub's environment variables to point to locally running Document Builder"
 REGISTERED_REDIRECT_URIS='["http://localhost:8001/return-from-auth"]'
 sed -i '' "s|^REGISTERED_REDIRECT_URIS=[^=]*$|REGISTERED_REDIRECT_URIS=${REGISTERED_REDIRECT_URIS}|" ../mobile-platform-back/auth-stub/.env
 
