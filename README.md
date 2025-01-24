@@ -30,14 +30,16 @@ nvm use
 
 ## Quickstart
 
-### Installation
-Install node dependencies:
+### Install
+
+Install the dependencies with:
 ```
 npm install
 ```
 
-### Linting & Formatting
-Lint and format the code:
+### Lint & Format
+
+Lint and format the code with:
 ```
 npm run lint
 ```
@@ -47,20 +49,23 @@ npm run format
 ```
 
 ### Build
-Build the assets:
+
+Build the assets with:
 ```
 npm run build
 ```
 
-### Configure
+### Configure to Run Locally
 
 #### Create a .env file
+
 Create a copy of the example environment variable file:
 ```
 cp .env.example .env
 ```
 
 #### Set up LocalStack
+
 This app uses LocalStack to run AWS services (DynamoDB, S3 and KMS) locally on port `4561`.
 To start the LocalStack container and emulate the services, run:
 ```
@@ -68,6 +73,7 @@ npm run localstack:up
 ```
 
 #### Set up the authorization server stub
+
 Running locally requires running this application together with a stub of the authorization server, such as [this one](https://github.com/govuk-one-login/mobile-platform-back/tree/main/auth-stub). 
 To configure this stub to work with the Document Builder, run:
 ```
@@ -75,6 +81,7 @@ bash configure_auth_stub.sh
 ```
 
 ### Run
+
 To start the application, run:
 ```
 npm run start
@@ -86,11 +93,13 @@ npm run dev
 ```
 
 ## Deploy application to `dev`
+
 > You must be logged into the Mobile Platform `dev` AWS account.
 
 You can deploy the application to the `dev` AWS account by following these steps:
 
 ### Store the OIDC Client ID
+
 Before a stack is deployed for the first name, an SSM parameter must be created to hold the OIDC client ID:
 
 ```shell
@@ -99,6 +108,7 @@ aws ssm put-parameter --name "/<your-stack-name>/Config/OIDC/Client/Id" --value 
 The usual non-production deployment client ID is `TEST_CLIENT_ID`.
 
 ### Build and push the docker image
+
 Run the script to build and push the Document Builder docker image, specifying an image tag and the name of your AWS profile
 for the Mobile Platform `dev` AWS account (which can be found in your `~/.aws/credentials` file):
 
@@ -110,6 +120,7 @@ This will build the docker image, log into ECR, push the image to ECR, and updat
 image for the Document Builder ECS task.
 
 ### Update the SAM template
+
 If using your own deployed version of the Example CRI and Auth Stub, the following mapping values in the template must be updated:
 
  ```yaml
