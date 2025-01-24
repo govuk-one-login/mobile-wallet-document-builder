@@ -404,6 +404,8 @@ Resources:
               Value: !Ref ContainerPort
             - Name: DOCUMENTS_TABLE_NAME
               Value: !Ref DocumentDatabase
+            - Name: PHOTOS_BUCKET_NAME
+              Value: !Ref PhotosBucket
             - Name: ENVIRONMENT
               Value: !Sub "${Environment}"
             - Name: CREDENTIAL_ISSUER_URL
@@ -525,13 +527,27 @@ Resources:
                   - 'kms:Encrypt'
                   - 'kms:GenerateDataKey'
                 Resource: !GetAtt DocumentDatabaseKmsKey.Arn
+        - PolicyName: AccessS3
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:PutObject'
+                  - 's3:GetObject'
+                Resource:
+                  - !Sub
+                    - arn:aws:s3:::${TargetBucket}/*
+                    - TargetBucket: !Ref PhotosBucket
+                  - !Sub
+                    - arn:aws:s3:::${TargetBucket}
+                    - TargetBucket: !Ref PhotosBucket
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
         - !Ref AWS::NoValue
 
   # KMS RESOURCES
-
   StsStubSigningKey:
     Type: AWS::KMS::Key
     Properties:
@@ -651,6 +667,106 @@ Resources:
           Value: Mobile Wallet Team
         - Key: Environment
           Value: !Ref "Environment"
+
+# S3 RESOURCES
+  PhotosBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-photos"
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LoggingConfiguration:
+        DestinationBucketName: !Ref PhotosBucketAccessLogs
+        LogFilePrefix: !Sub "${AWS::StackName}-photos-access-logs"
+      Tags:
+        - Key: Product
+          Value: GOV.UK Sign In
+        - Key: System
+          Value: Mobile Wallet
+        - Key: Owner
+          Value: Mobile Wallet Team
+        - Key: Environment
+          Value: !Ref Environment
+
+  PhotosBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref PhotosBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowSSLRequestsOnly
+            Effect: Deny
+            Principal:
+              AWS: "*"
+            Action: "*"
+            Resource: !Sub
+              - arn:aws:s3:::${bucketName}/*
+              - bucketName: !Ref PhotosBucket
+            Condition:
+              Bool:
+                "aws:SecureTransport": false
+
+  PhotosBucketAccessLogs:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-photos-access-logs"
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: ObjectWriter
+
+  PhotosBucketAccessLogsPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref PhotosBucketAccessLogs
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowSSLRequestsOnly
+            Effect: Deny
+            Principal:
+              AWS: "*"
+            Action: "*"
+            Resource: !Sub
+              - "arn:aws:s3:::${bucketName}/*"
+              - bucketName: !Ref PhotosBucketAccessLogs
+            Condition:
+              Bool:
+                "aws:SecureTransport": false
+          - Sid: AllowLogDelivery
+            Effect: Allow
+            Principal:
+              Service: logging.s3.amazonaws.com
+            Action:
+              - s3:PutObject
+            Resource: !Sub
+              - "arn:aws:s3:::${bucketName}/*"
+              - bucketName: !Ref PhotosBucketAccessLogs
+            Condition:
+              ArnLike:
+                aws:SourceArn: !GetAtt PhotosBucket.Arn
+              StringEquals:
+                aws:SourceAccount: !Ref AWS::AccountId
 
 # WAF ASSOCIATION
 
