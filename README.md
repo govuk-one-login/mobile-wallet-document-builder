@@ -55,6 +55,13 @@ Build the assets with:
 npm run build
 ```
 
+### Test
+
+Unit test the code with:
+```
+npm run test
+```
+
 ### Configure to Run Locally
 
 #### Create a .env file
