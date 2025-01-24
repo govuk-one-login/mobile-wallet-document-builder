@@ -7,12 +7,12 @@ COPY src/ src/
 COPY .env.example .env
 COPY package.json tsconfig.json ./
 ARG PORT
-RUN npm update -g
-RUN npm install --ignore-scripts && npm run build
-
-RUN addgroup -S nonroot
-RUN adduser -S nonroot -G nonroot
+RUN npm update -g \
+&& npm install --ignore-scripts && npm run build \
+&& addgroup -S nonroot \
+&& adduser -S nonroot -G nonroot
 USER nonroot
 
 EXPOSE $PORT
-CMD npm run start
+
+ENTRYPOINT ["npm", "start"]
