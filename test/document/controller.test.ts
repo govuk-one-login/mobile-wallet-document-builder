@@ -41,7 +41,7 @@ const veteranCardDocument = {
         ],
       },
     ],
-    veteranCard: [{ photo: "" }],
+    veteranCard: [{ photo: "s3://photosBucketName/fileName" }],
   },
 };
 
@@ -90,7 +90,7 @@ describe("controller.ts", () => {
     await documentController(req, res);
 
     expect(getDocument).toHaveBeenCalledWith("testDocumentId");
-    expect(getPhoto).toHaveBeenCalledWith("testDocumentId", "photosBucket");
+    expect(getPhoto).toHaveBeenCalledWith("fileName", "photosBucketName");
     expect(res.status).toHaveBeenCalledWith(204);
   });
 
@@ -129,7 +129,7 @@ describe("controller.ts", () => {
       mockedPhoto;
 
     expect(getDocument).toHaveBeenCalledWith("testDocumentId");
-    expect(getPhoto).toHaveBeenCalledWith("testDocumentId", "photosBucket");
+    expect(getPhoto).toHaveBeenCalledWith("fileName", "photosBucketName");
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(veteranCardDocumentWithPhoto);
   });

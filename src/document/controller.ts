@@ -24,7 +24,12 @@ export async function documentController(
       JSON.parse(documentString);
 
     if (isDigitalVeteranCard(document)) {
-      const photo = await getPhoto(documentId, getPhotosBucketName());
+      const s3Uri = (document as VeteranCardDocument).credentialSubject
+        .veteranCard[0].photo;
+
+      const { bucketName, fileName } = getBucketAndFileName(s3Uri);
+
+      const photo = await getPhoto(fileName, bucketName);
       if (!photo) {
         return res.status(204).send();
       }
@@ -43,4 +48,14 @@ function isDigitalVeteranCard(
   document: NinoDocument | DbsDocument | VeteranCardDocument
 ) {
   return document.type.includes(CredentialType.digitalVeteranCard);
+}
+
+function getBucketAndFileName(s3Uri: string): {
+  bucketName: string;
+  fileName: string;
+} {
+  const s3UriParts = s3Uri.split("/");
+  const bucketName = s3UriParts[2];
+  const fileName = s3UriParts[3];
+  return { bucketName, fileName };
 }
