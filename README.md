@@ -102,6 +102,7 @@ To start in development mode, run:
 ```
 npm run dev
 ```
+Go to [http://localhost:8001/select-app](http://localhost:8001/select-app).
 
 ## Deploy application to `dev`
 
