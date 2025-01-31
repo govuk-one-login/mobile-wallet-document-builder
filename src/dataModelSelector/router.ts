@@ -8,6 +8,6 @@ import { requiresAuth } from "../middleware/requiresAuth";
 const router = express.Router();
 
 router.get("/select-vc-data-model", requiresAuth, dataModelSelectorGetController);
-router.post("/select-vc-data-model", requiresAuth, dataModelSelectorPostController);
-
+router.post("/select-vc-data-model", requiresAuth, dataModelSelectorPostController());
+console.log("ERROR")
 export { router as dataModelSelectorRouter };
