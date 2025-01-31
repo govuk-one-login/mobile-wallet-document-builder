@@ -4,7 +4,6 @@ RUN apk update && apk upgrade busybox
 
 WORKDIR /app
 COPY src/ src/
-COPY .env.example .env
 COPY package.json tsconfig.json ./
 ARG PORT
 RUN npm update -g

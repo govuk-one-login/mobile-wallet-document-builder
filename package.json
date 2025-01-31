@@ -15,7 +15,9 @@
     "test:unit": "node_modules/.bin/jest --testPathPattern=test/unit",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --ext .ts . --fix",
-    "format": "prettier --ignore-path .gitignore --write \"*/**/*.{ts,json}\""
+    "format": "prettier --ignore-path .gitignore --write \"*/**/*.{ts,json}\"",
+    "localstack:up": "docker compose -f docker-compose.yml up --build -d --wait",
+    "localstack:down": "docker compose -f docker-compose.yml down"
   },
   "author": "",
   "license": "MIT",

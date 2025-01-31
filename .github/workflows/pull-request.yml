@@ -20,7 +20,7 @@ jobs:
         if: ${{ success() }}
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # pin@v4
         with:
-          node-version: '20.9.0'
+          node-version-file: .nvmrc
 
       - name: 'Install dependencies'
         if: ${{ success() }}
