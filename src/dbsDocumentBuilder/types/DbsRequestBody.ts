@@ -1,4 +1,4 @@
-export interface DbsInputData {
+export interface DbsRequestBody {
   "issuance-day"?: string;
   "issuance-month"?: string;
   "issuance-year"?: string;
@@ -15,4 +15,5 @@ export interface DbsInputData {
   postalCode?: string;
   certificateNumber?: string;
   applicationNumber?: string;
+  throwError: string;
 }

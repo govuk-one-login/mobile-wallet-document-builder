@@ -1,4 +1,4 @@
-export interface VeteranCardInputData {
+export interface VeteranCardRequestBody {
   givenName: string;
   familyName: string;
   "dateOfBirth-day": string;
