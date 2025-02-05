@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
 import { getDocument } from "../services/databaseService";
 import { logger } from "../middleware/logger";
-import { NinoDocument } from "../ninoDocumentBuilder/models/ninoDocument";
-import { DbsDocument } from "../dbsDocumentBuilder/models/dbsDocument";
-import { VeteranCardDocument } from "../veteranCardDocumentBuilder/models/veteranCardDocument";
 import { getPhoto } from "../services/s3Service";
 import { CredentialType } from "../types/CredentialType";
-import {getDocumentsTableName} from "../config/appConfig";
-import {TableItemV1} from "../types/TableItemV1";
+import {getDocumentsV2TableName} from "../config/appConfig";
+import {VeteranCardData} from "../veteranCardDocumentBuilder/types/VeteranCardData";
+import {TableItemV2} from "../types/TableItemV2";
 
 export async function documentController(
   req: Request,
@@ -15,20 +13,19 @@ export async function documentController(
 ): Promise<Response> {
   try {
     const { documentId } = req.params;
-    const tableName = getDocumentsTableName();
-    const databaseItem = await getDocument(tableName, documentId) as TableItemV1 | undefined;
+    const tableName = getDocumentsV2TableName();
+    const databaseItem = await getDocument(tableName, documentId) as TableItemV2 | undefined;
 
     if (!databaseItem) {
       logger.error(`Document with ID ${documentId} not found`);
       return res.status(404).send();
     }
-    const documentString = databaseItem.vc as string;
-    const document: NinoDocument | DbsDocument | VeteranCardDocument =
-      JSON.parse(documentString);
 
-    if (isDigitalVeteranCard(document)) {
-      const s3Uri = (document as VeteranCardDocument).credentialSubject
-        .veteranCard[0].photo;
+    const { data } = databaseItem;
+
+    if (databaseItem.vcType === CredentialType.digitalVeteranCard) {
+
+      const s3Uri = (data as VeteranCardData).photo
 
       const { bucketName, fileName } = getBucketAndFileName(s3Uri);
 
@@ -37,7 +34,7 @@ export async function documentController(
         logger.error(`Photo for document with ID ${documentId} not found`);
         return res.status(404).send();
       }
-      (document as VeteranCardDocument).credentialSubject.veteranCard[0].photo =
+      (data as VeteranCardData).photo =
         photo;
     }
 
@@ -46,12 +43,6 @@ export async function documentController(
     logger.error(error, "An error happened processing request to get document");
     return res.status(500).send();
   }
-}
-
-function isDigitalVeteranCard(
-  document: NinoDocument | DbsDocument | VeteranCardDocument
-) {
-  return document.type.includes(CredentialType.digitalVeteranCard);
 }
 
 function getBucketAndFileName(s3Uri: string): {
