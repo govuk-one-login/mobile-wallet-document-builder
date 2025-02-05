@@ -8,14 +8,13 @@ import {ExpressRouteFunction} from "../types/ExpressRouteFunction";
 export interface DataModelSelectorConfig {
     cookieExpiry?: number;
     setCookie: (res: Response, name: string, value: string) => void;
-    getCookie: (req: Request, name: string) => string | undefined;
 }
 
 export function dataModelSelectorGetController(
     req: Request,
     res: Response
 ): void {
-    console.log("Hello")
+
     try {
         res.render("select-vc-data-model-form.njk", {
             authenticated: isAuthenticated(req),
@@ -35,17 +34,17 @@ export function dataModelSelectorPostController(
                 maxAge: config.cookieExpiry,
             });
         },
-        getCookie: (req: Request, name: string) => {
-            return req.cookies[name];
-        },
     }
 ): ExpressRouteFunction {
     return function (req: Request, res: Response): void {
         try {
             const selectedDataModel = req.body["select-vc-data-model-choice"];
 
-            if (selectedDataModel === "v1.1" || selectedDataModel === "v2.0") {
-                config.setCookie(res, selectedDataModel, selectedDataModel);
+            if (selectedDataModel) {
+                res.cookie("dataModel", selectedDataModel, {
+                    httpOnly: true,
+                    maxAge: config.cookieExpiry,
+                })
                 res.redirect(`/select-document`);
             } else {
                 res.render("select-vc-data-model-form.njk", {
@@ -54,7 +53,7 @@ export function dataModelSelectorPostController(
                 });
             }
         } catch (error) {
-            logger.error(error, "An error happened selecting app");
+            logger.error(error, "An error happened selecting data model");
             res.render("500.njk");
         }
     };
