@@ -1,4 +1,3 @@
-process.env.DOCUMENTS_TABLE_NAME = "testTable";
 process.env.ENVIRONMENT = "local";
 import { mockClient } from "aws-sdk-client-mock";
 import {
@@ -8,30 +7,28 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { saveDocument, getDocument } from "../../src/services/databaseService";
 import "aws-sdk-client-mock-jest";
+import {TableItemV2} from "../../src/types/TableItemV2";
 
 describe("databaseService.ts", () => {
+
+  const item = {
+    documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+    data: {
+      title: "Ms",
+      givenName: "Rose",
+      familyName: "Andrews",
+      nino: "QQ123456A",
+    },
+    vcDataModel: "v2.0",
+    vcType: "SocialSecurityCredential",
+
+  } as TableItemV2
+
   it("should save a document to the database table", async () => {
-    const document = {
-      credentialSubject: {
-        name: [
-          {
-            nameParts: [
-              { type: "Title", value: "Ms" },
-              { type: "GivenName", value: "Irene" },
-              { type: "FamilyName", value: "Adler" },
-            ],
-          },
-        ],
-        socialSecurityRecord: [{ personalNumber: "QQ123456A" }],
-      },
-      type: ["VerifiableCredential", "SocialSecurityCredential"],
-    };
+
     const putItemCommand = {
       TableName: "testTable",
-      Item: {
-        documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        vc: JSON.stringify(document),
-      },
+      Item: item,
     };
     const dynamoDbMock = mockClient(DynamoDBDocumentClient);
     dynamoDbMock.on(PutCommand).resolvesOnce({
@@ -41,59 +38,28 @@ describe("databaseService.ts", () => {
     });
 
     await expect(
-      saveDocument(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46")
+      saveDocument("testTable",item)
     ).resolves.not.toThrow();
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });
 
   it("should throw an error caught when trying to save a document", async () => {
-    const document = {
-      credentialSubject: {
-        name: [
-          {
-            nameParts: [
-              { type: "Title", value: "Ms" },
-              { type: "GivenName", value: "Irene" },
-              { type: "FamilyName", value: "Adler" },
-            ],
-          },
-        ],
-        socialSecurityRecord: [{ personalNumber: "QQ123456A" }],
-      },
-      type: ["VerifiableCredential", "SocialSecurityCredential"],
-    };
+
     const putItemCommand = {
       TableName: "testTable",
-      Item: {
-        documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        vc: JSON.stringify(document),
-      },
+      Item: item
     };
     const dynamoDbMock = mockClient(DynamoDBDocumentClient);
     dynamoDbMock.on(PutCommand).rejectsOnce("SOME_DATABASE_ERROR");
 
     await expect(
-      saveDocument(document, "2e0fac05-4b38-480f-9cbd-b046eabe1e46")
+      saveDocument("testTable", item)
     ).rejects.toThrow("SOME_DATABASE_ERROR");
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });
 
   it("should get a document from the database table by documentId and return it", async () => {
-    const document = {
-      credentialSubject: {
-        name: [
-          {
-            nameParts: [
-              { type: "Title", value: "Ms" },
-              { type: "GivenName", value: "Irene" },
-              { type: "FamilyName", value: "Adler" },
-            ],
-          },
-        ],
-        socialSecurityRecord: [{ personalNumber: "QQ123456A" }],
-      },
-      type: ["VerifiableCredential", "SocialSecurityCredential"],
-    };
+
     const getCommandInput = {
       TableName: "testTable",
       Key: {
@@ -105,18 +71,12 @@ describe("databaseService.ts", () => {
       $metadata: {
         httpStatusCode: 200,
       },
-      Item: {
-        vc: JSON.stringify(document),
-        documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-      },
+      Item: item
     });
 
-    const response = await getDocument("2e0fac05-4b38-480f-9cbd-b046eabe1e46");
+    const response = await getDocument("testTable","2e0fac05-4b38-480f-9cbd-b046eabe1e46");
 
-    expect(response).toEqual({
-      vc: JSON.stringify(document),
-      documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-    });
+    expect(response).toEqual(item);
     expect(databaseMockClient).toHaveReceivedCommandWith(
       GetCommand,
       getCommandInput
@@ -131,7 +91,7 @@ describe("databaseService.ts", () => {
       },
     });
 
-    const response = await getDocument("2e0fac05-4b38-480f-9cbd-b046eabe1e46");
+    const response = await getDocument("testTable", "2e0fac05-4b38-480f-9cbd-b046eabe1e46");
 
     expect(response).toEqual(undefined);
   });
@@ -141,7 +101,7 @@ describe("databaseService.ts", () => {
     databaseMockClient.on(GetCommand).rejectsOnce("SOME_ERROR");
 
     await expect(
-      getDocument("2e0fac05-4b38-480f-9cbd-b046eabe1e46")
+      getDocument("testTable", "2e0fac05-4b38-480f-9cbd-b046eabe1e46")
     ).rejects.toThrow("SOME_ERROR");
   });
 });

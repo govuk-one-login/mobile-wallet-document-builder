@@ -1,5 +1,7 @@
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
+process.env.DOCUMENTS_TABLE_NAME = "testTable";
+process.env.DOCUMENTS_V2_TABLE_NAME = "testTable2";
 import {
   veteranCardDocumentBuilderGetController,
   veteranCardDocumentBuilderPostController,
@@ -127,6 +129,7 @@ describe("controller.ts", () => {
     it("should redirect to the credential offer page with 'digitalVeteranCard' in the query params when the document and photo are stored successfully", async () => {
       const req = getMockReq({
         body: requestBody,
+        cookies: { "dataModel": "v2.0"}
       });
       const { res } = getMockRes();
 
@@ -143,10 +146,32 @@ describe("controller.ts", () => {
         "photosBucket",
         "image/jpeg"
       );
-      expect(saveDocument).toHaveBeenCalledWith(
-        veteranCardDocument,
-        "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+      expect(saveDocument).toHaveBeenNthCalledWith(1,
+        "testTable",
+          { documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            vc: JSON.stringify(veteranCardDocument),
+          }
       );
+      expect(saveDocument).toHaveBeenNthCalledWith(2,
+          "testTable2", {
+            documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            data: {
+              givenName: "Sarah Elizabeth",
+              familyName: "Edwards-Smith",
+              "dateOfBirth-day": "06",
+              "dateOfBirth-month": "03",
+              "dateOfBirth-year": "1975",
+              "cardExpiryDate-day": "08",
+              "cardExpiryDate-month": "04",
+              "cardExpiryDate-year": "2029",
+              serviceNumber: "25057386",
+              serviceBranch: "HM Naval Service",
+              photo: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            },
+            vcDataModel: "v2.0",
+            vcType: "digitalVeteranCard",
+          });
+
       expect(res.redirect).toHaveBeenCalledWith(
         "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error="
       );
@@ -174,8 +199,10 @@ describe("controller.ts", () => {
         "image/jpeg"
       );
       expect(saveDocument).toHaveBeenCalledWith(
-        veteranCardDocument,
-        "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+          "testTable",
+          { documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            vc: JSON.stringify(veteranCardDocument),
+          }
       );
       expect(res.redirect).toHaveBeenCalledWith(
         "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=ERROR:401"

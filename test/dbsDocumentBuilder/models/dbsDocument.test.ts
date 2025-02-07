@@ -31,6 +31,10 @@ describe("dbsDocument.ts", () => {
       postalCode: "   NW3 3RX    ",
       certificateNumber: "   009878863",
       applicationNumber: "E0023455534   ",
+      certificateType: "basic",
+      outcome: "Result clear",
+      policeRecordsCheck: "Clear",
+      throwError: "",
     };
 
     const document = DbsDocument.fromRequestBody(
@@ -97,6 +101,10 @@ describe("dbsDocument.ts", () => {
       postalCode: "NW3 3RX",
       certificateNumber: "",
       applicationNumber: "",
+      certificateType: "basic",
+      outcome: "Result clear",
+      policeRecordsCheck: "Clear",
+      throwError: "",
     };
 
     const document = DbsDocument.fromRequestBody(
@@ -159,6 +167,10 @@ describe("dbsDocument.ts", () => {
       postalCode: "NW3 3RX",
       certificateNumber: "009878863",
       applicationNumber: "E0023455534",
+      certificateType: "basic",
+      outcome: "Result clear",
+      policeRecordsCheck: "Clear",
+      throwError: "",
     };
 
     const document = DbsDocument.fromRequestBody(

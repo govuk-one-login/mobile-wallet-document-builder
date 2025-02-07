@@ -44,10 +44,10 @@ Conditions:
 Mappings:
   EnvironmentVariables:
     dev:
-      CredentialIssuerUrl: "example-credential-issuer.mobile.dev.account.gov.uk"
+      CredentialIssuerUrl: "ahickmann-cri-example-credential-issuer.mobile.dev.account.gov.uk"
       SelfUrl: "stub-credential-issuer.mobile.dev.account.gov.uk"
       FrontImageRepository: arn:aws:ecr:eu-west-2:671524980203:repository/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry
-      OidcIssuerEndpoint: "https://auth-stub.mobile.dev.account.gov.uk"
+      OidcIssuerEndpoint: "https://ahickmann-auth-stub.mobile.dev.account.gov.uk"
     build:
       CredentialIssuerUrl: "example-credential-issuer.mobile.build.account.gov.uk"
       SelfUrl: "stub-credential-issuer.mobile.build.account.gov.uk"
@@ -371,13 +371,15 @@ Resources:
     Properties:
       ContainerDefinitions:
         - Essential: true
-          Image: CONTAINER-IMAGE-PLACEHOLDER
+          Image: 671524980203.dkr.ecr.eu-west-2.amazonaws.com/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry:se-11259
           Name: app
           Environment:
             - Name: PORT
               Value: !Ref ContainerPort
             - Name: DOCUMENTS_TABLE_NAME
               Value: !Ref DocumentDatabase
+            - Name: DOCUMENTS_V2_TABLE_NAME
+              Value: !Ref DocumentV2Database
             - Name: PHOTOS_BUCKET_NAME
               Value: !Ref PhotosBucket
             - Name: ENVIRONMENT
@@ -492,6 +494,11 @@ Resources:
                   - 'dynamodb:PutItem'
                   - 'dynamodb:GetItem'
                 Resource: !GetAtt DocumentDatabase.Arn
+              - Effect: Allow
+                Action:
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:GetItem'
+                Resource: !GetAtt DocumentV2Database.Arn
               - Effect: Allow
                 Action:
                   - 'kms:Decrypt'
