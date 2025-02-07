@@ -126,7 +126,7 @@ describe("controller.ts", () => {
     expect(saveDocument).toHaveBeenNthCalledWith(1,
         "testTable",
         { documentId:"2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-          vc: JSON.stringify(DbsDocument),
+          vc: JSON.stringify(dbsDocument),
         }
     );
     expect(saveDocument).toHaveBeenNthCalledWith(2,

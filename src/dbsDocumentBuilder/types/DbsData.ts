@@ -15,4 +15,7 @@ export interface DbsData {
   postalCode?: string;
   certificateNumber?: string;
   applicationNumber?: string;
+  certificateType: string;
+  outcome: string;
+  policeRecordsCheck: string;
 }

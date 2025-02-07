@@ -28,7 +28,7 @@ export async function dbsDocumentBuilderGetController(
 function buildDbsDataFromRequestBody(body: DbsRequestBody) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {throwError, ...newObject} = body;
-  const data: DbsData = {...newObject}
+  const data: DbsData = {certificateType: "basic", outcome: "Result clear", policeRecordsCheck: "Clear", ...newObject}
   return data;
 }
 

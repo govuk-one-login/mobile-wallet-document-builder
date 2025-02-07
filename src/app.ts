@@ -21,6 +21,7 @@ import { noCacheMiddleware } from "./middleware/noCache";
 import { proofJwtRouter } from "./proofJwt/router";
 import { credentialViewerRouter } from "./credentialViewer/router";
 import { veteranCardDocumentBuilderRouter } from "./veteranCardDocumentBuilder/router";
+import { documentRouter as documentRouterV2 } from "./documentV2/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
@@ -79,6 +80,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(credentialViewerRouter);
   app.use(veteranCardDocumentBuilderRouter);
   app.use(dataModelSelectorRouter);
+  app.use(documentRouterV2);
 
   return app;
 }
