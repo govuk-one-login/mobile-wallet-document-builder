@@ -2,7 +2,6 @@ import { DbsCredentialSubject } from "../types/DbsCredentialSubject";
 import { DbsRequestBody } from "../types/DbsRequestBody";
 import { getNameParts } from "../../utils/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
-import { getExpirationDate } from "../utils/getExpirationDate";
 
 export class DbsDocument {
   public readonly type: string[];
@@ -29,7 +28,7 @@ export class DbsDocument {
     const type = ["VerifiableCredential", credentialType];
     const credentialSubject: DbsCredentialSubject = {
       issuanceDate: `${input["issuance-year"]}-${input["issuance-month"]}-${input["issuance-day"]}`,
-      expirationDate: getExpirationDate(),
+      expirationDate: `${input["expiration-year"]}-${input["expiration-month"]}-${input["expiration-day"]}`,
       name: [{ nameParts: getNameParts(input.firstName, input.lastName) }],
       birthDate: [
         {

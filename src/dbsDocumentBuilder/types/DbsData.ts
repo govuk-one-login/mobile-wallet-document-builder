@@ -2,6 +2,9 @@ export interface DbsData {
   "issuance-day"?: string;
   "issuance-month"?: string;
   "issuance-year"?: string;
+  "expiration-day"?: string;
+  "expiration-month"?: string;
+  "expiration-year"?: string;
   "birth-day"?: string;
   "birth-month"?: string;
   "birth-year"?: string;

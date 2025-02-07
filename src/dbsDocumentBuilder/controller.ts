@@ -5,9 +5,12 @@ import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import {getDocumentsTableName, getDocumentsV2TableName} from "../config/appConfig";
-import {DbsRequestBody} from "./types/DbsRequestBody";
-import {DbsData} from "./types/DbsData";
+import {
+  getDocumentsTableName,
+  getDocumentsV2TableName,
+} from "../config/appConfig";
+import { DbsRequestBody } from "./types/DbsRequestBody";
+import { DbsData } from "./types/DbsData";
 
 const CREDENTIAL_TYPE = CredentialType.basicCheckCredential;
 
@@ -27,8 +30,13 @@ export async function dbsDocumentBuilderGetController(
 
 function buildDbsDataFromRequestBody(body: DbsRequestBody) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const {throwError, ...newObject} = body;
-  const data: DbsData = {certificateType: "basic", outcome: "Result clear", policeRecordsCheck: "Clear", ...newObject}
+  const { throwError, ...newObject } = body;
+  const data: DbsData = {
+    certificateType: "basic",
+    outcome: "Result clear",
+    policeRecordsCheck: "Clear",
+    ...newObject,
+  };
   return data;
 }
 
@@ -44,12 +52,19 @@ export async function dbsDocumentBuilderPostController(
 
     const selectedError = body["throwError"];
 
-
     const document = DbsDocument.fromRequestBody(body, CREDENTIAL_TYPE);
-    await saveDocument(getDocumentsTableName(), {documentId, vc: JSON.stringify(document)}) //v1
+    await saveDocument(getDocumentsTableName(), {
+      documentId,
+      vc: JSON.stringify(document),
+    }); //v1
 
     const data = buildDbsDataFromRequestBody(body);
-    await saveDocument(getDocumentsV2TableName(), {documentId, data, vcDataModel: req.cookies["dataModel"], vcType: CREDENTIAL_TYPE}) //v2
+    await saveDocument(getDocumentsV2TableName(), {
+      documentId,
+      data,
+      vcDataModel: req.cookies["dataModel"],
+      vcType: CREDENTIAL_TYPE,
+    }); //v2
 
     res.redirect(
       `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`

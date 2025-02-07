@@ -7,7 +7,7 @@ import { stsStubAccessTokenRouter } from "./stsStubAccessToken/router";
 import nunjucks from "nunjucks";
 import path from "path";
 import { stsStubJwksRouter } from "./stsStubJwks/router";
-import { dataModelSelectorRouter} from "./dataModelSelector/router"
+import { dataModelSelectorRouter } from "./dataModelSelector/router";
 import { documentSelectorRouter } from "./documentSelector/router";
 import { ninoDocumentBuilderRouter } from "./ninoDocumentBuilder/router";
 import { loggerMiddleware } from "./middleware/logger";

@@ -3,9 +3,9 @@ import { getDocument } from "../services/databaseService";
 import { logger } from "../middleware/logger";
 import { getPhoto } from "../services/s3Service";
 import { CredentialType } from "../types/CredentialType";
-import {getDocumentsV2TableName} from "../config/appConfig";
-import {VeteranCardData} from "../veteranCardDocumentBuilder/types/VeteranCardData";
-import {TableItemV2} from "../types/TableItemV2";
+import { getDocumentsV2TableName } from "../config/appConfig";
+import { VeteranCardData } from "../veteranCardDocumentBuilder/types/VeteranCardData";
+import { TableItemV2 } from "../types/TableItemV2";
 
 export async function documentController(
   req: Request,
@@ -14,7 +14,9 @@ export async function documentController(
   try {
     const { documentId } = req.params;
     const tableName = getDocumentsV2TableName();
-    const databaseItem = await getDocument(tableName, documentId) as TableItemV2 | undefined;
+    const databaseItem = (await getDocument(tableName, documentId)) as
+      | TableItemV2
+      | undefined;
 
     if (!databaseItem) {
       logger.error(`Document with ID ${documentId} not found`);
@@ -24,8 +26,7 @@ export async function documentController(
     const { data } = databaseItem;
 
     if (databaseItem.vcType === CredentialType.digitalVeteranCard) {
-
-      const s3Uri = (data as VeteranCardData).photo
+      const s3Uri = (data as VeteranCardData).photo;
 
       const { bucketName, fileName } = getBucketAndFileName(s3Uri);
 
@@ -34,11 +35,10 @@ export async function documentController(
         logger.error(`Photo for document with ID ${documentId} not found`);
         return res.status(404).send();
       }
-      (data as VeteranCardData).photo =
-        photo;
+      (data as VeteranCardData).photo = photo;
     }
 
-    return res.status(200).json(document);
+    return res.status(200).json(databaseItem);
   } catch (error) {
     logger.error(error, "An error happened processing request to get document");
     return res.status(500).send();

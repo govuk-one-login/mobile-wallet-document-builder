@@ -8,9 +8,13 @@ import { isAuthenticated } from "../utils/isAuthenticated";
 import { readFileSync } from "fs";
 import path from "path";
 import { uploadPhoto } from "../services/s3Service";
-import {getDocumentsTableName, getDocumentsV2TableName, getPhotosBucketName} from "../config/appConfig";
-import {VeteranCardData} from "./types/VeteranCardData";
-import {VeteranCardRequestBody} from "./types/VeteranCardRequestBody";
+import {
+  getDocumentsTableName,
+  getDocumentsV2TableName,
+  getPhotosBucketName,
+} from "../config/appConfig";
+import { VeteranCardData } from "./types/VeteranCardData";
+import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
 
 const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
@@ -31,10 +35,13 @@ export async function veteranCardDocumentBuilderGetController(
   }
 }
 
-function buildVeteranCardDataFromRequestBody(body: VeteranCardRequestBody, s3Uri: string) {
+function buildVeteranCardDataFromRequestBody(
+  body: VeteranCardRequestBody,
+  s3Uri: string
+) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const {throwError, ...newObject} = body;
-  const data: VeteranCardData = {...newObject, photo: s3Uri}
+  const { throwError, ...newObject } = body;
+  const data: VeteranCardData = { ...newObject, photo: s3Uri };
   return data;
 }
 
@@ -59,10 +66,17 @@ export async function veteranCardDocumentBuilderPostController(
       CREDENTIAL_TYPE,
       s3Uri
     );
-    await saveDocument(getDocumentsTableName(), {documentId, vc: JSON.stringify(document)}) //v1
+    await saveDocument(getDocumentsTableName(), {
+      documentId,
+      vc: JSON.stringify(document),
+    }); //v1
     const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
-    await saveDocument(getDocumentsV2TableName(), {documentId, data, vcDataModel: req.cookies["dataModel"], vcType: CREDENTIAL_TYPE}) //v2
-
+    await saveDocument(getDocumentsV2TableName(), {
+      documentId,
+      data,
+      vcDataModel: req.cookies["dataModel"],
+      vcType: CREDENTIAL_TYPE,
+    }); //v2
 
     res.redirect(
       `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`

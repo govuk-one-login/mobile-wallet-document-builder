@@ -6,8 +6,8 @@ import { DbsDocument } from "../dbsDocumentBuilder/models/dbsDocument";
 import { VeteranCardDocument } from "../veteranCardDocumentBuilder/models/veteranCardDocument";
 import { getPhoto } from "../services/s3Service";
 import { CredentialType } from "../types/CredentialType";
-import {getDocumentsTableName} from "../config/appConfig";
-import {TableItemV1} from "../types/TableItemV1";
+import { getDocumentsTableName } from "../config/appConfig";
+import { TableItemV1 } from "../types/TableItemV1";
 
 export async function documentController(
   req: Request,
@@ -16,7 +16,9 @@ export async function documentController(
   try {
     const { documentId } = req.params;
     const tableName = getDocumentsTableName();
-    const databaseItem = await getDocument(tableName, documentId) as TableItemV1 | undefined;
+    const databaseItem = (await getDocument(tableName, documentId)) as
+      | TableItemV1
+      | undefined;
 
     if (!databaseItem) {
       logger.error(`Document with ID ${documentId} not found`);

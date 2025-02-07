@@ -14,10 +14,13 @@ describe("dbsDocument.ts", () => {
   });
 
   it("should return the DBS document in the correct format and without any whitespaces", () => {
-    const documentDetails = {
+    const requestBody = {
       "issuance-day": "16",
       "issuance-month": "1",
-      "issuance-year": " 2024     ",
+      "issuance-year": " 2025",
+      "expiration-day": "16",
+      "expiration-month": "1",
+      "expiration-year": " 2026",
       firstName: "Sarah Elizabeth",
       lastName: "Edwards   ",
       "birth-day": "6",
@@ -38,15 +41,15 @@ describe("dbsDocument.ts", () => {
     };
 
     const document = DbsDocument.fromRequestBody(
-      documentDetails,
+      requestBody,
       <CredentialType>"BasicCheckCredential"
     );
 
     expect(document).toEqual({
       type: ["VerifiableCredential", "BasicCheckCredential"],
       credentialSubject: {
-        issuanceDate: "2024-1-16",
-        expirationDate: "2025-04-05",
+        issuanceDate: "2025-1-16",
+        expirationDate: "2026-1-16",
         name: [
           {
             nameParts: [
@@ -84,10 +87,13 @@ describe("dbsDocument.ts", () => {
   });
 
   it("should return the DBS document with empty string values when fields are left blank", () => {
-    const documentDetails = {
+    const requestBody = {
       "issuance-day": "",
       "issuance-month": "",
       "issuance-year": "2024",
+      "expiration-day": "",
+      "expiration-month": "1",
+      "expiration-year": " 2026",
       firstName: "Sarah",
       lastName: "Edwards",
       "birth-day": "6",
@@ -108,7 +114,7 @@ describe("dbsDocument.ts", () => {
     };
 
     const document = DbsDocument.fromRequestBody(
-      documentDetails,
+      requestBody,
       <CredentialType>"BasicCheckCredential"
     );
 
@@ -134,7 +140,7 @@ describe("dbsDocument.ts", () => {
           },
         ],
         birthDate: [{ value: "1980--6" }],
-        expirationDate: "2025-04-05",
+        expirationDate: "2026-1-",
         issuanceDate: "2024--",
         name: [
           {
@@ -150,10 +156,13 @@ describe("dbsDocument.ts", () => {
   });
 
   it("should return the first name and issue year as provided", () => {
-    const documentDetails = {
+    const requestBody = {
       "issuance-day": "16",
       "issuance-month": "1",
       "issuance-year": "cab=*;ds",
+      "expiration-day": "16",
+      "expiration-month": "1",
+      "expiration-year": " 2026",
       firstName: "&9hj,%^y",
       lastName: "Edwards",
       "birth-day": "6",
@@ -174,7 +183,7 @@ describe("dbsDocument.ts", () => {
     };
 
     const document = DbsDocument.fromRequestBody(
-      documentDetails,
+      requestBody,
       <CredentialType>"BasicCheckCredential"
     );
 
@@ -200,7 +209,7 @@ describe("dbsDocument.ts", () => {
           },
         ],
         birthDate: [{ value: "1980-3-6" }],
-        expirationDate: "2025-04-05",
+        expirationDate: "2026-1-16",
         issuanceDate: "cab=*;ds-1-16",
         name: [
           {

@@ -1,4 +1,4 @@
-export interface VeteranCardData{
+export interface VeteranCardData {
   givenName: string;
   familyName: string;
   "dateOfBirth-day": string;

@@ -6,29 +6,28 @@ import {
   GetCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { logger } from "../middleware/logger";
-import {TableItemV1} from "../types/TableItemV1";
-import {TableItemV2} from "../types/TableItemV2";
+import { TableItemV1 } from "../types/TableItemV1";
+import { TableItemV2 } from "../types/TableItemV2";
 
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());
 const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
 export async function saveDocument(
-  tableName: string, item: TableItemV1 | TableItemV2
+  tableName: string,
+  item: TableItemV1 | TableItemV2
 ): Promise<void> {
-
   const command = new PutCommand({
     TableName: tableName,
     Item: item,
   });
 
-    await documentClient.send(command);
+  await documentClient.send(command);
 }
 
 export async function getDocument(
-    tableName: string,
-    documentId: string,
+  tableName: string,
+  documentId: string
 ): Promise<TableItemV1 | TableItemV2 | undefined> {
-
   const command = new GetCommand({
     TableName: tableName,
     Key: {
@@ -43,5 +42,4 @@ export async function getDocument(
     return undefined;
   }
   return Item as TableItemV1 | TableItemV2;
-
 }

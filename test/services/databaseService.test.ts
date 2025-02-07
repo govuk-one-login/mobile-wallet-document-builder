@@ -7,10 +7,9 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { saveDocument, getDocument } from "../../src/services/databaseService";
 import "aws-sdk-client-mock-jest";
-import {TableItemV2} from "../../src/types/TableItemV2";
+import { TableItemV2 } from "../../src/types/TableItemV2";
 
 describe("databaseService.ts", () => {
-
   const item = {
     documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
     data: {
@@ -21,11 +20,9 @@ describe("databaseService.ts", () => {
     },
     vcDataModel: "v2.0",
     vcType: "SocialSecurityCredential",
-
-  } as TableItemV2
+  } as TableItemV2;
 
   it("should save a document to the database table", async () => {
-
     const putItemCommand = {
       TableName: "testTable",
       Item: item,
@@ -37,29 +34,25 @@ describe("databaseService.ts", () => {
       },
     });
 
-    await expect(
-      saveDocument("testTable",item)
-    ).resolves.not.toThrow();
+    await expect(saveDocument("testTable", item)).resolves.not.toThrow();
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });
 
   it("should throw an error caught when trying to save a document", async () => {
-
     const putItemCommand = {
       TableName: "testTable",
-      Item: item
+      Item: item,
     };
     const dynamoDbMock = mockClient(DynamoDBDocumentClient);
     dynamoDbMock.on(PutCommand).rejectsOnce("SOME_DATABASE_ERROR");
 
-    await expect(
-      saveDocument("testTable", item)
-    ).rejects.toThrow("SOME_DATABASE_ERROR");
+    await expect(saveDocument("testTable", item)).rejects.toThrow(
+      "SOME_DATABASE_ERROR"
+    );
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });
 
   it("should get a document from the database table by documentId and return it", async () => {
-
     const getCommandInput = {
       TableName: "testTable",
       Key: {
@@ -71,10 +64,13 @@ describe("databaseService.ts", () => {
       $metadata: {
         httpStatusCode: 200,
       },
-      Item: item
+      Item: item,
     });
 
-    const response = await getDocument("testTable","2e0fac05-4b38-480f-9cbd-b046eabe1e46");
+    const response = await getDocument(
+      "testTable",
+      "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+    );
 
     expect(response).toEqual(item);
     expect(databaseMockClient).toHaveReceivedCommandWith(
@@ -91,7 +87,10 @@ describe("databaseService.ts", () => {
       },
     });
 
-    const response = await getDocument("testTable", "2e0fac05-4b38-480f-9cbd-b046eabe1e46");
+    const response = await getDocument(
+      "testTable",
+      "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+    );
 
     expect(response).toEqual(undefined);
   });

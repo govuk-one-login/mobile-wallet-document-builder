@@ -55,7 +55,7 @@ describe("controller.ts", () => {
     };
     const req = getMockReq({
       body: requestBody,
-      cookies: { "dataModel": "v2.0"}
+      cookies: { dataModel: "v2.0" },
     });
     const { res } = getMockRes();
     const ninoDocument = {
@@ -86,24 +86,21 @@ describe("controller.ts", () => {
       requestBody,
       "SocialSecurityCredential"
     );
-    expect(saveDocument).toHaveBeenNthCalledWith(1,
-      "testTable",
-        { documentId:"2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-          vc: JSON.stringify(ninoDocument)
-        }
-    );
-    expect(saveDocument).toHaveBeenNthCalledWith(2,
-        "testTable2", {
-          documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-          data: {
-            title: "Ms",
-            givenName: "Irene",
-            familyName: "Adler",
-            nino: "QQ123456A",
-          },
-          vcDataModel: "v2.0",
-          vcType: "SocialSecurityCredential",
-        });
+    expect(saveDocument).toHaveBeenNthCalledWith(1, "testTable", {
+      documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+      vc: JSON.stringify(ninoDocument),
+    });
+    expect(saveDocument).toHaveBeenNthCalledWith(2, "testTable2", {
+      documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+      data: {
+        title: "Ms",
+        givenName: "Irene",
+        familyName: "Adler",
+        nino: "QQ123456A",
+      },
+      vcDataModel: "v2.0",
+      vcType: "SocialSecurityCredential",
+    });
   });
 
   it("should render an error page when an error happens", async () => {
