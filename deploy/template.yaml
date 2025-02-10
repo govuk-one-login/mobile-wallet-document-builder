@@ -679,7 +679,7 @@ Resources:
   PhotosBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "${AWS::StackName}-photos"
+      BucketName: !Sub "${AWS::StackName}-${Environment}-photos"
       VersioningConfiguration:
         Status: Enabled
       BucketEncryption:
@@ -693,7 +693,7 @@ Resources:
         RestrictPublicBuckets: true
       LoggingConfiguration:
         DestinationBucketName: !Ref PhotosBucketAccessLogs
-        LogFilePrefix: !Sub "${AWS::StackName}-photos-access-logs"
+        LogFilePrefix: !Sub ${AWS::StackName}-${Environment}-photos-access-logs
       Tags:
         - Key: Product
           Value: GOV.UK Sign In
@@ -726,7 +726,7 @@ Resources:
   PhotosBucketAccessLogs:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "${AWS::StackName}-photos-access-logs"
+      BucketName: !Sub ${AWS::StackName}-${Environment}-photos-access-logs
       VersioningConfiguration:
         Status: Enabled
       PublicAccessBlockConfiguration:
