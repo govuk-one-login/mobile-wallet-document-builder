@@ -5,6 +5,8 @@ import {
 import { DbsDocument } from "../../src/dbsDocumentBuilder/models/dbsDocument";
 import * as databaseService from "../../src/services/databaseService";
 import { getMockReq, getMockRes } from "@jest-mock/express";
+process.env.DOCUMENTS_TABLE_NAME = "testTable";
+process.env.DOCUMENTS_V2_TABLE_NAME = "testTable2";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
@@ -47,7 +49,10 @@ describe("controller.ts", () => {
     const requestBody = {
       "issuance-day": "16",
       "issuance-month": "1",
-      "issuance-year": "2024",
+      "issuance-year": "2025",
+      "expiration-day": "16",
+      "expiration-month": "1",
+      "expiration-year": " 2026",
       firstName: "Sarah Elizabeth",
       lastName: "Edwards",
       "birth-day": "6",
@@ -61,17 +66,21 @@ describe("controller.ts", () => {
       postalCode: "NW3 3RX",
       certificateNumber: "009878863",
       applicationNumber: "E0023455534",
+      certificateType: "basic",
+      outcome: "Result clear",
+      policeRecordsCheck: "Clear",
       throwError: "ERROR:500",
     };
     const req = getMockReq({
       body: requestBody,
+      cookies: { dataModel: "v2.0" },
     });
     const { res } = getMockRes();
     const dbsDocument = {
       type: ["VerifiableCredential", "BasicCheckCredential"],
       credentialSubject: {
-        issuanceDate: "2024-1-16",
-        expirationDate: "2025-3-6",
+        issuanceDate: "2025-1-16",
+        expirationDate: "2026-1-16",
         name: [
           {
             nameParts: [
@@ -117,17 +126,49 @@ describe("controller.ts", () => {
       requestBody,
       "BasicCheckCredential"
     );
-    expect(saveDocument).toHaveBeenCalledWith(
-      dbsDocument,
-      "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
-    );
+    expect(saveDocument).toHaveBeenNthCalledWith(1, "testTable", {
+      documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+      vc: JSON.stringify(dbsDocument),
+    });
+    expect(saveDocument).toHaveBeenNthCalledWith(2, "testTable2", {
+      documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+      data: {
+        "issuance-day": "16",
+        "issuance-month": "1",
+        "issuance-year": "2025",
+        "expiration-day": "16",
+        "expiration-month": "1",
+        "expiration-year": " 2026",
+        "birth-day": "6",
+        "birth-month": "3",
+        "birth-year": "1980",
+        firstName: "Sarah Elizabeth",
+        lastName: "Edwards",
+        subBuildingName: "Flat 11",
+        buildingName: "Blashford",
+        streetName: "Adelaide Road",
+        addressLocality: "London",
+        addressCountry: "GB",
+        postalCode: "NW3 3RX",
+        certificateNumber: "009878863",
+        applicationNumber: "E0023455534",
+        certificateType: "basic",
+        outcome: "Result clear",
+        policeRecordsCheck: "Clear",
+      },
+      vcDataModel: "v2.0",
+      vcType: "BasicCheckCredential",
+    });
   });
 
   it("should render an error page when an error happens", async () => {
     const requestBody = {
       "issuance-day": "16",
       "issuance-month": "1",
-      "issuance-year": "2024",
+      "issuance-year": "2025",
+      "expiration-day": "16",
+      "expiration-month": "1",
+      "expiration-year": " 2026",
       firstName: "Sarah Elizabeth",
       lastName: "Edwards",
       "birth-day": "6",
@@ -141,16 +182,20 @@ describe("controller.ts", () => {
       postalCode: "NW3 3RX",
       certificateNumber: "009878863",
       applicationNumber: "E0023455534",
+      certificateType: "basic",
+      outcome: "Result clear",
+      policeRecordsCheck: "Clear",
     };
     const req = getMockReq({
       body: requestBody,
+      cookies: { dataModel: "v2.0" },
     });
     const { res } = getMockRes();
     const dbsDocument = {
       type: ["VerifiableCredential", "BasicCheckCredential"],
       credentialSubject: {
-        issuanceDate: "2024-1-16",
-        expirationDate: "2025-3-6",
+        issuanceDate: "2025-1-16",
+        expirationDate: "2026-1-6",
         name: [
           {
             nameParts: [

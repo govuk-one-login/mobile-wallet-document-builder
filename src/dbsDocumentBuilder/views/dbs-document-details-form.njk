@@ -38,7 +38,35 @@
                     {
                         "classes": "govuk-input--width-3",
                         "name": "year",
-                        "value": "2024"
+                        "value": "2025"
+                    }
+                ]
+            }) }}
+            {{ govukDateInput({
+                "id": "expiration-date",
+                "namePrefix": "expiration",
+                "fieldset": {
+                    "legend": {
+                        "text": "Expiration date",
+                        "isPageHeading": true,
+                        "classes": "govuk-fieldset__legend--s"
+                    }
+                },
+                "items": [
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "day",
+                        "value": "16"
+                    },
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "month",
+                        "value": "01"
+                    },
+                    {
+                        "classes": "govuk-input--width-3",
+                        "name": "year",
+                        "value": "2026"
                     }
                 ]
             }) }}

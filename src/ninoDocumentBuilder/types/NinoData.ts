@@ -1,4 +1,4 @@
-export interface NinoInputData {
+export interface NinoData {
   title?: string;
   givenName?: string;
   familyName?: string;
