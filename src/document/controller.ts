@@ -24,7 +24,7 @@ export async function documentController(
       logger.error(`Document with ID ${documentId} not found`);
       return res.status(404).send();
     }
-    const documentString = databaseItem.vc as string;
+    const documentString = databaseItem.vc;
     const document: NinoDocument | DbsDocument | VeteranCardDocument =
       JSON.parse(documentString);
 
