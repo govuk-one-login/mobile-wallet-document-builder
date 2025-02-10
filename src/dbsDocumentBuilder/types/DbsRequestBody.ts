@@ -1,7 +1,10 @@
-export interface DbsInputData {
+export interface DbsRequestBody {
   "issuance-day"?: string;
   "issuance-month"?: string;
   "issuance-year"?: string;
+  "expiration-day"?: string;
+  "expiration-month"?: string;
+  "expiration-year"?: string;
   "birth-day"?: string;
   "birth-month"?: string;
   "birth-year"?: string;
@@ -15,4 +18,5 @@ export interface DbsInputData {
   postalCode?: string;
   certificateNumber?: string;
   applicationNumber?: string;
+  throwError: string;
 }

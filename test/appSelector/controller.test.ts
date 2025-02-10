@@ -61,7 +61,7 @@ describe("controller.ts", () => {
       httpOnly: true,
       maxAge: 100000,
     });
-    expect(res.redirect).toHaveBeenCalledWith("/select-document");
+    expect(res.redirect).toHaveBeenCalledWith("/select-vc-data-model");
   });
 
   it("should re-render the form for selecting an app when no choice was selected", async () => {

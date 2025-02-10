@@ -8,7 +8,13 @@ import { isAuthenticated } from "../utils/isAuthenticated";
 import { readFileSync } from "fs";
 import path from "path";
 import { uploadPhoto } from "../services/s3Service";
-import { getPhotosBucketName } from "../config/appConfig";
+import {
+  getDocumentsTableName,
+  getDocumentsV2TableName,
+  getPhotosBucketName,
+} from "../config/appConfig";
+import { VeteranCardData } from "./types/VeteranCardData";
+import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
 
 const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
@@ -40,16 +46,26 @@ export async function veteranCardDocumentBuilderPostController(
     const mimeType = "image/jpeg";
     await uploadPhoto(staticPhotoBuffer, documentId, bucketName, mimeType);
     const s3Uri = `s3://${bucketName}/${documentId}`;
+    const body: VeteranCardRequestBody = req.body;
+    const selectedError = body["throwError"];
 
     const document = VeteranCardDocument.fromRequestBody(
-      req.body,
+      body,
       CREDENTIAL_TYPE,
       s3Uri
     );
+    await saveDocument(getDocumentsTableName(), {
+      documentId,
+      vc: JSON.stringify(document),
+    }); //v1
 
-    await saveDocument(document, documentId);
-
-    const selectedError = req.body["throwError"];
+    const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
+    await saveDocument(getDocumentsV2TableName(), {
+      documentId,
+      data,
+      vcDataModel: req.cookies["dataModel"],
+      vcType: CREDENTIAL_TYPE,
+    }); //v2
 
     res.redirect(
       `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`
@@ -66,4 +82,14 @@ export async function veteranCardDocumentBuilderPostController(
 function getImageBuffer(): Buffer {
   const filePath = path.resolve(__dirname, "../resources/photo.jpg");
   return readFileSync(filePath);
+}
+
+function buildVeteranCardDataFromRequestBody(
+    body: VeteranCardRequestBody,
+    s3Uri: string
+) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { throwError, ...newObject } = body;
+  const data: VeteranCardData = { ...newObject, photo: s3Uri };
+  return data;
 }

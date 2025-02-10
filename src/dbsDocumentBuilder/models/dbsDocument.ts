@@ -1,8 +1,7 @@
 import { DbsCredentialSubject } from "../types/DbsCredentialSubject";
-import { DbsInputData } from "../types/DbsInputData";
+import { DbsRequestBody } from "../types/DbsRequestBody";
 import { getNameParts } from "../../utils/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
-import { getExpirationDate } from "../utils/getExpirationDate";
 
 export class DbsDocument {
   public readonly type: string[];
@@ -17,11 +16,11 @@ export class DbsDocument {
    * A static method for mapping a document's details into a document in the verifiable credential structure.
    *
    * @returns a document
-   * @param input {DbsInputData}
+   * @param input {DbsRequestBody}
    * @param credentialType {CredentialType}
    */
   static fromRequestBody(
-    input: DbsInputData,
+    input: DbsRequestBody,
     credentialType: CredentialType
   ): DbsDocument {
     this.trimRequestBody(input);
@@ -29,7 +28,7 @@ export class DbsDocument {
     const type = ["VerifiableCredential", credentialType];
     const credentialSubject: DbsCredentialSubject = {
       issuanceDate: `${input["issuance-year"]}-${input["issuance-month"]}-${input["issuance-day"]}`,
-      expirationDate: getExpirationDate(),
+      expirationDate: `${input["expiration-year"]}-${input["expiration-month"]}-${input["expiration-day"]}`,
       name: [{ nameParts: getNameParts(input.firstName, input.lastName) }],
       birthDate: [
         {
@@ -60,10 +59,10 @@ export class DbsDocument {
     return new DbsDocument(type, credentialSubject);
   }
 
-  private static trimRequestBody(input: DbsInputData) {
+  private static trimRequestBody(input: DbsRequestBody) {
     for (const key in input) {
-      const trimmed = input[key as keyof DbsInputData]!.trim();
-      input[key as keyof DbsInputData] = trimmed;
+      const trimmed = input[key as keyof DbsRequestBody]!.trim();
+      input[key as keyof DbsRequestBody] = trimmed;
     }
   }
 }

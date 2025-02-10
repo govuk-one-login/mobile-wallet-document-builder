@@ -378,6 +378,8 @@ Resources:
               Value: !Ref ContainerPort
             - Name: DOCUMENTS_TABLE_NAME
               Value: !Ref DocumentDatabase
+            - Name: DOCUMENTS_V2_TABLE_NAME
+              Value: !Ref DocumentV2Database
             - Name: PHOTOS_BUCKET_NAME
               Value: !Ref PhotosBucket
             - Name: ENVIRONMENT
@@ -492,6 +494,11 @@ Resources:
                   - 'dynamodb:PutItem'
                   - 'dynamodb:GetItem'
                 Resource: !GetAtt DocumentDatabase.Arn
+              - Effect: Allow
+                Action:
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:GetItem'
+                Resource: !GetAtt DocumentV2Database.Arn
               - Effect: Allow
                 Action:
                   - 'kms:Decrypt'
@@ -620,6 +627,35 @@ Resources:
           AttributeType: S
       BillingMode: PAY_PER_REQUEST
       TableName: !Sub "${AWS::StackName}-documents"
+      KeySchema:
+        - AttributeName: documentId
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+        SSEType: KMS
+        KMSMasterKeyId: !GetAtt DocumentDatabaseKmsKey.Arn
+      Tags:
+        - Key: Product
+          Value: GOV.UK Sign In
+        - Key: System
+          Value: Mobile Wallet
+        - Key: Owner
+          Value: Mobile Wallet Team
+        - Key: Environment
+          Value: !Ref "Environment"
+
+  DocumentV2Database:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: documentId
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      TableName: !Sub "${AWS::StackName}-documentsV2"
       KeySchema:
         - AttributeName: documentId
           KeyType: HASH
