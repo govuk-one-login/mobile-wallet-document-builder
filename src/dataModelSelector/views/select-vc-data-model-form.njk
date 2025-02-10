@@ -1,24 +1,31 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% extends "base.njk" %}
-{% set pageTitle = "Please select an app and environment:" %}
+{% set pageTitle = "Please select a Verifiable Credentials data model:" %}
 {% set showError = isInvalid %}
-{% set appOptions = apps %}
-
 {% block content %}
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
-    <form action="/select-app" method="post">
+    <form action="/select-vc-data-model" method="post">
         {{ govukRadios({
-                "id": "select-app-choice",
-                "name": "select-app-choice",
+                "id": "select-vc-data-model-choice",
+                "name": "select-vc-data-model-choice",
                 fieldset: {
                 legend: {
-                text: "Please select an app and environment:",
+                text: "Please select a Verifiable Credentials data model:",
                 isPageHeading: false,
                 classes: "govuk-fieldset__legend--m"
                 }
                 },
-                items: appOptions,
+                items: [
+                {
+                value: "v1.1",
+                text: "v1.1"
+                },
+                {
+                value: "v2.0",
+                text: "v2.0"
+                }
+                ],
                 errorMessage: {
                 text: "You must choose an option"
                 } if showError

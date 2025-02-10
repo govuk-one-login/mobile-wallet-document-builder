@@ -2,11 +2,11 @@ import {
   NinoCredentialSubject,
   SocialSecurityRecord,
 } from "../types/NinoCredentialSubject";
-import { NinoInputData } from "../types/NinoInputData";
+import { NinoRequestBody } from "../types/NinoRequestBody";
 import { getNameParts } from "../../utils/getNameParts";
 import { CredentialType } from "../../types/CredentialType";
 
-export function getSocialSecurityRecord(input: NinoInputData) {
+export function getSocialSecurityRecord(input: NinoRequestBody) {
   const socialSecurityRecord: SocialSecurityRecord[] = [];
   if (input.nino) {
     socialSecurityRecord.push({
@@ -29,11 +29,11 @@ export class NinoDocument {
    * A static method for mapping a document's details into a document in the verifiable credential structure.
    *
    * @returns a document
-   * @param input {NinoInputData}
+   * @param input {NinoRequestBody}
    * @param credentialType {CredentialType}
    */
   static fromRequestBody(
-    input: NinoInputData,
+    input: NinoRequestBody,
     credentialType: CredentialType
   ): NinoDocument {
     this.trimRequestBody(input);
@@ -55,10 +55,10 @@ export class NinoDocument {
     return new NinoDocument(type, credentialSubject);
   }
 
-  private static trimRequestBody(input: NinoInputData) {
+  private static trimRequestBody(input: NinoRequestBody) {
     for (const key in input) {
-      const trimmed = input[key as keyof NinoInputData]!.trim();
-      input[key as keyof NinoInputData] = trimmed;
+      const trimmed = input[key as keyof NinoRequestBody]!.trim();
+      input[key as keyof NinoRequestBody] = trimmed;
     }
   }
 }

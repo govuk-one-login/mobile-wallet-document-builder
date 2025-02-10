@@ -7,6 +7,7 @@ import { stsStubAccessTokenRouter } from "./stsStubAccessToken/router";
 import nunjucks from "nunjucks";
 import path from "path";
 import { stsStubJwksRouter } from "./stsStubJwks/router";
+import { dataModelSelectorRouter } from "./dataModelSelector/router";
 import { documentSelectorRouter } from "./documentSelector/router";
 import { ninoDocumentBuilderRouter } from "./ninoDocumentBuilder/router";
 import { loggerMiddleware } from "./middleware/logger";
@@ -20,6 +21,7 @@ import { noCacheMiddleware } from "./middleware/noCache";
 import { proofJwtRouter } from "./proofJwt/router";
 import { credentialViewerRouter } from "./credentialViewer/router";
 import { veteranCardDocumentBuilderRouter } from "./veteranCardDocumentBuilder/router";
+import { documentRouter as documentRouterV2 } from "./documentV2/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
@@ -27,6 +29,7 @@ const APP_VIEWS = [
   path.join(__dirname, "../src/dbsDocumentBuilder/views"),
   path.join(__dirname, "../src/ninoDocumentBuilder/views"),
   path.join(__dirname, "../src/appSelector/views"),
+  path.join(__dirname, "../src/dataModelSelector/views"),
   path.join(__dirname, "../src/documentSelector/views"),
   path.join(__dirname, "../src/loggedOut/views"),
   path.join(__dirname, "../src/credentialViewer/views"),
@@ -76,6 +79,8 @@ export async function createApp(): Promise<express.Application> {
   app.use(proofJwtRouter);
   app.use(credentialViewerRouter);
   app.use(veteranCardDocumentBuilderRouter);
+  app.use(dataModelSelectorRouter);
+  app.use(documentRouterV2);
 
   return app;
 }

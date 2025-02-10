@@ -1,4 +1,4 @@
-export interface VeteranCardInputData {
+export interface VeteranCardData {
   givenName: string;
   familyName: string;
   "dateOfBirth-day": string;
@@ -9,5 +9,5 @@ export interface VeteranCardInputData {
   "cardExpiryDate-year": string;
   serviceNumber: string;
   serviceBranch: string;
-  throwError: string;
+  photo: string;
 }

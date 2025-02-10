@@ -1,4 +1,4 @@
-import { VeteranCardInputData } from "../types/VeteranCardInputData";
+import { VeteranCardRequestBody } from "../types/VeteranCardRequestBody";
 import { getNameParts } from "../../utils/getNameParts";
 import { VeteranCredentialSubject } from "../types/VeteranCredentialSubject";
 import { CredentialType } from "../../types/CredentialType";
@@ -16,12 +16,12 @@ export class VeteranCardDocument {
    * A static method for mapping a document's details into a document in the verifiable credential structure.
    *
    * @returns a document
-   * @param input {VeteranCardInputData}
+   * @param input {VeteranCardRequestBody}
    * @param credentialType {CredentialType}
    * @param photoLocation {string}
    */
   static fromRequestBody(
-    input: VeteranCardInputData,
+    input: VeteranCardRequestBody,
     credentialType: CredentialType,
     photoLocation: string
   ): VeteranCardDocument {
@@ -61,10 +61,10 @@ export class VeteranCardDocument {
   }
 }
 
-function trimRequestBody(input: VeteranCardInputData) {
+function trimRequestBody(input: VeteranCardRequestBody) {
   for (const key in input) {
-    const trimmed = input[key as keyof VeteranCardInputData].trim();
-    input[key as keyof VeteranCardInputData] = trimmed;
+    const trimmed = input[key as keyof VeteranCardRequestBody].trim();
+    input[key as keyof VeteranCardRequestBody] = trimmed;
   }
 }
 
