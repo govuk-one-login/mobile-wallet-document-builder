@@ -711,12 +711,14 @@ Resources:
       PolicyDocument:
         Version: 2012-10-17
         Statement:
-          - Effect: Deny
-            Sid: AllowSSLRequestsOnly
-            Principal: "*"
-            Action: s3:*
+          - Sid: AllowSSLRequestsOnly
+            Effect: Deny
+            Principal:
+              AWS: "*"
+            Action: "*"
             Resource:
-              - !Sub arn:aws:s3:::${PhotosBucket}/*
+              - !Sub "${PhotosBucket.Arn}/*"
+              - !Sub "${PhotosBucket.Arn}"
             Condition:
               Bool:
                 "aws:SecureTransport": false
