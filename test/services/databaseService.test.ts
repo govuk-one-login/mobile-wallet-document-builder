@@ -38,7 +38,7 @@ describe("databaseService.ts", () => {
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });
 
-  it("should throw an error caught when trying to save a document", async () => {
+  it("should throw the error thrown by the DynamoDB client when trying to save a document", async () => {
     const putItemCommand = {
       TableName: "testTable",
       Item: item,
@@ -95,7 +95,7 @@ describe("databaseService.ts", () => {
     expect(response).toEqual(undefined);
   });
 
-  it("should throw an error caught when trying to get a document", async () => {
+  it("should throw the error thrown by the DyanamoDB client when trying to get a document", async () => {
     const databaseMockClient = mockClient(DynamoDBDocumentClient);
     databaseMockClient.on(GetCommand).rejectsOnce("SOME_ERROR");
 

@@ -5,7 +5,7 @@ import { getCookieExpiry } from "../config/appConfig";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 
 export interface DataModelSelectorConfig {
-  cookieExpiry?: number;
+  cookieExpiry: number;
 }
 
 export function dataModelSelectorGetController(

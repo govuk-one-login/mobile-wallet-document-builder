@@ -28,18 +28,6 @@ export async function dbsDocumentBuilderGetController(
   }
 }
 
-function buildDbsDataFromRequestBody(body: DbsRequestBody) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { throwError, ...newObject } = body;
-  const data: DbsData = {
-    certificateType: "basic",
-    outcome: "Result clear",
-    policeRecordsCheck: "Clear",
-    ...newObject,
-  };
-  return data;
-}
-
 export async function dbsDocumentBuilderPostController(
   req: Request,
   res: Response
@@ -47,9 +35,7 @@ export async function dbsDocumentBuilderPostController(
   try {
     const documentId = randomUUID();
     logger.info(`Processing DBS document with documentId ${documentId}`);
-
     const body: DbsRequestBody = req.body;
-
     const selectedError = body["throwError"];
 
     const document = DbsDocument.fromRequestBody(body, CREDENTIAL_TYPE);
@@ -73,4 +59,16 @@ export async function dbsDocumentBuilderPostController(
     logger.error(error, "An error happened processing DBS document request");
     res.render("500.njk");
   }
+}
+
+function buildDbsDataFromRequestBody(body: DbsRequestBody) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { throwError, ...newObject } = body;
+  const data: DbsData = {
+    certificateType: "basic",
+    outcome: "Result clear",
+    policeRecordsCheck: "Clear",
+    ...newObject,
+  };
+  return data;
 }

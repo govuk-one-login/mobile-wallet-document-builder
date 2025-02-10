@@ -14,18 +14,18 @@ export async function documentController(
   try {
     const { documentId } = req.params;
     const tableName = getDocumentsV2TableName();
-    const databaseItem = (await getDocument(tableName, documentId)) as
+    const tableItem = (await getDocument(tableName, documentId)) as
       | TableItemV2
       | undefined;
 
-    if (!databaseItem) {
+    if (!tableItem) {
       logger.error(`Document with ID ${documentId} not found`);
       return res.status(404).send();
     }
 
-    const { data } = databaseItem;
+    const { data } = tableItem;
 
-    if (databaseItem.vcType === CredentialType.digitalVeteranCard) {
+    if (tableItem.vcType === CredentialType.digitalVeteranCard) {
       const s3Uri = (data as VeteranCardData).photo;
 
       const { bucketName, fileName } = getBucketAndFileName(s3Uri);
@@ -38,7 +38,7 @@ export async function documentController(
       (data as VeteranCardData).photo = photo;
     }
 
-    return res.status(200).json(databaseItem);
+    return res.status(200).json(tableItem);
   } catch (error) {
     logger.error(error, "An error happened processing request to get document");
     return res.status(500).send();

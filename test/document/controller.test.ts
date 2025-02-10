@@ -3,7 +3,6 @@ import * as documentStore from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
-process.env.DOCUMENTS_V2_TABLE_NAME = "testTable2";
 
 jest.mock("../../src/services/databaseService", () => ({
   getDocument: jest.fn(),

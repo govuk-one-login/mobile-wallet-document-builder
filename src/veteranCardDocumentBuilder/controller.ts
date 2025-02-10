@@ -35,16 +35,6 @@ export async function veteranCardDocumentBuilderGetController(
   }
 }
 
-function buildVeteranCardDataFromRequestBody(
-  body: VeteranCardRequestBody,
-  s3Uri: string
-) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { throwError, ...newObject } = body;
-  const data: VeteranCardData = { ...newObject, photo: s3Uri };
-  return data;
-}
-
 export async function veteranCardDocumentBuilderPostController(
   req: Request,
   res: Response
@@ -56,9 +46,7 @@ export async function veteranCardDocumentBuilderPostController(
     const mimeType = "image/jpeg";
     await uploadPhoto(staticPhotoBuffer, documentId, bucketName, mimeType);
     const s3Uri = `s3://${bucketName}/${documentId}`;
-
     const body: VeteranCardRequestBody = req.body;
-
     const selectedError = body["throwError"];
 
     const document = VeteranCardDocument.fromRequestBody(
@@ -70,6 +58,7 @@ export async function veteranCardDocumentBuilderPostController(
       documentId,
       vc: JSON.stringify(document),
     }); //v1
+
     const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsV2TableName(), {
       documentId,
@@ -93,4 +82,14 @@ export async function veteranCardDocumentBuilderPostController(
 function getImageBuffer(): Buffer {
   const filePath = path.resolve(__dirname, "../resources/photo.jpg");
   return readFileSync(filePath);
+}
+
+function buildVeteranCardDataFromRequestBody(
+    body: VeteranCardRequestBody,
+    s3Uri: string
+) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { throwError, ...newObject } = body;
+  const data: VeteranCardData = { ...newObject, photo: s3Uri };
+  return data;
 }

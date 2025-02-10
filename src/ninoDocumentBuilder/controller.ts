@@ -28,13 +28,6 @@ export async function ninoDocumentBuilderGetController(
   }
 }
 
-function buildNinoDataFromRequestBody(body: NinoRequestBody) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { throwError, ...newObject } = body;
-  const data: NinoData = { ...newObject };
-  return data;
-}
-
 export async function ninoDocumentBuilderPostController(
   req: Request,
   res: Response
@@ -42,9 +35,7 @@ export async function ninoDocumentBuilderPostController(
   try {
     const documentId = randomUUID();
     logger.info(`Processing NINO document with documentId ${documentId}`);
-
     const body: NinoRequestBody = req.body;
-
     const selectedError = body["throwError"];
 
     const document = NinoDocument.fromRequestBody(body, CREDENTIAL_TYPE);
@@ -68,4 +59,11 @@ export async function ninoDocumentBuilderPostController(
     logger.error(error, "An error happened processing NINO document request");
     res.render("500.njk");
   }
+}
+
+function buildNinoDataFromRequestBody(body: NinoRequestBody) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { throwError, ...newObject } = body;
+  const data: NinoData = { ...newObject };
+  return data;
 }
