@@ -1,4 +1,4 @@
-name: Verify & Publish to Dev
+name: Deploy to Dev
 
 on:
   workflow_dispatch:
