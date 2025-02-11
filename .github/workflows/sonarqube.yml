@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting.
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # pin@v4
@@ -26,7 +29,7 @@ jobs:
       - name: Generate coverage report
         run: npm run test:cov
 
-      - name: Run SonarQube Scan
+      - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@bfd4e558cda28cda6b5defafb9232d191be8c203 # v4.2.1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -34,10 +37,8 @@ jobs:
         with:
           projectBaseDir: ./
 
-      - name: Run SonarQube Quality Gate check
+      - name: SonarQube Quality Gate check
         uses: Sonarsource/sonarqube-quality-gate-action@8406f4f1edaffef38e9fb9c53eb292fc1d7684fa # master
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          scanMetadataReportFile: ${{ github.workspace }}/build/sonar/report-task.txt
