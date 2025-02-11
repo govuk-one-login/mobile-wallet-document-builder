@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  build-push-and-deploy:
+  build-and-push-image-and-deploy-sam-application:
     name: Build and push image, and deploy SAM application
     runs-on: ubuntu-latest
     env:
