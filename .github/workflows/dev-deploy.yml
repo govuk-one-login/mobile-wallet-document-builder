@@ -68,8 +68,7 @@ jobs:
           use-installer: true
 
       - name: Deploy SAM application
-        with:
-          working-directory: ./deploy
+        working-directory: ./deploy
         run: |
           echo "Running SAM build"
           sam build

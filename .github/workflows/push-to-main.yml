@@ -54,13 +54,11 @@ jobs:
           use-installer: true
 
       - name: Run SAM build
-        with:
-          working-directory: ./deploy
+        working-directory: ./deploy
         run: sam build
 
       - name: Update SAM template with ECR image reference
-        with:
-          working-directory: ./deploy
+        working-directory: ./deploy
         run: |
           sed -i "s|CONTAINER-IMAGE-PLACEHOLDER|$ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA|" template.yaml
 

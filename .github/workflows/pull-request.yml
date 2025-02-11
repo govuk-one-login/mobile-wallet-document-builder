@@ -40,12 +40,10 @@ jobs:
           use-installer: true
 
       - name: Run SAM Validate
-        with:
-          working-directory: ./deploy
+        working-directory: ./deploy
         run: |
           sam validate --lint
 
       - name: Run SAM build
-        with:
-          working-directory: ./deploy
+        working-directory: ./deploy
         run: sam build
