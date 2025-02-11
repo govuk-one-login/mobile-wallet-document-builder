@@ -1,50 +1,47 @@
 name: Pull-Request Checks
-
 on:
   pull_request:
-
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  ci:
-    name: 'Run tests, lint and validate'
-    runs-on: 'ubuntu-22.04'
+  build-validate-and-test:
+    name: Build, validate and test
+    runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout code'
-        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # pin@v3
+      - name: Check out repository code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: 'Setup nodeJS'
-        if: ${{ success() }}
+      - name: Setup Node.js
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # pin@v4
         with:
           node-version-file: .nvmrc
 
-      - name: 'Install dependencies'
-        if: ${{ success() }}
+      - name: Install dependencies
         run: npm install
 
-      - name: 'Build source code'
-        if: ${{ success() }}
+      - name: Build source code
         run: npm run build
 
-      - name: 'Run the linter'
-        if: ${{ success() }}
+      - name: Run linter
         run: npm run lint
 
-      - name: 'Run unit tests'
-        if: ${{ success() }}
+      - name: Run unit tests
         run: npm run test
 
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@819220f63fb333a9a394dd0a5cab2d8303fd17e2 # pin@v2
         with:
-          version: 1.90.0
+          version: 1.133.0
           use-installer: true
 
-      - name: SAM Validate
+      - name: Run SAM validate
         run: |
           echo "SAM_CLI_TELEMETRY=0" >> $GITHUB_ENV
-          cd deploy && sam validate --region eu-west-2
+          sam validate --lint -t deploy/template.yaml
+
+      - name: Run SAM build
+        run: |
+          sam build -t deploy/template.yaml
