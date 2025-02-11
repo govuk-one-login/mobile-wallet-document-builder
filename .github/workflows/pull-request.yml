@@ -10,6 +10,8 @@ jobs:
   build-validate-and-test:
     name: Build, validate and test
     runs-on: ubuntu-latest
+    env:
+      SAM_CLI_TELEMETRY: 0
     steps:
       - name: Check out repository code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -37,11 +39,13 @@ jobs:
           version: 1.133.0
           use-installer: true
 
-      - name: Run SAM validate
+      - name: Run SAM Validate
+        with:
+          working-directory: ./deploy
         run: |
-          echo "SAM_CLI_TELEMETRY=0" >> $GITHUB_ENV
-          sam validate --lint -t deploy/template.yaml
+          sam validate --lint
 
       - name: Run SAM build
-        run: |
-          sam build -t deploy/template.yaml
+        with:
+          working-directory: ./deploy
+        run: sam build
