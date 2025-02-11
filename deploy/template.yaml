@@ -325,8 +325,6 @@ Resources:
           Value: !Sub "${Environment}"
 
   WalletFEECSService:
-    DependsOn:
-      - WalletFELoadBalancerListener
     Type: 'AWS::ECS::Service'
     Properties:
       Cluster: !Ref WalletFECluster
@@ -779,9 +777,6 @@ Resources:
 
   DocBuilderLowContainerTaskCountAlarm:
     Condition: IsBuildOrStaging
-    DependsOn:
-      - WalletFECluster
-      - WalletFEECSService
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmName: !Sub "${AWS::StackName}-DocBuilderLowContainerTaskCountAlarm"
@@ -792,7 +787,6 @@ Resources:
       # AlarmActions:
       #   - !ImportValue platform-alarm-topic-critical-alert
       InsufficientDataActions: []
-      Dimensions: []
       EvaluationPeriods: 1
       DatapointsToAlarm: 1
       Threshold: 1
@@ -825,7 +819,6 @@ Resources:
       # AlarmActions:
       #   - !ImportValue platform-alarm-topic-slack-warning-alert
       InsufficientDataActions: []
-      Dimensions: []
       EvaluationPeriods: 1
       DatapointsToAlarm: 1
       Threshold: 50
