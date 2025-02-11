@@ -10,7 +10,7 @@ import { TableItemV2 } from "../types/TableItemV2";
 export async function documentController(
   req: Request,
   res: Response
-): Promise<Response> {
+): Promise<void> {
   try {
     const { documentId } = req.params;
     const tableName = getDocumentsV2TableName();
@@ -20,7 +20,8 @@ export async function documentController(
 
     if (!tableItem) {
       logger.error(`Document with ID ${documentId} not found`);
-      return res.status(404).send();
+      res.status(404).send();
+      return;
     }
 
     const { data } = tableItem;
@@ -33,15 +34,18 @@ export async function documentController(
       const photo = await getPhoto(fileName, bucketName);
       if (!photo) {
         logger.error(`Photo for document with ID ${documentId} not found`);
-        return res.status(404).send();
+        res.status(404).send();
+        return;
       }
       (data as VeteranCardData).photo = photo;
     }
 
-    return res.status(200).json(tableItem);
+    res.status(200).json(tableItem);
+    return;
   } catch (error) {
     logger.error(error, "An error happened processing request to get document");
-    return res.status(500).send();
+    res.status(500).send();
+    return;
   }
 }
 

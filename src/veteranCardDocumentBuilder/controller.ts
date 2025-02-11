@@ -85,8 +85,8 @@ function getImageBuffer(): Buffer {
 }
 
 function buildVeteranCardDataFromRequestBody(
-    body: VeteranCardRequestBody,
-    s3Uri: string
+  body: VeteranCardRequestBody,
+  s3Uri: string
 ) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { throwError, ...newObject } = body;

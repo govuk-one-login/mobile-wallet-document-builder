@@ -12,7 +12,7 @@ import { TableItemV1 } from "../types/TableItemV1";
 export async function documentController(
   req: Request,
   res: Response
-): Promise<Response> {
+): Promise<void> {
   try {
     const { documentId } = req.params;
     const tableName = getDocumentsTableName();
@@ -22,7 +22,8 @@ export async function documentController(
 
     if (!databaseItem) {
       logger.error(`Document with ID ${documentId} not found`);
-      return res.status(404).send();
+      res.status(404).send();
+      return;
     }
     const documentString = databaseItem.vc;
     const document: NinoDocument | DbsDocument | VeteranCardDocument =
@@ -37,16 +38,18 @@ export async function documentController(
       const photo = await getPhoto(fileName, bucketName);
       if (!photo) {
         logger.error(`Photo for document with ID ${documentId} not found`);
-        return res.status(404).send();
+        res.status(404).send();
+        return;
       }
       (document as VeteranCardDocument).credentialSubject.veteranCard[0].photo =
         photo;
     }
 
-    return res.status(200).json(document);
+    res.status(200).json(document);
   } catch (error) {
     logger.error(error, "An error happened processing request to get document");
-    return res.status(500).send();
+    res.status(500).send();
+    return;
   }
 }
 
