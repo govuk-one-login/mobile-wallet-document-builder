@@ -37,7 +37,7 @@ jobs:
           projectBaseDir: ./
 
       - name: SonarQube Quality Gate check
-        uses: Sonarsource/sonarqube-quality-gate-action@8406f4f1edaffef38e9fb9c53eb292fc1d7684fa # master
+        uses: SonarSource/sonarqube-quality-gate-action@d304d050d930b02a896b0f85935344f023928496 # v1.1.0
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
