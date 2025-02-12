@@ -41,7 +41,7 @@
     "qrcode": "^1.5.3"
   },
   "devDependencies": {
-    "@jest-mock/express": "^2.0.2",
+    "@jest-mock/express": "^3.0.0",
     "@types/cookie-parser": "^1.4.7",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.12",
