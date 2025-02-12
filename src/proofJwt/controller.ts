@@ -5,7 +5,7 @@ import { getStsSigningKeyId } from "../config/appConfig";
 export async function proofJwtController(
   req: Request,
   res: Response
-): Promise<Response> {
+): Promise<void> {
   try {
     const { nonce, audience } = req.query;
 
@@ -15,9 +15,11 @@ export async function proofJwtController(
       getStsSigningKeyId() // use the existing mock STS signing key to avoid creating a new KMS key
     );
 
-    return res.status(200).json({ proofJwt });
+    res.status(200).json({ proofJwt });
+    return;
   } catch (error) {
     console.log(`An error happened: ${JSON.stringify(error)}`);
-    return res.status(500).json({ error: "server_error" });
+    res.status(500).json({ error: "server_error" });
+    return;
   }
 }

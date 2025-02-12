@@ -15,7 +15,7 @@ import { PREAUTHORIZED_CODE_ERRORS } from "./types/PreAuthorizedCodeErrors";
 export async function stsStubAccessTokenController(
   req: Request,
   res: Response
-): Promise<Response> {
+): Promise<void> {
   try {
     const grantType = req.body["grant_type"];
     const preAuthorizedCode = req.body["pre-authorized_code"];
@@ -25,7 +25,8 @@ export async function stsStubAccessTokenController(
     for (const [key, value] of preAuthorizedCodeErrors) {
       if (preAuthorizedCode === key) {
         logger.error(`Error pre-authorized code: ${preAuthorizedCode}`);
-        return res.status(value.statusCode).json(value.message);
+        res.status(value.statusCode).json(value.message);
+        return;
       }
     }
 
@@ -33,7 +34,8 @@ export async function stsStubAccessTokenController(
     const payload = getPreAuthorizedCodePayload(preAuthorizedCode);
 
     if (!isGrantTypeValid || !payload) {
-      return res.status(400).json({ error: "invalid_grant" });
+      res.status(400).json({ error: "invalid_grant" });
+      return;
     }
 
     logger.info(`Valid pre-authorized code received: ${preAuthorizedCode}`);
@@ -44,13 +46,15 @@ export async function stsStubAccessTokenController(
       getStsSigningKeyId()
     );
 
-    return res.status(200).json({
+    res.status(200).json({
       access_token: accessToken,
       token_type: "bearer",
       expires_in: Number(getAccessTokenTtlInSecs()),
     });
+    return;
   } catch (error) {
     logger.error(error, "An error happened creating the access token");
-    return res.status(500).json({ error: "server_error" });
+    res.status(500).json({ error: "server_error" });
+    return;
   }
 }
