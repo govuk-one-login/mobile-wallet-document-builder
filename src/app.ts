@@ -34,7 +34,7 @@ const APP_VIEWS = [
   path.join(__dirname, "../src/loggedOut/views"),
   path.join(__dirname, "../src/credentialViewer/views"),
   path.join(__dirname, "../src/veteranCardDocumentBuilder/views"),
-  path.resolve("node_modules/govuk-frontend/"),
+  path.resolve("node_modules/govuk-frontend/dist"),
 ];
 
 export async function createApp(): Promise<express.Application> {
