@@ -18,9 +18,7 @@ jest.mock(
     getCustomCredentialOfferUri: jest.fn(),
   }),
 );
-jest.mock("qrcode");
-
-jest.mock("QRCode", () => ({
+jest.mock("qrcode", () => ({
   toDataURL: () => "data:image/png;base64,iVBORw0KGgoAAAANSU",
 }));
 
