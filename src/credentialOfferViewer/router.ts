@@ -7,7 +7,7 @@ const router = express.Router();
 router.get(
   "/view-credential-offer/:documentId",
   requiresAuth,
-  credentialOfferViewerController
+  credentialOfferViewerController,
 );
 
 export { router as credentialOfferViewerRouter };

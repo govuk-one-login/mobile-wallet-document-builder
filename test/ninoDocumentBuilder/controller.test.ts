@@ -80,11 +80,11 @@ describe("controller.ts", () => {
     await ninoDocumentBuilderPostController(req, res);
 
     expect(res.redirect).toHaveBeenCalledWith(
-      "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=SocialSecurityCredential&error=ERROR:401"
+      "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=SocialSecurityCredential&error=ERROR:401",
     );
     expect(NinoDocument.fromRequestBody).toHaveBeenCalledWith(
       requestBody,
-      "SocialSecurityCredential"
+      "SocialSecurityCredential",
     );
     expect(saveDocument).toHaveBeenNthCalledWith(1, "testTable", {
       documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",

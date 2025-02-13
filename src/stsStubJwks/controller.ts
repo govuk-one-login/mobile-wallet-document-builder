@@ -6,7 +6,7 @@ import { createPublicKey, JsonWebKey } from "node:crypto";
 
 export async function stsStubJwksController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     const keyId = getStsSigningKeyId();

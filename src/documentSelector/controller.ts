@@ -4,7 +4,7 @@ import { isAuthenticated } from "../utils/isAuthenticated";
 
 export function documentSelectorGetController(
   req: Request,
-  res: Response
+  res: Response,
 ): void {
   try {
     res.render("select-document-form.njk", {
@@ -18,7 +18,7 @@ export function documentSelectorGetController(
 
 export function documentSelectorPostController(
   req: Request,
-  res: Response
+  res: Response,
 ): void {
   try {
     const selectedDocument = req.body["select-document-choice"];
@@ -38,7 +38,7 @@ export function documentSelectorPostController(
   } catch (error) {
     logger.error(
       error,
-      "An error happened processing request to select document"
+      "An error happened processing request to select document",
     );
     res.render("500.njk");
   }

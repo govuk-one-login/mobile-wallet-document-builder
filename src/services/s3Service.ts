@@ -12,7 +12,7 @@ export async function uploadPhoto(
   imageBuffer: Buffer,
   imageName: string,
   bucketName: string,
-  contentType: string
+  contentType: string,
 ): Promise<void> {
   const putObjectCommandInput = {
     Bucket: bucketName,
@@ -26,7 +26,7 @@ export async function uploadPhoto(
 
 export async function getPhoto(
   imageName: string,
-  bucketName: string
+  bucketName: string,
 ): Promise<string | undefined> {
   const getObjectCommandInput = {
     Bucket: bucketName,
@@ -34,7 +34,7 @@ export async function getPhoto(
   };
 
   const response = await s3Client.send(
-    new GetObjectCommand(getObjectCommandInput)
+    new GetObjectCommand(getObjectCommandInput),
   );
   if (response.Body === undefined) {
     logger.info(`Object with key ${imageName} not found`);

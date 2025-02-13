@@ -14,7 +14,7 @@ const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
 export async function saveDocument(
   tableName: string,
-  item: TableItemV1 | TableItemV2
+  item: TableItemV1 | TableItemV2,
 ): Promise<void> {
   const command = new PutCommand({
     TableName: tableName,
@@ -26,7 +26,7 @@ export async function saveDocument(
 
 export async function getDocument(
   tableName: string,
-  documentId: string
+  documentId: string,
 ): Promise<TableItemV1 | TableItemV2 | undefined> {
   const command = new GetCommand({
     TableName: tableName,

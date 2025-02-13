@@ -14,7 +14,7 @@ describe("buildClientAssertion.ts", () => {
       "test_client_id",
       "http://localost:8000/token",
       "mock_key_id",
-      mockKmsService as unknown as KmsService
+      mockKmsService as unknown as KmsService,
     );
     const header = jose.decodeProtectedHeader(response);
     const claims = jose.decodeJwt(response);

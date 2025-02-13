@@ -16,7 +16,7 @@ describe("ninoDocument.ts", () => {
 
     const ninoDocument = NinoDocument.fromRequestBody(
       documentDetails,
-      <CredentialType>"SocialSecurityCredential"
+      "SocialSecurityCredential" as CredentialType,
     );
 
     expect(ninoDocument).toEqual({

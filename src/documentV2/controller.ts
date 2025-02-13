@@ -9,7 +9,7 @@ import { TableItemV2 } from "../types/TableItemV2";
 
 export async function documentController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     const { documentId } = req.params;

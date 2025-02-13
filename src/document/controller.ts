@@ -11,7 +11,7 @@ import { TableItemV1 } from "../types/TableItemV1";
 
 export async function documentController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     const { documentId } = req.params;
@@ -54,7 +54,7 @@ export async function documentController(
 }
 
 function isDigitalVeteranCard(
-  document: NinoDocument | DbsDocument | VeteranCardDocument
+  document: NinoDocument | DbsDocument | VeteranCardDocument,
 ) {
   return document.type.includes(CredentialType.digitalVeteranCard);
 }

@@ -33,7 +33,7 @@ describe("veteranCardDocument.ts", () => {
       const document = VeteranCardDocument.fromRequestBody(
         documentDetails,
         CredentialType.digitalVeteranCard,
-        photoUri
+        photoUri,
       );
 
       expect(document).toEqual({
@@ -79,7 +79,7 @@ describe("veteranCardDocument.ts", () => {
       const document = VeteranCardDocument.fromRequestBody(
         documentDetails,
         CredentialType.digitalVeteranCard,
-        photoUri
+        photoUri,
       );
 
       expect(document).toEqual({
@@ -117,7 +117,7 @@ describe("veteranCardDocument.ts", () => {
       const document = VeteranCardDocument.fromRequestBody(
         documentDetails,
         CredentialType.digitalVeteranCard,
-        photoUri
+        photoUri,
       );
 
       expect(document).toEqual({
@@ -162,7 +162,7 @@ describe("veteranCardDocument.ts", () => {
       const document = VeteranCardDocument.fromRequestBody(
         documentDetails,
         CredentialType.digitalVeteranCard,
-        photoUri
+        photoUri,
       );
 
       expect(document).toEqual({

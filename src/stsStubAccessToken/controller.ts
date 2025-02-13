@@ -14,7 +14,7 @@ import { PREAUTHORIZED_CODE_ERRORS } from "./types/PreAuthorizedCodeErrors";
 
 export async function stsStubAccessTokenController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     const grantType = req.body["grant_type"];
@@ -43,7 +43,7 @@ export async function stsStubAccessTokenController(
     const accessToken = await getJwtAccessToken(
       getHardcodedWalletSubjectId(),
       payload,
-      getStsSigningKeyId()
+      getStsSigningKeyId(),
     );
 
     res.status(200).json({

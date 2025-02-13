@@ -34,7 +34,7 @@ export class NinoDocument {
    */
   static fromRequestBody(
     input: NinoRequestBody,
-    credentialType: CredentialType
+    credentialType: CredentialType,
   ): NinoDocument {
     this.trimRequestBody(input);
 
@@ -45,7 +45,7 @@ export class NinoDocument {
           nameParts: getNameParts(
             input.givenName,
             input.familyName,
-            input.title
+            input.title,
           ),
         },
       ],

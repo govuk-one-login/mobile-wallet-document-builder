@@ -9,7 +9,7 @@ import { apps } from "../config/appConfig";
 
 export async function credentialOfferViewerController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     const { documentId } = req.params;
@@ -19,21 +19,21 @@ export async function credentialOfferViewerController(
 
     const userInfo: UserInfo = await req.oidc.userinfo(
       req.cookies.access_token,
-      { method: "GET", via: "header" }
+      { method: "GET", via: "header" },
     );
     const walletSubjectId = userInfo.wallet_subject_id;
 
     const response = await getCredentialOffer(
       walletSubjectId,
       documentId,
-      credentialType
+      credentialType,
     );
 
     const credentialOfferUri = getCustomCredentialOfferUri(
       response["credential_offer_uri"],
       selectedApp,
       apps,
-      errorScenario
+      errorScenario,
     );
 
     const qrCode = await QRCode.toDataURL(credentialOfferUri);
@@ -46,7 +46,7 @@ export async function credentialOfferViewerController(
   } catch (error) {
     logger.error(
       error,
-      "An error happened processing credential offer request"
+      "An error happened processing credential offer request",
     );
     res.render("500.njk");
   }
