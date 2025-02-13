@@ -8,7 +8,7 @@ const CREDENTIAL_OFFER_PATH = "/credential_offer";
 export async function getCredentialOffer(
   walletSubjectId: string,
   documentId: string,
-  credentialType: string
+  credentialType: string,
 ): Promise<CredentialOfferResponse> {
   try {
     const criUrl = getCriEndpoint();
@@ -28,11 +28,11 @@ export async function getCredentialOffer(
   } catch (error) {
     if (axios.isAxiosError(error)) {
       logger.error(
-        `Error fetching credential offer for documentId ${documentId}`
+        `Error fetching credential offer for documentId ${documentId}`,
       );
     } else {
       logger.error(
-        `Unexpected error happened fetching credential offer for documentId ${documentId}`
+        `Unexpected error happened fetching credential offer for documentId ${documentId}`,
       );
     }
     throw error;

@@ -16,7 +16,7 @@ import {
 describe("appConfig.ts", () => {
   it("should throw an error if PORT environment variable is not set", () => {
     expect(() => getPortNumber()).toThrow(
-      new Error("PORT environment variable not set")
+      new Error("PORT environment variable not set"),
     );
   });
 
@@ -27,7 +27,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if DOCUMENTS_TABLE_NAME environment variable is not set", () => {
     expect(() => getDocumentsTableName()).toThrow(
-      new Error("DOCUMENTS_TABLE_NAME environment variable not set")
+      new Error("DOCUMENTS_TABLE_NAME environment variable not set"),
     );
   });
 
@@ -38,7 +38,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if ENVIRONMENT environment variable is not set", () => {
     expect(() => getEnvironment()).toThrow(
-      new Error("ENVIRONMENT environment variable not set")
+      new Error("ENVIRONMENT environment variable not set"),
     );
   });
 
@@ -49,7 +49,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if CREDENTIAL_ISSUER_URL environment variable is not set", () => {
     expect(() => getCriEndpoint()).toThrow(
-      new Error("CREDENTIAL_ISSUER_URL environment variable not set")
+      new Error("CREDENTIAL_ISSUER_URL environment variable not set"),
     );
   });
 
@@ -70,7 +70,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if ACCESS_TOKEN_TTL_IN_SECS environment variable is not set", () => {
     expect(() => getAccessTokenTtlInSecs()).toThrow(
-      new Error("ACCESS_TOKEN_TTL_IN_SECS environment variable not set")
+      new Error("ACCESS_TOKEN_TTL_IN_SECS environment variable not set"),
     );
   });
 
@@ -81,7 +81,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if SELF environment variable is not set", () => {
     expect(() => getSelfUrl()).toThrow(
-      new Error("SELF environment variable not set")
+      new Error("SELF environment variable not set"),
     );
   });
 
@@ -92,7 +92,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if OIDC_CLIENT_ID environment variable is not set", () => {
     expect(() => getOIDCClientId()).toThrow(
-      new Error("OIDC_CLIENT_ID environment variable not set")
+      new Error("OIDC_CLIENT_ID environment variable not set"),
     );
   });
 
@@ -103,7 +103,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if CLIENT_SIGNING_KEY_ID environment variable is not set", () => {
     expect(() => getClientSigningKeyId()).toThrow(
-      new Error("CLIENT_SIGNING_KEY_ID environment variable not set")
+      new Error("CLIENT_SIGNING_KEY_ID environment variable not set"),
     );
   });
 
@@ -114,7 +114,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable is not set", () => {
     expect(() => getOIDCDiscoveryEndpoint()).toThrow(
-      new Error("OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable not set")
+      new Error("OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable not set"),
     );
   });
 
@@ -125,7 +125,7 @@ describe("appConfig.ts", () => {
 
   it("should throw an error if COOKIE_TTL_IN_SECS environment variable is not set", () => {
     expect(() => getCookieExpiry()).toThrow(
-      new Error("COOKIE_TTL_IN_SECS environment variable not set")
+      new Error("COOKIE_TTL_IN_SECS environment variable not set"),
     );
   });
 
@@ -136,7 +136,7 @@ describe("appConfig.ts", () => {
 
   it("should return valid wallet subject id", () => {
     expect(getHardcodedWalletSubjectId()).toEqual(
-      "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i"
+      "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i",
     );
   });
 });

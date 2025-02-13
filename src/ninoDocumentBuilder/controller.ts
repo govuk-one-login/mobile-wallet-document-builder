@@ -16,7 +16,7 @@ const CREDENTIAL_TYPE = CredentialType.socialSecurityCredential;
 
 export async function ninoDocumentBuilderGetController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     res.render("nino-document-details-form.njk", {
@@ -30,7 +30,7 @@ export async function ninoDocumentBuilderGetController(
 
 export async function ninoDocumentBuilderPostController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     const documentId = randomUUID();
@@ -53,7 +53,7 @@ export async function ninoDocumentBuilderPostController(
     }); //v2
 
     res.redirect(
-      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`
+      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
     );
   } catch (error) {
     logger.error(error, "An error happened processing NINO document request");
@@ -62,8 +62,7 @@ export async function ninoDocumentBuilderPostController(
 }
 
 function buildNinoDataFromRequestBody(body: NinoRequestBody) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { throwError, ...newObject } = body;
+  const { throwError: _throwError, ...newObject } = body;
   const data: NinoData = { ...newObject };
   return data;
 }

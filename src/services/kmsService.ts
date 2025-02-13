@@ -14,12 +14,12 @@ import { logger } from "../middleware/logger";
 export class KmsService {
   constructor(
     private readonly keyId: string,
-    private readonly kmsClient: KMSClient = new KMSClient(getKmsConfig())
+    private readonly kmsClient: KMSClient = new KMSClient(getKmsConfig()),
   ) {}
 
   async sign(
     message: string,
-    signingAlgorithm: SigningAlgorithmSpec
+    signingAlgorithm: SigningAlgorithmSpec,
   ): Promise<string> {
     const signCommandInput: SignCommandInput = {
       Message: Buffer.from(message),
@@ -42,7 +42,7 @@ export class KmsService {
     }
 
     const base64EncodedSignature = Buffer.from(response.Signature).toString(
-      "base64url"
+      "base64url",
     );
 
     if (signingAlgorithm.startsWith("RSA")) {

@@ -10,7 +10,7 @@ describe("controller.ts", () => {
     cookies: { id_token: "id_token", access_token: "access_token", app: "app" },
   } as unknown as Request;
   const res = {
-    clearCookie: jest.fn().mockImplementationOnce(() => {}),
+    clearCookie: jest.fn(),
   } as unknown as Response;
 
   it("should clear cookie when only one cookie matches", () => {

@@ -39,7 +39,7 @@ describe("dbsDocument.ts", () => {
 
     const document = DbsDocument.fromRequestBody(
       requestBody,
-      <CredentialType>"BasicCheckCredential"
+      "BasicCheckCredential" as CredentialType,
     );
 
     expect(document).toEqual({
@@ -109,7 +109,7 @@ describe("dbsDocument.ts", () => {
 
     const document = DbsDocument.fromRequestBody(
       requestBody,
-      <CredentialType>"BasicCheckCredential"
+      "BasicCheckCredential" as CredentialType,
     );
 
     expect(document).toEqual({
@@ -175,7 +175,7 @@ describe("dbsDocument.ts", () => {
 
     const document = DbsDocument.fromRequestBody(
       requestBody,
-      <CredentialType>"BasicCheckCredential"
+      "BasicCheckCredential" as CredentialType,
     );
 
     expect(document).toEqual({

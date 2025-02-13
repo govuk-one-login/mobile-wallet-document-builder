@@ -8,7 +8,7 @@ import { GrantType } from "../stsStubAccessToken/token/validateTokenRequest";
 
 export async function credentialViewerController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     const preAuthorizedCode = extractPreAuthCode(req.query.offer as string);
@@ -18,7 +18,7 @@ export async function credentialViewerController(
 
     const proofJwt = await getProofJwt(
       accessTokenClaims.c_nonce as string,
-      accessTokenClaims.aud as string
+      accessTokenClaims.aud as string,
     );
 
     const credential = await getCredential(accessToken, proofJwt);
@@ -41,7 +41,7 @@ export async function credentialViewerController(
 
 function extractPreAuthCode(credentialOfferUri: string) {
   const credentialOfferString = credentialOfferUri.split(
-    "add?credential_offer="
+    "add?credential_offer=",
   )[1];
   const credentialOffer = JSON.parse(credentialOfferString);
   return credentialOffer.grants[
@@ -50,7 +50,7 @@ function extractPreAuthCode(credentialOfferUri: string) {
 }
 
 export async function getAccessToken(
-  preAuthorizedCode: string
+  preAuthorizedCode: string,
 ): Promise<string> {
   const response = await axios.post(
     `${getSelfUrl()}/token`,
@@ -62,24 +62,24 @@ export async function getAccessToken(
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    }
+    },
   );
   return response.data.access_token;
 }
 
 export async function getProofJwt(
   c_nonce: string,
-  audience: string
+  audience: string,
 ): Promise<string> {
   const proofJwtResponse = await axios.get(
-    `${getSelfUrl()}/proof-jwt?nonce=${c_nonce}&audience=${audience}`
+    `${getSelfUrl()}/proof-jwt?nonce=${c_nonce}&audience=${audience}`,
   );
   return proofJwtResponse.data.proofJwt;
 }
 
 export async function getCredential(
   accessToken: string,
-  proofJwt: string
+  proofJwt: string,
 ): Promise<string> {
   const criUrl = getCriEndpoint();
   const credentialUrl = criUrl + "/credential";
@@ -96,7 +96,7 @@ export async function getCredential(
       headers: {
         Authorization: `BEARER ${accessToken}`,
       },
-    }
+    },
   );
   return response.data.credential;
 }

@@ -10,12 +10,12 @@ const router = express.Router();
 router.get(
   "/select-vc-data-model",
   requiresAuth,
-  dataModelSelectorGetController
+  dataModelSelectorGetController,
 );
 router.post(
   "/select-vc-data-model",
   requiresAuth,
-  dataModelSelectorPostController()
+  dataModelSelectorPostController(),
 );
 
 export { router as dataModelSelectorRouter };

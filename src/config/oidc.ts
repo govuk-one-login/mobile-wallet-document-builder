@@ -21,7 +21,7 @@ async function getIssuer(discoveryUri: string) {
 }
 
 export async function getOIDCClient(
-  config: AuthMiddlewareConfiguration
+  config: AuthMiddlewareConfiguration,
 ): Promise<Client> {
   const issuer = await getIssuer(config.discoveryEndpoint);
 

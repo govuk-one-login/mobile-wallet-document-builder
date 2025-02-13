@@ -9,7 +9,6 @@ import {
 import { getKmsConfig } from "../config/aws";
 import format from "ecdsa-sig-formatter";
 import { createPublicKey, JsonWebKey } from "node:crypto";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const bs58 = require("bs58");
 
 const ACCESS_TOKEN_SIGNING_ALGORITHM = "ES256";
@@ -18,7 +17,7 @@ const ACCESS_TOKEN_JWT_TYPE = "JWT";
 export async function getProofJwt(
   nonce: string,
   audience: string,
-  keyId: string
+  keyId: string,
 ): Promise<string> {
   const kmsService = new ProofJwtKmsService(keyId);
   const publicKeyRaw = await kmsService.getPublicKey();
@@ -53,7 +52,7 @@ export class ProofJwtKmsService {
   constructor(
     private readonly keyId: string,
     private readonly signingAlgorithm: SigningAlgorithmSpec = "ECDSA_SHA_256",
-    private readonly kmsClient: KMSClient = new KMSClient(getKmsConfig())
+    private readonly kmsClient: KMSClient = new KMSClient(getKmsConfig()),
   ) {}
 
   async sign(message: string): Promise<string> {
@@ -67,7 +66,7 @@ export class ProofJwtKmsService {
     try {
       const response: SignCommandOutput = await this.kmsClient.send(command);
       const base64EncodedSignature = Buffer.from(response.Signature!).toString(
-        "base64url"
+        "base64url",
       );
       return format.derToJose(base64EncodedSignature, "ES256");
     } catch (error) {
@@ -129,7 +128,7 @@ function compressEcPoint(x: Uint8Array, y: Uint8Array) {
 }
 
 export const createJwkFromRawPublicKey = (
-  rawPublicKey: Uint8Array
+  rawPublicKey: Uint8Array,
 ): JsonWebKey => {
   const stringPublicKey = uint8ArrayToBase64(rawPublicKey);
 

@@ -30,7 +30,7 @@ function IsValidCredentialIdentifier(payload: JWTPayload) {
 }
 
 export function getPreAuthorizedCodePayload(
-  preAuthorizedCode: string
+  preAuthorizedCode: string,
 ): false | PreAuthorizedCodePayload {
   const payload: PreAuthorizedCodePayload = decodeJwt(preAuthorizedCode);
 

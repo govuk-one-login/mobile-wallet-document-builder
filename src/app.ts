@@ -62,7 +62,7 @@ export async function createApp(): Promise<express.Application> {
     nunjucks.configure(APP_VIEWS, {
       express: app,
       noCache: true,
-    })
+    }),
   );
 
   app.use(returnFromAuthRouter);

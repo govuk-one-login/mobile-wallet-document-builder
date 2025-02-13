@@ -25,7 +25,7 @@ describe("s3Service.ts", () => {
       });
 
       await expect(
-        uploadPhoto(imageBuffer, imageName, bucketName, mimeType)
+        uploadPhoto(imageBuffer, imageName, bucketName, mimeType),
       ).resolves.not.toThrow();
       expect(s3Mock).toHaveReceivedCommandWith(PutObjectCommand, {
         Bucket: bucketName,
@@ -39,7 +39,7 @@ describe("s3Service.ts", () => {
       s3Mock.on(PutObjectCommand).rejectsOnce("MOCK_S3_PUT_OBJECT_ERROR");
 
       await expect(
-        uploadPhoto(imageBuffer, imageName, bucketName, mimeType)
+        uploadPhoto(imageBuffer, imageName, bucketName, mimeType),
       ).rejects.toThrow("MOCK_S3_PUT_OBJECT_ERROR");
       expect(s3Mock).toHaveReceivedCommandWith(PutObjectCommand, {
         Bucket: bucketName,
@@ -83,7 +83,7 @@ describe("s3Service.ts", () => {
       s3Mock.on(GetObjectCommand).rejectsOnce("MOCK_S3_GET_OBJECT_ERROR");
 
       await expect(getPhoto(imageName, bucketName)).rejects.toThrow(
-        "MOCK_S3_GET_OBJECT_ERROR"
+        "MOCK_S3_GET_OBJECT_ERROR",
       );
       expect(s3Mock).toHaveReceivedCommandWith(GetObjectCommand, {
         Bucket: bucketName,

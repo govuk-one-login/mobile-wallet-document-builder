@@ -7,7 +7,7 @@ import { Jwt } from "../types/Jwt";
 
 export async function returnFromAuthGetController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     if (req.query.error) {
@@ -18,7 +18,7 @@ export async function returnFromAuthGetController(
     const clientAssertion: Jwt = await buildClientAssertion(
       req.oidc.metadata.client_id,
       req.oidc.issuer.metadata.token_endpoint!,
-      getClientSigningKeyId()
+      getClientSigningKeyId(),
     );
 
     // Exchange the access code in the url parameters for an access token
@@ -32,7 +32,7 @@ export async function returnFromAuthGetController(
             "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
           client_assertion: clientAssertion,
         },
-      }
+      },
     );
 
     res.cookie("access_token", tokenSet.access_token, {

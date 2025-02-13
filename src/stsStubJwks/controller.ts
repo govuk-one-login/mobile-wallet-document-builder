@@ -6,8 +6,8 @@ import { createPublicKey, JsonWebKey } from "node:crypto";
 
 export async function stsStubJwksController(
   req: Request,
-  res: Response
-): Promise<Response> {
+  res: Response,
+): Promise<void> {
   try {
     const keyId = getStsSigningKeyId();
     const kmsService = new KmsService(keyId);
@@ -17,10 +17,12 @@ export async function stsStubJwksController(
     const response = { keys: [] as JsonWebKey[] };
     response.keys.push(jwk);
 
-    return res.status(200).json(response);
+    res.status(200).json(response);
+    return;
   } catch (error) {
     logger.error(error, "An error happened getting the JWKs");
-    return res.status(500).json({ error: "server_error" });
+    res.status(500).json({ error: "server_error" });
+    return;
   }
 }
 
