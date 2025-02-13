@@ -16,7 +16,7 @@ describe("requiresAuth.ts", () => {
     requiresAuth(req, res, nextFunction);
 
     expect(res.redirect).toHaveBeenCalledWith(
-      "http://localhost:3000/select-app"
+      "http://localhost:3000/select-app",
     );
     expect(nextFunction).not.toHaveBeenCalled();
   });

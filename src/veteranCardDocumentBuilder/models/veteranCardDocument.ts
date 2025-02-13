@@ -23,7 +23,7 @@ export class VeteranCardDocument {
   static fromRequestBody(
     input: VeteranCardRequestBody,
     credentialType: CredentialType,
-    photoLocation: string
+    photoLocation: string,
   ): VeteranCardDocument {
     trimRequestBody(input);
 
@@ -39,7 +39,7 @@ export class VeteranCardDocument {
           value: getFormattedDate(
             input["dateOfBirth-year"],
             input["dateOfBirth-month"],
-            input["dateOfBirth-day"]
+            input["dateOfBirth-day"],
           ),
         },
       ],
@@ -48,7 +48,7 @@ export class VeteranCardDocument {
           expiryDate: getFormattedDate(
             input["cardExpiryDate-year"],
             input["cardExpiryDate-month"],
-            input["cardExpiryDate-day"]
+            input["cardExpiryDate-day"],
           ),
           serviceNumber: input.serviceNumber,
           serviceBranch: input.serviceBranch,

@@ -10,7 +10,7 @@ export interface DataModelSelectorConfig {
 
 export function dataModelSelectorGetController(
   req: Request,
-  res: Response
+  res: Response,
 ): void {
   try {
     res.render("select-vc-data-model-form.njk", {
@@ -19,7 +19,7 @@ export function dataModelSelectorGetController(
   } catch (error) {
     logger.error(
       error,
-      "An error happened rendering data model selection page"
+      "An error happened rendering data model selection page",
     );
     res.render("500.njk");
   }
@@ -28,7 +28,7 @@ export function dataModelSelectorGetController(
 export function dataModelSelectorPostController(
   config: DataModelSelectorConfig = {
     cookieExpiry: getCookieExpiry(),
-  }
+  },
 ): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {

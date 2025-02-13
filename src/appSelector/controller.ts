@@ -13,7 +13,7 @@ export interface AppSelectorConfig {
 export function appSelectorGetController(
   config: AppSelectorConfig = {
     environment: getEnvironment(),
-  }
+  },
 ): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {
@@ -35,7 +35,7 @@ export function appSelectorPostController(
   config: AppSelectorConfig = {
     environment: getEnvironment(),
     cookieExpiry: getCookieExpiry(),
-  }
+  },
 ): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {

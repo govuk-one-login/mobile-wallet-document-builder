@@ -3,7 +3,7 @@ import { NamePart } from "../types/CredentialSubject";
 export function getNameParts(
   name: string | undefined,
   surname: string | undefined,
-  title?: string | undefined
+  title?: string | undefined,
 ) {
   const nameParts: NamePart[] = [];
   if (title) {

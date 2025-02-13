@@ -13,7 +13,7 @@ export async function buildClientAssertion(
   clientId: string,
   tokenEndpoint: string,
   signingKeyId: string,
-  kmsService = new KmsService(signingKeyId)
+  kmsService = new KmsService(signingKeyId),
 ): Promise<Jwt> {
   const header = { alg: TOKEN_SIGNING_ALGORITHM, typ: TOKEN_JWT_TYPE };
 

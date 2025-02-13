@@ -21,7 +21,7 @@ export class DbsDocument {
    */
   static fromRequestBody(
     input: DbsRequestBody,
-    credentialType: CredentialType
+    credentialType: CredentialType,
   ): DbsDocument {
     this.trimRequestBody(input);
 

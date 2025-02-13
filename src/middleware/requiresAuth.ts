@@ -8,13 +8,13 @@ const VECTORS_OF_TRUST = `["Cl"]`;
 export function requiresAuth(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void {
   const isAuthenticated = req.cookies["id_token"];
   const selectedApp = req.cookies["app"];
 
   logger.info(
-    `isAuthenticated = ${isAuthenticated} , selectedApp = ${selectedApp}`
+    `isAuthenticated = ${isAuthenticated} , selectedApp = ${selectedApp}`,
   );
 
   if (selectedApp === undefined) {

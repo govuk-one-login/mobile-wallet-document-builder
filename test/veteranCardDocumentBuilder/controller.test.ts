@@ -94,7 +94,7 @@ describe("controller.ts", () => {
         "veteran-card-document-details-form.njk",
         {
           authenticated: false,
-        }
+        },
       );
     });
 
@@ -108,7 +108,7 @@ describe("controller.ts", () => {
         "veteran-card-document-details-form.njk",
         {
           authenticated: true,
-        }
+        },
       );
     });
   });
@@ -138,13 +138,13 @@ describe("controller.ts", () => {
       expect(VeteranCardDocument.fromRequestBody).toHaveBeenCalledWith(
         requestBody,
         "digitalVeteranCard",
-        "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+        "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       );
       expect(uploadPhoto).toHaveBeenCalledWith(
         expect.any(Buffer),
         "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         "photosBucket",
-        "image/jpeg"
+        "image/jpeg",
       );
       expect(saveDocument).toHaveBeenNthCalledWith(1, "testTable", {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
@@ -170,7 +170,7 @@ describe("controller.ts", () => {
       });
 
       expect(res.redirect).toHaveBeenCalledWith(
-        "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error="
+        "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=",
       );
     });
 
@@ -187,20 +187,20 @@ describe("controller.ts", () => {
       expect(VeteranCardDocument.fromRequestBody).toHaveBeenCalledWith(
         requestBodyWithError,
         "digitalVeteranCard",
-        "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+        "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       );
       expect(uploadPhoto).toHaveBeenCalledWith(
         expect.any(Buffer),
         "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         "photosBucket",
-        "image/jpeg"
+        "image/jpeg",
       );
       expect(saveDocument).toHaveBeenCalledWith("testTable", {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         vc: JSON.stringify(veteranCardDocument),
       });
       expect(res.redirect).toHaveBeenCalledWith(
-        "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=ERROR:401"
+        "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=ERROR:401",
       );
     });
   });

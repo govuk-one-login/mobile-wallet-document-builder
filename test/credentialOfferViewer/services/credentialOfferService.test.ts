@@ -2,7 +2,7 @@ process.env.CREDENTIAL_ISSUER_URL = "http://localhost:1234";
 import { getCredentialOffer } from "../../../src/credentialOfferViewer/services/credentialOfferService";
 import axios, { AxiosResponse } from "axios";
 
-export const WALLET_SUBJECT_ID: string =
+export const WALLET_SUBJECT_ID =
   "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i";
 
 jest.mock("axios");
@@ -29,7 +29,7 @@ describe("credentialOfferService.ts", () => {
     const response = await getCredentialOffer(
       WALLET_SUBJECT_ID,
       documentId,
-      credentialType
+      credentialType,
     );
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -40,7 +40,7 @@ describe("credentialOfferService.ts", () => {
           documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           walletSubjectId: WALLET_SUBJECT_ID,
         },
-      }
+      },
     );
     expect(response).toEqual({
       credential_offer_uri:
@@ -55,7 +55,7 @@ describe("credentialOfferService.ts", () => {
     mockedAxios.get.mockRejectedValueOnce(new Error("AXIOS_ERROR"));
 
     await expect(
-      getCredentialOffer(WALLET_SUBJECT_ID, documentId, credentialType)
+      getCredentialOffer(WALLET_SUBJECT_ID, documentId, credentialType),
     ).rejects.toThrow("AXIOS_ERROR");
   });
 
@@ -66,7 +66,7 @@ describe("credentialOfferService.ts", () => {
     mockedAxios.get.mockRejectedValueOnce(new Error("SOME_ERROR"));
 
     await expect(
-      getCredentialOffer(WALLET_SUBJECT_ID, documentId, credentialType)
+      getCredentialOffer(WALLET_SUBJECT_ID, documentId, credentialType),
     ).rejects.toThrow("SOME_ERROR");
   });
 });

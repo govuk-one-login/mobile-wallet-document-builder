@@ -10,7 +10,7 @@ jest.mock(
   "../../src/returnFromAuth/clientAssertion/buildClientAssertion",
   () => ({
     buildClientAssertion: jest.fn(),
-  })
+  }),
 );
 
 describe("controller.ts", () => {
@@ -34,7 +34,7 @@ describe("controller.ts", () => {
 
     expect(loggerErrorSpy).toHaveBeenNthCalledWith(
       1,
-      "access_denied - some description"
+      "access_denied - some description",
     );
     expect(res.status).toHaveBeenCalledWith(500);
   });
@@ -61,7 +61,7 @@ describe("controller.ts", () => {
       1,
       "access_token",
       "access_token",
-      { httpOnly: true, maxAge: 100000 }
+      { httpOnly: true, maxAge: 100000 },
     );
     expect(res.cookie).toHaveBeenNthCalledWith(2, "id_token", "id_token", {
       httpOnly: true,
