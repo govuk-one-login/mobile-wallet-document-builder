@@ -42,11 +42,9 @@ export async function veteranCardDocumentBuilderPostController(
   try {
     const selectedPhoto: string = req.body.photo;
     const filePath = path.resolve(__dirname, "../resources", selectedPhoto);
-    // const staticPhotoBuffer = getImageBuffer();
     const photoBuffer = readFileSync(filePath)
     const documentId = randomUUID();
     const bucketName = getPhotosBucketName();
-
     const ext = path.extname(selectedPhoto);
     const mimeTypes: Record<string, string> = {
       ".jpg": "image/jpeg",
@@ -89,14 +87,7 @@ export async function veteranCardDocumentBuilderPostController(
     );
     res.render("500.njk");
   }
-  console.log(req.body);
 }
-
-
-// function getImageBuffer(): Buffer {
-//   const filePath = path.resolve(__dirname, "../resources/photo.jpg");
-//   return readFileSync(filePath);
-// }
 
 function buildVeteranCardDataFromRequestBody(
     body: VeteranCardRequestBody,
