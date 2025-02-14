@@ -51,9 +51,6 @@ export async function veteranCardDocumentBuilderPostController(
       ".png": "image/png"
     };
     const mimeType = mimeTypes[ext];
-    if (!mimeType) {
-      throw new Error(`Unsupported file extension: ${ext}`);
-    }
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
     const s3Uri = `s3://${bucketName}/${documentId}`;
     const body: VeteranCardRequestBody = req.body;
