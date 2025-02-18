@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc && npm run build-sass && npm run copy-assets",
     "build-sass": "rm -rf dist/public/style.css && sass --no-source-map src/assets/scss/application.scss dist/public/stylesheets/application.css --style compressed",
-    "copy-assets": "mkdir -p dist && copyfiles -u 1 src/**/*.njk dist/ && cp node_modules/govuk-frontend/govuk/all.js dist/public/scripts && rm -rf dist/assets && cp -rf node_modules/govuk-frontend/govuk/assets dist/assets && copyfiles -u 2 src/resources/* dist/resources/",
+    "copy-assets": "mkdir -p dist && copyfiles -u 1 src/**/*.njk dist/ && cp node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.js dist/public/scripts && rm -rf dist/assets && cp -rf node_modules/govuk-frontend/govuk/assets dist/assets && copyfiles -u 2 src/resources/* dist/resources/",
     "dev": "nodemon -e js,ts --watch src --exec \"npm run build:ts && npm run start\"",
     "build:ts": "node_modules/.bin/tsc",
     "start": "node dist/server.js",
