@@ -16,7 +16,7 @@ const CREDENTIAL_TYPE = CredentialType.basicCheckCredential;
 
 export async function dbsDocumentBuilderGetController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     res.render("dbs-document-details-form.njk", {
@@ -30,7 +30,7 @@ export async function dbsDocumentBuilderGetController(
 
 export async function dbsDocumentBuilderPostController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     const documentId = randomUUID();
@@ -53,7 +53,7 @@ export async function dbsDocumentBuilderPostController(
     }); //v2
 
     res.redirect(
-      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`
+      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
     );
   } catch (error) {
     logger.error(error, "An error happened processing DBS document request");
@@ -62,8 +62,7 @@ export async function dbsDocumentBuilderPostController(
 }
 
 function buildDbsDataFromRequestBody(body: DbsRequestBody) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { throwError, ...newObject } = body;
+  const { throwError: _throwError, ...newObject } = body;
   const data: DbsData = {
     certificateType: "basic",
     outcome: "Result clear",

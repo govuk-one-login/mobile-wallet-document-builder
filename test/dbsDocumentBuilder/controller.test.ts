@@ -120,11 +120,11 @@ describe("controller.ts", () => {
     await dbsDocumentBuilderPostController(req, res);
 
     expect(res.redirect).toHaveBeenCalledWith(
-      "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential&error=ERROR:500"
+      "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential&error=ERROR:500",
     );
     expect(DbsDocument.fromRequestBody).toHaveBeenCalledWith(
       requestBody,
-      "BasicCheckCredential"
+      "BasicCheckCredential",
     );
     expect(saveDocument).toHaveBeenNthCalledWith(1, "testTable", {
       documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",

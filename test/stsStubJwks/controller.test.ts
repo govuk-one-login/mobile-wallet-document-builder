@@ -20,7 +20,7 @@ describe("controller.ts", () => {
         "arn:aws:kms:eu-west-2:000000000000:key/2ced22e2-c15b-4e02-aa5f-7a10a2eaccc7",
       PublicKey: Buffer.from(
         "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEam3RRiTF5JMowJUdkrpTG3SmgWBVCGHn2LQSHVrW31e7HMd9Y0avi01+L8shO3hPCeC1d/cw51giR100VD86Tw==",
-        "base64"
+        "base64",
       ),
     });
 

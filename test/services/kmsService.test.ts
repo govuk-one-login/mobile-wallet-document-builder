@@ -23,7 +23,7 @@ describe("kmsService.ts", () => {
     mockKmsClient.on(SignCommand).rejects(new Error("SOME_KMS_ERROR"));
 
     await expect(
-      kmsService.sign("mock_message_to_sign", SIGNING_ALGORITHM_RSA)
+      kmsService.sign("mock_message_to_sign", SIGNING_ALGORITHM_RSA),
     ).rejects.toThrow("SOME_KMS_ERROR");
   });
 
@@ -31,40 +31,40 @@ describe("kmsService.ts", () => {
     mockKmsClient.on(SignCommand).resolves({ Signature: undefined });
 
     await expect(
-      kmsService.sign("mock_message_to_sign", SIGNING_ALGORITHM_RSA)
+      kmsService.sign("mock_message_to_sign", SIGNING_ALGORITHM_RSA),
     ).rejects.toThrow("No signature returned");
   });
 
   it("should decode DER signature when signing algorithm is EC and should return a base64 encoded signature", async () => {
     const mockSignature = Buffer.from(
       "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw",
-      "base64"
+      "base64",
     );
     const mockSignatureDer = format.joseToDer(mockSignature, "ES256");
     mockKmsClient.on(SignCommand).resolves({ Signature: mockSignatureDer });
     const response = await kmsService.sign(
       "mock_message_to_sign",
-      SIGNING_ALGORITHM_EC
+      SIGNING_ALGORITHM_EC,
     );
 
     expect(response).toEqual(
-      "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw"
+      "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw",
     );
   });
 
   it("should NOT decode DER signature when signing algorithm is RSA and should return a base64 encoded signature", async () => {
     const mockSignature = Buffer.from(
       "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw",
-      "base64"
+      "base64",
     );
     mockKmsClient.on(SignCommand).resolves({ Signature: mockSignature });
     const response = await kmsService.sign(
       "mock_message_to_sign",
-      SIGNING_ALGORITHM_RSA
+      SIGNING_ALGORITHM_RSA,
     );
 
     expect(response).toEqual(
-      "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw"
+      "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw",
     );
   });
 
@@ -85,7 +85,7 @@ describe("kmsService.ts", () => {
     });
 
     await expect(kmsService.getPublicKey()).rejects.toThrow(
-      "No public key returned"
+      "No public key returned",
     );
   });
 
@@ -95,7 +95,7 @@ describe("kmsService.ts", () => {
         "arn:aws:kms:eu-west-2:000000000000:key/2ced22e2-c15b-4e02-aa5f-7a10a2eaccc7",
       PublicKey: Buffer.from(
         "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAuA1gxsWNOVSboz38+wAAeqKjq+yudtNpfg+xUuLKDLp+KcvYU84oSlxe1h4cCAwEAAQ==",
-        "base64"
+        "base64",
       ),
       KeySpec: "RSA_4096",
       KeyUsage: "SIGN_VERIFY",
@@ -104,7 +104,7 @@ describe("kmsService.ts", () => {
     const response = await kmsService.getPublicKey();
 
     expect(response).toEqual(
-      "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAuA1gxsWNOVSboz38+wAAeqKjq+yudtNpfg+xUuLKDLp+KcvYU84oSlxe1h4cCAwEAAQ="
+      "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAuA1gxsWNOVSboz38+wAAeqKjq+yudtNpfg+xUuLKDLp+KcvYU84oSlxe1h4cCAwEAAQ=",
     );
   });
 });

@@ -10,7 +10,7 @@ function isInvalidUri(uriParts: string[]) {
 
 function replaceUriPath(credentialOfferUri: string, newPath: string) {
   const uriParts = credentialOfferUri.split(
-    new RegExp(`(${WALLET_URI_PATH_SPLITTER})`)
+    new RegExp(`(${WALLET_URI_PATH_SPLITTER})`),
   );
   if (isInvalidUri(uriParts)) {
     throw new Error("Invalid URI");
@@ -20,11 +20,11 @@ function replaceUriPath(credentialOfferUri: string, newPath: string) {
 
 function replacePreAuthorizedCodeWithError(
   credentialOfferUri: string,
-  errorScenario: string
+  errorScenario: string,
 ) {
   const decodedUri = decodeURIComponent(credentialOfferUri);
   const uriParts = decodedUri.split(
-    new RegExp(`(${CREDENTIAL_OFFER_SPLITTER})`)
+    new RegExp(`(${CREDENTIAL_OFFER_SPLITTER})`),
   );
   if (isInvalidUri(uriParts)) {
     throw new Error("Invalid URI");
@@ -38,7 +38,7 @@ function replacePreAuthorizedCodeWithError(
     "urn:ietf:params:oauth:grant-type:pre-authorized_code"
   ]["pre-authorized_code"] = errorScenario;
   const newCredentialOfferEncoded = encodeURIComponent(
-    JSON.stringify(credentialOffer)
+    JSON.stringify(credentialOffer),
   );
 
   return uriParts[0] + uriParts[1] + newCredentialOfferEncoded;
@@ -48,7 +48,7 @@ export function getCustomCredentialOfferUri(
   credentialOfferUri: string,
   selectedApp: string,
   allApps: App[],
-  errorScenario: string
+  errorScenario: string,
 ) {
   const app = allApps.filter((app) => app.value === selectedApp);
   const appPath = app[0].path;
@@ -60,7 +60,7 @@ export function getCustomCredentialOfferUri(
   } else {
     return replacePreAuthorizedCodeWithError(
       newCredentialOfferUri,
-      errorScenario
+      errorScenario,
     );
   }
 }

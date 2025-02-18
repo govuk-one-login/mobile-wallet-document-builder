@@ -47,7 +47,7 @@ describe("databaseService.ts", () => {
     dynamoDbMock.on(PutCommand).rejectsOnce("SOME_DATABASE_ERROR");
 
     await expect(saveDocument("testTable", item)).rejects.toThrow(
-      "SOME_DATABASE_ERROR"
+      "SOME_DATABASE_ERROR",
     );
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });
@@ -69,13 +69,13 @@ describe("databaseService.ts", () => {
 
     const response = await getDocument(
       "testTable",
-      "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+      "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
     );
 
     expect(response).toEqual(item);
     expect(databaseMockClient).toHaveReceivedCommandWith(
       GetCommand,
-      getCommandInput
+      getCommandInput,
     );
   });
 
@@ -89,7 +89,7 @@ describe("databaseService.ts", () => {
 
     const response = await getDocument(
       "testTable",
-      "2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+      "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
     );
 
     expect(response).toEqual(undefined);
@@ -100,7 +100,7 @@ describe("databaseService.ts", () => {
     databaseMockClient.on(GetCommand).rejectsOnce("SOME_ERROR");
 
     await expect(
-      getDocument("testTable", "2e0fac05-4b38-480f-9cbd-b046eabe1e46")
+      getDocument("testTable", "2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
     ).rejects.toThrow("SOME_ERROR");
   });
 });

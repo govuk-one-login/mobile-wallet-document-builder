@@ -20,7 +20,7 @@ const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
 export async function veteranCardDocumentBuilderGetController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     res.render("veteran-card-document-details-form.njk", {
@@ -29,7 +29,7 @@ export async function veteranCardDocumentBuilderGetController(
   } catch (error) {
     logger.error(
       error,
-      "An error happened rendering Veteran Card document page"
+      "An error happened rendering Veteran Card document page",
     );
     res.render("500.njk");
   }
@@ -37,7 +37,7 @@ export async function veteranCardDocumentBuilderGetController(
 
 export async function veteranCardDocumentBuilderPostController(
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> {
   try {
     const selectedPhoto: string = req.body.photo;
@@ -59,7 +59,7 @@ export async function veteranCardDocumentBuilderPostController(
     const document = VeteranCardDocument.fromRequestBody(
       body,
       CREDENTIAL_TYPE,
-      s3Uri
+      s3Uri,
     );
     await saveDocument(getDocumentsTableName(), {
       documentId,
@@ -75,20 +75,20 @@ export async function veteranCardDocumentBuilderPostController(
     }); //v2
 
     res.redirect(
-      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`
+      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
     );
   } catch (error) {
     logger.error(
       error,
-      "An error happened processing Veteran Card document request"
+      "An error happened processing Veteran Card document request",
     );
     res.render("500.njk");
   }
 }
 
 function buildVeteranCardDataFromRequestBody(
-    body: VeteranCardRequestBody,
-    s3Uri: string
+  body: VeteranCardRequestBody,
+  s3Uri: string,
 ) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { throwError, ...newObject } = body;

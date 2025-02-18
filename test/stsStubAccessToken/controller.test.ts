@@ -34,7 +34,7 @@ describe("controller.ts", () => {
 
     const createAccessToken = accessToken.getJwtAccessToken as jest.Mock;
     createAccessToken.mockReturnValueOnce(
-      "eyJ0eXAiOiJKV1Qh.eyJzdWIiOiM.9nQevZ--Asqx5ltCWvw_AvVNDA"
+      "eyJ0eXAiOiJKV1Qh.eyJzdWIiOiM.9nQevZ--Asqx5ltCWvw_AvVNDA",
     );
 
     await stsStubAccessTokenController(req, res);

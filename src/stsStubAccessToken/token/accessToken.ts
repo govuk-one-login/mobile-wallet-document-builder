@@ -13,12 +13,12 @@ export async function getJwtAccessToken(
   walletSubjectId: string,
   payload: PreAuthorizedCodePayload,
   signingKeyId: string,
-  kmsService = new KmsService(signingKeyId)
+  kmsService = new KmsService(signingKeyId),
 ): Promise<Jwt> {
   const accessTokenPayload = createAccessTokenPayload(
     walletSubjectId,
     payload,
-    randomUUID()
+    randomUUID(),
   );
 
   return await createSignedAccessToken(
@@ -26,14 +26,14 @@ export async function getJwtAccessToken(
     signingKeyId,
     ACCESS_TOKEN_SIGNING_ALGORITHM,
     ACCESS_TOKEN_JWT_TYPE,
-    kmsService
+    kmsService,
   );
 }
 
 export function createAccessTokenPayload(
   walletSubjectId: string,
   payload: PreAuthorizedCodePayload,
-  c_nonce: UUID
+  c_nonce: UUID,
 ): AccessTokenPayload {
   return {
     sub: walletSubjectId,
@@ -49,7 +49,7 @@ export async function createSignedAccessToken(
   keyId: string,
   alg: string,
   typ: string,
-  kmsService: KmsService
+  kmsService: KmsService,
 ): Promise<Jwt> {
   const header = { alg, typ, kid: keyId };
   const encodedHeader = base64Encoder(header);
@@ -57,7 +57,7 @@ export async function createSignedAccessToken(
   const message = `${encodedHeader}.${encodedPayload}`;
   const signature = await kmsService.sign(
     message,
-    ACCESS_TOKEN_KMS_SIGNING_ALGORITHM
+    ACCESS_TOKEN_KMS_SIGNING_ALGORITHM,
   );
 
   return `${encodedHeader}.${encodedPayload}.${signature}`;

@@ -69,7 +69,7 @@ describe("controller.ts", () => {
         "pre-authorized_code":
           "eyJraWQiOiI3OGZhMTMxZDY3N2MxYWMwZjE3MmM1M2I0N2FjMTY5YTk1YWQwZDkyYzM4YmQ3OTRhNzBkYTU5MDMyMDU4Mjc0IiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEiLCJjbGllbnRJZCI6IlRFU1RfQ0xJRU5UX0lEIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3JlZGVudGlhbF9pZGVudGlmaWVycyI6WyIzNjg0ZWM2ZC05MmRkLTQyYTgtYmY0Yy1mYTIwMGE4M2I5MmMiXSwiZXhwIjoxNzM2NDQ1MzAxLCJpYXQiOjE3MzY0NDUwMDF9.E0ar-xFbem_Li3gCaqRhu7oFQnQKQevGO5xREVLj3QzKpfteuV4HvPb4z1BxNYDO6ECMyALcI3x9Sl5XUqeE9g",
       },
-      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+      { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
     );
     expect(mockedAxios.post).toHaveBeenNthCalledWith(
       2,
@@ -85,10 +85,10 @@ describe("controller.ts", () => {
           Authorization:
             "BEARER eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjJjZWQyMmUyLWMxNWItNGUwMi1hYTVmLTdhMTBhMmVhY2NjNyJ9.eyJzdWIiOiJ1cm46ZmRjOndhbGxldC5hY2NvdW50Lmdvdi51azoyMDI0OkR0UFQ4eC1kcF83M3RubFkzS05UaUNpdHppTjlHRWhlckQxNmJxeE50OWkiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwODAiLCJjcmVkZW50aWFsX2lkZW50aWZpZXJzIjpbIjM2ODRlYzZkLTkyZGQtNDJhOC1iZjRjLWZhMjAwYTgzYjkyYyJdLCJjX25vbmNlIjoiMmQ4NzJkYzUtMDdlNi00ZmU4LWI1Y2ItYWQ4OWNiYzY4MzcyIn0.4tIHPhrWzRJhhE8f4OnqRda-y8M10H42r5J5KVPS7iLrFR1amJzCMd3O0KEjVke2ISam9qKe50J9p4qs3O5N-A",
         },
-      }
+      },
     );
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      "https://doc-builder.test/proof-jwt?nonce=2d872dc5-07e6-4fe8-b5cb-ad89cbc68372&audience=http://localhost:8080"
+      "https://doc-builder.test/proof-jwt?nonce=2d872dc5-07e6-4fe8-b5cb-ad89cbc68372&audience=http://localhost:8080",
     );
     expect(res.render).toHaveBeenCalledWith("credential.njk", {
       authenticated: true,

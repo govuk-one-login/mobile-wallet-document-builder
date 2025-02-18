@@ -17,7 +17,7 @@ export function logoutGetController(req: Request, res: Response): void {
         id_token_hint: idToken,
         post_logout_redirect_uri: postLogoutRedirectUri,
         state: state,
-      })
+      }),
     );
   } catch (error) {
     logger.error(error, "An error happened trying to logout");

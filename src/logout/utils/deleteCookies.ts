@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 export function deleteCookies(
   req: Request,
   res: Response,
-  cookieNames: string[]
+  cookieNames: string[],
 ): void {
   if (req.cookies) {
     if (cookieNames) {
