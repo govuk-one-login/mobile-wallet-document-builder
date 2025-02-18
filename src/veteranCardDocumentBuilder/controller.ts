@@ -40,11 +40,18 @@ export async function veteranCardDocumentBuilderPostController(
   res: Response,
 ): Promise<void> {
   try {
-    const staticPhotoBuffer = getImageBuffer();
+    const selectedPhoto: string = req.body.photo;
+    const filePath = path.resolve(__dirname, "../resources", selectedPhoto);
+    const photoBuffer = readFileSync(filePath)
     const documentId = randomUUID();
     const bucketName = getPhotosBucketName();
-    const mimeType = "image/jpeg";
-    await uploadPhoto(staticPhotoBuffer, documentId, bucketName, mimeType);
+    const ext = path.extname(selectedPhoto);
+    const mimeTypes: Record<string, string> = {
+      ".jpg": "image/jpeg",
+      ".png": "image/png"
+    };
+    const mimeType = mimeTypes[ext];
+    await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
     const s3Uri = `s3://${bucketName}/${documentId}`;
     const body: VeteranCardRequestBody = req.body;
     const selectedError = body["throwError"];
@@ -77,11 +84,6 @@ export async function veteranCardDocumentBuilderPostController(
     );
     res.render("500.njk");
   }
-}
-
-function getImageBuffer(): Buffer {
-  const filePath = path.resolve(__dirname, "../resources/photo.jpg");
-  return readFileSync(filePath);
 }
 
 function buildVeteranCardDataFromRequestBody(
