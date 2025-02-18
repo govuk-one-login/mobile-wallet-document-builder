@@ -1,3 +1,5 @@
+import {readFileSync} from "fs";
+
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
@@ -10,6 +12,7 @@ import { VeteranCardDocument } from "../../src/veteranCardDocumentBuilder/models
 import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
+import path from "path";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
@@ -20,8 +23,11 @@ jest.mock("../../src/services/databaseService", () => ({
 jest.mock("../../src/services/s3Service", () => ({
   uploadPhoto: jest.fn(),
 }));
+jest.mock('fs');
+
 const saveDocument = databaseService.saveDocument as jest.Mock;
 const uploadPhoto = s3Service.uploadPhoto as jest.Mock;
+// const getPhotoBucketName = config.getPhotosBucketName as jest.Mock;
 
 const requestBody = {
   givenName: "Sarah Elizabeth",
@@ -94,7 +100,7 @@ describe("controller.ts", () => {
         "veteran-card-document-details-form.njk",
         {
           authenticated: false,
-        }
+        },
       );
     });
 
@@ -108,12 +114,14 @@ describe("controller.ts", () => {
         "veteran-card-document-details-form.njk",
         {
           authenticated: true,
-        }
+        },
       );
     });
   });
 
   describe("Post Controller", () => {
+    const mockPhotoBuffer = Buffer.from("mock photo data");
+
     it("should render the error page when an error happens trying to process the request", async () => {
       const req = getMockReq({
         body: requestBody,
@@ -126,25 +134,84 @@ describe("controller.ts", () => {
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
 
+    it("should successfully upload default photo and return S3 URI", async () => {
+      const req = getMockReq({
+        body: requestBody,
+      });
+      const { res } = getMockRes();
+      req.body.photo = "420x525.jpg";
+
+      const mockReadFileSync = readFileSync as jest.Mock;
+      mockReadFileSync.mockReturnValue(mockPhotoBuffer);
+
+      await veteranCardDocumentBuilderPostController(req, res);
+
+      const expectedPath = path.resolve(
+        __dirname,
+        "../../src/resources",
+        "420x525.jpg",
+      );
+      expect(mockReadFileSync).toHaveBeenCalledWith(expectedPath);
+
+      expect(uploadPhoto).toHaveBeenCalledWith(
+        mockPhotoBuffer,
+        "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+        "photosBucket",
+        "image/jpeg",
+      );
+    });
+
+    it("should successfully upload a png photo and return S3 URI", async () => {
+      const req = getMockReq({
+        body: requestBody,
+      });
+      const { res } = getMockRes();
+      req.body.photo = "100x125.png";
+
+      const mockReadFileSync = readFileSync as jest.Mock;
+      mockReadFileSync.mockReturnValue(mockPhotoBuffer);
+
+      await veteranCardDocumentBuilderPostController(req, res);
+
+      const expectedPath = path.resolve(
+        __dirname,
+        "../../src/resources",
+        "100x125.png",
+      );
+      expect(mockReadFileSync).toHaveBeenCalledWith(expectedPath);
+
+      expect(uploadPhoto).toHaveBeenCalledWith(
+        mockPhotoBuffer,
+        "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+        "photosBucket",
+        "image/png",
+      );
+    });
+
     it("should redirect to the credential offer page with 'digitalVeteranCard' in the query params when the document and photo are stored successfully", async () => {
       const req = getMockReq({
         body: requestBody,
         cookies: { dataModel: "v2.0" },
       });
       const { res } = getMockRes();
+      req.body.photo = "420x525.jpg";
+
+      const mockReadFileSync = readFileSync as jest.Mock;
+      mockReadFileSync.mockReturnValue(mockPhotoBuffer);
 
       await veteranCardDocumentBuilderPostController(req, res);
 
+      // const mockVetCardDocFromRequestBody = VeteranCardDocument.fromRequestBody as jest.Mock
       expect(VeteranCardDocument.fromRequestBody).toHaveBeenCalledWith(
         requestBody,
         "digitalVeteranCard",
-        "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+        "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       );
       expect(uploadPhoto).toHaveBeenCalledWith(
         expect.any(Buffer),
         "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         "photosBucket",
-        "image/jpeg"
+        "image/jpeg",
       );
       expect(saveDocument).toHaveBeenNthCalledWith(1, "testTable", {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
@@ -170,7 +237,7 @@ describe("controller.ts", () => {
       });
 
       expect(res.redirect).toHaveBeenCalledWith(
-        "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error="
+        "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=",
       );
     });
 
@@ -181,26 +248,30 @@ describe("controller.ts", () => {
         body: requestBodyWithError,
       });
       const { res } = getMockRes();
+      req.body.photo = "420x525.jpg";
+
+      const mockReadFileSync = readFileSync as jest.Mock;
+      mockReadFileSync.mockReturnValue(mockPhotoBuffer);
 
       await veteranCardDocumentBuilderPostController(req, res);
 
       expect(VeteranCardDocument.fromRequestBody).toHaveBeenCalledWith(
         requestBodyWithError,
         "digitalVeteranCard",
-        "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46"
+        "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       );
       expect(uploadPhoto).toHaveBeenCalledWith(
         expect.any(Buffer),
         "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         "photosBucket",
-        "image/jpeg"
+        "image/jpeg",
       );
       expect(saveDocument).toHaveBeenCalledWith("testTable", {
         documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         vc: JSON.stringify(veteranCardDocument),
       });
       expect(res.redirect).toHaveBeenCalledWith(
-        "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=ERROR:401"
+        "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=ERROR:401",
       );
     });
   });
