@@ -21,7 +21,7 @@ const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 const MIME_TYPES: Record<string, string> = {
   ".jpg": "image/jpeg",
   ".png": "image/png",
-  ".jfif": "image/png"
+  ".jfif": "image/png",
 };
 
 export async function veteranCardDocumentBuilderGetController(
@@ -46,7 +46,7 @@ export async function veteranCardDocumentBuilderPostController(
   res: Response,
 ): Promise<void> {
   try {
-    const { photoBuffer,  mimeType } = getPhoto(req.body.photo);
+    const { photoBuffer, mimeType } = getPhoto(req.body.photo);
     const bucketName = getPhotosBucketName();
     const documentId = randomUUID();
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
@@ -86,16 +86,16 @@ export async function veteranCardDocumentBuilderPostController(
 }
 
 interface Photo {
-  photoBuffer: Buffer<ArrayBufferLike>,
-  mimeType: string
+  photoBuffer: Buffer<ArrayBufferLike>;
+  mimeType: string;
 }
 
 function getPhoto(selectedPhoto: string): Photo {
   const filePath = path.resolve(__dirname, "../resources", selectedPhoto);
-  const photoBuffer = readFileSync(filePath)
+  const photoBuffer = readFileSync(filePath);
   const ext = path.extname(selectedPhoto);
   const mimeType = MIME_TYPES[ext];
-  return {photoBuffer, mimeType};
+  return { photoBuffer, mimeType };
 }
 
 function buildVeteranCardDataFromRequestBody(
@@ -106,5 +106,3 @@ function buildVeteranCardDataFromRequestBody(
   const data: VeteranCardData = { ...newObject, photo: s3Uri };
   return data;
 }
-
-

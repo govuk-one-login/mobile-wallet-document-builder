@@ -1,4 +1,4 @@
-import {readFileSync} from "fs";
+import { readFileSync } from "fs";
 
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
@@ -23,7 +23,7 @@ jest.mock("../../src/services/databaseService", () => ({
 jest.mock("../../src/services/s3Service", () => ({
   uploadPhoto: jest.fn(),
 }));
-jest.mock('fs');
+jest.mock("fs");
 
 const saveDocument = databaseService.saveDocument as jest.Mock;
 const uploadPhoto = s3Service.uploadPhoto as jest.Mock;
