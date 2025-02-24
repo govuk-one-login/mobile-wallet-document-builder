@@ -46,17 +46,13 @@ export async function veteranCardDocumentBuilderPostController(
   res: Response,
 ): Promise<void> {
   try {
-    const selectedPhoto: string = req.body.photo;
-    const filePath = path.resolve(__dirname, "../resources", selectedPhoto);
-    const photoBuffer = readFileSync(filePath)
-    const documentId = randomUUID();
+    const { photoBuffer,  mimeType } = getPhoto(req.body.photo);
     const bucketName = getPhotosBucketName();
-    const ext = path.extname(selectedPhoto);
-    const mimeType = MIME_TYPES[ext];
+    const documentId = randomUUID();
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
+
     const s3Uri = `s3://${bucketName}/${documentId}`;
     const body: VeteranCardRequestBody = req.body;
-    const selectedError = body["throwError"];
 
     const document = VeteranCardDocument.fromRequestBody(
       body,
@@ -76,6 +72,7 @@ export async function veteranCardDocumentBuilderPostController(
       vcType: CREDENTIAL_TYPE,
     }); //v2
 
+    const selectedError = body["throwError"];
     res.redirect(
       `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
     );
@@ -88,12 +85,26 @@ export async function veteranCardDocumentBuilderPostController(
   }
 }
 
+interface Photo {
+  photoBuffer: Buffer<ArrayBufferLike>,
+  mimeType: string
+}
+
+function getPhoto(selectedPhoto: string): Photo {
+  const filePath = path.resolve(__dirname, "../resources", selectedPhoto);
+  const photoBuffer = readFileSync(filePath)
+  const ext = path.extname(selectedPhoto);
+  const mimeType = MIME_TYPES[ext];
+  return {photoBuffer, mimeType};
+}
+
 function buildVeteranCardDataFromRequestBody(
   body: VeteranCardRequestBody,
   s3Uri: string,
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { throwError, ...newObject } = body;
+  const { throwError: _throwError, ...newObject } = body;
   const data: VeteranCardData = { ...newObject, photo: s3Uri };
   return data;
 }
+
+
