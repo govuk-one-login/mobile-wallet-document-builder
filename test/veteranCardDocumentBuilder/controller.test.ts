@@ -27,7 +27,6 @@ jest.mock('fs');
 
 const saveDocument = databaseService.saveDocument as jest.Mock;
 const uploadPhoto = s3Service.uploadPhoto as jest.Mock;
-// const getPhotoBucketName = config.getPhotosBucketName as jest.Mock;
 
 const requestBody = {
   givenName: "Sarah Elizabeth",
@@ -201,7 +200,6 @@ describe("controller.ts", () => {
 
       await veteranCardDocumentBuilderPostController(req, res);
 
-      // const mockVetCardDocFromRequestBody = VeteranCardDocument.fromRequestBody as jest.Mock
       expect(VeteranCardDocument.fromRequestBody).toHaveBeenCalledWith(
         requestBody,
         "digitalVeteranCard",
