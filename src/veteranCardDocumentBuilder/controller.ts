@@ -18,6 +18,12 @@ import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
 
 const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
+const MIME_TYPES: Record<string, string> = {
+  ".jpg": "image/jpeg",
+  ".png": "image/png",
+  ".jfif": "image/png"
+};
+
 export async function veteranCardDocumentBuilderGetController(
   req: Request,
   res: Response,
@@ -46,11 +52,7 @@ export async function veteranCardDocumentBuilderPostController(
     const documentId = randomUUID();
     const bucketName = getPhotosBucketName();
     const ext = path.extname(selectedPhoto);
-    const mimeTypes: Record<string, string> = {
-      ".jpg": "image/jpeg",
-      ".png": "image/png"
-    };
-    const mimeType = mimeTypes[ext];
+    const mimeType = MIME_TYPES[ext];
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
     const s3Uri = `s3://${bucketName}/${documentId}`;
     const body: VeteranCardRequestBody = req.body;
