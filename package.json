@@ -45,7 +45,7 @@
     "@types/cookie-parser": "^1.4.7",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.12",
-    "@types/node": "^22.13.4",
+    "@types/node": "^22.13.5",
     "@types/nunjucks": "^3.2.6",
     "@types/qrcode": "^1.5.5",
     "@typescript-eslint/eslint-plugin": "^8.24.0",
