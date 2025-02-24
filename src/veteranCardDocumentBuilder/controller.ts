@@ -21,7 +21,7 @@ const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 const MIME_TYPES: Record<string, string> = {
   ".jpg": "image/jpeg",
   ".png": "image/png",
-  ".jfif": "image/png",
+  ".jfif": "image/jpeg",
 };
 
 export async function veteranCardDocumentBuilderGetController(
