@@ -37,7 +37,7 @@
     "nunjucks": "3.2.4",
     "openid-client": "^5.6.5",
     "pino": "^9.6.0",
-    "pino-http": "^9.0.0",
+    "pino-http": "^10.4.0",
     "qrcode": "^1.5.3"
   },
   "devDependencies": {
