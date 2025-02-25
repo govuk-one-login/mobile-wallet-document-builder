@@ -13,12 +13,15 @@ export default {
   ],
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/**/*.ts'
+    './**/*.ts',
+    '!./**/types/*.ts',
+    '!./jest.config.ts',
+    '!./src/server.ts',
   ],
-  coveragePathIgnorePatterns: [
-    "/types/",
-    "src/server.ts"
-  ],
+  // coveragePathIgnorePatterns: [
+  //   "/types/",
+  //   "src/server.ts"
+  // ],
 
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
