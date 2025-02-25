@@ -1,4 +1,4 @@
-process.env.ENVIRONMENT = "local";
+import "dotenv/config";
 import { mockClient } from "aws-sdk-client-mock";
 import {
   S3Client,

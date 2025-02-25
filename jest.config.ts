@@ -20,10 +20,6 @@ export default {
   coverageProvider: 'v8',
   testMatch: ['**/*.test.ts'],
   testEnvironment: 'node',
-  transform: {
-    '^.+\\.(ts|tsx)?$': ['ts-jest', { presets: ['ts-jest'] }],
-    '^.+\\.m?[tj]sx?$': ['babel-jest', { presets: ['@babel/preset-env'] }],
-  },
   transformIgnorePatterns: [
     '/node_modules/(?!jose).+\\.js$',
   ],
