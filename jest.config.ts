@@ -13,7 +13,7 @@ export default {
   ],
   collectCoverage: true,
   collectCoverageFrom: [
-    './**/*.ts',
+    '.src/**/',
   ],
   coveragePathIgnorePatterns: [
     "/types/",
