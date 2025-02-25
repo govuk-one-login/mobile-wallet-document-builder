@@ -18,8 +18,6 @@ export default {
   coveragePathIgnorePatterns: [
     "/types/",
     "src/server.ts",
-    "jest.config.ts",
-    // "./babel.config.json"
   ],
 
   coverageDirectory: 'coverage',
