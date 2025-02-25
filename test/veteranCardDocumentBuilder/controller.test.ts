@@ -1,4 +1,4 @@
-import {readFileSync} from "fs";
+import { readFileSync } from "fs";
 
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
@@ -23,11 +23,10 @@ jest.mock("../../src/services/databaseService", () => ({
 jest.mock("../../src/services/s3Service", () => ({
   uploadPhoto: jest.fn(),
 }));
-jest.mock('fs');
+jest.mock("fs");
 
 const saveDocument = databaseService.saveDocument as jest.Mock;
 const uploadPhoto = s3Service.uploadPhoto as jest.Mock;
-// const getPhotoBucketName = config.getPhotosBucketName as jest.Mock;
 
 const requestBody = {
   givenName: "Sarah Elizabeth",
@@ -134,12 +133,16 @@ describe("controller.ts", () => {
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
 
-    it("should successfully upload default photo and return S3 URI", async () => {
+    it.each([
+      ["JPEG", "420x525.jpg", "image/jpeg"],
+      ["PNG", "100x125.png", "image/png"],
+      ["JFIF", "photo.jfif", "image/jpeg"],
+    ])('should upload a %s file', async (fileType, fileName, mimeType) => {
       const req = getMockReq({
         body: requestBody,
       });
       const { res } = getMockRes();
-      req.body.photo = "420x525.jpg";
+      req.body.photo = fileName;
 
       const mockReadFileSync = readFileSync as jest.Mock;
       mockReadFileSync.mockReturnValue(mockPhotoBuffer);
@@ -149,42 +152,14 @@ describe("controller.ts", () => {
       const expectedPath = path.resolve(
         __dirname,
         "../../src/resources",
-        "420x525.jpg",
-      );
+        fileName,
+      )
       expect(mockReadFileSync).toHaveBeenCalledWith(expectedPath);
-
       expect(uploadPhoto).toHaveBeenCalledWith(
         mockPhotoBuffer,
         "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         "photosBucket",
-        "image/jpeg",
-      );
-    });
-
-    it("should successfully upload a png photo and return S3 URI", async () => {
-      const req = getMockReq({
-        body: requestBody,
-      });
-      const { res } = getMockRes();
-      req.body.photo = "100x125.png";
-
-      const mockReadFileSync = readFileSync as jest.Mock;
-      mockReadFileSync.mockReturnValue(mockPhotoBuffer);
-
-      await veteranCardDocumentBuilderPostController(req, res);
-
-      const expectedPath = path.resolve(
-        __dirname,
-        "../../src/resources",
-        "100x125.png",
-      );
-      expect(mockReadFileSync).toHaveBeenCalledWith(expectedPath);
-
-      expect(uploadPhoto).toHaveBeenCalledWith(
-        mockPhotoBuffer,
-        "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-        "photosBucket",
-        "image/png",
+        mimeType,
       );
     });
 
@@ -201,7 +176,6 @@ describe("controller.ts", () => {
 
       await veteranCardDocumentBuilderPostController(req, res);
 
-      // const mockVetCardDocFromRequestBody = VeteranCardDocument.fromRequestBody as jest.Mock
       expect(VeteranCardDocument.fromRequestBody).toHaveBeenCalledWith(
         requestBody,
         "digitalVeteranCard",
