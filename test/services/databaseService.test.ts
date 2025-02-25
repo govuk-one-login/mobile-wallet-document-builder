@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { mockClient } from "aws-sdk-client-mock";
 import {
   PutCommand,

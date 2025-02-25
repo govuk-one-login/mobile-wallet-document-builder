@@ -2,6 +2,9 @@
  * For a detailed explanation regarding each configuration property and type check, visit:
  * https://jestjs.io/docs/configuration
  */
+require('dotenv').config({
+  path: './.env.example',
+});
 
 export default {
   reporters: [
@@ -16,6 +19,7 @@ export default {
     "/types/",
     "src/server.ts"
   ],
+
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   testMatch: ['**/*.test.ts'],

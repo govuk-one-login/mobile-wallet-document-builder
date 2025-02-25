@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { createApp } from "../src/app";
 import { expect } from "@jest/globals";
 
