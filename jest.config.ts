@@ -15,11 +15,12 @@ export default {
   collectCoverageFrom: [
     './**/*.ts',
   ],
-  // coveragePathIgnorePatterns: [
-  //   "/types/",
-  //   "src/server.ts",
-  //   "jest.config.ts"
-  // ],
+  coveragePathIgnorePatterns: [
+    "/types/",
+    "src/server.ts",
+    "./jest.config.ts",
+    "./babel.config.json"
+  ],
 
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
