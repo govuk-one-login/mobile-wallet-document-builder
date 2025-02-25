@@ -4,25 +4,27 @@
  */
 
 export default {
-  transform: {
-    '^.+\\.tsx?$': [
-      'ts-jest'
-    ],
-  },
   reporters: [
     'default',
     ['jest-junit', { outputDirectory: 'results', outputName: 'report.xml' }]
   ],
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/**',
+    'src/**'
   ],
-  "coveragePathIgnorePatterns": [
+  coveragePathIgnorePatterns: [
     "/types/",
-    "<rootDir>/src/server.ts"
+    "src/server.ts"
   ],
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   testMatch: ['**/*.test.ts'],
-  testEnvironment: 'node'
+  testEnvironment: 'node',
+  transform: {
+    '^.+\\.(ts|tsx)?$': ['ts-jest', { presets: ['ts-jest'] }],
+    '^.+\\.m?[tj]sx?$': ['babel-jest', { presets: ['@babel/preset-env'] }],
+  },
+  transformIgnorePatterns: [
+    '/node_modules/(?!jose).+\\.js$',
+  ],
 }
