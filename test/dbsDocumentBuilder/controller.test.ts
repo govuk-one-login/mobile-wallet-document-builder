@@ -104,7 +104,7 @@ describe("controller.ts", () => {
         ],
       },
     };
-    jest.spyOn(DbsDocument, "fromRequestBody").mockReturnValueOnce(dbsDocument);
+    jest.spyOn(DbsDocument, "fromRequestBody").mockReturnValue(dbsDocument);
 
     const saveDocument = databaseService.saveDocument as jest.Mock;
 

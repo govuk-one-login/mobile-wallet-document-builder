@@ -27,6 +27,7 @@ describe("veteranCardDocument.ts", () => {
         "cardExpiryDate-year": "  2029 ",
         serviceNumber: "   25057386   ",
         serviceBranch: "   HM Naval Service",
+        photo: "420x525.jpg",
         throwError: "",
       };
 
@@ -73,6 +74,7 @@ describe("veteranCardDocument.ts", () => {
         "cardExpiryDate-year": "2029",
         serviceNumber: "25057386",
         serviceBranch: "HM Naval Service",
+        photo: "420x525.jpg",
         throwError: "",
       };
 
@@ -111,6 +113,7 @@ describe("veteranCardDocument.ts", () => {
         "cardExpiryDate-year": "2029",
         serviceNumber: "",
         serviceBranch: "HM Naval Service",
+        photo: "420x525.jpg",
         throwError: "",
       };
 
@@ -156,6 +159,7 @@ describe("veteranCardDocument.ts", () => {
         "cardExpiryDate-year": "",
         serviceNumber: "25057386",
         serviceBranch: "HM Naval Service",
+        photo: "420x525.jpg",
         throwError: "",
       };
 
