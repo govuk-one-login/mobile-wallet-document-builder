@@ -61,7 +61,7 @@ export class DbsDocument {
 
   private static trimRequestBody(input: DbsRequestBody) {
     for (const key in input) {
-      const trimmed = input[key as keyof DbsRequestBody]!.trim();
+      const trimmed = input[key as keyof DbsRequestBody].trim();
       input[key as keyof DbsRequestBody] = trimmed;
     }
   }

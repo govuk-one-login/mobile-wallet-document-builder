@@ -57,7 +57,7 @@ export class NinoDocument {
 
   private static trimRequestBody(input: NinoRequestBody) {
     for (const key in input) {
-      const trimmed = input[key as keyof NinoRequestBody]!.trim();
+      const trimmed = input[key as keyof NinoRequestBody].trim();
       input[key as keyof NinoRequestBody] = trimmed;
     }
   }
