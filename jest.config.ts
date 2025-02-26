@@ -24,5 +24,6 @@ export default {
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   testMatch: ['**/*.test.ts'],
-  testEnvironment: 'node'
+  testEnvironment: 'node',
+  clearMocks: true
 }
