@@ -1,3 +1,4 @@
+process.env.ENVIRONMENT = "local";
 import { mockClient } from "aws-sdk-client-mock";
 import {
   PutCommand,
