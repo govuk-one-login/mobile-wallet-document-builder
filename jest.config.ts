@@ -2,13 +2,11 @@
  * For a detailed explanation regarding each configuration property and type check, visit:
  * https://jestjs.io/docs/configuration
  */
+require('dotenv').config({
+  path: './.env.example',
+});
 
 export default {
-  transform: {
-    '^.+\\.tsx?$': [
-      'ts-jest'
-    ],
-  },
   reporters: [
     'default',
     ['jest-junit', { outputDirectory: 'results', outputName: 'report.xml' }]
@@ -16,13 +14,18 @@ export default {
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**',
+    '!./jest.config.ts'
   ],
-  "coveragePathIgnorePatterns": [
+  coveragePathIgnorePatterns: [
     "/types/",
-    "<rootDir>/src/server.ts"
+    "src/server.ts",
   ],
+
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   testMatch: ['**/*.test.ts'],
-  testEnvironment: 'node'
+  testEnvironment: 'node',
+  transformIgnorePatterns: [
+    '/node_modules/(?!jose).+\\.js$',
+  ],
 }

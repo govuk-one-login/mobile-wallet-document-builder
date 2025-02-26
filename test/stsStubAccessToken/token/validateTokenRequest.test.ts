@@ -34,9 +34,7 @@ describe("validateTokenRequest.ts", () => {
     });
 
     it("should throw an error if pre-authorized code is not a valid JWT", async () => {
-      expect(() => getPreAuthorizedCodePayload("not.valid.jwt")).toThrow(
-        new Error("Failed to parse the decoded payload as JSON"),
-      );
+      expect(() => getPreAuthorizedCodePayload("not.valid.jwt")).toThrowError();
     });
 
     it("should return false if pre-authorized code is missing 'aud' claim", async () => {

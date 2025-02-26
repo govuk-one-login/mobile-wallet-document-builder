@@ -15,6 +15,7 @@ import {
 
 describe("appConfig.ts", () => {
   it("should throw an error if PORT environment variable is not set", () => {
+    delete process.env.PORT;
     expect(() => getPortNumber()).toThrow(
       new Error("PORT environment variable not set"),
     );
@@ -26,6 +27,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if DOCUMENTS_TABLE_NAME environment variable is not set", () => {
+    delete process.env.DOCUMENTS_TABLE_NAME;
     expect(() => getDocumentsTableName()).toThrow(
       new Error("DOCUMENTS_TABLE_NAME environment variable not set"),
     );
@@ -37,6 +39,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if ENVIRONMENT environment variable is not set", () => {
+    delete process.env.ENVIRONMENT;
     expect(() => getEnvironment()).toThrow(
       new Error("ENVIRONMENT environment variable not set"),
     );
@@ -48,6 +51,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if CREDENTIAL_ISSUER_URL environment variable is not set", () => {
+    delete process.env.CREDENTIAL_ISSUER_URL;
     expect(() => getCriEndpoint()).toThrow(
       new Error("CREDENTIAL_ISSUER_URL environment variable not set"),
     );
@@ -59,7 +63,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should return the default value ('eu-west-2') of the AWS_REGION environment variable value if not set", () => {
-    process.env.AWS_REGION = "";
+    delete process.env.AWS_REGION;
     expect(getEnvironment()).toEqual("local");
   });
 
@@ -69,6 +73,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if ACCESS_TOKEN_TTL_IN_SECS environment variable is not set", () => {
+    delete process.env.ACCESS_TOKEN_TTL_IN_SECS;
     expect(() => getAccessTokenTtlInSecs()).toThrow(
       new Error("ACCESS_TOKEN_TTL_IN_SECS environment variable not set"),
     );
@@ -80,6 +85,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if SELF environment variable is not set", () => {
+    delete process.env.SELF;
     expect(() => getSelfUrl()).toThrow(
       new Error("SELF environment variable not set"),
     );
@@ -91,6 +97,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if OIDC_CLIENT_ID environment variable is not set", () => {
+    delete process.env.OIDC_CLIENT_ID;
     expect(() => getOIDCClientId()).toThrow(
       new Error("OIDC_CLIENT_ID environment variable not set"),
     );
@@ -102,6 +109,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if CLIENT_SIGNING_KEY_ID environment variable is not set", () => {
+    delete process.env.CLIENT_SIGNING_KEY_ID;
     expect(() => getClientSigningKeyId()).toThrow(
       new Error("CLIENT_SIGNING_KEY_ID environment variable not set"),
     );
@@ -113,6 +121,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable is not set", () => {
+    delete process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT;
     expect(() => getOIDCDiscoveryEndpoint()).toThrow(
       new Error("OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable not set"),
     );
@@ -124,6 +133,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if COOKIE_TTL_IN_SECS environment variable is not set", () => {
+    delete process.env.COOKIE_TTL_IN_SECS;
     expect(() => getCookieExpiry()).toThrow(
       new Error("COOKIE_TTL_IN_SECS environment variable not set"),
     );
