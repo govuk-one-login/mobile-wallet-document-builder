@@ -86,7 +86,7 @@ as [this one](https://github.com/govuk-one-login/mobile-platform-back/tree/main/
 
 To configure this stub to work with the Document Builder, run:
 ```
-bash configure_auth_stub.sh
+./configure_auth_stub.sh
 ```
 
 Both repositories must be in the same directory for the script to work.
