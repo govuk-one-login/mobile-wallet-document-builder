@@ -63,16 +63,12 @@ export class ProofJwtKmsService {
       MessageType: "RAW",
     });
 
-    try {
-      const response: SignCommandOutput = await this.kmsClient.send(command);
-      const base64EncodedSignature = Buffer.from(response.Signature!).toString(
-        "base64url",
-      );
-      return format.derToJose(base64EncodedSignature, "ES256");
-    } catch (error) {
-      console.log(`Error signing token: ${error as Error}`);
-      throw error;
-    }
+    const response: SignCommandOutput = await this.kmsClient.send(command);
+    const base64EncodedSignature = Buffer.from(response.Signature!).toString(
+      "base64url",
+    );
+
+    return format.derToJose(base64EncodedSignature, "ES256");
   }
 
   public async getPublicKey() {
@@ -80,13 +76,8 @@ export class ProofJwtKmsService {
       KeyId: this.keyId,
     });
 
-    try {
-      const response: GetPublicKeyResponse = await this.kmsClient.send(command);
-      return response.PublicKey!;
-    } catch (error) {
-      console.log(`Error fetching public key: ${error as Error}`);
-      throw error;
-    }
+    const response: GetPublicKeyResponse = await this.kmsClient.send(command);
+    return response.PublicKey!;
   }
 }
 
@@ -137,15 +128,10 @@ export const createJwkFromRawPublicKey = (
     stringPublicKey +
     "\n-----END PUBLIC KEY-----";
 
-  try {
-    const jsonWebKey = createPublicKey(formattedPublicKey).export({
-      format: "jwk",
-    });
-    return jsonWebKey;
-  } catch (error) {
-    console.log(error);
-    throw new Error("Could not create JWK from raw public key");
-  }
+  const jsonWebKey = createPublicKey(formattedPublicKey).export({
+    format: "jwk",
+  });
+  return jsonWebKey;
 };
 
 export const uint8ArrayToBase64 = (uint8Array: Uint8Array) => {
