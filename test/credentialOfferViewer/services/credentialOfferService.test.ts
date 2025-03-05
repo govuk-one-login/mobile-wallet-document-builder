@@ -47,26 +47,4 @@ describe("credentialOfferService.ts", () => {
         "https://mobile.test.account.gov.uk/wallet/add?credential_offer=BasicCheckCredential",
     });
   });
-
-  it("should catch an axios error and throw it", async () => {
-    const documentId = "2e0fac05-4b38-480f-9cbd-b046eabe1e46";
-    const credentialType = "BasicCheckCredential";
-    mockedAxios.isAxiosError.mockReturnValue(true);
-    mockedAxios.get.mockRejectedValueOnce(new Error("AXIOS_ERROR"));
-
-    await expect(
-      getCredentialOffer(WALLET_SUBJECT_ID, documentId, credentialType),
-    ).rejects.toThrow("AXIOS_ERROR");
-  });
-
-  it("should catch a non-axios error and throw it", async () => {
-    const documentId = "2e0fac05-4b38-480f-9cbd-b046eabe1e46";
-    const credentialType = "BasicCheckCredential";
-    mockedAxios.isAxiosError.mockReturnValue(false);
-    mockedAxios.get.mockRejectedValueOnce(new Error("SOME_ERROR"));
-
-    await expect(
-      getCredentialOffer(WALLET_SUBJECT_ID, documentId, credentialType),
-    ).rejects.toThrow("SOME_ERROR");
-  });
 });

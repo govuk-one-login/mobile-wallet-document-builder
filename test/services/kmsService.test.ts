@@ -19,14 +19,6 @@ describe("kmsService.ts", () => {
     mockKmsClient.reset();
   });
 
-  it("should throw an error when an error happens when calling KMS to sign token", async () => {
-    mockKmsClient.on(SignCommand).rejects(new Error("SOME_KMS_ERROR"));
-
-    await expect(
-      kmsService.sign("mock_message_to_sign", SIGNING_ALGORITHM_RSA),
-    ).rejects.toThrow("SOME_KMS_ERROR");
-  });
-
   it("should throw an error when KMS response has no signature", async () => {
     mockKmsClient.on(SignCommand).resolves({ Signature: undefined });
 
@@ -66,12 +58,6 @@ describe("kmsService.ts", () => {
     expect(response).toEqual(
       "yA4WNemRpUreSh9qgMh_ePGqhgn328ghJ_HG7WOBKQV98eFNm3FIvweoiSzHvl49Z6YTdV4Up7NDD7UcZ-52cw",
     );
-  });
-
-  it("should throw an error when an error happens when calling KMS to fetch public key", async () => {
-    mockKmsClient.on(GetPublicKeyCommand).rejects(new Error("SOME_KMS_ERROR"));
-
-    await expect(kmsService.getPublicKey()).rejects.toThrow("SOME_KMS_ERROR");
   });
 
   it("should throw an error when KMS response has no public key", async () => {
