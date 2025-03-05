@@ -1,15 +1,12 @@
 import {
   GetPublicKeyCommand,
-  GetPublicKeyResponse,
   KMSClient,
   SignCommand,
   SignCommandInput,
-  SignCommandOutput,
   SigningAlgorithmSpec,
 } from "@aws-sdk/client-kms";
 import { getKmsConfig } from "../config/aws";
 import format from "ecdsa-sig-formatter";
-import { logger } from "../middleware/logger";
 
 export class KmsService {
   constructor(
@@ -27,15 +24,10 @@ export class KmsService {
       SigningAlgorithm: signingAlgorithm,
       MessageType: "RAW",
     };
+
     const command: SignCommand = new SignCommand(signCommandInput);
 
-    let response: SignCommandOutput;
-    try {
-      response = await this.kmsClient.send(command);
-    } catch (error) {
-      logger.error("Error signing token with KMS");
-      throw error;
-    }
+    const response = await this.kmsClient.send(command);
 
     if (!response.Signature) {
       throw new Error("No signature returned");
@@ -57,13 +49,7 @@ export class KmsService {
       KeyId: this.keyId,
     });
 
-    let response: GetPublicKeyResponse;
-    try {
-      response = await this.kmsClient.send(command);
-    } catch (error) {
-      logger.error("Error fetching public key from KMS");
-      throw error;
-    }
+    const response = await this.kmsClient.send(command);
 
     if (!response.PublicKey) {
       throw new Error("No public key returned");

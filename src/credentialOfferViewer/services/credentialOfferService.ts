@@ -10,31 +10,18 @@ export async function getCredentialOffer(
   documentId: string,
   credentialType: string,
 ): Promise<CredentialOfferResponse> {
-  try {
-    const criUrl = getCriEndpoint();
-    const credentialOfferUrl = criUrl + CREDENTIAL_OFFER_PATH;
+  const criUrl = getCriEndpoint();
+  const credentialOfferUrl = criUrl + CREDENTIAL_OFFER_PATH;
 
-    const response = await axios.get(credentialOfferUrl, {
-      params: {
-        walletSubjectId: walletSubjectId,
-        documentId: documentId,
-        credentialType: credentialType,
-      },
-    });
+  const response = await axios.get(credentialOfferUrl, {
+    params: {
+      walletSubjectId: walletSubjectId,
+      documentId: documentId,
+      credentialType: credentialType,
+    },
+  });
 
-    logger.info(`Fetched credential offer for documentId ${documentId}`);
+  logger.info(`Fetched credential offer for documentId ${documentId}`);
 
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      logger.error(
-        `Error fetching credential offer for documentId ${documentId}`,
-      );
-    } else {
-      logger.error(
-        `Unexpected error happened fetching credential offer for documentId ${documentId}`,
-      );
-    }
-    throw error;
-  }
+  return response.data;
 }
