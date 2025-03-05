@@ -23,14 +23,14 @@ export async function credentialOfferViewerController(
     );
     const walletSubjectId = userInfo.wallet_subject_id;
 
-    const response = await getCredentialOffer(
+    const credentialOfferUrl = await getCredentialOffer(
       walletSubjectId,
       documentId,
       credentialType,
     );
 
     const credentialOfferUri = getCustomCredentialOfferUri(
-      response["credential_offer_uri"],
+      credentialOfferUrl,
       selectedApp,
       apps,
       errorScenario,

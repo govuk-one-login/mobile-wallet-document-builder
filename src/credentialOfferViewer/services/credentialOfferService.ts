@@ -1,6 +1,5 @@
 import axios from "axios";
 import { getCriEndpoint } from "../../config/appConfig";
-import { CredentialOfferResponse } from "../types/CredentialOfferResponse";
 import { logger } from "../../middleware/logger";
 
 const CREDENTIAL_OFFER_PATH = "/credential_offer";
@@ -9,7 +8,7 @@ export async function getCredentialOffer(
   walletSubjectId: string,
   documentId: string,
   credentialType: string,
-): Promise<CredentialOfferResponse> {
+): Promise<string> {
   const criUrl = getCriEndpoint();
   const credentialOfferUrl = criUrl + CREDENTIAL_OFFER_PATH;
 
