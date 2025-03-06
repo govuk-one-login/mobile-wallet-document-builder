@@ -4,7 +4,7 @@ import { logger } from "../../middleware/logger";
 
 const CREDENTIAL_OFFER_PATH = "/credential_offer";
 
-export async function getCredentialOffer(
+export async function getCredentialOfferUrl(
   walletSubjectId: string,
   documentId: string,
   credentialType: string,

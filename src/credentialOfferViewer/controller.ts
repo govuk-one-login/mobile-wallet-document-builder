@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import QRCode from "qrcode";
-import { getCredentialOffer } from "./services/credentialOfferService";
-import { getCustomCredentialOfferUri } from "./helpers/customCredentialOfferUri";
+import { getCredentialOfferUrl } from "./services/credentialOfferService";
+import { getCustomCredentialOfferUrl } from "./helpers/customCredentialOfferUrl";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { UserInfo } from "./types/UserInfo";
@@ -23,24 +23,24 @@ export async function credentialOfferViewerController(
     );
     const walletSubjectId = userInfo.wallet_subject_id;
 
-    const credentialOfferUrl = await getCredentialOffer(
+    let credentialOfferUrl = await getCredentialOfferUrl(
       walletSubjectId,
       documentId,
       credentialType,
     );
 
-    const credentialOfferUri = getCustomCredentialOfferUri(
+    credentialOfferUrl = getCustomCredentialOfferUrl(
       credentialOfferUrl,
       selectedApp,
       apps,
       errorScenario,
     );
 
-    const qrCode = await QRCode.toDataURL(credentialOfferUri);
+    const qrCode = await QRCode.toDataURL(credentialOfferUrl);
 
     res.render("credential-offer.njk", {
       authenticated: isAuthenticated(req),
-      universalLink: credentialOfferUri,
+      universalLink: credentialOfferUrl,
       qrCode,
     });
   } catch (error) {

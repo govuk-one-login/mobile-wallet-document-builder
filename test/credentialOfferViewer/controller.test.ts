@@ -1,6 +1,6 @@
 import { credentialOfferViewerController } from "../../src/credentialOfferViewer/controller";
 import * as credentialOfferService from "../../src/credentialOfferViewer/services/credentialOfferService";
-import * as customCredentialOfferUri from "../../src/credentialOfferViewer/helpers/customCredentialOfferUri";
+import * as customCredentialOfferUrl from "../../src/credentialOfferViewer/helpers/customCredentialOfferUrl";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
 export const WALLET_SUBJECT_ID =
@@ -9,13 +9,13 @@ export const WALLET_SUBJECT_ID =
 jest.mock(
   "../../src/credentialOfferViewer/services/credentialOfferService",
   () => ({
-    getCredentialOffer: jest.fn(),
+    getCredentialOfferUrl: jest.fn(),
   }),
 );
 jest.mock(
-  "../../src/credentialOfferViewer/helpers/customCredentialOfferUri",
+  "../../src/credentialOfferViewer/helpers/customCredentialOfferUrl",
   () => ({
-    getCustomCredentialOfferUri: jest.fn(),
+    getCustomCredentialOfferUrl: jest.fn(),
   }),
 );
 jest.mock("qrcode", () => ({
@@ -27,10 +27,10 @@ describe("controller.ts", () => {
     jest.clearAllMocks();
   });
 
-  const getCredentialOffer =
-    credentialOfferService.getCredentialOffer as jest.Mock;
-  const getCustomCredentialOfferUri =
-    customCredentialOfferUri.getCustomCredentialOfferUri as jest.Mock;
+  const getCredentialOfferUrl =
+    credentialOfferService.getCredentialOfferUrl as jest.Mock;
+  const getCustomCredentialOfferUrl =
+    customCredentialOfferUrl.getCustomCredentialOfferUrl as jest.Mock;
 
   const userinfo = { wallet_subject_id: WALLET_SUBJECT_ID };
   const req = getMockReq({
@@ -56,20 +56,20 @@ describe("controller.ts", () => {
     const credentialOfferMocked =
       "https://mobile.dev.account.gov.uk/wallet-test/add?credential_offer=%7B%22credentials%22%3A%5B%22SocialSecurityCredential%22%5D%2C%22grants%22%3A%7B%22urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Apre-authorized_code%22%3A%7B%22pre-authorized_code%22%3A%22eyJraWQiOiI3OGZhMTMxZDY3N2MxYWMwZjE3MmM1M2I0N2FjMTY5YTk1YWQwZDkyYzM4YmQ3OTRhNzBkYTU5MDMyMDU4Mjc0IiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEiLCJjbGllbnRJZCI6IlRFU1RfQ0xJRU5UX0lEIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3JlZGVudGlhbF9pZGVudGlmaWVycyI6WyI1ZjM5YTY4Zi02M2MzLTRkMGYtODdlNy0yNGYyNzRjZWJkYWYiXSwiZXhwIjoxNzM2NTA2NzkzLCJpYXQiOjE3MzY1MDY0OTN9.AHeaVwMBqlTOO1Qmgg38-OWiSTs-AmEtLJafz6Ks31CCqHiXJ_QujmK5jJGWpry8X84FSksPhhGoTIG61TbLuQ%22%7D%7D%2C%22credential_issuer%22%3A%22http%3A%2F%2Flocalhost%3A8080%22%7D";
 
-    getCredentialOffer.mockReturnValueOnce(credentialOfferMocked);
-    getCustomCredentialOfferUri.mockReturnValueOnce(
+    getCredentialOfferUrl.mockReturnValueOnce(credentialOfferMocked);
+    getCustomCredentialOfferUrl.mockReturnValueOnce(
       `https://mobile.build.account.gov.uk/test-wallet/add?credential_offer=${credentialOfferMocked}`,
     );
 
     await credentialOfferViewerController(req, res);
 
     expect(req.oidc.userinfo).toHaveBeenCalled();
-    expect(getCredentialOffer).toHaveBeenCalledWith(
+    expect(getCredentialOfferUrl).toHaveBeenCalledWith(
       WALLET_SUBJECT_ID,
       "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       "BasicCheckCredential",
     );
-    expect(getCustomCredentialOfferUri).toHaveBeenCalledWith(
+    expect(getCustomCredentialOfferUrl).toHaveBeenCalledWith(
       "https://mobile.dev.account.gov.uk/wallet-test/add?credential_offer=%7B%22credentials%22%3A%5B%22SocialSecurityCredential%22%5D%2C%22grants%22%3A%7B%22urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Apre-authorized_code%22%3A%7B%22pre-authorized_code%22%3A%22eyJraWQiOiI3OGZhMTMxZDY3N2MxYWMwZjE3MmM1M2I0N2FjMTY5YTk1YWQwZDkyYzM4YmQ3OTRhNzBkYTU5MDMyMDU4Mjc0IiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEiLCJjbGllbnRJZCI6IlRFU1RfQ0xJRU5UX0lEIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3JlZGVudGlhbF9pZGVudGlmaWVycyI6WyI1ZjM5YTY4Zi02M2MzLTRkMGYtODdlNy0yNGYyNzRjZWJkYWYiXSwiZXhwIjoxNzM2NTA2NzkzLCJpYXQiOjE3MzY1MDY0OTN9.AHeaVwMBqlTOO1Qmgg38-OWiSTs-AmEtLJafz6Ks31CCqHiXJ_QujmK5jJGWpry8X84FSksPhhGoTIG61TbLuQ%22%7D%7D%2C%22credential_issuer%22%3A%22http%3A%2F%2Flocalhost%3A8080%22%7D",
       "some-build-app",
       expect.any(Array),
@@ -84,7 +84,7 @@ describe("controller.ts", () => {
   });
 
   it("should render an error page when an error happens", async () => {
-    getCredentialOffer.mockRejectedValueOnce(new Error("SOME_ERROR"));
+    getCredentialOfferUrl.mockRejectedValueOnce(new Error("SOME_ERROR"));
 
     await credentialOfferViewerController(req, res);
 
