@@ -1,5 +1,5 @@
 process.env.CREDENTIAL_ISSUER_URL = "http://localhost:1234";
-import { getCredentialOffer } from "../../../src/credentialOfferViewer/services/credentialOfferService";
+import { getCredentialOfferUrl } from "../../../src/credentialOfferViewer/services/credentialOfferService";
 import axios, { AxiosResponse } from "axios";
 
 export const WALLET_SUBJECT_ID =
@@ -26,7 +26,7 @@ describe("credentialOfferService.ts", () => {
 
     mockedAxios.get.mockResolvedValue(criResponseMocked);
 
-    const response = await getCredentialOffer(
+    const response = await getCredentialOfferUrl(
       WALLET_SUBJECT_ID,
       documentId,
       credentialType,
