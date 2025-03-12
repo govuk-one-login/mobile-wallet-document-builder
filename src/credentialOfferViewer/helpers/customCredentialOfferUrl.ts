@@ -44,7 +44,7 @@ function replacePreAuthorizedCodeWithError(
   return urlParts[0] + urlParts[1] + newCredentialOfferEncoded;
 }
 
-export function getCustomCredentialOfferUrl(
+export function customiseCredentialOfferUrl(
   credentialOfferUrl: string,
   selectedApp: string,
   allApps: App[],
