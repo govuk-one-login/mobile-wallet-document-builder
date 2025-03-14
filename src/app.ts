@@ -65,6 +65,8 @@ export async function createApp(): Promise<express.Application> {
     }),
   );
 
+  console.log("test")
+
   app.use(returnFromAuthRouter);
   app.use(appSelectorRouter);
   app.use(documentSelectorRouter);
