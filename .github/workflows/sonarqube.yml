@@ -6,10 +6,6 @@ on:
       - main
   pull_request:
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   run-code-quality-and-security-analysis:
     name: Run code quality and security analysis
@@ -37,7 +33,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+        with:
+          projectBaseDir: ./
 
       - name: SonarQube Quality Gate check
         uses: SonarSource/sonarqube-quality-gate-action@d304d050d930b02a896b0f85935344f023928496 # v1.1.0
