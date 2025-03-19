@@ -34,7 +34,7 @@ export async function credentialViewerController(
       credentialClaims: JSON.stringify(credentialClaims),
     });
   } catch (error) {
-    logger.error("An error happened:", error);
+    logger.error(error, "An error happened.");
     res.render("500.njk");
   }
 }
