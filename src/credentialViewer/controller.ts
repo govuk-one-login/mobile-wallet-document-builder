@@ -98,8 +98,8 @@ export async function getCredential(
       },
     },
   );
-  console.log("API Response:", JSON.stringify(response, null, 2))
-  console.log("Credential Data:", JSON.stringify(response.data.credential, null, 2))
+  console.log("API Response:", JSON.stringify(response))
+  console.log("Credential Data:", JSON.stringify(response.data.credential))
 
   return response.data.credential;
 }
