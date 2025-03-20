@@ -19,3 +19,6 @@ sed -i '' "s|^AUTH_STUB_BASE_URL=[^=]*$|AUTH_STUB_BASE_URL=${AUTH_STUB_BASE_URL}
 
 REDIRECT_URI="http://localhost:8001/return-from-auth"
 sed -i '' "s|^REDIRECT_URI=[^=]*$|REDIRECT_URI=${REDIRECT_URI}|" ../mobile-platform-back/auth-stub/.env
+
+AWS_PROFILE=$1
+sed -i '' "s|^AWS_PROFILE=[^=]*$|AWS_PROFILE=${AWS_PROFILE}|" ../mobile-platform-back/auth-stub/.env
