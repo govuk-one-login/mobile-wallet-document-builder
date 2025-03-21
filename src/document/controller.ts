@@ -5,7 +5,6 @@ import { getPhoto } from "../services/s3Service";
 import { CredentialType } from "../types/CredentialType";
 import { getDocumentsTableName } from "../config/appConfig";
 import { VeteranCardData } from "../veteranCardDocumentBuilder/types/VeteranCardData";
-import { TableItem } from "../types/TableItem";
 
 export async function documentController(
   req: Request,
@@ -14,9 +13,7 @@ export async function documentController(
   try {
     const { documentId } = req.params;
     const tableName = getDocumentsTableName();
-    const tableItem = (await getDocument(tableName, documentId)) as
-      | TableItem
-      | undefined;
+    const tableItem = await getDocument(tableName, documentId);
 
     if (!tableItem) {
       logger.error(`Document with ID ${documentId} not found`);
