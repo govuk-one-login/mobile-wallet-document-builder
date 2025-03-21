@@ -1,14 +1,10 @@
 import { Request, Response } from "express";
-import { NinoDocument } from "./models/ninoDocument";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import {
-  getDocumentsTableName,
-  getDocumentsV2TableName,
-} from "../config/appConfig";
+import { getDocumentsTableName } from "../config/appConfig";
 import { NinoRequestBody } from "./types/NinoRequestBody";
 import { NinoData } from "./types/NinoData";
 
@@ -38,19 +34,12 @@ export async function ninoDocumentBuilderPostController(
     const body: NinoRequestBody = req.body;
     const selectedError = body["throwError"];
 
-    const document = NinoDocument.fromRequestBody(body, CREDENTIAL_TYPE);
+    const data = buildNinoDataFromRequestBody(body);
     await saveDocument(getDocumentsTableName(), {
       documentId,
-      vc: JSON.stringify(document),
-    }); //v1
-
-    const data = buildNinoDataFromRequestBody(body);
-    await saveDocument(getDocumentsV2TableName(), {
-      documentId,
       data,
-      vcDataModel: req.cookies["dataModel"],
       vcType: CREDENTIAL_TYPE,
-    }); //v2
+    });
 
     res.redirect(
       `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,

@@ -2,16 +2,13 @@ import {
   dbsDocumentBuilderGetController,
   dbsDocumentBuilderPostController,
 } from "../../src/dbsDocumentBuilder/controller";
-import { DbsDocument } from "../../src/dbsDocumentBuilder/models/dbsDocument";
 import * as databaseService from "../../src/services/databaseService";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
-process.env.DOCUMENTS_V2_TABLE_NAME = "testTable2";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
 }));
-jest.mock("../../src/dbsDocumentBuilder/models/dbsDocument");
 jest.mock("../../src/services/databaseService", () => ({
   saveDocument: jest.fn(),
 }));
@@ -65,47 +62,6 @@ describe("controller.ts", () => {
       throwError: "",
     };
 
-    const dbsDocument = {
-      type: ["VerifiableCredential", "BasicCheckCredential"],
-      credentialSubject: {
-        issuanceDate: "2025-1-16",
-        expirationDate: "2026-1-16",
-        name: [
-          {
-            nameParts: [
-              { type: "GivenName", value: "Sarah" },
-              {
-                type: "GivenName",
-                value: "Elizabeth",
-              },
-              { type: "FamilyName", value: "Edwards" },
-            ],
-          },
-        ],
-        birthDate: [{ value: "2024-1-16" }],
-        address: [
-          {
-            addressCountry: "GB",
-            addressLocality: "London",
-            buildingName: "",
-            postalCode: "NW3 3RX",
-            streetName: "Adelaide Road",
-            subBuildingName: "Flat 11",
-          },
-        ],
-        basicCheckRecord: [
-          {
-            applicationNumber: "E0023455534",
-            certificateNumber: "009878863",
-            certificateType: "basic",
-            outcome: "Result clear",
-            policeRecordsCheck: "Clear",
-          },
-        ],
-      },
-    };
-    jest.spyOn(DbsDocument, "fromRequestBody").mockReturnValue(dbsDocument);
-
     const saveDocument = databaseService.saveDocument as jest.Mock;
 
     describe("given an error happens trying to process the request", () => {
@@ -113,7 +69,6 @@ describe("controller.ts", () => {
         saveDocument.mockRejectedValueOnce(new Error("SOME_DATABASE_ERROR"));
         const req = getMockReq({
           body: requestBody,
-          cookies: { dataModel: "v2.0" },
         });
         const { res } = getMockRes();
 
@@ -127,55 +82,12 @@ describe("controller.ts", () => {
       it(`should call the function to save the document twice and with the correct arguments`, async () => {
         const req = getMockReq({
           body: requestBody,
-          cookies: { dataModel: "v2.0" },
         });
         const { res } = getMockRes();
 
         await dbsDocumentBuilderPostController(req, res);
 
-        expect(saveDocument).toHaveBeenNthCalledWith(1, "testTable", {
-          documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-          vc: JSON.stringify({
-            type: ["VerifiableCredential", "BasicCheckCredential"],
-            credentialSubject: {
-              issuanceDate: "2025-1-16",
-              expirationDate: "2026-1-16",
-              name: [
-                {
-                  nameParts: [
-                    { type: "GivenName", value: "Sarah" },
-                    {
-                      type: "GivenName",
-                      value: "Elizabeth",
-                    },
-                    { type: "FamilyName", value: "Edwards" },
-                  ],
-                },
-              ],
-              birthDate: [{ value: "2024-1-16" }],
-              address: [
-                {
-                  addressCountry: "GB",
-                  addressLocality: "London",
-                  buildingName: "",
-                  postalCode: "NW3 3RX",
-                  streetName: "Adelaide Road",
-                  subBuildingName: "Flat 11",
-                },
-              ],
-              basicCheckRecord: [
-                {
-                  applicationNumber: "E0023455534",
-                  certificateNumber: "009878863",
-                  certificateType: "basic",
-                  outcome: "Result clear",
-                  policeRecordsCheck: "Clear",
-                },
-              ],
-            },
-          }),
-        });
-        expect(saveDocument).toHaveBeenNthCalledWith(2, "testTable2", {
+        expect(saveDocument).toHaveBeenCalledWith("testTable", {
           documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           data: {
             "issuance-day": "16",
@@ -201,7 +113,6 @@ describe("controller.ts", () => {
             outcome: "Result clear",
             policeRecordsCheck: "Clear",
           },
-          vcDataModel: "v2.0",
           vcType: "BasicCheckCredential",
         });
       });
@@ -212,7 +123,6 @@ describe("controller.ts", () => {
         it("should redirect to the credential offer page with only 'BasicCheckCredential' in the query params", async () => {
           const req = getMockReq({
             body: requestBody,
-            cookies: { dataModel: "v2.0" },
           });
           const { res } = getMockRes();
 
@@ -231,7 +141,6 @@ describe("controller.ts", () => {
               ...requestBody,
               ...{ throwError: "ERROR:500" },
             },
-            cookies: { dataModel: "v2.0" },
           });
           const { res } = getMockRes();
 

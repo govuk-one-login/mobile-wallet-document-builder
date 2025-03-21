@@ -6,15 +6,14 @@ import {
   GetCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { logger } from "../middleware/logger";
-import { TableItemV1 } from "../types/TableItemV1";
-import { TableItemV2 } from "../types/TableItemV2";
+import { TableItem } from "../types/TableItem";
 
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());
 const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
 export async function saveDocument(
   tableName: string,
-  item: TableItemV1 | TableItemV2,
+  item: TableItem,
 ): Promise<void> {
   const command = new PutCommand({
     TableName: tableName,
@@ -27,7 +26,7 @@ export async function saveDocument(
 export async function getDocument(
   tableName: string,
   documentId: string,
-): Promise<TableItemV1 | TableItemV2 | undefined> {
+): Promise<TableItem | undefined> {
   const command = new GetCommand({
     TableName: tableName,
     Key: {
@@ -35,11 +34,12 @@ export async function getDocument(
     },
   });
 
-  const { Item } = await documentClient.send(command);
+  const response = await documentClient.send(command);
 
-  if (!Item) {
+  const item = response.Item;
+  if (!item) {
     logger.error(`Document with documentId ${documentId} not found`);
     return undefined;
   }
-  return Item as TableItemV1 | TableItemV2;
+  return item as TableItem;
 }

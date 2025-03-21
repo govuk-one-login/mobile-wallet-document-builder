@@ -7,7 +7,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { saveDocument, getDocument } from "../../src/services/databaseService";
 import "aws-sdk-client-mock-jest";
-import { TableItemV2 } from "../../src/types/TableItemV2";
+import { TableItem } from "../../src/types/TableItem";
 
 describe("databaseService.ts", () => {
   const item = {
@@ -18,9 +18,8 @@ describe("databaseService.ts", () => {
       familyName: "Andrews",
       nino: "QQ123456A",
     },
-    vcDataModel: "v2.0",
     vcType: "SocialSecurityCredential",
-  } as TableItemV2;
+  } as TableItem;
 
   it("should save a document to the database table", async () => {
     const putItemCommand = {

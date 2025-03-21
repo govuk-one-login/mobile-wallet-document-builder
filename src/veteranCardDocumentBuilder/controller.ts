@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { VeteranCardDocument } from "./models/veteranCardDocument";
 import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
@@ -10,7 +9,6 @@ import path from "path";
 import { uploadPhoto } from "../services/s3Service";
 import {
   getDocumentsTableName,
-  getDocumentsV2TableName,
   getPhotosBucketName,
 } from "../config/appConfig";
 import { VeteranCardData } from "./types/VeteranCardData";
@@ -54,23 +52,12 @@ export async function veteranCardDocumentBuilderPostController(
     const s3Uri = `s3://${bucketName}/${documentId}`;
     const body: VeteranCardRequestBody = req.body;
 
-    const document = VeteranCardDocument.fromRequestBody(
-      body,
-      CREDENTIAL_TYPE,
-      s3Uri,
-    );
+    const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
       documentId,
-      vc: JSON.stringify(document),
-    }); //v1
-
-    const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
-    await saveDocument(getDocumentsV2TableName(), {
-      documentId,
       data,
-      vcDataModel: req.cookies["dataModel"],
       vcType: CREDENTIAL_TYPE,
-    }); //v2
+    });
 
     const selectedError = body["throwError"];
     res.redirect(

@@ -25,10 +25,6 @@ export function getDocumentsTableName(): string {
   return getEnvVarValue("DOCUMENTS_TABLE_NAME");
 }
 
-export function getDocumentsV2TableName(): string {
-  return getEnvVarValue("DOCUMENTS_V2_TABLE_NAME");
-}
-
 export function getPhotosBucketName(): string {
   return getEnvVarValue("PHOTOS_BUCKET_NAME");
 }
