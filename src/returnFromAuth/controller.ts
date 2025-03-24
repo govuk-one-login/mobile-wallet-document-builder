@@ -44,7 +44,7 @@ export async function returnFromAuthGetController(
       maxAge: getCookieExpiry(),
     });
 
-    res.redirect(`/select-vc-data-model`);
+    res.redirect(`/select-document`);
   } catch (error) {
     logger.error(error, "An error happened returning from auth");
     res.render("500.njk");

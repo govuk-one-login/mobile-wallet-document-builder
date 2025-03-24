@@ -46,7 +46,7 @@ export function appSelectorPostController(
           httpOnly: true,
           maxAge: config.cookieExpiry,
         });
-        res.redirect(`/select-vc-data-model`);
+        res.redirect(`/select-document`);
       } else {
         res.render("select-app-form.njk", {
           isInvalid: selectedApp === undefined,

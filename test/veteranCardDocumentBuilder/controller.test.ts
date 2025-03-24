@@ -3,7 +3,6 @@ import {
   veteranCardDocumentBuilderGetController,
   veteranCardDocumentBuilderPostController,
 } from "../../src/veteranCardDocumentBuilder/controller";
-import { VeteranCardDocument } from "../../src/veteranCardDocumentBuilder/models/veteranCardDocument";
 import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
@@ -11,7 +10,6 @@ import path from "path";
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
-process.env.DOCUMENTS_V2_TABLE_NAME = "testTable2";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
@@ -71,46 +69,6 @@ describe("controller.ts", () => {
       throwError: "",
     };
 
-    const veteranCardDocument = {
-      type: ["VerifiableCredential", "digitalVeteranCard"],
-      credentialSubject: {
-        name: [
-          {
-            nameParts: [
-              {
-                value: "Sarah",
-                type: "GivenName",
-              },
-              {
-                value: "Elizabeth",
-                type: "GivenName",
-              },
-              {
-                value: "Edwards-Smith",
-                type: "FamilyName",
-              },
-            ],
-          },
-        ],
-        birthDate: [
-          {
-            value: "1975-03-06",
-          },
-        ],
-        veteranCard: [
-          {
-            expiryDate: "2029-04-08",
-            serviceNumber: "25057386",
-            serviceBranch: "HM Naval Service",
-            photo: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-          },
-        ],
-      },
-    };
-    jest
-      .spyOn(VeteranCardDocument, "fromRequestBody")
-      .mockReturnValueOnce(veteranCardDocument);
-
     const photoBuffer = Buffer.from("mock photo data");
     const mockReadFileSync = readFileSync as jest.Mock;
     mockReadFileSync.mockReturnValue(Buffer.from("mock photo data"));
@@ -123,7 +81,6 @@ describe("controller.ts", () => {
         saveDocument.mockRejectedValueOnce(new Error("SOME_DATABASE_ERROR"));
         const req = getMockReq({
           body: requestBody,
-          cookies: { dataModel: "v2.0" },
         });
         const { res } = getMockRes();
 
@@ -145,7 +102,6 @@ describe("controller.ts", () => {
             body: {
               ...requestBody,
               ...{ photo: fileName },
-              cookies: { dataModel: "v2.0" },
             },
           });
           const { res } = getMockRes();
@@ -172,17 +128,12 @@ describe("controller.ts", () => {
       it(`should call the function to save the document twice and with the correct arguments`, async () => {
         const req = getMockReq({
           body: requestBody,
-          cookies: { dataModel: "v2.0" },
         });
         const { res } = getMockRes();
 
         await veteranCardDocumentBuilderPostController(req, res);
 
-        expect(saveDocument).toHaveBeenNthCalledWith(1, "testTable", {
-          documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-          vc: JSON.stringify(veteranCardDocument),
-        });
-        expect(saveDocument).toHaveBeenNthCalledWith(2, "testTable2", {
+        expect(saveDocument).toHaveBeenCalledWith("testTable", {
           documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           data: {
             givenName: "Sarah Elizabeth",
@@ -197,7 +148,6 @@ describe("controller.ts", () => {
             serviceBranch: "HM Naval Service",
             photo: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           },
-          vcDataModel: "v2.0",
           vcType: "digitalVeteranCard",
         });
       });
@@ -208,7 +158,6 @@ describe("controller.ts", () => {
         it("should redirect to the credential offer page with only 'digitalVeteranCard' in the query params", async () => {
           const req = getMockReq({
             body: requestBody,
-            cookies: { dataModel: "v2.0" },
           });
           const { res } = getMockRes();
 
@@ -227,7 +176,6 @@ describe("controller.ts", () => {
               ...requestBody,
               ...{ throwError: "ERROR:401" },
             },
-            cookies: { dataModel: "v2.0" },
           });
           const { res } = getMockRes();
 
