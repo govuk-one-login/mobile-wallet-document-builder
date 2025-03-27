@@ -57,7 +57,7 @@ Mappings:
       CredentialIssuerUrl: "example-credential-issuer.mobile.staging.account.gov.uk"
       SelfUrl: "stub-credential-issuer.mobile.staging.account.gov.uk"
       FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
-      OidcIssuerEndpoint: "https://oidc.integration.account.gov.uk"
+      OidcIssuerEndpoint: "https://oidc.staging.account.gov.uk"
   # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
   # PlatformConfiguration:
   #   dev:
