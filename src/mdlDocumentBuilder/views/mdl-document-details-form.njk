@@ -1,0 +1,339 @@
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% extends "base.njk" %}
+{% set pageTitle = "Please enter the Driving License document details:" %}
+{% block content %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
+    <form action="/build-driving-license-document" method="post">
+        {% call govukFieldset({
+            legend: {
+            text: "Please enter the Driving License document details:",
+            classes: "govuk-fieldset__legend--m",
+            isPageHeading: true
+            } }) %}
+            {{ govukInput({
+                "label": {
+                    "text": "Family name",
+                    "classes": "govuk-label--s"
+                },
+                "classes": "govuk-input--width-20",
+                "id": "family_name",
+                "name": "familyName",
+                "autocomplete": "family_name",
+                "spellcheck": false,
+                "value": "Edwards"
+            }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Given names",
+                    "classes": "govuk-label--s"
+                },
+                "classes": "govuk-input--width-20",
+                "id": "given_name",
+                "name": "givenName",
+                "autocomplete": "given_name",
+                "spellcheck": false,
+                "value": "Sarah Elizabeth"
+            }) }}
+            {{ govukDateInput({
+                "id": "birth-date",
+                "namePrefix": "birthDate",
+                "fieldset": {
+                    "legend": {
+                        "text": "Date of birth",
+                        "classes": "govuk-label--s"
+                    }
+                },
+                "items": [
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "day",
+                        "value": "06"
+                    },
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "month",
+                        "value": "03"
+                    },
+                    {
+                        "classes": "govuk-input--width-3",
+                        "name": "year",
+                        "value": "1975"
+                    }
+                ]
+            }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Place of birth",
+                    "classes": "govuk-label--s"
+                },
+                "classes": "govuk-input--width-20",
+                "id": "birth-place",
+                "name": "birthPlace",
+                "autocomplete": "birth-place",
+                "spellcheck": false
+            }) }}
+            {{ govukDateInput({
+                "id": "issue-date",
+                "namePrefix": "issueDate",
+                "fieldset": {
+                    "legend": {
+                        "text": "Issue date",
+                        "classes": "govuk-fieldset__legend--s"
+                    }
+                },
+                "items": [
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "day",
+                        "value": "08"
+                    },
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "month",
+                        "value": "04"
+                    },
+                    {
+                        "classes": "govuk-input--width-3",
+                        "name": "year",
+                        "value": "2019"
+                    }
+                ]
+            }) }}
+            {{ govukDateInput({
+                "id": "expiry-date",
+                "namePrefix": "expiryDate",
+                "fieldset": {
+                    "legend": {
+                        "text": "Expiry date",
+                        "classes": "govuk-fieldset__legend--s"
+                    }
+                },
+                "items": [
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "day",
+                        "value": "08"
+                    },
+                    {
+                        "classes": "govuk-input--width-2",
+                        "name": "month",
+                        "value": "04"
+                    },
+                    {
+                        "classes": "govuk-input--width-3",
+                        "name": "year",
+                        "value": "2029"
+                    }
+                ]
+            }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Service number",
+                    "classes": "govuk-label--s"
+                },
+                "id": "service-number",
+                "name": "serviceNumber",
+                "classes": "govuk-!-width-one-third",
+                "spellcheck": false,
+                "value": "25057386"
+            }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Service branch",
+                    "classes": "govuk-label--s"
+                },
+                "id": "service-branch",
+                "name": "serviceBranch",
+                "classes": "govuk-!-width-one-third",
+                "spellcheck": false,
+                "value": "HM Naval Service"
+            }) }}
+            {% call govukFieldset({
+                "legend": {
+                "text": "Full address",
+                "classes": "govuk-fieldset__legend--s",
+                "isPageHeading": false
+                }
+                }) %}
+                {{ govukInput({
+                    "label": {
+                        "text": "Flat number (Sub building name)"
+                    },
+                    "id": "sub-building-name",
+                    "name": "subBuildingName",
+                    "classes": "govuk-input--width-5",
+                    "spellcheck": false,
+                    "autocomplete": "address-line1",
+                    "value": "Flat 11"
+                }) }}
+                {{ govukInput({
+                    "label": {
+                        "text": "Building name"
+                    },
+                    "id": "building-name",
+                    "name": "buildingName",
+                    "classes": "govuk-input--width-20",
+                    "spellcheck": false,
+                    "autocomplete": "address-line2",
+                    "value": "Blashford"
+                }) }}
+                {{ govukInput({
+                    "label": {
+                        "text": "Street name"
+                    },
+                    "id": "street-name",
+                    "name": "streetName",
+                    "classes": "govuk-input--width-20",
+                    "spellcheck": false,
+                    "autocomplete": "address-line3",
+                    "value": "Adelaide Road"
+                }) }}
+                {{ govukInput({
+                    "label": {
+                        "text": "Town or city (Address locality)"
+                    },
+                    "id": "address-locality",
+                    "name": "addressLocality",
+                    "classes": "govuk-input--width-20",
+                    "spellcheck": false,
+                    "autocomplete": "address-level2",
+                    "value": "London"
+                }) }}
+                {{ govukInput({
+                    "label": {
+                        "text": "Country"
+                    },
+                    "id": "address-country",
+                    "name": "addressCountry",
+                    "classes": "govuk-input--width-20",
+                    "spellcheck": false,
+                    "autocomplete": "country-name",
+                    "value": "GB"
+                }) }}
+                {{ govukInput({
+                    "label": {
+                        "text": "Postcode"
+                    },
+                    "id": "postal-code",
+                    "name": "postalCode",
+                    "classes": "govuk-input--width-10",
+                    "spellcheck": false,
+                    "autocomplete": "postal-code",
+                    "value": "NW3 3RX"
+                }) }}
+            {{ govukSelect({
+                "id": "photo",
+                "name": "photo",
+                "label": {
+                    "text": "Choose photo"
+                },
+                "items": [
+                    {
+                        "value": "100x125.jpg",
+                        "text": "JPEG 1 - 100x125"
+                    },
+                    {
+                        "value": "140x175.jpg",
+                        "text": "JPEG 2 - 140x175"
+                    },
+                    {
+                        "value": "300x375.jpg",
+                        "text": "JPEG 3 - 300x375"
+                    },
+                    {
+                        "value": "420x525.jpg",
+                        "text": "JPEG 4 - 420x525",
+                        "selected": true
+                    },
+                    {
+                        "value": "600x750.jpg",
+                        "text": "JPEG 5 - 600x750"
+                    },
+                    {
+                        "value": "600x910.jpg",
+                        "text": "JPEG 6 - 600x910"
+                    },
+                    {
+                        "value": "760x750.jpg",
+                        "text": "JPEG 7 - 760x750"
+                    },
+                    {
+                        "value": "100x125.png",
+                        "text": "PNG 1 - 100x125"
+                    },
+                    {
+                        "value": "140x175.png",
+                        "text": "PNG 2 - 140x175"
+                    },
+                    {
+                        "value": "300x375.png",
+                        "text": "PNG 3 - 300x375"
+                    },
+                    {
+                        "value": "420x525.png",
+                        "text": "PNG 4 - 420x525"
+                    },
+                    {
+                        "value": "600x750.png",
+                        "text": "PNG 5 - 600x750"
+                    },
+                    {
+                        "value": "600x910.png",
+                        "text": "PNG 6 - 600x910"
+                    },
+                    {
+                        "value": "760x750.png",
+                        "text": "PNG 7 - 760x750"
+                    },
+                    {
+                        "value": "JFIF.jfif",
+                        "text": "JFIF"
+                    },
+                    {
+                        "value": "EXIF.jpg",
+                        "text": "EXIF"
+                    }
+                ]
+            }) }}
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+            {{ govukSelect({
+                "id": "throw-error",
+                "name": "throwError",
+                "label": {
+                    "text": "Throw an error",
+                    "classes": "govuk-label--s"
+                },
+                "items": [
+                    {
+                        "value": "",
+                        "text": "No error",
+                        "selected": true
+                    },
+                    {
+                        "value": "ERROR:401",
+                        "text": "401"
+                    },
+                    {
+                        "value": "ERROR:CLIENT",
+                        "text": "400 (invalid client) "
+                    },
+                    {
+                        "value": "ERROR:GRANT",
+                        "text": "400 (invalid grant)"
+                    },
+                    {
+                        "value": "ERROR:500",
+                        "text": "500"
+                    }
+                ]
+            }) }}
+        {% endcall %}
+        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+    </form>
+{% endblock %}
