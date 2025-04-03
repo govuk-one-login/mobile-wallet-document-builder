@@ -21,9 +21,9 @@
                     "text": "Family name",
                     "classes": "govuk-label--s"
                 },
-                "classes": "govuk-input--width-20",
+                "classes": "govuk-!-width-one-third",
                 "id": "family_name",
-                "name": "familyName",
+                "name": "family_name",
                 "autocomplete": "family_name",
                 "spellcheck": false,
                 "value": "Edwards"
@@ -33,16 +33,16 @@
                     "text": "Given names",
                     "classes": "govuk-label--s"
                 },
-                "classes": "govuk-input--width-20",
+                "classes": "govuk-!-width-one-third",
                 "id": "given_name",
-                "name": "givenName",
+                "name": "given_name",
                 "autocomplete": "given_name",
                 "spellcheck": false,
                 "value": "Sarah Elizabeth"
             }) }}
             {{ govukDateInput({
-                "id": "birth-date",
-                "namePrefix": "birthDate",
+                "id": "birth_date",
+                "namePrefix": "birth",
                 "fieldset": {
                     "legend": {
                         "text": "Date of birth",
@@ -72,18 +72,19 @@
                     "text": "Place of birth",
                     "classes": "govuk-label--s"
                 },
-                "classes": "govuk-input--width-20",
-                "id": "birth-place",
-                "name": "birthPlace",
-                "autocomplete": "birth-place",
-                "spellcheck": false
+                "classes": "govuk-!-width-one-third",
+                "id": "birth_place",
+                "name": "birth_place",
+                "autocomplete": "birth_place",
+                "spellcheck": false,
+                "value": "London"
             }) }}
             {{ govukDateInput({
-                "id": "issue-date",
-                "namePrefix": "issueDate",
+                "id": "issue_date",
+                "namePrefix": "issue",
                 "fieldset": {
                     "legend": {
-                        "text": "Issue date",
+                        "text": "Date of issue",
                         "classes": "govuk-fieldset__legend--s"
                     }
                 },
@@ -106,11 +107,11 @@
                 ]
             }) }}
             {{ govukDateInput({
-                "id": "expiry-date",
-                "namePrefix": "expiryDate",
+                "id": "expiry_date",
+                "namePrefix": "expiry",
                 "fieldset": {
                     "legend": {
-                        "text": "Expiry date",
+                        "text": "Date of expiry",
                         "classes": "govuk-fieldset__legend--s"
                     }
                 },
@@ -134,29 +135,41 @@
             }) }}
             {{ govukInput({
                 "label": {
-                    "text": "Service number",
+                    "text": "Issuing authority",
                     "classes": "govuk-label--s"
                 },
-                "id": "service-number",
-                "name": "serviceNumber",
+                "id": "issuing_authority",
+                "name": "issuing_authority",
+                "classes": "govuk-!-width-one-third",
+                "spellcheck": false,
+                "value": "DVLA"
+            }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Issuing country",
+                    "classes": "govuk-label--s"
+                },
+                "id": "issuing_country",
+                "name": "issuing_country",
+                "classes": "govuk-!-width-one-third",
+                "spellcheck": false,
+                "value": "United Kingdom (UK)"
+            }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Licence number",
+                    "classes": "govuk-label--s"
+                },
+                "id": "document_number",
+                "name": "document_number",
                 "classes": "govuk-!-width-one-third",
                 "spellcheck": false,
                 "value": "25057386"
             }) }}
-            {{ govukInput({
-                "label": {
-                    "text": "Service branch",
-                    "classes": "govuk-label--s"
-                },
-                "id": "service-branch",
-                "name": "serviceBranch",
-                "classes": "govuk-!-width-one-third",
-                "spellcheck": false,
-                "value": "HM Naval Service"
-            }) }}
             {% call govukFieldset({
                 "legend": {
-                "text": "Full address",
+                "text": "Permanent place of
+                         residence",
                 "classes": "govuk-fieldset__legend--s",
                 "isPageHeading": false
                 }
@@ -165,8 +178,8 @@
                     "label": {
                         "text": "Flat number (Sub building name)"
                     },
-                    "id": "sub-building-name",
-                    "name": "subBuildingName",
+                    "id": "resident_address",
+                    "name": "resident_address",
                     "classes": "govuk-input--width-5",
                     "spellcheck": false,
                     "autocomplete": "address-line1",
@@ -176,8 +189,8 @@
                     "label": {
                         "text": "Building name"
                     },
-                    "id": "building-name",
-                    "name": "buildingName",
+                    "id": "resident_address",
+                    "name": "resident_address",
                     "classes": "govuk-input--width-20",
                     "spellcheck": false,
                     "autocomplete": "address-line2",
@@ -187,49 +200,40 @@
                     "label": {
                         "text": "Street name"
                     },
-                    "id": "street-name",
-                    "name": "streetName",
+                    "id": "resident_address",
+                    "name": "resident_address",
                     "classes": "govuk-input--width-20",
                     "spellcheck": false,
                     "autocomplete": "address-line3",
                     "value": "Adelaide Road"
                 }) }}
-                {{ govukInput({
-                    "label": {
-                        "text": "Town or city (Address locality)"
-                    },
-                    "id": "address-locality",
-                    "name": "addressLocality",
-                    "classes": "govuk-input--width-20",
-                    "spellcheck": false,
-                    "autocomplete": "address-level2",
-                    "value": "London"
-                }) }}
-                {{ govukInput({
-                    "label": {
-                        "text": "Country"
-                    },
-                    "id": "address-country",
-                    "name": "addressCountry",
-                    "classes": "govuk-input--width-20",
-                    "spellcheck": false,
-                    "autocomplete": "country-name",
-                    "value": "GB"
-                }) }}
-                {{ govukInput({
-                    "label": {
-                        "text": "Postcode"
-                    },
-                    "id": "postal-code",
-                    "name": "postalCode",
-                    "classes": "govuk-input--width-10",
-                    "spellcheck": false,
-                    "autocomplete": "postal-code",
-                    "value": "NW3 3RX"
-                }) }}
+            {% endcall %}
+            {{ govukInput({
+                "label": {
+                    "text": "Resident postal code"
+                },
+                "id": "resident_postal_code",
+                "name": "resident_postal_code",
+                "classes": "govuk-input--width-10",
+                "spellcheck": false,
+                "autocomplete": "resident_postal_code",
+                "value": "NW3 3RX"
+            }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Resident city"
+                    "classes": "govuk-label--s"
+                },
+                "id": "resident_city",
+                "name": "resident_city",
+                "classes": "govuk-input--width-20",
+                "spellcheck": false,
+                "autocomplete": "resident_city",
+                "value": "London"
+            }) }}
             {{ govukSelect({
-                "id": "photo",
-                "name": "photo",
+                "id": "portrait",
+                "name": "portrait",
                 "label": {
                     "text": "Choose photo"
                 },
