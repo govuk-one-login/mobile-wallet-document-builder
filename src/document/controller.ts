@@ -5,7 +5,7 @@ import { getPhoto } from "../services/s3Service";
 import { CredentialType } from "../types/CredentialType";
 import { getDocumentsTableName } from "../config/appConfig";
 import { VeteranCardData } from "../veteranCardDocumentBuilder/types/VeteranCardData";
-import {MdlData} from "../mdlDocumentBuilder/types/MdlData";
+import { MdlData } from "../mdlDocumentBuilder/types/MdlData";
 
 export async function documentController(
   req: Request,
