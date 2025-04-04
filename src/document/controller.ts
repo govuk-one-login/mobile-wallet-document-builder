@@ -5,6 +5,7 @@ import { getPhoto } from "../services/s3Service";
 import { CredentialType } from "../types/CredentialType";
 import { getDocumentsTableName } from "../config/appConfig";
 import { VeteranCardData } from "../veteranCardDocumentBuilder/types/VeteranCardData";
+import {MdlData} from "../mdlDocumentBuilder/types/MdlData";
 
 export async function documentController(
   req: Request,
@@ -35,6 +36,20 @@ export async function documentController(
         return;
       }
       (data as VeteranCardData).photo = photo;
+    }
+
+    if (tableItem.vcType === CredentialType.mobileDrivingLicense) {
+      const s3Uri = (data as MdlData).portrait;
+
+      const { bucketName, fileName } = getBucketAndFileName(s3Uri);
+
+      const photo = await getPhoto(fileName, bucketName);
+      if (!photo) {
+        logger.error(`Photo for document with ID ${documentId} not found`);
+        res.status(404).send();
+        return;
+      }
+      (data as MdlData).portrait = photo;
     }
 
     res.status(200).json(tableItem);
