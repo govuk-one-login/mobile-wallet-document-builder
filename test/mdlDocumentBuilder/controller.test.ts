@@ -45,6 +45,19 @@ describe("controller.ts", () => {
         authenticated: true,
       });
     });
+
+    it("should render the 500 error page if an error is thrown", async () => {
+      const req = getMockReq({ cookies: { id_token: "id_token" } });
+      const { res } = getMockRes();
+
+      (res.render as jest.Mock).mockImplementationOnce(() => {
+        throw new Error("Rendering error");
+      });
+
+      await mdlDocumentBuilderGetController(req, res);
+
+      expect(res.render).toHaveBeenCalledWith("500.njk")
+    })
   });
 
   describe("post", () => {
