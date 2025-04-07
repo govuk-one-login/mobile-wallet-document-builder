@@ -57,7 +57,7 @@ const mdlData = {
   resident_address: "Flat 11, Blashford, Adelaide Road",
   resident_postal_code: "NW3 3RX",
   resident_city: "London",
-}
+};
 
 describe("controller.ts", () => {
   afterEach(() => {
@@ -172,5 +172,5 @@ describe("controller.ts", () => {
     expect(getDocument).toHaveBeenCalledWith("testTable", documentId);
     expect(getPhoto).toHaveBeenCalledWith(documentId, bucketName);
     expect(res.status).toHaveBeenCalledWith(200);
-  })
+  });
 });
