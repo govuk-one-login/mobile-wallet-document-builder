@@ -43,13 +43,13 @@ export async function mdlDocumentBuilderPostController(
   res: Response,
 ): Promise<void> {
   try {
-    const { photoBuffer, mimeType } = getPhoto(req.body.portrait);
-    const bucketName = getPhotosBucketName();
     const documentId = randomUUID();
-    await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
+    const bucketName = getPhotosBucketName();
     const s3Uri = `s3://${bucketName}/${documentId}`;
     const body: MdlRequestBody = req.body;
     const data = buildMdlDataFromRequestBody(body, s3Uri);
+    const { photoBuffer, mimeType } = getPhoto(req.body.portrait);
+    await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
 
     await saveDocument(getDocumentsTableName(), {
       documentId,
@@ -70,9 +70,10 @@ export async function mdlDocumentBuilderPostController(
   }
 }
 
-interface Photo {
-  photoBuffer: Buffer<ArrayBufferLike>;
-  mimeType: string;
+function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
+  const { throwError: _throwError, ...newObject } = body;
+  const data: MdlData = { ...newObject, portrait: s3Uri };
+  return data;
 }
 
 function getPhoto(selectedPhoto: string): Photo {
@@ -83,8 +84,7 @@ function getPhoto(selectedPhoto: string): Photo {
   return { photoBuffer, mimeType };
 }
 
-function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
-  const { throwError: _throwError, ...newObject } = body;
-  const data: MdlData = { ...newObject, portrait: s3Uri };
-  return data;
+interface Photo {
+  photoBuffer: Buffer<ArrayBufferLike>;
+  mimeType: string;
 }
