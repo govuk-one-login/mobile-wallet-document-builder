@@ -6,20 +6,14 @@ import {
 import { CredentialType } from "../types/CredentialType";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { logger } from "../middleware/logger";
-import path from "path";
-import { readFileSync } from "fs";
 import { randomUUID } from "node:crypto";
 import { uploadPhoto } from "../services/s3Service";
 import { MdlData } from "./types/MdlData";
 import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
+import { getPhoto } from "../utils/photoUtils";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicense;
-const MIME_TYPES: Record<string, string> = {
-  ".jpg": "image/jpeg",
-  ".png": "image/png",
-  ".jfif": "image/jpeg",
-};
 
 export async function mdlDocumentBuilderGetController(
   req: Request,
@@ -74,17 +68,4 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
   const { throwError: _throwError, ...newObject } = body;
   const data: MdlData = { ...newObject, portrait: s3Uri };
   return data;
-}
-
-function getPhoto(selectedPhoto: string): Photo {
-  const filePath = path.resolve(__dirname, "../resources", selectedPhoto);
-  const photoBuffer = readFileSync(filePath);
-  const ext = path.extname(selectedPhoto);
-  const mimeType = MIME_TYPES[ext];
-  return { photoBuffer, mimeType };
-}
-
-interface Photo {
-  photoBuffer: Buffer<ArrayBufferLike>;
-  mimeType: string;
 }

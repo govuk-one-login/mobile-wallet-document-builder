@@ -4,8 +4,6 @@ import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import { readFileSync } from "fs";
-import path from "path";
 import { uploadPhoto } from "../services/s3Service";
 import {
   getDocumentsTableName,
@@ -13,14 +11,9 @@ import {
 } from "../config/appConfig";
 import { VeteranCardData } from "./types/VeteranCardData";
 import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
+import { getPhoto } from "../utils/photoUtils";
 
 const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
-
-const MIME_TYPES: Record<string, string> = {
-  ".jpg": "image/jpeg",
-  ".png": "image/png",
-  ".jfif": "image/jpeg",
-};
 
 export async function veteranCardDocumentBuilderGetController(
   req: Request,
@@ -70,19 +63,6 @@ export async function veteranCardDocumentBuilderPostController(
     );
     res.render("500.njk");
   }
-}
-
-interface Photo {
-  photoBuffer: Buffer<ArrayBufferLike>;
-  mimeType: string;
-}
-
-function getPhoto(selectedPhoto: string): Photo {
-  const filePath = path.resolve(__dirname, "../resources", selectedPhoto);
-  const photoBuffer = readFileSync(filePath);
-  const ext = path.extname(selectedPhoto);
-  const mimeType = MIME_TYPES[ext];
-  return { photoBuffer, mimeType };
 }
 
 function buildVeteranCardDataFromRequestBody(

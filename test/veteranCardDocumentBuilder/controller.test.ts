@@ -125,7 +125,7 @@ describe("controller.ts", () => {
     );
 
     describe("given the photo has been stored successfully", () => {
-      it(`should call the function to save the document twice and with the correct arguments`, async () => {
+      it(`should call the function to save the document with the correct arguments`, async () => {
         const req = getMockReq({
           body: requestBody,
         });
