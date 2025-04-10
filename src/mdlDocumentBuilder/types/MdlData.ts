@@ -1,17 +1,13 @@
-export interface MdlData {
+import {MdlRequestBody} from "./MdlRequestBody";
+
+export interface MdlData extends MdlRequestBody{
   family_name: string;
   given_name: string;
   portrait: string;
-  "birth-day": string;
-  "birth-month": string;
-  "birth-year": string;
+  birth_date: string;
   birth_place: string;
-  "issue-day": string;
-  "issue-month": string;
-  "issue-year": string;
-  "expiry-day": string;
-  "expiry-month": string;
-  "expiry-year": string;
+  issue_date: string;
+  expiry_date: string;
   issuing_authority: string;
   issuing_country: string;
   document_number: string;

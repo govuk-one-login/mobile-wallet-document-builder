@@ -65,8 +65,46 @@ export async function mdlDocumentBuilderPostController(
 }
 
 function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
-  const { throwError: _throwError, ...newObject } = body;
-  const data: MdlData = { ...newObject, portrait: s3Uri };
+  const {
+    throwError: _throwError,
+    "birth-day": birthDay,
+    "birth-month": birthMonth,
+    "birth-year": birthYear,
+    "issue-day": issueDay,
+    "issue-month": issueMonth,
+    "issue-year": issueYear,
+    "expiry-day": expiryDay,
+    "expiry-month": expiryMonth,
+    "expiry-year": expiryYear,
+    ...newObject
+  } = body;
+
+  const birthDateStr = getDateFromParts(birthDay, birthMonth, birthYear);
+  const issueDateStr = getDateFromParts(issueDay, issueMonth, issueYear);
+  const expiryDateStr = getDateFromParts(expiryDay, expiryMonth, expiryYear);
+
+  const errors: string[] = [];
+
+  const birthErr = validateDateField("birth_date", birthDateStr);
+  if (birthErr) errors.push(birthErr);
+
+  const issueErr = validateDateField("issue_date", issueDateStr);
+  if (issueErr) errors.push(issueErr);
+
+  const expiryErr = validateDateField("expiry_date", expiryDateStr);
+  if (expiryErr) errors.push(expiryErr);
+
+  if (errors.length > 0) {
+    throw new Error(`Date validation failed: ${errors.join(', ')}`);
+  }
+
+  const data: MdlData = {
+    ...newObject,
+    portrait: s3Uri,
+    birth_date: birthDateStr,
+    issue_date: issueDateStr,
+    expiry_date: expiryDateStr,
+  };
   return data;
 }
 
