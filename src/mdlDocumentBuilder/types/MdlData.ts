@@ -1,6 +1,4 @@
-import {MdlRequestBody} from "./MdlRequestBody";
-
-export interface MdlData extends MdlRequestBody{
+export interface MdlData {
   family_name: string;
   given_name: string;
   portrait: string;
