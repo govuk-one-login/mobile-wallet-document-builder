@@ -171,14 +171,14 @@ describe("controller.ts", () => {
             resident_postal_code: "NW3 3RX",
             resident_city: "London",
           },
-          vcType: "mobileDrivingLicense",
+          vcType: "mobileDrivingLicence",
         });
       });
     });
 
     describe("given the document and photo have been stored successfully", () => {
       describe("when an error scenario has not been selected", () => {
-        it("should redirect to the credential offer page with only 'mobileDrivingLicense' in the query params", async () => {
+        it("should redirect to the credential offer page with only 'mobileDrivingLicence' in the query params", async () => {
           const req = getMockReq({
             body: requestBody,
           });
@@ -187,12 +187,12 @@ describe("controller.ts", () => {
           await mdlDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicense&error=",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence&error=",
           );
         });
       });
       describe("when the error scenario 'ERROR:401' is selected", () => {
-        it("should redirect to the credential offer page with 'mobileDrivingLicense' and 'ERROR:401' in the query params", async () => {
+        it("should redirect to the credential offer page with 'mobileDrivingLicence' and 'ERROR:401' in the query params", async () => {
           const req = getMockReq({
             body: {
               ...requestBody,
@@ -204,7 +204,7 @@ describe("controller.ts", () => {
           await mdlDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicense&error=ERROR:401",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence&error=ERROR:401",
           );
         });
       });

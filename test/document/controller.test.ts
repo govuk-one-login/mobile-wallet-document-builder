@@ -159,15 +159,15 @@ describe("controller.ts", () => {
     getDocument.mockReturnValueOnce({
       documentId: documentId,
       data: mdlData,
-      vcType: "mobileDrivingLicense",
+      vcType: "mobileDrivingLicence",
     });
     const mockedPhoto = "mockBase64EncodedPhoto";
     getPhoto.mockReturnValueOnce(mockedPhoto);
 
     await documentController(req, res);
 
-    const mobileDrivingLicenseDocumentWithPhoto = { ...mdlData };
-    mobileDrivingLicenseDocumentWithPhoto.portrait = mockedPhoto;
+    const mobileDrivingLicenceDocumentWithPhoto = { ...mdlData };
+    mobileDrivingLicenceDocumentWithPhoto.portrait = mockedPhoto;
 
     expect(getDocument).toHaveBeenCalledWith("testTable", documentId);
     expect(getPhoto).toHaveBeenCalledWith(documentId, bucketName);

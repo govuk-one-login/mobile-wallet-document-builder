@@ -13,7 +13,7 @@ import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
 
-const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicense;
+const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
 export async function mdlDocumentBuilderGetController(
   req: Request,
@@ -26,7 +26,7 @@ export async function mdlDocumentBuilderGetController(
   } catch (error) {
     logger.error(
       error,
-      "An error happened rendering Driving License document page",
+      "An error happened rendering Driving Licence document page",
     );
     res.render("500.njk");
   }
@@ -58,7 +58,7 @@ export async function mdlDocumentBuilderPostController(
   } catch (error) {
     logger.error(
       error,
-      "An error happened processing Driving License document request",
+      "An error happened processing Driving Licence document request",
     );
     res.render("500.njk");
   }
