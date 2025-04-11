@@ -39,6 +39,7 @@ export async function documentController(
     }
 
     if (tableItem.vcType === CredentialType.mobileDrivingLicence) {
+
       const s3Uri = (data as MdlData).portrait;
 
       const { bucketName, fileName } = getBucketAndFileName(s3Uri);
