@@ -38,7 +38,8 @@ export async function documentController(
       (data as VeteranCardData).photo = photo;
     }
 
-    if (tableItem.vcType === CredentialType.mobileDrivingLicense) {
+    if (tableItem.vcType === CredentialType.mobileDrivingLicence) {
+
       const s3Uri = (data as MdlData).portrait;
 
       const { bucketName, fileName } = getBucketAndFileName(s3Uri);
