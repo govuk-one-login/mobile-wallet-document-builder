@@ -25,7 +25,7 @@ jobs:
 
   deploy_artifacts:
     name: "Deploy Image & Template to Dev"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # pin@v3
