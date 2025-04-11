@@ -29,6 +29,8 @@ export function documentSelectorPostController(
       res.redirect(`/build-dbs-document`);
     } else if (selectedDocument && selectedDocument === "vet") {
       res.redirect(`/build-veteran-card-document`);
+    } else if (selectedDocument && selectedDocument === "mdl") {
+      res.redirect(`/build-mdl-document`);
     } else {
       res.render("select-document-form.njk", {
         isInvalid: selectedDocument === undefined,

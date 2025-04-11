@@ -37,6 +37,28 @@ const veteranCardData = {
   photo: "s3://photosBucket/" + documentId,
 };
 
+const mdlData = {
+  family_name: "Edwards-Smith",
+  given_name: "Sarah Elizabeth",
+  portrait: "s3://photosBucket/" + documentId,
+  "birth-day": "06",
+  "birth-month": "03",
+  "birth-year": "1975",
+  birth_place: "London",
+  "issue-day": "08",
+  "issue-month": "04",
+  "issue-year": "2019",
+  "expiry-day": "08",
+  "expiry-month": "04",
+  "expiry-year": "2029",
+  issuing_authority: "DVLA",
+  issuing_country: "United Kingdom (UK)",
+  document_number: "25057386",
+  resident_address: "Flat 11, Blashford, Adelaide Road",
+  resident_postal_code: "NW3 3RX",
+  resident_city: "London",
+};
+
 describe("controller.ts", () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -123,6 +145,29 @@ describe("controller.ts", () => {
 
     const veteranCardDocumentWithPhoto = { ...veteranCardData };
     veteranCardDocumentWithPhoto.photo = mockedPhoto;
+
+    expect(getDocument).toHaveBeenCalledWith("testTable", documentId);
+    expect(getPhoto).toHaveBeenCalledWith(documentId, bucketName);
+    expect(res.status).toHaveBeenCalledWith(200);
+  });
+
+  it("should return 200 and the mDL document as JSON", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq({
+      params: { documentId: documentId },
+    });
+    getDocument.mockReturnValueOnce({
+      documentId: documentId,
+      data: mdlData,
+      vcType: "mobileDrivingLicense",
+    });
+    const mockedPhoto = "mockBase64EncodedPhoto";
+    getPhoto.mockReturnValueOnce(mockedPhoto);
+
+    await documentController(req, res);
+
+    const mobileDrivingLicenseDocumentWithPhoto = { ...mdlData };
+    mobileDrivingLicenseDocumentWithPhoto.portrait = mockedPhoto;
 
     expect(getDocument).toHaveBeenCalledWith("testTable", documentId);
     expect(getPhoto).toHaveBeenCalledWith(documentId, bucketName);

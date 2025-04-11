@@ -1,8 +1,8 @@
-import { readFileSync } from "fs";
 import {
-  veteranCardDocumentBuilderGetController,
-  veteranCardDocumentBuilderPostController,
-} from "../../src/veteranCardDocumentBuilder/controller";
+  mdlDocumentBuilderGetController,
+  mdlDocumentBuilderPostController,
+} from "../../src/mdlDocumentBuilder/controller";
+import { readFileSync } from "fs";
 import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
@@ -24,48 +24,63 @@ jest.mock("fs");
 
 describe("controller.ts", () => {
   describe("get", () => {
-    it("should render the form for inputting the Veteran Card document details when the user is not authenticated (no id_token in cookies)", async () => {
+    it("should render the form for inputting the mDL document details when the user is not authenticated (no id_token in cookies)", async () => {
       const req = getMockReq({ cookies: {} });
       const { res } = getMockRes();
 
-      await veteranCardDocumentBuilderGetController(req, res);
+      await mdlDocumentBuilderGetController(req, res);
 
-      expect(res.render).toHaveBeenCalledWith(
-        "veteran-card-document-details-form.njk",
-        {
-          authenticated: false,
-        },
-      );
+      expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
+        authenticated: false,
+      });
     });
 
-    it("should render the form for inputting the Veteran Card document details when the user is authenticated", async () => {
+    it("should render the form for inputting the mDL document details when the user is authenticated", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
-      await veteranCardDocumentBuilderGetController(req, res);
+      await mdlDocumentBuilderGetController(req, res);
 
-      expect(res.render).toHaveBeenCalledWith(
-        "veteran-card-document-details-form.njk",
-        {
-          authenticated: true,
-        },
-      );
+      expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
+        authenticated: true,
+      });
+    });
+
+    it("should render the 500 error page if an error is thrown", async () => {
+      const req = getMockReq({ cookies: { id_token: "id_token" } });
+      const { res } = getMockRes();
+
+      (res.render as jest.Mock).mockImplementationOnce(() => {
+        throw new Error("Rendering error");
+      });
+
+      await mdlDocumentBuilderGetController(req, res);
+
+      expect(res.render).toHaveBeenCalledWith("500.njk");
     });
   });
 
   describe("post", () => {
     const requestBody = {
-      givenName: "Sarah Elizabeth",
-      familyName: "Edwards-Smith",
-      "dateOfBirth-day": "06",
-      "dateOfBirth-month": "03",
-      "dateOfBirth-year": "1975",
-      "cardExpiryDate-day": "08",
-      "cardExpiryDate-month": "04",
-      "cardExpiryDate-year": "2029",
-      serviceNumber: "25057386",
-      serviceBranch: "HM Naval Service",
-      photo: "420x525.jpg",
+      family_name: "Edwards-Smith",
+      given_name: "Sarah Elizabeth",
+      portrait: "420x525.jpg",
+      "birth-day": "06",
+      "birth-month": "03",
+      "birth-year": "1975",
+      birth_place: "London",
+      "issue-day": "08",
+      "issue-month": "04",
+      "issue-year": "2019",
+      "expiry-day": "08",
+      "expiry-month": "04",
+      "expiry-year": "2029",
+      issuing_authority: "DVLA",
+      issuing_country: "United Kingdom (UK)",
+      document_number: "25057386",
+      resident_address: "Flat 11, Blashford, Adelaide Road",
+      resident_postal_code: "NW3 3RX",
+      resident_city: "London",
       throwError: "",
     };
 
@@ -84,7 +99,7 @@ describe("controller.ts", () => {
         });
         const { res } = getMockRes();
 
-        await veteranCardDocumentBuilderPostController(req, res);
+        await mdlDocumentBuilderPostController(req, res);
 
         expect(res.render).toHaveBeenCalledWith("500.njk");
       });
@@ -101,12 +116,12 @@ describe("controller.ts", () => {
           const req = getMockReq({
             body: {
               ...requestBody,
-              ...{ photo: fileName },
+              ...{ portrait: fileName },
             },
           });
           const { res } = getMockRes();
 
-          await veteranCardDocumentBuilderPostController(req, res);
+          await mdlDocumentBuilderPostController(req, res);
 
           const expectedPath = path.resolve(
             __dirname,
@@ -131,46 +146,53 @@ describe("controller.ts", () => {
         });
         const { res } = getMockRes();
 
-        await veteranCardDocumentBuilderPostController(req, res);
+        await mdlDocumentBuilderPostController(req, res);
 
         expect(saveDocument).toHaveBeenCalledWith("testTable", {
           documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           data: {
-            givenName: "Sarah Elizabeth",
-            familyName: "Edwards-Smith",
-            "dateOfBirth-day": "06",
-            "dateOfBirth-month": "03",
-            "dateOfBirth-year": "1975",
-            "cardExpiryDate-day": "08",
-            "cardExpiryDate-month": "04",
-            "cardExpiryDate-year": "2029",
-            serviceNumber: "25057386",
-            serviceBranch: "HM Naval Service",
-            photo: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            family_name: "Edwards-Smith",
+            given_name: "Sarah Elizabeth",
+            portrait: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            "birth-day": "06",
+            "birth-month": "03",
+            "birth-year": "1975",
+            birth_place: "London",
+            "issue-day": "08",
+            "issue-month": "04",
+            "issue-year": "2019",
+            "expiry-day": "08",
+            "expiry-month": "04",
+            "expiry-year": "2029",
+            issuing_authority: "DVLA",
+            issuing_country: "United Kingdom (UK)",
+            document_number: "25057386",
+            resident_address: "Flat 11, Blashford, Adelaide Road",
+            resident_postal_code: "NW3 3RX",
+            resident_city: "London",
           },
-          vcType: "digitalVeteranCard",
+          vcType: "mobileDrivingLicense",
         });
       });
     });
 
     describe("given the document and photo have been stored successfully", () => {
       describe("when an error scenario has not been selected", () => {
-        it("should redirect to the credential offer page with only 'digitalVeteranCard' in the query params", async () => {
+        it("should redirect to the credential offer page with only 'mobileDrivingLicense' in the query params", async () => {
           const req = getMockReq({
             body: requestBody,
           });
           const { res } = getMockRes();
 
-          await veteranCardDocumentBuilderPostController(req, res);
+          await mdlDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicense&error=",
           );
         });
       });
-
-      describe("when the error scenario 'ERROR:401' has been selected", () => {
-        it("should redirect to the credential offer page with 'digitalVeteranCard' and 'ERROR:401' in the query params", async () => {
+      describe("when the error scenario 'ERROR:401' is selected", () => {
+        it("should redirect to the credential offer page with 'mobileDrivingLicense' and 'ERROR:401' in the query params", async () => {
           const req = getMockReq({
             body: {
               ...requestBody,
@@ -179,10 +201,10 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await veteranCardDocumentBuilderPostController(req, res);
+          await mdlDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=ERROR:401",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicense&error=ERROR:401",
           );
         });
       });
