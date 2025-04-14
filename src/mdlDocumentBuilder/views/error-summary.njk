@@ -1,0 +1,24 @@
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% macro errorSummary(params) %}
+  {% set errorList = [] %}
+  {% for key, message in params.errors %}
+    {% set errorList = (errorList.push({
+        text: message | safe,
+        href: params.hrefs[key],
+        attributes: {
+          'data-cy': 'error-summary-list-item'
+        }
+      }), errorList) %}
+  {% endfor %}
+
+  {% if errorList | length %}
+    {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errorList,
+        attributes: {
+          'data-cy': 'error-summary'
+        }
+      }) }}
+  {% endif %}
+{% endmacro %}

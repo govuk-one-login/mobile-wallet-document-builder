@@ -3,10 +3,22 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "error-summary.njk" import errorSummary %}
 {% extends "base.njk" %}
 
 {% set pageTitle = "Please enter the Driving Licence document details:" %}
 {% block content %}
+
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'birth-day': '#birth-day',
+        'issue-day': '#issue-day',
+        'expiry-day': '#expiry-day'
+
+      }
+    }) }}
+
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
     <form action="/build-mdl-document" method="post">
         {% call govukFieldset({
@@ -39,6 +51,12 @@
                 "spellcheck": false,
                 "value": "Sarah Elizabeth"
             }) }}
+            {% set dobError = false %}
+            {% if errors['birth-day'] %}
+              {% set dobError = {
+                text: errors['birth-day']
+              } %}
+            {% endif %}
             {{ govukDateInput({
                 "id": "birth_date",
                 "namePrefix": "birth",
@@ -48,16 +66,17 @@
                         "classes": "govuk-fieldset__legend--s"
                     }
                 },
+                "errorMessage": dobError,
                 "items": [
                     {
                         "classes": "govuk-input--width-2",
                         "name": "day",
-                        "value": "06"
+                        "value": "04"
                     },
                     {
                         "classes": "govuk-input--width-2",
                         "name": "month",
-                        "value": "03"
+                        "value": "08"
                     },
                     {
                         "classes": "govuk-input--width-3",
