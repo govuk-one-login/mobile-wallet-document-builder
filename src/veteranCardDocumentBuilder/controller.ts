@@ -37,14 +37,28 @@ export async function veteranCardDocumentBuilderPostController(
   res: Response,
 ): Promise<void> {
   try {
+    const body: VeteranCardRequestBody = req.body;
+    if (
+      !isValidDate(
+        body["dateOfBirth-day"],
+        body["dateOfBirth-month"],
+        body["dateOfBirth-year"],
+      )
+    ) {
+      res.render("veteran-card-document-details-form.njk", {
+        errors: {
+          ["date-of-birth"]: "Enter a valid date",
+        },
+        authenticated: isAuthenticated(req),
+      });
+      return;
+    }
     const { photoBuffer, mimeType } = getPhoto(req.body.photo);
     const bucketName = getPhotosBucketName();
     const documentId = randomUUID();
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
 
     const s3Uri = `s3://${bucketName}/${documentId}`;
-    const body: VeteranCardRequestBody = req.body;
-
     const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
       documentId,
@@ -73,3 +87,56 @@ function buildVeteranCardDataFromRequestBody(
   const data: VeteranCardData = { ...newObject, photo: s3Uri };
   return data;
 }
+
+function isValidDate(dayInput: string, monthInput: string, yearInput: string) {
+  if (isEmpty(dayInput) || isEmpty(monthInput) || isEmpty(yearInput)) {
+    return false;
+  }
+
+  if (
+    !/^[0-9]{1,2}$/.test(dayInput) ||
+    !/^[0-9]{1,2}$/.test(monthInput) ||
+    !/^[0-9]+$/.test(yearInput)
+  ) {
+    return false;
+  }
+
+  if (!/^[1-9][0-9]{3}$/.test(yearInput)) {
+    return false;
+  }
+
+  const day = parseInt(dayInput, 10);
+  const month = parseInt(monthInput, 10);
+  const year = parseInt(yearInput, 10);
+
+  // JavaScript months are 0-indexed (0 = January, 11 = December)
+  const date = new Date(year, month - 1, day);
+
+  if (isNaN(date.getTime())) {
+    return false;
+  }
+
+  // Check if the date object contains the same values passed in
+  return (
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day
+  );
+}
+
+function isEmpty(input: string) {
+  return input === "";
+}
+
+// function notValid(message: string) {
+//   return {
+//     valid: false,
+//     message
+//   }
+// }
+//
+// function valid() {
+//   return {
+//     valid: true,
+//   }
+// }

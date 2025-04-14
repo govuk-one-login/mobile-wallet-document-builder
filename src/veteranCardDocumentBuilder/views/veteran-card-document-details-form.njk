@@ -7,6 +7,7 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% extends "base.njk" %}
 {% set pageTitle = "Please enter the Veteran Card document details:" %}
+{% set dateError = false %}
 {% block content %}
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
     <form action="/build-veteran-card-document" method="post">
@@ -40,33 +41,40 @@
                 "spellcheck": false,
                 "value": "Edwards"
             }) }}
+            {% if errors['date-of-birth'] %}
+                {% set dobError = { text: errors['date-of-birth'] } %}
+            {% endif %}
             {{ govukDateInput({
-                "id": "date-of-birth",
-                "namePrefix": "dateOfBirth",
-                "fieldset": {
-                    "legend": {
+                        "id": "date-of-birth",
+                        "namePrefix": "dateOfBirth",
+                        "fieldset": {
+                        "legend": {
                         "text": "Date of birth",
-                        "classes": "govuk-label--s"
-                    }
-                },
-                "items": [
-                    {
+                        "classes": "govuk-fieldset__legend--s"
+                        }
+                        },
+                        hint: {
+                        text: "For example, 26 5 1980"
+                        },
+                        errorMessage: dobError,
+                        "items": [
+                        {
                         "classes": "govuk-input--width-2",
                         "name": "day",
                         "value": "06"
-                    },
-                    {
+                        },
+                        {
                         "classes": "govuk-input--width-2",
                         "name": "month",
                         "value": "03"
-                    },
-                    {
+                        },
+                        {
                         "classes": "govuk-input--width-3",
                         "name": "year",
                         "value": "1975"
-                    }
-                ]
-            }) }}
+                        }
+                        ]
+                        }) }}
             {{ govukDateInput({
                 "id": "card-expiry-date",
                 "namePrefix": "cardExpiryDate",
