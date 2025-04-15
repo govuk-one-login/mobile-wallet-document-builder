@@ -82,6 +82,9 @@
                 "spellcheck": false,
                 "value": "London"
             }) }}
+            {% if errors['issue_date'] %}
+              {% set issueError = { text: errors['issue_date'] } %}
+            {% endif %}
             {{ govukDateInput({
                 "id": "issue_date",
                 "namePrefix": "issue",
@@ -91,6 +94,7 @@
                         "classes": "govuk-fieldset__legend--s"
                     }
                 },
+                "errorMessage": issueError,
                 "items": [
                     {
                         "classes": "govuk-input--width-2",
@@ -109,6 +113,9 @@
                     }
                 ]
             }) }}
+            {% if errors['expiry_date'] %}
+              {% set expiryError = { text: errors['expiry_date'] } %}
+            {% endif %}
             {{ govukDateInput({
                 "id": "expiry_date",
                 "namePrefix": "expiry",
@@ -118,6 +125,7 @@
                         "classes": "govuk-fieldset__legend--s"
                     }
                 },
+                "errorMessage": expiryError,
                 "items": [
                     {
                         "classes": "govuk-input--width-2",
