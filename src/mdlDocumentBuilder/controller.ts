@@ -12,7 +12,7 @@ import { MdlData } from "./types/MdlData";
 import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
-import { getDateFromParts, validateDateField } from "../utils/dateValidator";
+import {getDateFromParts, isValidDateInput } from "../utils/dateValidator";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
@@ -38,10 +38,24 @@ export async function mdlDocumentBuilderPostController(
   res: Response,
 ): Promise<void> {
   try {
+    const body: MdlRequestBody = req.body;
+    const birthDateInput = body["birth-day"] + "-" + body["birth-month"] + "-" + body["birth-year"];
+
+    if (!isValidDateInput(birthDateInput)){
+
+      res.render("mdl-document-details-form.njk", {
+        errors: {
+          ["birth_date"]: "Enter a valid date",
+        },
+        isAuthenticated: isAuthenticated(req),
+      });
+      return;
+    }
+
     const documentId = randomUUID();
     const bucketName = getPhotosBucketName();
     const s3Uri = `s3://${bucketName}/${documentId}`;
-    const body: MdlRequestBody = req.body;
+
     const data = buildMdlDataFromRequestBody(body, s3Uri);
     const { photoBuffer, mimeType } = getPhoto(req.body.portrait);
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
@@ -54,12 +68,12 @@ export async function mdlDocumentBuilderPostController(
 
     const selectedError = body["throwError"];
     res.redirect(
-      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
+        `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
     );
   } catch (error) {
     logger.error(
-      error,
-      "An error happened processing Driving Licence document request",
+        error,
+        "An error happened processing Driving Licence document request",
     );
     res.render("500.njk");
   }
@@ -84,21 +98,6 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
   const issueDateStr = getDateFromParts(issueDay, issueMonth, issueYear);
   const expiryDateStr = getDateFromParts(expiryDay, expiryMonth, expiryYear);
 
-  const errors: string[] = [];
-
-  const birthErr = validateDateField("birth_date", birthDateStr);
-  if (birthErr) errors.push(birthErr);
-
-  const issueErr = validateDateField("issue_date", issueDateStr);
-  if (issueErr) errors.push(issueErr);
-
-  const expiryErr = validateDateField("expiry_date", expiryDateStr);
-  if (expiryErr) errors.push(expiryErr);
-
-  if (errors.length > 0) {
-    throw new Error(`Date validation failed: ${errors.join(', ')}`);
-  }
-
   const data: MdlData = {
     ...newObject,
     portrait: s3Uri,
@@ -108,4 +107,3 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
   };
   return data;
 }
-
