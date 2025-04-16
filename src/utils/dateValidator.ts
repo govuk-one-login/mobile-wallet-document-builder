@@ -23,18 +23,7 @@ export function isRealDate(dateStr: string) {
   const year = parseInt(yearStr, 10);
 
   if (year < 1900 || year > 2100) return false;
-  if (month < 1 || month > 12) return false;
-  if (day < 1 || day > 31) return false;
 
-  if (month === 2) {
-    if (isLeapYear(year)) {
-      if (day > 29) return false;
-    } else {
-      if (day > 28) return false;
-    }
-  } else if ([4, 6, 9, 11].includes(month)) {
-    if (day > 30) return false;
-  }
   const date = new Date(year, month - 1, day);
   return (
     date.getFullYear() === year &&
