@@ -13,10 +13,11 @@ import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
 import {
+  formatDate,
   getDateFromParts,
   isDateInPast,
   isExpiryDateInFuture,
-  isValidDateInput
+  isValidDateInput,
 } from "../utils/dateValidator";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
@@ -44,9 +45,21 @@ export async function mdlDocumentBuilderPostController(
 ): Promise<void> {
   try {
     const body: MdlRequestBody = req.body;
-    const birthDateInput = getDateFromParts(body["birth-day"], body["birth-month"], body["birth-year"]);
-    const issueDateInput = getDateFromParts(body["issue-day"], body["issue-month"], body["issue-year"]);
-    const expiryDateInput = getDateFromParts(body["expiry-day"], body["expiry-month"], body["expiry-year"]);
+    const birthDateInput = getDateFromParts(
+      body["birth-day"],
+      body["birth-month"],
+      body["birth-year"],
+    );
+    const issueDateInput = getDateFromParts(
+      body["issue-day"],
+      body["issue-month"],
+      body["issue-year"],
+    );
+    const expiryDateInput = getDateFromParts(
+      body["expiry-day"],
+      body["expiry-month"],
+      body["expiry-year"],
+    );
 
     if (!isValidDateInput(birthDateInput) || !isDateInPast(birthDateInput)) {
       res.render("mdl-document-details-form.njk", {
@@ -66,7 +79,10 @@ export async function mdlDocumentBuilderPostController(
       });
       return;
     }
-    if (!isValidDateInput(expiryDateInput) || !isExpiryDateInFuture(expiryDateInput)) {
+    if (
+      !isValidDateInput(expiryDateInput) ||
+      !isExpiryDateInFuture(expiryDateInput)
+    ) {
       res.render("mdl-document-details-form.njk", {
         errors: {
           ["expiry_date"]: "Enter a valid expiry date",
@@ -92,12 +108,12 @@ export async function mdlDocumentBuilderPostController(
 
     const selectedError = body["throwError"];
     res.redirect(
-        `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
+      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
     );
   } catch (error) {
     logger.error(
-        error,
-        "An error happened processing Driving Licence document request",
+      error,
+      "An error happened processing Driving Licence document request",
     );
     res.render("500.njk");
   }
@@ -118,9 +134,9 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
     ...newObject
   } = body;
 
-  const birthDateStr = getDateFromParts(birthDay, birthMonth, birthYear);
-  const issueDateStr = getDateFromParts(issueDay, issueMonth, issueYear);
-  const expiryDateStr = getDateFromParts(expiryDay, expiryMonth, expiryYear);
+  const birthDateStr = formatDate(birthDay, birthMonth, birthYear);
+  const issueDateStr = formatDate(issueDay, issueMonth, issueYear);
+  const expiryDateStr = formatDate(expiryDay, expiryMonth, expiryYear);
 
   const data: MdlData = {
     ...newObject,

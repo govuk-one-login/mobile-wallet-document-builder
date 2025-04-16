@@ -1,8 +1,6 @@
-
 export function getDateFromParts(day: string, month: string, year: string) {
   const paddedDay = day.padStart(2, "0");
   const paddedMonth = month.padStart(2, "0");
-  // return `${paddedDay}-${paddedMonth}-${year}`;
   return `${year}/${paddedMonth}/${paddedDay}`;
 }
 
@@ -17,7 +15,6 @@ export function isValidDateFormat(dateStr: string) {
 }
 
 export function isRealDate(dateStr: string) {
-
   const [yearStr, monthStr, dayStr] = dateStr.split("/");
   if (isEmpty(dayStr) || isEmpty(monthStr) || isEmpty(yearStr)) return false;
 
@@ -35,7 +32,7 @@ export function isRealDate(dateStr: string) {
     } else {
       if (day > 28) return false;
     }
-  } else if ([4, 6, 9, 11].includes(month)){
+  } else if ([4, 6, 9, 11].includes(month)) {
     if (day > 30) return false;
   }
   const date = new Date(year, month - 1, day);
@@ -47,11 +44,11 @@ export function isRealDate(dateStr: string) {
 }
 
 function isEmpty(input: string) {
-    return input === "";
+  return input === "";
 }
 
 function isLeapYear(year: number) {
-  return (year % 400 === 0) || (year % 4 === 0 && year % 100 !== 0);
+  return year % 400 === 0 || (year % 4 === 0 && year % 100 !== 0);
 }
 
 export function isDateInPast(dateStr: string) {
@@ -61,7 +58,11 @@ export function isDateInPast(dateStr: string) {
   }
   const now = new Date();
   const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const dateInput = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const dateInput = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  );
   return dateInput <= todayDate;
 }
 
@@ -74,7 +75,11 @@ export function isExpiryDateInFuture(expiryDateStr: string) {
 }
 
 export function isValidDateInput(dateStr: string) {
-    return isValidDateFormat(dateStr) && isRealDate(dateStr);
+  return isValidDateFormat(dateStr) && isRealDate(dateStr);
 }
 
-
+export function formatDate(day: string, month: string, year: string) {
+  const paddedDay = day.padStart(2, "0");
+  const paddedMonth = month.padStart(2, "0");
+  return `${paddedDay}-${paddedMonth}-${year}`;
+}
