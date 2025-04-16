@@ -36,10 +36,6 @@ function isEmpty(input: string) {
   return input === "";
 }
 
-function isLeapYear(year: number) {
-  return year % 400 === 0 || (year % 4 === 0 && year % 100 !== 0);
-}
-
 export function isDateInPast(dateStr: string) {
   const date = new Date(dateStr);
   if (isNaN(date.getTime())) {
