@@ -22,7 +22,12 @@ export async function credentialViewerController(
     );
 
     const credential = await getCredential(accessToken, proofJwt);
-    const credentialClaims = decodeJwt(credential);
+    let credentialClaims;
+    try {
+      credentialClaims = decodeJwt(credential);
+    } catch {
+      credentialClaims = "";
+    }
 
     res.render("credential.njk", {
       authenticated: isAuthenticated(req),
