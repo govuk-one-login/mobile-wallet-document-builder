@@ -12,13 +12,7 @@ import { MdlData } from "./types/MdlData";
 import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
-import {
-  formatDate,
-  getDateFromParts,
-  isDateInPast,
-  isExpiryDateInFuture,
-  isValidDateInput,
-} from "../utils/dateValidator";
+import {formatDate, isDateInPast, isValidDate} from "../utils/dateValidator";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
@@ -45,51 +39,48 @@ export async function mdlDocumentBuilderPostController(
 ): Promise<void> {
   try {
     const body: MdlRequestBody = req.body;
-    const birthDateInput = getDateFromParts(
-      body["birth-day"],
-      body["birth-month"],
-      body["birth-year"],
-    );
-    const issueDateInput = getDateFromParts(
-      body["issue-day"],
-      body["issue-month"],
-      body["issue-year"],
-    );
-    const expiryDateInput = getDateFromParts(
-      body["expiry-day"],
-      body["expiry-month"],
-      body["expiry-year"],
-    );
+    const errors: Record<string, string> = {};
 
-    if (!isValidDateInput(birthDateInput) || !isDateInPast(birthDateInput)) {
-      res.render("mdl-document-details-form.njk", {
-        errors: {
-          ["birth_date"]: "Enter a valid birth date",
-        },
-        isAuthenticated: isAuthenticated(req),
-      });
-      return;
-    }
-    if (!isValidDateInput(issueDateInput) || !isDateInPast(issueDateInput)) {
-      res.render("mdl-document-details-form.njk", {
-        errors: {
-          ["issue_date"]: "Enter a valid issue date",
-        },
-        isAuthenticated: isAuthenticated(req),
-      });
-      return;
+    if (
+      !isValidDate(
+        body["birth-day"],
+        body["birth-month"],
+        body["birth-year"],
+      ) ||
+      !isDateInPast(body["birth-day"], body["birth-month"], body["birth-year"])
+    ) {
+      errors["birth_date"] = "Enter a valid birth date";
     }
     if (
-      !isValidDateInput(expiryDateInput) ||
-      !isExpiryDateInFuture(expiryDateInput)
+      !isValidDate(
+        body["issue-day"],
+        body["issue-month"],
+        body["issue-year"],
+      ) ||
+      !isDateInPast(body["issue-day"], body["issue-month"], body["issue-year"])
     ) {
-      res.render("mdl-document-details-form.njk", {
-        errors: {
-          ["expiry_date"]: "Enter a valid expiry date",
-        },
+      errors["issue_date"] = "Enter a valid issue date";
+    }
+    if (
+      !isValidDate(
+        body["expiry-day"],
+        body["expiry-month"],
+        body["expiry-year"],
+      ) ||
+      isDateInPast(
+        body["expiry-day"],
+        body["expiry-month"],
+        body["expiry-year"],
+      )
+    ) {
+      errors["expiry_date"] = "Enter a valid expiry date";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return res.render("mdl-document-details-form.njk", {
+        errors,
         isAuthenticated: isAuthenticated(req),
       });
-      return;
     }
 
     const documentId = randomUUID();
