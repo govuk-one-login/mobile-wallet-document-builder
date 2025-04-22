@@ -27,7 +27,7 @@ export async function credentialViewerController(
       const payload = decodeJwt(credential);
       credentialClaims = JSON.stringify(payload);
     } catch (error) {
-      logger.error("Could not decode JWT credential", error);
+      logger.info("Could not decode JWT credential", error);
     }
 
     res.render("credential.njk", {
