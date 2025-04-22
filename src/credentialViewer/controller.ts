@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { decodeJwt } from "jose";
 import axios from "axios";
 import { getCriEndpoint, getSelfUrl } from "../config/appConfig";
 import { GrantType } from "../stsStubAccessToken/token/validateTokenRequest";
+import { logger } from "../middleware/logger";
 
 export async function credentialViewerController(
   req: Request,
@@ -22,11 +22,12 @@ export async function credentialViewerController(
     );
 
     const credential = await getCredential(accessToken, proofJwt);
-    let credentialClaims;
+    let credentialClaims = null;
     try {
-      credentialClaims = decodeJwt(credential);
-    } catch {
-      credentialClaims = "";
+      const payload = decodeJwt(credential);
+      credentialClaims = JSON.stringify(payload);
+    } catch (error) {
+      logger.error("Could not decode JWT credential", error);
     }
 
     res.render("credential.njk", {
@@ -36,7 +37,7 @@ export async function credentialViewerController(
       accessTokenClaims: JSON.stringify(accessTokenClaims),
       proofJwt,
       credential,
-      credentialClaims: JSON.stringify(credentialClaims),
+      credentialClaims: credentialClaims,
     });
   } catch (error) {
     logger.error(error, "An error happened.");
