@@ -7,6 +7,7 @@ import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
+import {buildMdlRequestBody} from "../utils/mdlRequestBodyBuilder";
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
@@ -205,29 +206,13 @@ describe("controller.ts", () => {
     });
     describe("Date validation", () => {
       it("should render an error when the birthdate has empty fields", async () => {
+        const body = buildMdlRequestBody({
+          "birth-day": "",
+          "birth-month": "08",
+          "birth-year": "",
+        })
         const req = getMockReq({
-          body: {
-            family_name: "Edwards-Smith",
-            given_name: "Sarah Elizabeth",
-            portrait: "420x525.jpg",
-            "birth-day": "",
-            "birth-month": "06",
-            "birth-year": "",
-            birth_place: "London",
-            "issue-day": "02",
-            "issue-month": "08",
-            "issue-year": "2019",
-            "expiry-day": "02",
-            "expiry-month": "08",
-            "expiry-year": "2029",
-            issuing_authority: "DVLA",
-            issuing_country: "United Kingdom (UK)",
-            document_number: "25057386",
-            resident_address: "Flat 11, Blashford, Adelaide Road",
-            resident_postal_code: "NW3 3RX",
-            resident_city: "London",
-            throwError: "",
-          },
+          body,
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
@@ -245,29 +230,13 @@ describe("controller.ts", () => {
       });
 
       it("should render an error when the birth-day is 29 for february but the year is not a leap year", async () => {
+        const body = buildMdlRequestBody({
+          "birth-day": "29",
+          "birth-month": "02",
+          "birth-year": "2019",
+        })
         const req = getMockReq({
-          body: {
-            family_name: "Edwards-Smith",
-            given_name: "Sarah Elizabeth",
-            portrait: "420x525.jpg",
-            "birth-day": "29",
-            "birth-month": "02",
-            "birth-year": "2001",
-            birth_place: "London",
-            "issue-day": "02",
-            "issue-month": "08",
-            "issue-year": "2019",
-            "expiry-day": "02",
-            "expiry-month": "08",
-            "expiry-year": "2029",
-            issuing_authority: "DVLA",
-            issuing_country: "United Kingdom (UK)",
-            document_number: "25057386",
-            resident_address: "Flat 11, Blashford, Adelaide Road",
-            resident_postal_code: "NW3 3RX",
-            resident_city: "London",
-            throwError: "",
-          },
+          body,
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
@@ -284,29 +253,13 @@ describe("controller.ts", () => {
         expect(res.redirect).not.toHaveBeenCalled();
       });
       it("should render an error when the birth date is in the future", async () => {
+        const body = buildMdlRequestBody({
+          "birth-day": "10",
+          "birth-month": "08",
+          "birth-year": "2026",
+        })
         const req = getMockReq({
-          body: {
-            family_name: "Edwards-Smith",
-            given_name: "Sarah Elizabeth",
-            portrait: "420x525.jpg",
-            "birth-day": "31",
-            "birth-month": "03",
-            "birth-year": "2026",
-            birth_place: "London",
-            "issue-day": "02",
-            "issue-month": "08",
-            "issue-year": "2019",
-            "expiry-day": "02",
-            "expiry-month": "08",
-            "expiry-year": "2029",
-            issuing_authority: "DVLA",
-            issuing_country: "United Kingdom (UK)",
-            document_number: "25057386",
-            resident_address: "Flat 11, Blashford, Adelaide Road",
-            resident_postal_code: "NW3 3RX",
-            resident_city: "London",
-            throwError: "",
-          },
+          body,
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
@@ -323,29 +276,13 @@ describe("controller.ts", () => {
         expect(res.redirect).not.toHaveBeenCalled();
       });
       it("should render an error when the issue date is empty", async () => {
+        const body = buildMdlRequestBody({
+          "issue-day": "04",
+          "issue-month": "",
+          "issue-year": "",
+        })
         const req = getMockReq({
-          body: {
-            family_name: "Edwards-Smith",
-            given_name: "Sarah Elizabeth",
-            portrait: "420x525.jpg",
-            "birth-day": "31",
-            "birth-month": "03",
-            "birth-year": "2000",
-            birth_place: "London",
-            "issue-day": "",
-            "issue-month": "",
-            "issue-year": "2019",
-            "expiry-day": "02",
-            "expiry-month": "08",
-            "expiry-year": "2029",
-            issuing_authority: "DVLA",
-            issuing_country: "United Kingdom (UK)",
-            document_number: "25057386",
-            resident_address: "Flat 11, Blashford, Adelaide Road",
-            resident_postal_code: "NW3 3RX",
-            resident_city: "London",
-            throwError: "",
-          },
+          body,
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
@@ -362,29 +299,13 @@ describe("controller.ts", () => {
         expect(res.redirect).not.toHaveBeenCalled();
       });
       it("should render an error when the issue day is 31 and issue month is June", async () => {
+        const body = buildMdlRequestBody({
+          "issue-day": "31",
+          "issue-month": "06",
+          "issue-year": "2020",
+        })
         const req = getMockReq({
-          body: {
-            family_name: "Edwards-Smith",
-            given_name: "Sarah Elizabeth",
-            portrait: "420x525.jpg",
-            "birth-day": "31",
-            "birth-month": "03",
-            "birth-year": "2000",
-            birth_place: "London",
-            "issue-day": "31",
-            "issue-month": "06",
-            "issue-year": "2019",
-            "expiry-day": "02",
-            "expiry-month": "08",
-            "expiry-year": "2029",
-            issuing_authority: "DVLA",
-            issuing_country: "United Kingdom (UK)",
-            document_number: "25057386",
-            resident_address: "Flat 11, Blashford, Adelaide Road",
-            resident_postal_code: "NW3 3RX",
-            resident_city: "London",
-            throwError: "",
-          },
+          body,
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
@@ -401,29 +322,13 @@ describe("controller.ts", () => {
         expect(res.redirect).not.toHaveBeenCalled();
       });
       it("should render an error when the issue date is in the future", async () => {
+        const body = buildMdlRequestBody({
+          "issue-day": "02",
+          "issue-month": "08",
+          "issue-year": "2030",
+        })
         const req = getMockReq({
-          body: {
-            family_name: "Edwards-Smith",
-            given_name: "Sarah Elizabeth",
-            portrait: "420x525.jpg",
-            "birth-day": "31",
-            "birth-month": "03",
-            "birth-year": "2000",
-            birth_place: "London",
-            "issue-day": "30",
-            "issue-month": "06",
-            "issue-year": "2027",
-            "expiry-day": "02",
-            "expiry-month": "08",
-            "expiry-year": "2029",
-            issuing_authority: "DVLA",
-            issuing_country: "United Kingdom (UK)",
-            document_number: "25057386",
-            resident_address: "Flat 11, Blashford, Adelaide Road",
-            resident_postal_code: "NW3 3RX",
-            resident_city: "London",
-            throwError: "",
-          },
+          body,
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
@@ -440,29 +345,13 @@ describe("controller.ts", () => {
         expect(res.redirect).not.toHaveBeenCalled();
       });
       it("should render an error when the expiry date is empty", async () => {
+        const body = buildMdlRequestBody({
+          "expiry-day": "05",
+          "expiry-month": "",
+          "expiry-year": "",
+        })
         const req = getMockReq({
-          body: {
-            family_name: "Edwards-Smith",
-            given_name: "Sarah Elizabeth",
-            portrait: "420x525.jpg",
-            "birth-day": "31",
-            "birth-month": "03",
-            "birth-year": "2000",
-            birth_place: "London",
-            "issue-day": "04",
-            "issue-month": "05",
-            "issue-year": "2019",
-            "expiry-day": "",
-            "expiry-month": "08",
-            "expiry-year": "",
-            issuing_authority: "DVLA",
-            issuing_country: "United Kingdom (UK)",
-            document_number: "25057386",
-            resident_address: "Flat 11, Blashford, Adelaide Road",
-            resident_postal_code: "NW3 3RX",
-            resident_city: "London",
-            throwError: "",
-          },
+          body,
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
@@ -479,29 +368,13 @@ describe("controller.ts", () => {
         expect(res.redirect).not.toHaveBeenCalled();
       });
       it("should render an error when the expiry date is in the past", async () => {
+        const body = buildMdlRequestBody({
+          "expiry-day": "03",
+          "expiry-month": "08",
+          "expiry-year": "2019",
+        })
         const req = getMockReq({
-          body: {
-            family_name: "Edwards-Smith",
-            given_name: "Sarah Elizabeth",
-            portrait: "420x525.jpg",
-            "birth-day": "31",
-            "birth-month": "03",
-            "birth-year": "2000",
-            birth_place: "London",
-            "issue-day": "04",
-            "issue-month": "05",
-            "issue-year": "2019",
-            "expiry-day": "02",
-            "expiry-month": "08",
-            "expiry-year": "2015",
-            issuing_authority: "DVLA",
-            issuing_country: "United Kingdom (UK)",
-            document_number: "25057386",
-            resident_address: "Flat 11, Blashford, Adelaide Road",
-            resident_postal_code: "NW3 3RX",
-            resident_city: "London",
-            throwError: "",
-          },
+          body,
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
@@ -518,29 +391,13 @@ describe("controller.ts", () => {
         expect(res.redirect).not.toHaveBeenCalled();
       });
       it("should render an error when the expiry date is invalid", async () => {
+        const body = buildMdlRequestBody({
+          "expiry-day": "45",
+          "expiry-month": "14",
+          "expiry-year": "pp!",
+        })
         const req = getMockReq({
-          body: {
-            family_name: "Edwards-Smith",
-            given_name: "Sarah Elizabeth",
-            portrait: "420x525.jpg",
-            "birth-day": "31",
-            "birth-month": "03",
-            "birth-year": "2000",
-            birth_place: "London",
-            "issue-day": "04",
-            "issue-month": "05",
-            "issue-year": "2019",
-            "expiry-day": "45",
-            "expiry-month": "13",
-            "expiry-year": "1020",
-            issuing_authority: "DVLA",
-            issuing_country: "United Kingdom (UK)",
-            document_number: "25057386",
-            resident_address: "Flat 11, Blashford, Adelaide Road",
-            resident_postal_code: "NW3 3RX",
-            resident_city: "London",
-            throwError: "",
-          },
+          body,
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();

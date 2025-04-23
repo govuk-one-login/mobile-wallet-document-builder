@@ -13,9 +13,9 @@ describe("isValidDate", () => {
         expect(isValidDate("02", "13", "2020")).toBe(false);
     });
 
-    test("should return false for invalid year", () => {
-        expect(isValidDate("10", "10", "1800")).toBe(false);
-        expect(isValidDate("10", "10", "2200")).toBe(false);
+    test("should return true for valid year", () => {
+        expect(isValidDate("10", "10", "1800")).toBe(true);
+        expect(isValidDate("10", "10", "2200")).toBe(true);
     });
 
     test("should return true for valid date like Feb 29 in a a leap year", () => {

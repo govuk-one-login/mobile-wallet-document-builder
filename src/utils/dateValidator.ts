@@ -3,8 +3,6 @@ export function isValidDate(dayStr: string, monthStr: string, yearStr: string) {
   const month = parseInt(monthStr);
   const year = parseInt(yearStr);
 
-  if (year < 1925 || year > 2100) return false;
-
   const date = new Date(year, month - 1, day);
 
   if (isNaN(date.getTime())) return false;
