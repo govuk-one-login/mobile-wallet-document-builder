@@ -4,8 +4,8 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% extends "base.njk" %}
-
 {% set pageTitle = "Please enter the Driving Licence document details:" %}
+{% set dateError = false %}
 {% block content %}
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
     <form action="/build-mdl-document" method="post">
@@ -39,6 +39,9 @@
                 "spellcheck": false,
                 "value": "Sarah Elizabeth"
             }) }}
+            {% if errors['birth_date'] %}
+              {% set dobError = { text: errors['birth_date'] } %}
+            {% endif %}
             {{ govukDateInput({
                 "id": "birth_date",
                 "namePrefix": "birth",
@@ -48,6 +51,10 @@
                         "classes": "govuk-fieldset__legend--s"
                     }
                 },
+                hint: {
+                    text: "For example, 27 3 2007"
+                },
+                "errorMessage": dobError,
                 "items": [
                     {
                         "classes": "govuk-input--width-2",
@@ -78,6 +85,9 @@
                 "spellcheck": false,
                 "value": "London"
             }) }}
+            {% if errors['issue_date'] %}
+              {% set issueError = { text: errors['issue_date'] } %}
+            {% endif %}
             {{ govukDateInput({
                 "id": "issue_date",
                 "namePrefix": "issue",
@@ -87,6 +97,10 @@
                         "classes": "govuk-fieldset__legend--s"
                     }
                 },
+                hint: {
+                    text: "For example, 27 3 2007"
+                },
+                "errorMessage": issueError,
                 "items": [
                     {
                         "classes": "govuk-input--width-2",
@@ -105,6 +119,9 @@
                     }
                 ]
             }) }}
+            {% if errors['expiry_date'] %}
+              {% set expiryError = { text: errors['expiry_date'] } %}
+            {% endif %}
             {{ govukDateInput({
                 "id": "expiry_date",
                 "namePrefix": "expiry",
@@ -114,6 +131,10 @@
                         "classes": "govuk-fieldset__legend--s"
                     }
                 },
+                hint: {
+                    text: "For example, 27 3 2007"
+                },
+                "errorMessage": expiryError,
                 "items": [
                     {
                         "classes": "govuk-input--width-2",

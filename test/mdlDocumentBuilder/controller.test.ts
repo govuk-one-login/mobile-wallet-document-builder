@@ -7,6 +7,7 @@ import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
+import {buildMdlRequestBody} from "../utils/mdlRequestBodyBuilder";
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
@@ -154,16 +155,10 @@ describe("controller.ts", () => {
             family_name: "Edwards-Smith",
             given_name: "Sarah Elizabeth",
             portrait: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-            "birth-day": "06",
-            "birth-month": "03",
-            "birth-year": "1975",
+            birth_date: "06-03-1975",
             birth_place: "London",
-            "issue-day": "08",
-            "issue-month": "04",
-            "issue-year": "2019",
-            "expiry-day": "08",
-            "expiry-month": "04",
-            "expiry-year": "2029",
+            issue_date: "08-04-2019",
+            expiry_date: "08-04-2029",
             issuing_authority: "DVLA",
             issuing_country: "United Kingdom (UK)",
             document_number: "25057386",
@@ -207,6 +202,223 @@ describe("controller.ts", () => {
             "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence&error=ERROR:401",
           );
         });
+      });
+    });
+    describe("Date validation", () => {
+      it("should render an error when the birthdate has empty fields", async () => {
+        const body = buildMdlRequestBody({
+          "birth-day": "",
+          "birth-month": "08",
+          "birth-year": "",
+        })
+        const req = getMockReq({
+          body,
+          cookies: { id_token: "id_token" },
+        });
+        const { res } = getMockRes();
+        await mdlDocumentBuilderPostController(req, res);
+        expect(res.render).toHaveBeenCalledWith(
+          "mdl-document-details-form.njk",
+          {
+            errors: expect.objectContaining({
+              birth_date: "Enter a valid birth date",
+            }),
+            isAuthenticated: true,
+          },
+        );
+        expect(res.redirect).not.toHaveBeenCalled();
+      });
+
+      it("should render an error when the birth-day is 29 for february but the year is not a leap year", async () => {
+        const body = buildMdlRequestBody({
+          "birth-day": "29",
+          "birth-month": "02",
+          "birth-year": "2019",
+        })
+        const req = getMockReq({
+          body,
+          cookies: { id_token: "id_token" },
+        });
+        const { res } = getMockRes();
+        await mdlDocumentBuilderPostController(req, res);
+        expect(res.render).toHaveBeenCalledWith(
+          "mdl-document-details-form.njk",
+          {
+            errors: expect.objectContaining({
+              birth_date: "Enter a valid birth date",
+            }),
+            isAuthenticated: true,
+          },
+        );
+        expect(res.redirect).not.toHaveBeenCalled();
+      });
+
+      it("should render an error when the birth date is in the future", async () => {
+        const body = buildMdlRequestBody({
+          "birth-day": "10",
+          "birth-month": "08",
+          "birth-year": "2026",
+        })
+        const req = getMockReq({
+          body,
+          cookies: { id_token: "id_token" },
+        });
+        const { res } = getMockRes();
+        await mdlDocumentBuilderPostController(req, res);
+        expect(res.render).toHaveBeenCalledWith(
+          "mdl-document-details-form.njk",
+          {
+            errors: expect.objectContaining({
+              birth_date: "Enter a valid birth date",
+            }),
+            isAuthenticated: true,
+          },
+        );
+        expect(res.redirect).not.toHaveBeenCalled();
+      });
+
+      it("should render an error when the issue date is empty", async () => {
+        const body = buildMdlRequestBody({
+          "issue-day": "04",
+          "issue-month": "",
+          "issue-year": "",
+        })
+        const req = getMockReq({
+          body,
+          cookies: { id_token: "id_token" },
+        });
+        const { res } = getMockRes();
+        await mdlDocumentBuilderPostController(req, res);
+        expect(res.render).toHaveBeenCalledWith(
+          "mdl-document-details-form.njk",
+          {
+            errors: expect.objectContaining({
+              issue_date: "Enter a valid issue date",
+            }),
+            isAuthenticated: true,
+          },
+        );
+        expect(res.redirect).not.toHaveBeenCalled();
+      });
+
+      it("should render an error when the issue day is 31 and issue month is June", async () => {
+        const body = buildMdlRequestBody({
+          "issue-day": "31",
+          "issue-month": "06",
+          "issue-year": "2020",
+        })
+        const req = getMockReq({
+          body,
+          cookies: { id_token: "id_token" },
+        });
+        const { res } = getMockRes();
+        await mdlDocumentBuilderPostController(req, res);
+        expect(res.render).toHaveBeenCalledWith(
+          "mdl-document-details-form.njk",
+          {
+            errors: expect.objectContaining({
+              issue_date: "Enter a valid issue date",
+            }),
+            isAuthenticated: true,
+          },
+        );
+        expect(res.redirect).not.toHaveBeenCalled();
+      });
+
+      it("should render an error when the issue date is in the future", async () => {
+        const body = buildMdlRequestBody({
+          "issue-day": "02",
+          "issue-month": "08",
+          "issue-year": "2030",
+        })
+        const req = getMockReq({
+          body,
+          cookies: { id_token: "id_token" },
+        });
+        const { res } = getMockRes();
+        await mdlDocumentBuilderPostController(req, res);
+        expect(res.render).toHaveBeenCalledWith(
+          "mdl-document-details-form.njk",
+          {
+            errors: expect.objectContaining({
+              issue_date: "Enter a valid issue date",
+            }),
+            isAuthenticated: true,
+          },
+        );
+        expect(res.redirect).not.toHaveBeenCalled();
+      });
+
+      it("should render an error when the expiry date is empty", async () => {
+        const body = buildMdlRequestBody({
+          "expiry-day": "05",
+          "expiry-month": "",
+          "expiry-year": "",
+        })
+        const req = getMockReq({
+          body,
+          cookies: { id_token: "id_token" },
+        });
+        const { res } = getMockRes();
+        await mdlDocumentBuilderPostController(req, res);
+        expect(res.render).toHaveBeenCalledWith(
+          "mdl-document-details-form.njk",
+          {
+            errors: expect.objectContaining({
+              expiry_date: "Enter a valid expiry date",
+            }),
+            isAuthenticated: true,
+          },
+        );
+        expect(res.redirect).not.toHaveBeenCalled();
+      });
+
+      it("should render an error when the expiry date is in the past", async () => {
+        const body = buildMdlRequestBody({
+          "expiry-day": "03",
+          "expiry-month": "08",
+          "expiry-year": "2019",
+        })
+        const req = getMockReq({
+          body,
+          cookies: { id_token: "id_token" },
+        });
+        const { res } = getMockRes();
+        await mdlDocumentBuilderPostController(req, res);
+        expect(res.render).toHaveBeenCalledWith(
+          "mdl-document-details-form.njk",
+          {
+            errors: expect.objectContaining({
+              expiry_date: "Enter a valid expiry date",
+            }),
+            isAuthenticated: true,
+          },
+        );
+        expect(res.redirect).not.toHaveBeenCalled();
+      });
+
+      it("should render an error when the expiry date is invalid", async () => {
+        const body = buildMdlRequestBody({
+          "expiry-day": "45",
+          "expiry-month": "14",
+          "expiry-year": "pp!",
+        })
+        const req = getMockReq({
+          body,
+          cookies: { id_token: "id_token" },
+        });
+        const { res } = getMockRes();
+        await mdlDocumentBuilderPostController(req, res);
+        expect(res.render).toHaveBeenCalledWith(
+          "mdl-document-details-form.njk",
+          {
+            errors: expect.objectContaining({
+              expiry_date: "Enter a valid expiry date",
+            }),
+            isAuthenticated: true,
+          },
+        );
+        expect(res.redirect).not.toHaveBeenCalled();
       });
     });
   });

@@ -12,6 +12,7 @@ import { MdlData } from "./types/MdlData";
 import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
+import {formatDate, isDateInPast, isValidDate} from "../utils/dateValidator";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
@@ -37,10 +38,55 @@ export async function mdlDocumentBuilderPostController(
   res: Response,
 ): Promise<void> {
   try {
+    const body: MdlRequestBody = req.body;
+    const errors: Record<string, string> = {};
+
+    if (
+      !isValidDate(
+        body["birth-day"],
+        body["birth-month"],
+        body["birth-year"],
+      ) ||
+      !isDateInPast(body["birth-day"], body["birth-month"], body["birth-year"])
+    ) {
+      errors["birth_date"] = "Enter a valid birth date";
+    }
+    if (
+      !isValidDate(
+        body["issue-day"],
+        body["issue-month"],
+        body["issue-year"],
+      ) ||
+      !isDateInPast(body["issue-day"], body["issue-month"], body["issue-year"])
+    ) {
+      errors["issue_date"] = "Enter a valid issue date";
+    }
+    if (
+      !isValidDate(
+        body["expiry-day"],
+        body["expiry-month"],
+        body["expiry-year"],
+      ) ||
+      isDateInPast(
+        body["expiry-day"],
+        body["expiry-month"],
+        body["expiry-year"],
+      )
+    ) {
+      errors["expiry_date"] = "Enter a valid expiry date";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return res.render("mdl-document-details-form.njk", {
+        errors,
+        isAuthenticated: isAuthenticated(req),
+      });
+    }
+
     const documentId = randomUUID();
     const bucketName = getPhotosBucketName();
     const s3Uri = `s3://${bucketName}/${documentId}`;
-    const body: MdlRequestBody = req.body;
+
     const data = buildMdlDataFromRequestBody(body, s3Uri);
     const { photoBuffer, mimeType } = getPhoto(req.body.portrait);
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
@@ -65,7 +111,30 @@ export async function mdlDocumentBuilderPostController(
 }
 
 function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
-  const { throwError: _throwError, ...newObject } = body;
-  const data: MdlData = { ...newObject, portrait: s3Uri };
+  const {
+    throwError: _throwError,
+    "birth-day": birthDay,
+    "birth-month": birthMonth,
+    "birth-year": birthYear,
+    "issue-day": issueDay,
+    "issue-month": issueMonth,
+    "issue-year": issueYear,
+    "expiry-day": expiryDay,
+    "expiry-month": expiryMonth,
+    "expiry-year": expiryYear,
+    ...newObject
+  } = body;
+
+  const birthDateStr = formatDate(birthDay, birthMonth, birthYear);
+  const issueDateStr = formatDate(issueDay, issueMonth, issueYear);
+  const expiryDateStr = formatDate(expiryDay, expiryMonth, expiryYear);
+
+  const data: MdlData = {
+    ...newObject,
+    portrait: s3Uri,
+    birth_date: birthDateStr,
+    issue_date: issueDateStr,
+    expiry_date: expiryDateStr,
+  };
   return data;
 }
