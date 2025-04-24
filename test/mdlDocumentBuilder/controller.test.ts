@@ -276,6 +276,7 @@ describe("controller.ts", () => {
         );
         expect(res.redirect).not.toHaveBeenCalled();
       });
+
       it("should render an error when the issue date is empty", async () => {
         const body = buildMdlRequestBody({
           "issue-day": "04",
