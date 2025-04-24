@@ -252,6 +252,7 @@ describe("controller.ts", () => {
         );
         expect(res.redirect).not.toHaveBeenCalled();
       });
+
       it("should render an error when the birth date is in the future", async () => {
         const body = buildMdlRequestBody({
           "birth-day": "10",
