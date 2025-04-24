@@ -372,6 +372,7 @@ describe("controller.ts", () => {
         );
         expect(res.redirect).not.toHaveBeenCalled();
       });
+
       it("should render an error when the expiry date is in the past", async () => {
         const body = buildMdlRequestBody({
           "expiry-day": "03",
