@@ -300,6 +300,7 @@ describe("controller.ts", () => {
         );
         expect(res.redirect).not.toHaveBeenCalled();
       });
+
       it("should render an error when the issue day is 31 and issue month is June", async () => {
         const body = buildMdlRequestBody({
           "issue-day": "31",
