@@ -138,5 +138,6 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
     expiry_date: expiryDateStr,
     full_driving_privileges: vehicleCategoryCodeStr,
   };
+
   return data;
 }
