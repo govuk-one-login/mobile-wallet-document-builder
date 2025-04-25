@@ -18,5 +18,8 @@ export interface MdlRequestBody {
   resident_address: string;
   resident_postal_code: string;
   resident_city: string;
+  "full-vehicleCategoryCode": string;
+  "full-issueDate": string;
+  "full-expiryDate": string;
   throwError: string;
 }
