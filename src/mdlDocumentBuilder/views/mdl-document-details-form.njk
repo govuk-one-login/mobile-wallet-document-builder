@@ -85,86 +85,124 @@
                 "spellcheck": false,
                 "value": "London"
             }) }}
-            {% call govukFieldset({
-                "legend": {
-                "text": "Full driving privileges",
-                "classes": "govuk-fieldset__legend--s",
-                "isPageHeading": false
-                }
-                }) %}
-                {{ govukSelect({
-                    "id": "full_driving_privileges",
-                    "namePrefix": "full",
-                    "label": {
-                        "text": "Choose vehicle category code"
-                    },
-                    "items": [
-                        {
-                            "name": "vehicleCategoryCode",
-                            "value": "A",
-                            "text": "A"
-                        },
-                        {
-                            "name": "vehicleCategoryCode",
-                            "value": "A1",
-                            "text": "A1"
-                        },
-                        {
-                            "name": "vehicleCategoryCode",
-                            "value": "B",
-                            "text": "B",
-                            "selected": true
-                        },
-                        {
-                            "name": "vehicleCategoryCode",
-                            "value": "BE",
-                            "text": "BE"
-                        },
-                        {
-                            "name": "vehicleCategoryCode",
-                            "value": "C",
-                            "text": "C"
-                        },
-                        {
-                            "name": "vehicleCategoryCode",
-                            "value": "C1",
-                            "text": "C1"
-                        },
-                        {
-                            "name": "vehicleCategoryCode",
-                            "value": "C1E",
-                            "text": "C1E"
-                        },
-                        {
-                            "name": "vehicleCategoryCode",
-                            "value": "CE",
-                            "text": "CE"
-                        },
-                        {
-                            "name": "vehicleCategoryCode",
-                            "value": "D",
-                            "text": "D"
-                        },
-                        {
-                            "name": "vehicleCategoryCode",
-                            "value": "D1",
-                            "text": "D1"
-                        },
-                        {
-                            "name": "vehicleCategoryCode",
-                            "value": "D1E",
-                            "text": "D1E"
-                        },
-                        {
-                            "name": "vehicleCategoryCode",
-                            "value": "DE",
-                            "text": "DE"
+            <p class="govuk-heading-s">Add your full driving privileges</p>
+            <div id="full_driving_privileges"></div>
+                <button id="add-button"
+                        class="govuk-button govuk-button--secondary"
+                        onclick="addDrivingPrivileges()"
+                        type="button"
+                >Add</button>
+            <script>
+            const MAX_ENTRIES = 5;
+            const addButton = document.querySelector('#add-button');
+            const drivingPrivilegesContainer = document.getElementById('full_driving_privileges');
+
+            function getDrivingPrivilegesCount() {
+            return drivingPrivilegesContainer.children.length;
+            }
+
+            function updateAddButtonState() {
+            addButton.disabled = getDrivingPrivilegesCount() >= MAX_ENTRIES;
+            }
+
+            function deleteDrivingPrivileges(elem) {
+                elem.parentNode.removeChild(elem);
+                updateAddButtonState();
+            }
+
+            function addDrivingPrivileges() {
+                const container = document.createElement('div');
+                container.innerHTML = `
+
+                    {% call govukFieldset({
+                        "legend": {
+
+                        "classes": "govuk-fieldset__legend--s",
+                        "isPageHeading": false
                         }
-                    ]
-                }) }}
+                        }) %}
+                        {{ govukSelect({
+                            "id": "full_driving_privileges",
+                            "namePrefix": "full",
+                            "label": {
+                                "text": "Choose vehicle category code"
+                            },
+                            "items": [
+                                {
+                                    "name": "vehicleCategoryCode",
+                                    "value": "A",
+                                    "text": "A"
+                                },
+                                {
+                                    "name": "vehicleCategoryCode",
+                                    "value": "A1",
+                                    "text": "A1"
+                                },
+                                {
+                                    "name": "vehicleCategoryCode",
+                                    "value": "B",
+                                    "text": "B",
+                                    "selected": true
+                                },
+                                {
+                                    "name": "vehicleCategoryCode",
+                                    "value": "BE",
+                                    "text": "BE"
+                                },
+                                {
+                                    "name": "vehicleCategoryCode",
+                                    "value": "C",
+                                    "text": "C"
+                                },
+                                {
+                                    "name": "vehicleCategoryCode",
+                                    "value": "C1",
+                                    "text": "C1"
+                                },
+                                {
+                                    "name": "vehicleCategoryCode",
+                                    "value": "C1E",
+                                    "text": "C1E"
+                                },
+                                {
+                                    "name": "vehicleCategoryCode",
+                                    "value": "CE",
+                                    "text": "CE"
+                                },
+                                {
+                                    "name": "vehicleCategoryCode",
+                                    "value": "D",
+                                    "text": "D"
+                                },
+                                {
+                                    "name": "vehicleCategoryCode",
+                                    "value": "D1",
+                                    "text": "D1"
+                                },
+                                {
+                                    "name": "vehicleCategoryCode",
+                                    "value": "D1E",
+                                    "text": "D1E"
+                                },
+                                {
+                                    "name": "vehicleCategoryCode",
+                                    "value": "DE",
+                                    "text": "DE"
+                                }
+                            ]
+                        }) }}
+                        <button class="govuk-button govuk-button--secondary"
+                                onclick="deleteDrivingPrivileges(this.parentNode.parentNode)"
+                                type="button"
+                        >Delete</button>
+                    {% endcall %}
+                `;
+                document.getElementById("full_driving_privileges").appendChild(container);
+                updateAddButtonState();
+            }
+            updateAddButtonState();
+            </script>
 
-
-            {% endcall %}
             {% if errors['issue_date'] %}
               {% set issueError = { text: errors['issue_date'] } %}
             {% endif %}
@@ -173,7 +211,7 @@
                 "namePrefix": "issue",
                 "fieldset": {
                     "legend": {
-                        "text": "Date of issue",
+                        "text": "Driving licence issue date",
                         "classes": "govuk-fieldset__legend--s"
                     }
                 },
@@ -207,7 +245,7 @@
                 "namePrefix": "expiry",
                 "fieldset": {
                     "legend": {
-                        "text": "Date of expiry",
+                        "text": "Driving licence expiry date",
                         "classes": "govuk-fieldset__legend--s"
                     }
                 },
