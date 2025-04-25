@@ -128,6 +128,7 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
   const birthDateStr = formatDate(birthDay, birthMonth, birthYear);
   const issueDateStr = formatDate(issueDay, issueMonth, issueYear);
   const expiryDateStr = formatDate(expiryDay, expiryMonth, expiryYear);
+  const vehicleCategoryCodeStr = body["full-vehicleCategoryCode"];
 
   const data: MdlData = {
     ...newObject,
@@ -135,6 +136,7 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
     birth_date: birthDateStr,
     issue_date: issueDateStr,
     expiry_date: expiryDateStr,
+    full_driving_privileges: vehicleCategoryCodeStr,
   };
   return data;
 }
