@@ -87,130 +87,130 @@
             }) }}
 
             {% call govukFieldset({
-            "legend": {
-            "text": "Add your full driving privileges",
-            "classes": "govuk-fieldset__legend--s",
-            "isPageHeading": false
-            }
+              legend: {
+                text: "Add your full driving privileges",
+                classes: "govuk-fieldset__legend--s",
+                isPageHeading: false
+              }
             }) %}
 
 
-            <script>
-            const MAX_ENTRIES = 5;
-            const addButton = document.querySelector('#add-button');
-            const drivingPrivilegesContainer = document.getElementById('drivingPrivileges');
+                <div id="drivingPrivileges"></div>
+                <button id="add-button"
+                     class="govuk-button govuk-button--secondary"
+                     onclick="addDrivingPrivileges()"
+                     type="button"
+                >Add</button>
+                <script>
+                const MAX_ENTRIES = 5;
+                const addButton = document.querySelector('#add-button');
+                const drivingPrivilegesContainer = document.getElementById('drivingPrivileges');
 
-            function getDrivingPrivilegesCount() {
-            return drivingPrivilegesContainer.children.length;
-            }
+                function getDrivingPrivilegesCount() {
+                return drivingPrivilegesContainer.children.length;
+                }
 
-            function updateAddButtonState() {
-            addButton.disabled = getDrivingPrivilegesCount() >= MAX_ENTRIES;
-            }
+                function updateAddButtonState() {
+                addButton.disabled = getDrivingPrivilegesCount() >= MAX_ENTRIES;
+                }
 
-            function deleteDrivingPrivileges(elem) {
-                elem.parentNode.removeChild(elem);
-                updateAddButtonState();
-            }
+                function deleteDrivingPrivileges(elem) {
+                 elem.parentNode.removeChild(elem);
+                 updateAddButtonState();
+                }
 
-            function addDrivingPrivileges() {
+                function addDrivingPrivileges() {
                 const container = document.createElement('div');
                 container.innerHTML = `
 
-                    {% call govukFieldset({
-                        "legend": {
+                {% call govukFieldset({
+                "legend": {
 
-                        "classes": "govuk-fieldset__legend--s",
-                        "isPageHeading": false
-                        }
-                        }) %}
-                        {{ govukSelect({
-                            "id": "full_driving_privileges",
-                            "namePrefix": "full",
-                            "label": {
-                                "text": "Choose vehicle category code"
-                            },
-                            "items": [
-                                {
-                                    "name": "vehicleCategoryCode",
-                                    "value": "A - Motorcycle",
-                                    "text": "A - Motorcycle"
-                                },
-                                {
-                                    "name": "vehicleCategoryCode",
-                                    "value": "A1 - Motorcycle",
-                                    "text": "A1 - Motorcycle"
-                                },
-                                {
-                                    "name": "vehicleCategoryCode",
-                                    "value": "B - Vehicle",
-                                    "text": "B - Vehicle",
-                                    "selected": true
-                                },
-                                {
-                                    "name": "vehicleCategoryCode",
-                                    "value": "BE - Vehicle with Trailer",
-                                    "text": "BE - Vehicle with Trailer"
-                                },
-                                {
-                                    "name": "vehicleCategoryCode",
-                                    "value": "C - Truck",
-                                    "text": "C - Truck"
-                                },
-                                {
-                                    "name": "vehicleCategoryCode",
-                                    "value": "C1 - Small Truck",
-                                    "text": "C1 - Small Truck"
-                                },
-                                {
-                                    "name": "vehicleCategoryCode",
-                                    "value": "C1E - Small Truck with Trailer",
-                                    "text": "C1E - Small Truck with Trailer"
-                                },
-                                {
-                                    "name": "vehicleCategoryCode",
-                                    "value": "CE - Truck with Trailer",
-                                    "text": "CE - Truck with Trailer"
-                                },
-                                {
-                                    "name": "vehicleCategoryCode",
-                                    "value": "D - Bus",
-                                    "text": "D - Bus"
-                                },
-                                {
-                                    "name": "vehicleCategoryCode",
-                                    "value": "D1 - Small Bus",
-                                    "text": "D1 - Small Bus"
-                                },
-                                {
-                                    "name": "vehicleCategoryCode",
-                                    "value": "D1E - Small Bus with Trailer",
-                                    "text": "D1E - Small Bus with Trailer"
-                                },
-                                {
-                                    "name": "vehicleCategoryCode",
-                                    "value": "DE - Bus with Trailer",
-                                    "text": "DE - Bus with Trailer"
-                                }
-                            ]
-                        }) }}
-                        <button class="govuk-button govuk-button--secondary"
-                                onclick="deleteDrivingPrivileges(this.parentNode.parentNode)"
-                                type="button"
-                        >Delete</button>
-                    {% endcall %}
+                "classes": "govuk-fieldset__legend--s",
+                "isPageHeading": false
+                }
+                }) %}
+                {{ govukSelect({
+                    "id": "vehicle_category_code",
+                    "namePrefix": "full",
+                    "label": {
+                    "text": "Choose vehicle category code"
+                    },
+                    "items": [
+                    {
+                    "name": "vehicleCategoryCode",
+                    "value": "A - Motorcycle",
+                    "text": "A - Motorcycle"
+                    },
+                    {
+                    "name": "vehicleCategoryCode",
+                    "value": "A1 - Motorcycle",
+                    "text": "A1 - Motorcycle"
+                    },
+                    {
+                    "name": "vehicleCategoryCode",
+                    "value": "B - Vehicle",
+                    "text": "B - Vehicle",
+                    "selected": true
+                    },
+                    {
+                    "name": "vehicleCategoryCode",
+                    "value": "BE - Vehicle with Trailer",
+                    "text": "BE - Vehicle with Trailer"
+                    },
+                    {
+                    "name": "vehicleCategoryCode",
+                    "value": "C - Truck",
+                    "text": "C - Truck"
+                    },
+                    {
+                    "name": "vehicleCategoryCode",
+                    "value": "C1 - Small Truck",
+                    "text": "C1 - Small Truck"
+                    },
+                    {
+                    "name": "vehicleCategoryCode",
+                    "value": "C1E - Small Truck with Trailer",
+                    "text": "C1E - Small Truck with Trailer"
+                    },
+                    {
+                    "name": "vehicleCategoryCode",
+                    "value": "CE - Truck with Trailer",
+                    "text": "CE - Truck with Trailer"
+                    },
+                    {
+                    "name": "vehicleCategoryCode",
+                    "value": "D - Bus",
+                    "text": "D - Bus"
+                    },
+                    {
+                    "name": "vehicleCategoryCode",
+                    "value": "D1 - Small Bus",
+                    "text": "D1 - Small Bus"
+                    },
+                    {
+                    "name": "vehicleCategoryCode",
+                    "value": "D1E - Small Bus with Trailer",
+                    "text": "D1E - Small Bus with Trailer"
+                    },
+                    {
+                    "name": "vehicleCategoryCode",
+                    "value": "DE - Bus with Trailer",
+                    "text": "DE - Bus with Trailer"
+                    }
+                ]
+                }) }}
+                <button class="govuk-button govuk-button--secondary"
+                     onclick="deleteDrivingPrivileges(this.parentNode.parentNode)"
+                     type="button"
+                >Delete</button>
+                {% endcall %}
                 `;
                 document.getElementById("drivingPrivileges").appendChild(container);
                 updateAddButtonState();
-            }
-            updateAddButtonState();
-            </script>
-            <div id="drivingPrivileges"></div>
-            <button id="add-button"
-                    class="govuk-button govuk-button--secondary"
-                    onclick="addDrivingPrivileges()"
-                    type="button"
-            >Add</button>
+                }
+                updateAddButtonState();
+                </script>
 
             {% endcall %}
 
