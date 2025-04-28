@@ -85,17 +85,20 @@
                 "spellcheck": false,
                 "value": "London"
             }) }}
-            <p class="govuk-heading-s">Add your full driving privileges</p>
-            <div id="full_driving_privileges"></div>
-                <button id="add-button"
-                        class="govuk-button govuk-button--secondary"
-                        onclick="addDrivingPrivileges()"
-                        type="button"
-                >Add</button>
+
+            {% call govukFieldset({
+            "legend": {
+            "text": "Add your full driving privileges",
+            "classes": "govuk-fieldset__legend--s",
+            "isPageHeading": false
+            }
+            }) %}
+
+
             <script>
             const MAX_ENTRIES = 5;
             const addButton = document.querySelector('#add-button');
-            const drivingPrivilegesContainer = document.getElementById('full_driving_privileges');
+            const drivingPrivilegesContainer = document.getElementById('drivingPrivileges');
 
             function getDrivingPrivilegesCount() {
             return drivingPrivilegesContainer.children.length;
@@ -130,64 +133,64 @@
                             "items": [
                                 {
                                     "name": "vehicleCategoryCode",
-                                    "value": "A",
-                                    "text": "A"
+                                    "value": "A - Motorcycle",
+                                    "text": "A - Motorcycle"
                                 },
                                 {
                                     "name": "vehicleCategoryCode",
-                                    "value": "A1",
-                                    "text": "A1"
+                                    "value": "A1 - Motorcycle",
+                                    "text": "A1 - Motorcycle"
                                 },
                                 {
                                     "name": "vehicleCategoryCode",
-                                    "value": "B",
-                                    "text": "B",
+                                    "value": "B - Vehicle",
+                                    "text": "B - Vehicle",
                                     "selected": true
                                 },
                                 {
                                     "name": "vehicleCategoryCode",
-                                    "value": "BE",
-                                    "text": "BE"
+                                    "value": "BE - Vehicle with Trailer",
+                                    "text": "BE - Vehicle with Trailer"
                                 },
                                 {
                                     "name": "vehicleCategoryCode",
-                                    "value": "C",
-                                    "text": "C"
+                                    "value": "C - Truck",
+                                    "text": "C - Truck"
                                 },
                                 {
                                     "name": "vehicleCategoryCode",
-                                    "value": "C1",
-                                    "text": "C1"
+                                    "value": "C1 - Small Truck",
+                                    "text": "C1 - Small Truck"
                                 },
                                 {
                                     "name": "vehicleCategoryCode",
-                                    "value": "C1E",
-                                    "text": "C1E"
+                                    "value": "C1E - Small Truck with Trailer",
+                                    "text": "C1E - Small Truck with Trailer"
                                 },
                                 {
                                     "name": "vehicleCategoryCode",
-                                    "value": "CE",
-                                    "text": "CE"
+                                    "value": "CE - Truck with Trailer",
+                                    "text": "CE - Truck with Trailer"
                                 },
                                 {
                                     "name": "vehicleCategoryCode",
-                                    "value": "D",
-                                    "text": "D"
+                                    "value": "D - Bus",
+                                    "text": "D - Bus"
                                 },
                                 {
                                     "name": "vehicleCategoryCode",
-                                    "value": "D1",
-                                    "text": "D1"
+                                    "value": "D1 - Small Bus",
+                                    "text": "D1 - Small Bus"
                                 },
                                 {
                                     "name": "vehicleCategoryCode",
-                                    "value": "D1E",
-                                    "text": "D1E"
+                                    "value": "D1E - Small Bus with Trailer",
+                                    "text": "D1E - Small Bus with Trailer"
                                 },
                                 {
                                     "name": "vehicleCategoryCode",
-                                    "value": "DE",
-                                    "text": "DE"
+                                    "value": "DE - Bus with Trailer",
+                                    "text": "DE - Bus with Trailer"
                                 }
                             ]
                         }) }}
@@ -197,11 +200,19 @@
                         >Delete</button>
                     {% endcall %}
                 `;
-                document.getElementById("full_driving_privileges").appendChild(container);
+                document.getElementById("drivingPrivileges").appendChild(container);
                 updateAddButtonState();
             }
             updateAddButtonState();
             </script>
+            <div id="drivingPrivileges"></div>
+            <button id="add-button"
+                    class="govuk-button govuk-button--secondary"
+                    onclick="addDrivingPrivileges()"
+                    type="button"
+            >Add</button>
+
+            {% endcall %}
 
             {% if errors['issue_date'] %}
               {% set issueError = { text: errors['issue_date'] } %}
