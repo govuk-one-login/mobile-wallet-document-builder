@@ -13,6 +13,8 @@ import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
 import {formatDate, isDateInPast, isValidDate} from "../utils/dateValidator";
+import {DrivingPrivilege} from "./types/DrivingPrivilege";
+
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
@@ -40,6 +42,8 @@ export async function mdlDocumentBuilderPostController(
   try {
     const body: MdlRequestBody = req.body;
     const errors: Record<string, string> = {};
+
+    logger.info(`Processing Driving Licence document with body ${JSON.stringify(body)}`);
 
     if (
       !isValidDate(
@@ -122,13 +126,30 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
     "expiry-day": expiryDay,
     "expiry-month": expiryMonth,
     "expiry-year": expiryYear,
+    "full-vehicleCategoryCode": vehicleCategoryCode,
+    "fullPrivilegeIssue-day": privilegeIssueDay,
+    "fullPrivilegeIssue-month": privilegeIssueMonth,
+    "fullPrivilegeIssue-year": privilegeIssueYear,
+    "fullPrivilegeExpiry-day": privilegeExpiryDay,
+    "fullPrivilegeExpiry-month": privilegeExpiryMonth,
+    "fullPrivilegeExpiry-year": privilegeExpiryYear,
     ...newObject
   } = body;
 
   const birthDateStr = formatDate(birthDay, birthMonth, birthYear);
   const issueDateStr = formatDate(issueDay, issueMonth, issueYear);
   const expiryDateStr = formatDate(expiryDay, expiryMonth, expiryYear);
-  const vehicleCategoryCodeStr = body["full-vehicleCategoryCode"];
+  const privilegeIssueDateStr = formatDate(privilegeIssueDay, privilegeIssueMonth, privilegeIssueYear);
+  const privilegeExpiryDateStr = formatDate(privilegeExpiryDay, privilegeExpiryMonth, privilegeExpiryYear);
+
+  const drivingPrivileges: DrivingPrivilege[] = [
+    {
+      vehicle_category_code: vehicleCategoryCode,
+      issue_date: privilegeIssueDateStr,
+      expiry_date: privilegeExpiryDateStr,
+    }
+  ];
+
 
   const data: MdlData = {
     ...newObject,
@@ -136,8 +157,9 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
     birth_date: birthDateStr,
     issue_date: issueDateStr,
     expiry_date: expiryDateStr,
-    full_driving_privileges: vehicleCategoryCodeStr,
+    full_driving_privileges: drivingPrivileges,
   };
 
   return data;
 }
+

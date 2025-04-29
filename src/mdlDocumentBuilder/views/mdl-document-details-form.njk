@@ -86,16 +86,11 @@
                 "value": "London"
             }) }}
 
-            {% call govukFieldset({
-              legend: {
-                text: "Add your full driving privileges",
-                classes: "govuk-fieldset__legend--s",
-                isPageHeading: false
-              }
-            }) %}
+
+            <p class="govuk-heading-s">Add your full driving privileges</p>
 
 
-                <div id="drivingPrivileges"></div>
+                <div id="drivingPrivilege"></div>
                 <button id="add-button"
                      class="govuk-button govuk-button--secondary"
                      onclick="addDrivingPrivileges()"
@@ -104,115 +99,183 @@
                 <script>
                 const MAX_ENTRIES = 5;
                 const addButton = document.querySelector('#add-button');
-                const drivingPrivilegesContainer = document.getElementById('drivingPrivileges');
+                const drivingPrivilegesContainer = document.getElementById('drivingPrivilege');
+                let entryCount = 0;
 
                 function getDrivingPrivilegesCount() {
-                return drivingPrivilegesContainer.children.length;
+                    return drivingPrivilegesContainer.children.length;
                 }
 
                 function updateAddButtonState() {
-                addButton.disabled = getDrivingPrivilegesCount() >= MAX_ENTRIES;
+                    addButton.disabled = getDrivingPrivilegesCount() >= MAX_ENTRIES;
                 }
 
                 function deleteDrivingPrivileges(elem) {
-                 elem.parentNode.removeChild(elem);
-                 updateAddButtonState();
+                    elem.parentNode.removeChild(elem);
+                    entryCount--;
+                    updateAddButtonState();
                 }
 
                 function addDrivingPrivileges() {
+                entryCount++;
                 const container = document.createElement('div');
                 container.innerHTML = `
 
-                {% call govukFieldset({
-                "legend": {
 
-                "classes": "govuk-fieldset__legend--s",
-                "isPageHeading": false
-                }
-                }) %}
                 {{ govukSelect({
-                    "id": "vehicle_category_code",
+                    "id": "vehicle_category_code_${entryCount}",
+                    "name": "vehicleCategoryCode[${entryCount - 1}]",
                     "namePrefix": "full",
                     "label": {
-                    "text": "Choose vehicle category code"
+                        "text": "Choose vehicle category code"
                     },
                     "items": [
                     {
-                    "name": "vehicleCategoryCode",
-                    "value": "A - Motorcycle",
-                    "text": "A - Motorcycle"
+                        "name": "vehicleCategoryCode",
+                        "value": "A - Motorcycle",
+                        "text": "A - Motorcycle"
                     },
                     {
-                    "name": "vehicleCategoryCode",
-                    "value": "A1 - Motorcycle",
-                    "text": "A1 - Motorcycle"
+                        "name": "vehicleCategoryCode",
+                        "value": "A1 - Motorcycle",
+                        "text": "A1 - Motorcycle"
                     },
                     {
-                    "name": "vehicleCategoryCode",
-                    "value": "B - Vehicle",
-                    "text": "B - Vehicle",
-                    "selected": true
+                        "name": "vehicleCategoryCode",
+                        "value": "B - Vehicle",
+                        "text": "B - Vehicle",
+                        "selected": true
                     },
                     {
-                    "name": "vehicleCategoryCode",
-                    "value": "BE - Vehicle with Trailer",
-                    "text": "BE - Vehicle with Trailer"
+                        "name": "vehicleCategoryCode",
+                        "value": "BE - Vehicle with Trailer",
+                        "text": "BE - Vehicle with Trailer"
                     },
                     {
-                    "name": "vehicleCategoryCode",
-                    "value": "C - Truck",
-                    "text": "C - Truck"
+                        "name": "vehicleCategoryCode",
+                        "value": "C - Truck",
+                        "text": "C - Truck"
                     },
                     {
-                    "name": "vehicleCategoryCode",
-                    "value": "C1 - Small Truck",
-                    "text": "C1 - Small Truck"
+                        "name": "vehicleCategoryCode",
+                        "value": "C1 - Small Truck",
+                        "text": "C1 - Small Truck"
                     },
                     {
-                    "name": "vehicleCategoryCode",
-                    "value": "C1E - Small Truck with Trailer",
-                    "text": "C1E - Small Truck with Trailer"
+                        "name": "vehicleCategoryCode",
+                        "value": "C1E - Small Truck with Trailer",
+                        "text": "C1E - Small Truck with Trailer"
                     },
                     {
-                    "name": "vehicleCategoryCode",
-                    "value": "CE - Truck with Trailer",
-                    "text": "CE - Truck with Trailer"
+                        "name": "vehicleCategoryCode",
+                        "value": "CE - Truck with Trailer",
+                        "text": "CE - Truck with Trailer"
                     },
                     {
-                    "name": "vehicleCategoryCode",
-                    "value": "D - Bus",
-                    "text": "D - Bus"
+                        "name": "vehicleCategoryCode",
+                        "value": "D - Bus",
+                        "text": "D - Bus"
                     },
                     {
-                    "name": "vehicleCategoryCode",
-                    "value": "D1 - Small Bus",
-                    "text": "D1 - Small Bus"
+                        "name": "vehicleCategoryCode",
+                        "value": "D1 - Small Bus",
+                        "text": "D1 - Small Bus"
                     },
                     {
-                    "name": "vehicleCategoryCode",
-                    "value": "D1E - Small Bus with Trailer",
-                    "text": "D1E - Small Bus with Trailer"
+                        "name": "vehicleCategoryCode",
+                        "value": "D1E - Small Bus with Trailer",
+                        "text": "D1E - Small Bus with Trailer"
                     },
                     {
-                    "name": "vehicleCategoryCode",
-                    "value": "DE - Bus with Trailer",
-                    "text": "DE - Bus with Trailer"
+                        "name": "vehicleCategoryCode",
+                        "value": "DE - Bus with Trailer",
+                        "text": "DE - Bus with Trailer"
                     }
                 ]
                 }) }}
+
+                {% if errors['issue_date'] %}
+                  {% set issueError = { text: errors['issue_date'] } %}
+                {% endif %}
+                {{ govukDateInput({
+                    "id": "issue_date",
+                    "namePrefix": "fullPrivilegeIssue",
+                    "fieldset": {
+                        "legend": {
+                            "text": "Date of issue",
+                            "classes": "govuk-fieldset__legend--s"
+                        }
+                    },
+                    hint: {
+                        text: "For example, 27 3 2007"
+                    },
+                    "errorMessage": issueError,
+                    "items": [
+                        {
+                            "classes": "govuk-input--width-2",
+                            "name": "Day",
+                            "value": "08"
+                        },
+                        {
+                            "classes": "govuk-input--width-2",
+                            "name": "Month",
+                            "value": "04"
+                        },
+                        {
+                            "classes": "govuk-input--width-3",
+                            "name": "Year",
+                            "value": "2019"
+                        }
+                    ]
+                }) }}
+                {% if errors['expiry_date'] %}
+                  {% set expiryError = { text: errors['expiry_date'] } %}
+                {% endif %}
+                {{ govukDateInput({
+                    "id": "expiry_date",
+                    "namePrefix": "fullPrivilegeExpiry",
+                    "fieldset": {
+                        "legend": {
+                            "text": "Date of expiry",
+                            "classes": "govuk-fieldset__legend--s"
+                        }
+                    },
+                    hint: {
+                        text: "For example, 27 3 2007"
+                    },
+                    "errorMessage": expiryError,
+                    "items": [
+                        {
+                            "classes": "govuk-input--width-2",
+                            "name": "Day",
+                            "value": "08"
+                        },
+                        {
+                            "classes": "govuk-input--width-2",
+                            "name": "Month",
+                            "value": "04"
+                        },
+                        {
+                            "classes": "govuk-input--width-3",
+                            "name": "Year",
+                            "value": "2029"
+                        }
+                    ]
+                }) }}
+
                 <button class="govuk-button govuk-button--secondary"
                      onclick="deleteDrivingPrivileges(this.parentNode.parentNode)"
                      type="button"
                 >Delete</button>
-                {% endcall %}
+
                 `;
-                document.getElementById("drivingPrivileges").appendChild(container);
+                document.getElementById("drivingPrivilege").appendChild(container);
                 updateAddButtonState();
                 }
                 updateAddButtonState();
                 </script>
 
-            {% endcall %}
+
 
             {% if errors['issue_date'] %}
               {% set issueError = { text: errors['issue_date'] } %}
@@ -385,7 +448,8 @@
                 "id": "portrait",
                 "name": "portrait",
                 "label": {
-                    "text": "Choose photo"
+                    "text": "Choose photo",
+                    "classes": "govuk-label--s"
                 },
                 "items": [
                     {

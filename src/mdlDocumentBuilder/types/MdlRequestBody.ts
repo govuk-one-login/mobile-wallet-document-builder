@@ -19,8 +19,12 @@ export interface MdlRequestBody {
   resident_postal_code: string;
   resident_city: string;
   "full-vehicleCategoryCode": string;
-  "full-issueDate": string;
-  "full-expiryDate": string;
+  "fullPrivilegeIssue-day": string;
+  "fullPrivilegeIssue-month": string;
+  "fullPrivilegeIssue-year": string;
+  "fullPrivilegeExpiry-day": string;
+  "fullPrivilegeExpiry-month": string;
+  "fullPrivilegeExpiry-year": string;
   throwError: string;
 }
 
