@@ -13,7 +13,7 @@ import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
 import {formatDate, isDateInPast, isValidDate} from "../utils/dateValidator";
-import {DrivingPrivilege} from "./types/DrivingPrivilege";
+import {buildDrivingPrivileges} from "../utils/drivingPrivilegeBuilder";
 
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
@@ -126,29 +126,29 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
     "expiry-day": expiryDay,
     "expiry-month": expiryMonth,
     "expiry-year": expiryYear,
-    "full-vehicleCategoryCode": vehicleCategoryCode,
-    "fullPrivilegeIssue-day": privilegeIssueDay,
-    "fullPrivilegeIssue-month": privilegeIssueMonth,
-    "fullPrivilegeIssue-year": privilegeIssueYear,
-    "fullPrivilegeExpiry-day": privilegeExpiryDay,
-    "fullPrivilegeExpiry-month": privilegeExpiryMonth,
-    "fullPrivilegeExpiry-year": privilegeExpiryYear,
+    "full-vehicleCategoryCode": vehicleCategoryCode = [],
+    "fullPrivilegeIssue-day": privilegeIssueDay = [],
+    "fullPrivilegeIssue-month": privilegeIssueMonth = [],
+    "fullPrivilegeIssue-year": privilegeIssueYear = [],
+    "fullPrivilegeExpiry-day": privilegeExpiryDay = [],
+    "fullPrivilegeExpiry-month": privilegeExpiryMonth = [],
+    "fullPrivilegeExpiry-year": privilegeExpiryYear = [],
     ...newObject
   } = body;
 
   const birthDateStr = formatDate(birthDay, birthMonth, birthYear);
   const issueDateStr = formatDate(issueDay, issueMonth, issueYear);
   const expiryDateStr = formatDate(expiryDay, expiryMonth, expiryYear);
-  const privilegeIssueDateStr = formatDate(privilegeIssueDay, privilegeIssueMonth, privilegeIssueYear);
-  const privilegeExpiryDateStr = formatDate(privilegeExpiryDay, privilegeExpiryMonth, privilegeExpiryYear);
 
-  const drivingPrivileges: DrivingPrivilege[] = [
-    {
-      vehicle_category_code: vehicleCategoryCode,
-      issue_date: privilegeIssueDateStr,
-      expiry_date: privilegeExpiryDateStr,
-    }
-  ];
+  const drivingPrivileges= buildDrivingPrivileges(
+      vehicleCategoryCode,
+      privilegeIssueDay,
+      privilegeIssueMonth,
+      privilegeIssueYear,
+      privilegeExpiryDay,
+      privilegeExpiryMonth,
+      privilegeExpiryYear,
+  )
 
 
   const data: MdlData = {

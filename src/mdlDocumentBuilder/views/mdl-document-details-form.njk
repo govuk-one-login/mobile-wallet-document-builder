@@ -86,8 +86,13 @@
                 "value": "London"
             }) }}
 
-
-            <p class="govuk-heading-s">Add your full driving privileges</p>
+            {% call govukFieldset({
+              legend: {
+                text: "Add your full driving privileges",
+                classes: "govuk-fieldset__legend--s",
+                isPageHeading: false
+              }
+            }) %}
 
 
                 <div id="drivingPrivilege"></div>
@@ -121,7 +126,12 @@
                 const container = document.createElement('div');
                 container.innerHTML = `
 
-
+                {% call govukFieldset({
+                "legend": {
+                    "classes": "govuk-fieldset__legend--s",
+                    "isPageHeading": false
+                }
+                }) %}
                 {{ govukSelect({
                     "id": "vehicle_category_code_${entryCount}",
                     "name": "vehicleCategoryCode[${entryCount - 1}]",
@@ -267,7 +277,7 @@
                      onclick="deleteDrivingPrivileges(this.parentNode.parentNode)"
                      type="button"
                 >Delete</button>
-
+                {% endcall %}
                 `;
                 document.getElementById("drivingPrivilege").appendChild(container);
                 updateAddButtonState();
@@ -275,7 +285,7 @@
                 updateAddButtonState();
                 </script>
 
-
+            {% endcall %}
 
             {% if errors['issue_date'] %}
               {% set issueError = { text: errors['issue_date'] } %}
