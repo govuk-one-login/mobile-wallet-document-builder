@@ -14,6 +14,7 @@ import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
 import {formatDate, isDateInPast, isValidDate} from "../utils/dateValidator";
 import {buildDrivingPrivileges} from "../utils/drivingPrivilegeBuilder";
+import {DrivingPrivilege} from "./types/DrivingPrivilege";
 
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
@@ -23,7 +24,17 @@ export async function mdlDocumentBuilderGetController(
   res: Response,
 ): Promise<void> {
   try {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const year = today.getFullYear();
+
     res.render("mdl-document-details-form.njk", {
+      todayDate: {
+        day,
+        month,
+        year,
+      },
       authenticated: isAuthenticated(req),
     });
   } catch (error) {
@@ -126,13 +137,6 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
     "expiry-day": expiryDay,
     "expiry-month": expiryMonth,
     "expiry-year": expiryYear,
-    "full-vehicleCategoryCode": vehicleCategoryCode = [],
-    "fullPrivilegeIssue-day": privilegeIssueDay = [],
-    "fullPrivilegeIssue-month": privilegeIssueMonth = [],
-    "fullPrivilegeIssue-year": privilegeIssueYear = [],
-    "fullPrivilegeExpiry-day": privilegeExpiryDay = [],
-    "fullPrivilegeExpiry-month": privilegeExpiryMonth = [],
-    "fullPrivilegeExpiry-year": privilegeExpiryYear = [],
     ...newObject
   } = body;
 
@@ -140,15 +144,13 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
   const issueDateStr = formatDate(issueDay, issueMonth, issueYear);
   const expiryDateStr = formatDate(expiryDay, expiryMonth, expiryYear);
 
-  const drivingPrivileges= buildDrivingPrivileges(
-      vehicleCategoryCode,
-      privilegeIssueDay,
-      privilegeIssueMonth,
-      privilegeIssueYear,
-      privilegeExpiryDay,
-      privilegeExpiryMonth,
-      privilegeExpiryYear,
-  )
+  let drivingPrivileges: DrivingPrivilege[] = [];
+
+  const numPrivileges = body["vehicleCategoryCode"]?.length || 0;
+
+  if (numPrivileges > 0) {
+    drivingPrivileges = buildDrivingPrivileges(body, numPrivileges);
+  }
 
 
   const data: MdlData = {

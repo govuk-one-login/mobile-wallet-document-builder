@@ -133,7 +133,7 @@
                 }
                 }) %}
                 {{ govukSelect({
-                    "id": "vehicle_category_code_${entryCount}",
+                    "id": "vehicle_category_code",
                     "name": "vehicleCategoryCode[${entryCount - 1}]",
                     "namePrefix": "full",
                     "label": {
@@ -223,18 +223,18 @@
                     "items": [
                         {
                             "classes": "govuk-input--width-2",
-                            "name": "Day",
-                            "value": "08"
+                            "name": "day",
+                            "value": todayDate.day
                         },
                         {
                             "classes": "govuk-input--width-2",
-                            "name": "Month",
-                            "value": "04"
+                            "name": "month",
+                            "value": todayDate.month
                         },
                         {
                             "classes": "govuk-input--width-3",
-                            "name": "Year",
-                            "value": "2019"
+                            "name": "year",
+                            "value": todayDate.year
                         }
                     ]
                 }) }}
@@ -257,18 +257,18 @@
                     "items": [
                         {
                             "classes": "govuk-input--width-2",
-                            "name": "Day",
-                            "value": "08"
+                            "name": "day"
+
                         },
                         {
                             "classes": "govuk-input--width-2",
-                            "name": "Month",
-                            "value": "04"
+                            "name": "month"
+
                         },
                         {
                             "classes": "govuk-input--width-3",
-                            "name": "Year",
-                            "value": "2029"
+                            "name": "year"
+
                         }
                     ]
                 }) }}

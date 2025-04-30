@@ -1,42 +1,40 @@
 import { DrivingPrivilege } from "../mdlDocumentBuilder/types/DrivingPrivilege";
 import { formatDate } from "./dateValidator";
+import {MdlRequestBody} from "../mdlDocumentBuilder/types/MdlRequestBody";
 
-export function buildDrivingPrivileges(
-    vehicleCategoryCode: string[],
-    privilegeIssueDay: string[],
-    privilegeIssueMonth: string[],
-    privilegeIssueYear: string[],
-    privilegeExpiryDay: string[],
-    privilegeExpiryMonth: string[],
-    privilegeExpiryYear: string[]
-): DrivingPrivilege[] {
-    const length = vehicleCategoryCode.length;
-    if (
-        !privilegeIssueDay ||
-        !privilegeIssueMonth ||
-        !privilegeIssueYear ||
-        !privilegeExpiryDay ||
-        !privilegeExpiryMonth ||
-        !privilegeExpiryYear
-    ) {
-        throw new Error("One or more input arrays are undefined");
-    }
-
+export function buildDrivingPrivileges(body: MdlRequestBody, numPrivileges: number): DrivingPrivilege[] {
     const drivingPrivileges: DrivingPrivilege[] = [];
 
-    for(let i = 0; i < length; i++) {
-        const issueDate = privilegeIssueDay[i] && privilegeIssueMonth[i] && privilegeIssueYear[i]
-            ?formatDate(privilegeIssueDay[i], privilegeIssueMonth[i], privilegeIssueYear[i])
-            : undefined;
-        const expiryDate = privilegeExpiryDay[i] && privilegeExpiryMonth[i] && privilegeExpiryYear[i]
-            ?formatDate(privilegeExpiryDay[i], privilegeExpiryMonth[i], privilegeExpiryYear[i])
-            : undefined;
-        drivingPrivileges.push({
-            vehicle_category_code: vehicleCategoryCode[i],
-            issue_date: issueDate,
-            expiry_date: expiryDate
-        });
+    console.log("vehicleCategoryCode:", body["vehicleCategoryCode"][0]);
+    console.log("fullPrivilegeIssue-day:", body["fullPrivilegeIssue-day"]);
+    console.log("fullPrivilegeIssue-month:", body["fullPrivilegeIssue-month"]);
+    console.log("fullPrivilegeIssue-year:", body["fullPrivilegeIssue-year"]);
+    console.log("fullPrivilegeExpiry-day:", body["fullPrivilegeExpiry-day"]);
+    console.log("fullPrivilegeExpiry-month:", body["fullPrivilegeExpiry-month"]);
+    console.log("fullPrivilegeExpiry-year:", body["fullPrivilegeExpiry-year"]);
+
+    for (let i = 0; i < numPrivileges; i++) {
+        const issueDate = formatDate(
+            body["fullPrivilegeIssue-day"]?.[i], // Use optional chaining
+            body["fullPrivilegeIssue-month"]?.[i],
+            body["fullPrivilegeIssue-year"]?.[i]
+        );
+
+        const expiryDate = formatDate(
+            body["fullPrivilegeExpiry-day"]?.[i],
+            body["fullPrivilegeExpiry-month"]?.[i],
+            body["fullPrivilegeExpiry-year"]?.[i]
+        );
+
+        const privilege: DrivingPrivilege = {
+            vehicle_category_code: body["vehicleCategoryCode"][i],
+            ...(issueDate ? { issue_date: issueDate } : {}),
+            ...(expiryDate ? { expiry_date: expiryDate } : {}),
+        };
+
+        drivingPrivileges.push(privilege);
     }
+
     return drivingPrivileges;
 }
 
