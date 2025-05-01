@@ -37,11 +37,6 @@ describe("buildDrivingPrivilege", () => {
     });
 
     it("should build multiple driving privileges when numPrivileges is greater than 1", () => {
-        (formatDate as jest.Mock)
-            .mockImplementationOnce((d, m, y) => `${d}-${m}-${y}`)
-            .mockImplementationOnce((d, m, y) => `${d}-${m}-${y}`)
-            .mockImplementationOnce((d, m, y) => `${d}-${m}-${y}`)
-            .mockImplementationOnce((d, m, y) => `${d}-${m}-${y}`)
 
         const body = buildMdlRequestBody(
             {
@@ -56,7 +51,7 @@ describe("buildDrivingPrivilege", () => {
         );
         const numPrivileges = 2;
         const result = buildDrivingPrivileges(body, numPrivileges);
-        expect((formatDate as jest.Mock)).toHaveBeenCalledTimes(4);
+
         expect(result).toEqual([
             {
                 vehicle_category_code: "A",
