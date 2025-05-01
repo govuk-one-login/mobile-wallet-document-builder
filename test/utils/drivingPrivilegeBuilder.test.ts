@@ -89,5 +89,26 @@ describe("buildDrivingPrivilege", () => {
                 expiry_date: "",
             },
         ]);
-    })
+    });
+
+    it("should return an empty array if no privilege added", () => {
+        const body = buildMdlRequestBody(
+            {
+                vehicleCategoryCode: [""],
+                "fullPrivilegeIssue-day": [""],
+                "fullPrivilegeIssue-month": [""],
+                "fullPrivilegeIssue-year": [""],
+                "fullPrivilegeExpiry-day": [""],
+                "fullPrivilegeExpiry-month": [""],
+                "fullPrivilegeExpiry-year": [""]
+            }
+        );
+
+        const numPrivileges = 0;
+        const result = buildDrivingPrivileges(body, numPrivileges);
+
+        expect(result).toEqual([]);
+    });
+
+    
 })
