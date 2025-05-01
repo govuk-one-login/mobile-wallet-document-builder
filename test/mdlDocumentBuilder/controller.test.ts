@@ -33,6 +33,9 @@ describe("controller.ts", () => {
 
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
         authenticated: false,
+        todayDate: {
+          "day": "02", "month": "05", "year": 2025,
+        },
       });
     });
 
@@ -44,6 +47,9 @@ describe("controller.ts", () => {
 
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
         authenticated: true,
+        todayDate: {
+          "day": "02", "month": "05", "year": 2025,
+        },
       });
     });
 
@@ -82,6 +88,13 @@ describe("controller.ts", () => {
       resident_address: "Flat 11, Blashford, Adelaide Road",
       resident_postal_code: "NW3 3RX",
       resident_city: "London",
+      vehicleCategoryCode: ["A", "B"],
+      "fullPrivilegeIssue-day": ["01", "01"],
+      "fullPrivilegeIssue-month": ["05", "05"],
+      "fullPrivilegeIssue-year": ["2025", "2025"],
+      "fullPrivilegeExpiry-day": ["", "10"],
+      "fullPrivilegeExpiry-month": ["", "08"],
+      "fullPrivilegeExpiry-year": ["", "2030"],
       throwError: "",
     };
 
@@ -165,6 +178,18 @@ describe("controller.ts", () => {
             resident_address: "Flat 11, Blashford, Adelaide Road",
             resident_postal_code: "NW3 3RX",
             resident_city: "London",
+            full_driving_privileges: [
+              {
+                vehicle_category_code: "A",
+                issue_date: "01-05-2025",
+                expiry_date: "",
+              },
+              {
+                vehicle_category_code: "B",
+                issue_date: "01-05-2025",
+                expiry_date: "10-08-2030",
+              },
+            ],
           },
           vcType: "mobileDrivingLicence",
         });

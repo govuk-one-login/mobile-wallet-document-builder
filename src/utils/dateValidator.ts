@@ -22,7 +22,6 @@ export function isDateInPast(dayStr: string, monthStr: string, yearStr: string) 
 }
 
 export function formatDate(day: string, month: string, year: string) {
-  // if (day==="" && month==="" && year==="") return "";
   const paddedDay = day.padStart(2, "0");
   const paddedMonth = month.padStart(2, "0");
   return `${paddedDay}-${paddedMonth}-${year}`;

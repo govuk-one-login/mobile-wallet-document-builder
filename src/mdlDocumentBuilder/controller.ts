@@ -54,8 +54,6 @@ export async function mdlDocumentBuilderPostController(
     const body: MdlRequestBody = req.body;
     const errors: Record<string, string> = {};
 
-    logger.info(`Processing Driving Licence document with body ${JSON.stringify(body)}`);
-
     if (
       !isValidDate(
         body["birth-day"],
