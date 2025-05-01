@@ -137,6 +137,13 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
     "expiry-day": expiryDay,
     "expiry-month": expiryMonth,
     "expiry-year": expiryYear,
+    vehicleCategoryCode: _vehicleCategoryCode,
+    "fullPrivilegeIssue-day": _fullPrivilegeIssueDay,
+    "fullPrivilegeIssue-month": _fullPrivilegeIssueMonth,
+    "fullPrivilegeIssue-year": _fullPrivilegeIssueYear,
+    "fullPrivilegeExpiry-day": _fullPrivilegeExpiryDay,
+     "fullPrivilegeExpiry-month": _fullPrivilegeExpiryMonth,
+     "fullPrivilegeExpiry-year": _fullPrivilegeExpiryYear,
     ...newObject
   } = body;
 
