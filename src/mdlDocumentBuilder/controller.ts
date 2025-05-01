@@ -159,7 +159,6 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
     drivingPrivileges = buildDrivingPrivileges(body, numPrivileges);
   }
 
-
   const data: MdlData = {
     ...newObject,
     portrait: s3Uri,
