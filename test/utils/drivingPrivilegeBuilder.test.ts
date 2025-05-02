@@ -38,7 +38,6 @@ describe("buildDrivingPrivilege", () => {
                 "fullPrivilegeExpiry-year": ["", "2030"]
             }
         );
-
         const numPrivileges = 2;
         const result = buildDrivingPrivileges(body, numPrivileges);
 
@@ -110,5 +109,5 @@ describe("buildDrivingPrivilege", () => {
         expect(result).toEqual([]);
     });
 
-    
+
 })

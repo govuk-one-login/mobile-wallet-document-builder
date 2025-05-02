@@ -140,8 +140,8 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
     "fullPrivilegeIssue-month": _fullPrivilegeIssueMonth,
     "fullPrivilegeIssue-year": _fullPrivilegeIssueYear,
     "fullPrivilegeExpiry-day": _fullPrivilegeExpiryDay,
-     "fullPrivilegeExpiry-month": _fullPrivilegeExpiryMonth,
-     "fullPrivilegeExpiry-year": _fullPrivilegeExpiryYear,
+    "fullPrivilegeExpiry-month": _fullPrivilegeExpiryMonth,
+    "fullPrivilegeExpiry-year": _fullPrivilegeExpiryYear,
     ...newObject
   } = body;
 
