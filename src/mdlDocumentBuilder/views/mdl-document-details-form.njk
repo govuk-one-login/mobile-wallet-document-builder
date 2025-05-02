@@ -85,7 +85,6 @@
                 "spellcheck": false,
                 "value": "London"
             }) }}
-
             {% call govukFieldset({
               legend: {
                 text: "Add your full driving privileges",
@@ -93,8 +92,6 @@
                 isPageHeading: false
               }
             }) %}
-
-
                 <div id="drivingPrivilege"></div>
                 <button id="add-button"
                      class="govuk-button govuk-button--secondary"
@@ -203,7 +200,6 @@
                     }
                 ]
                 }) }}
-
                 {% if errors['issue_date'] %}
                   {% set issueError = { text: errors['issue_date'] } %}
                 {% endif %}
@@ -258,17 +254,14 @@
                         {
                             "classes": "govuk-input--width-2",
                             "name": "day"
-
                         },
                         {
                             "classes": "govuk-input--width-2",
                             "name": "month"
-
                         },
                         {
                             "classes": "govuk-input--width-3",
                             "name": "year"
-
                         }
                     ]
                 }) }}
@@ -284,9 +277,7 @@
                 }
                 updateAddButtonState();
                 </script>
-
             {% endcall %}
-
             {% if errors['issue_date'] %}
               {% set issueError = { text: errors['issue_date'] } %}
             {% endif %}
