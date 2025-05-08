@@ -20,8 +20,29 @@ export async function veteranCardDocumentBuilderGetController(
   res: Response,
 ): Promise<void> {
   try {
+    const now = new Date();
+    const oneYearLater = new Date(now);
+    oneYearLater.setFullYear(now.getFullYear() + 1);
+
+    const oneMinuteLater = new Date(now);
+    oneMinuteLater.setMinutes(now.getMinutes() + 1);
+
+    const oneYearTtl = Math.floor((oneYearLater.getTime() - now.getTime()) / (1000 * 60));
+    const oneMinuteTtl = 1;
+
     res.render("veteran-card-document-details-form.njk", {
       authenticated: isAuthenticated(req),
+      credentialExpiryOptions: [
+        {
+          text: "1 Year",
+          value: oneYearTtl.toString(),
+          checked: true
+        },
+        {
+          text: "1 Minute",
+          value: oneMinuteTtl.toString()
+        }
+      ]
     });
   } catch (error) {
     logger.error(

@@ -10,5 +10,6 @@ export interface VeteranCardRequestBody {
   serviceNumber: string;
   serviceBranch: string;
   photo: string;
+  credentialTtlMinutes: string;
   throwError: string;
 }
