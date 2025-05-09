@@ -12,10 +12,9 @@ import { MdlData } from "./types/MdlData";
 import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
-import {formatDate, isDateInPast, isValidDate} from "../utils/dateValidator";
-import {buildDrivingPrivileges} from "../utils/drivingPrivilegeBuilder";
-import {DrivingPrivilege} from "./types/DrivingPrivilege";
-
+import { formatDate, isDateInPast, isValidDate } from "../utils/dateValidator";
+import { buildDrivingPrivileges } from "../utils/drivingPrivilegeBuilder";
+import { DrivingPrivilege } from "./types/DrivingPrivilege";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
@@ -149,13 +148,7 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
   const issueDateStr = formatDate(issueDay, issueMonth, issueYear);
   const expiryDateStr = formatDate(expiryDay, expiryMonth, expiryYear);
 
-  let drivingPrivileges: DrivingPrivilege[] = [];
-
-  const numPrivileges = body["vehicleCategoryCode"]?.length || 0;
-
-  if (numPrivileges > 0) {
-    drivingPrivileges = buildDrivingPrivileges(body, numPrivileges);
-  }
+  const drivingPrivileges: DrivingPrivilege[] = buildDrivingPrivileges(body);
 
   const data: MdlData = {
     ...newObject,
@@ -168,4 +161,3 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
 
   return data;
 }
-

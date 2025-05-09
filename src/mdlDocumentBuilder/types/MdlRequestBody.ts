@@ -18,7 +18,7 @@ export interface MdlRequestBody {
   resident_address: string;
   resident_postal_code: string;
   resident_city: string;
-  "vehicleCategoryCode": string[];
+  vehicleCategoryCode: string[];
   "fullPrivilegeIssue-day": string[];
   "fullPrivilegeIssue-month": string[];
   "fullPrivilegeIssue-year": string[];
@@ -27,4 +27,3 @@ export interface MdlRequestBody {
   "fullPrivilegeExpiry-year": string[];
   throwError: string;
 }
-

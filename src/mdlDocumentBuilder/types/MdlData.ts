@@ -1,4 +1,4 @@
-import {DrivingPrivilege} from "./DrivingPrivilege";
+import { DrivingPrivilege } from "./DrivingPrivilege";
 
 export interface MdlData {
   family_name: string;
