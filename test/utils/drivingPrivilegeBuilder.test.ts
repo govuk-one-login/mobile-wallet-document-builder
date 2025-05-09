@@ -74,17 +74,17 @@ describe("buildDrivingPrivilege", () => {
         expect(result).toEqual([
             {
                 vehicle_category_code: "A",
-                issue_date: "",
+                issue_date: undefined,
                 expiry_date: "",
             },
             {
                 vehicle_category_code: "B",
-                issue_date: "",
+                issue_date: undefined,
                 expiry_date: "",
             },
             {
                 vehicle_category_code: "C",
-                issue_date: "",
+                issue_date: undefined,
                 expiry_date: "",
             },
         ]);
