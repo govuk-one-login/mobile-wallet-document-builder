@@ -24,9 +24,6 @@ export async function veteranCardDocumentBuilderGetController(
     const oneYearLater = new Date(now);
     oneYearLater.setFullYear(now.getFullYear() + 1);
 
-    const oneMinuteLater = new Date(now);
-    oneMinuteLater.setMinutes(now.getMinutes() + 1);
-
     const oneYearTtl = Math.floor((oneYearLater.getTime() - now.getTime()) / (1000 * 60));
     const oneMinuteTtl = 1;
 
