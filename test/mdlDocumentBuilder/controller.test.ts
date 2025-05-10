@@ -34,7 +34,7 @@ describe("controller.ts", () => {
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
         authenticated: false,
         todayDate: {
-          day: "09",
+          day: "11",
           month: "05",
           year: 2025,
         },
@@ -50,7 +50,7 @@ describe("controller.ts", () => {
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
         authenticated: true,
         todayDate: {
-          day: "09",
+          day: "11",
           month: "05",
           year: 2025,
         },
