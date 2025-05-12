@@ -689,60 +689,6 @@ Resources:
               Bool:
                 "aws:SecureTransport": false
 
-  PhotosBucketAccessLogs:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
-    Properties:
-      BucketName: !Sub ${AWS::StackName}-${Environment}-photos-access-logs
-      VersioningConfiguration:
-        Status: Enabled
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: true
-        BlockPublicPolicy: true
-        IgnorePublicAcls: true
-        RestrictPublicBuckets: true
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256
-      OwnershipControls:
-        Rules:
-          - ObjectOwnership: ObjectWriter
-
-  PhotosBucketAccessLogsPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref PhotosBucketAccessLogs
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Sid: AllowSSLRequestsOnly
-            Effect: Deny
-            Principal:
-              AWS: "*"
-            Action: "*"
-            Resource: !Sub
-              - "arn:aws:s3:::${bucketName}/*"
-              - bucketName: !Ref PhotosBucketAccessLogs
-            Condition:
-              Bool:
-                "aws:SecureTransport": false
-          - Sid: AllowLogDelivery
-            Effect: Allow
-            Principal:
-              Service: logging.s3.amazonaws.com
-            Action:
-              - s3:PutObject
-            Resource: !Sub
-              - "arn:aws:s3:::${bucketName}/*"
-              - bucketName: !Ref PhotosBucketAccessLogs
-            Condition:
-              ArnLike:
-                aws:SourceArn: !GetAtt PhotosBucket.Arn
-              StringEquals:
-                aws:SourceAccount: !Ref AWS::AccountId
-
   # ALARMS
 
   DocBuilderLowContainerTaskCountAlarm:
