@@ -656,8 +656,10 @@ Resources:
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
       LoggingConfiguration:
-        DestinationBucketName: !Ref PhotosBucketAccessLogs
-        LogFilePrefix: !Sub ${AWS::StackName}-${Environment}-photos-access-logs
+        DestinationBucketName: !ImportValue devplatform-s3-access-logs-bucket-S3AccessLogsBucketName
+        TargetObjectKeyFormat:
+          PartitionedPrefix:
+            PartitionDateSource: EventTime
       Tags:
         - Key: Product
           Value: GOV.UK Sign In
@@ -689,6 +691,8 @@ Resources:
 
   PhotosBucketAccessLogs:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketName: !Sub ${AWS::StackName}-${Environment}-photos-access-logs
       VersioningConfiguration:
