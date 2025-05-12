@@ -1,3 +1,5 @@
+type StringOrArray = string | string[] | undefined;
+
 export interface MdlRequestBody {
   family_name: string;
   given_name: string;
@@ -18,12 +20,12 @@ export interface MdlRequestBody {
   resident_address: string;
   resident_postal_code: string;
   resident_city: string;
-  vehicleCategoryCode: string | string[] | undefined;
-  "fullPrivilegeIssue-day": string | string[] | undefined;
-  "fullPrivilegeIssue-month": string | string[] | undefined;
-  "fullPrivilegeIssue-year": string | string[] | undefined;
-  "fullPrivilegeExpiry-day": string | string[] | undefined;
-  "fullPrivilegeExpiry-month": string | string[] | undefined;
-  "fullPrivilegeExpiry-year": string | string[] | undefined;
+  vehicleCategoryCode: StringOrArray;
+  "fullPrivilegeIssue-day": StringOrArray;
+  "fullPrivilegeIssue-month": StringOrArray;
+  "fullPrivilegeIssue-year": StringOrArray;
+  "fullPrivilegeExpiry-day": StringOrArray;
+  "fullPrivilegeExpiry-month": StringOrArray;
+  "fullPrivilegeExpiry-year": StringOrArray;
   throwError: string;
 }
