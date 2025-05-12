@@ -22,7 +22,7 @@ export function buildDrivingPrivileges(
             ? null
             :`${issueDay}-${issueMonth}-${issueYear}`;
     const expiryDate =
-        expiryDay === null || expiryMonth === null || expiryYear || null
+        expiryDay === null || expiryMonth === null || expiryYear === null
             ? null
             : `${expiryDay}-${expiryMonth}-${expiryYear}`;
     const privilege: DrivingPrivilege = {
