@@ -8,9 +8,9 @@ describe("buildDrivingPrivilege", () => {
       "fullPrivilegeIssue-day": ["01"],
       "fullPrivilegeIssue-month": ["05"],
       "fullPrivilegeIssue-year": ["2025"],
-      "fullPrivilegeExpiry-day": undefined,
-      "fullPrivilegeExpiry-month": undefined,
-      "fullPrivilegeExpiry-year": undefined,
+      "fullPrivilegeExpiry-day": "",
+      "fullPrivilegeExpiry-month": "",
+      "fullPrivilegeExpiry-year": "",
     });
     const result = buildDrivingPrivileges(body);
 
