@@ -23,7 +23,7 @@ export async function mdlDocumentBuilderGetController(
   res: Response,
 ): Promise<void> {
   try {
-    const {defaultIssueDate, defaultExpiryDate} = getDefaultDates();
+    const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
     res.render("mdl-document-details-form.njk", {
       defaultIssueDate,
       defaultExpiryDate,
@@ -82,7 +82,7 @@ export async function mdlDocumentBuilderPostController(
     }
 
     if (Object.keys(errors).length > 0) {
-      const {defaultIssueDate, defaultExpiryDate} = getDefaultDates();
+      const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
       return res.render("mdl-document-details-form.njk", {
         defaultIssueDate,
         defaultExpiryDate,
@@ -164,7 +164,10 @@ interface DateParts {
   year: string;
 }
 
-function getDefaultDates(): {defaultIssueDate: DateParts, defaultExpiryDate: DateParts} {
+function getDefaultDates(): {
+  defaultIssueDate: DateParts;
+  defaultExpiryDate: DateParts;
+} {
   const issueDate = new Date();
   const expiryDate = new Date(issueDate);
   const expiryTtl = 10;
