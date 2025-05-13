@@ -23,11 +23,10 @@ export async function mdlDocumentBuilderGetController(
   res: Response,
 ): Promise<void> {
   try {
-    const defaultIssueDate = getDefaultIssueDate();
-
+    const {defaultIssueDate, defaultExpiryDate} = getDefaultDates();
     res.render("mdl-document-details-form.njk", {
       defaultIssueDate,
-      defaultExpiryDate: getDefaultExpiryDate(defaultIssueDate),
+      defaultExpiryDate,
       authenticated: isAuthenticated(req),
     });
   } catch (error) {
@@ -83,10 +82,10 @@ export async function mdlDocumentBuilderPostController(
     }
 
     if (Object.keys(errors).length > 0) {
-      const defaultIssueDate = getDefaultIssueDate();
+      const {defaultIssueDate, defaultExpiryDate} = getDefaultDates();
       return res.render("mdl-document-details-form.njk", {
         defaultIssueDate,
-        defaultExpiryDate: getDefaultExpiryDate(defaultIssueDate),
+        defaultExpiryDate,
         authenticated: isAuthenticated(req),
         errors,
       });
@@ -159,24 +158,29 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
   return data;
 }
 
-function getDefaultIssueDate() {
-  const today = new Date();
+interface DateParts {
+  day: string;
+  month: string;
+  year: string;
+}
+
+function getDefaultDates(): {defaultIssueDate: DateParts, defaultExpiryDate: DateParts} {
+  const issueDate = new Date();
+  const expiryDate = new Date(issueDate);
+  const expiryTtl = 10;
+  expiryDate.setFullYear(expiryDate.getFullYear() + expiryTtl);
+  expiryDate.setDate(expiryDate.getDate() - 1);
+
   return {
-    day: String(today.getDate()).padStart(2, "0"),
-    month: String(today.getMonth() + 1).padStart(2, "0"),
-    year: today.getFullYear().toString(),
+    defaultIssueDate: getDateParts(issueDate),
+    defaultExpiryDate: getDateParts(expiryDate),
   };
 }
 
-function getDefaultExpiryDate(defaultIssueDate: any) {
-  const expiryDate = new Date(
-    `${defaultIssueDate.year}-${defaultIssueDate.month}-${defaultIssueDate.day}`,
-  );
-  expiryDate.setFullYear(expiryDate.getFullYear() + 10);
-  expiryDate.setDate(expiryDate.getDate() - 1);
+function getDateParts(date: Date): DateParts {
   return {
-    day: String(expiryDate.getDate()).padStart(2, "0"),
-    month: String(expiryDate.getMonth() + 1).padStart(2, "0"),
-    year: expiryDate.getFullYear().toString(),
+    day: String(date.getDate()).padStart(2, "0"),
+    month: String(date.getMonth() + 1).padStart(2, "0"),
+    year: date.getFullYear().toString(),
   };
 }
