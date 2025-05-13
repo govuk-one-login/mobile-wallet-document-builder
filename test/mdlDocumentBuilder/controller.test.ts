@@ -28,12 +28,10 @@ describe("controller.ts", () => {
     beforeEach(() => {
       jest.useFakeTimers();
       jest.setSystemTime(new Date("2025-05-02T00:00:00Z"));
-    });
-
-    afterEach(() => {
+    })
+    afterAll(() => {
       jest.useRealTimers();
-    });
-
+    })
     it("should render the form for inputting the mDL document details when the user is not authenticated (no id_token in cookies)", async () => {
       const req = getMockReq({ cookies: {} });
       const { res } = getMockRes();
