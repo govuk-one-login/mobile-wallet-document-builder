@@ -25,7 +25,7 @@ jest.mock("fs");
 
 describe("controller.ts", () => {
   describe("get", () => {
-     beforeEach(() => {
+    beforeEach(() => {
       jest.useFakeTimers();
       jest.setSystemTime(new Date("2025-05-02T00:00:00Z"));
     });

@@ -14,11 +14,13 @@ describe("buildDrivingPrivilege", () => {
     });
     const result = buildDrivingPrivileges(body);
 
-    expect(result).toEqual([{
-      vehicle_category_code: "C",
-      issue_date: "01-05-2025",
-      expiry_date: null,
-    }]);
+    expect(result).toEqual([
+      {
+        vehicle_category_code: "C",
+        issue_date: "01-05-2025",
+        expiry_date: null,
+      },
+    ]);
   });
 
   it("should build multiple driving privileges when numPrivileges is greater than 1", () => {

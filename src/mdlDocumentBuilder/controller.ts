@@ -1,17 +1,20 @@
-import {Request, Response} from "express";
-import {getDocumentsTableName, getPhotosBucketName,} from "../config/appConfig";
-import {CredentialType} from "../types/CredentialType";
-import {isAuthenticated} from "../utils/isAuthenticated";
-import {logger} from "../middleware/logger";
-import {randomUUID} from "node:crypto";
-import {uploadPhoto} from "../services/s3Service";
-import {MdlData} from "./types/MdlData";
-import {MdlRequestBody} from "./types/MdlRequestBody";
-import {saveDocument} from "../services/databaseService";
-import {getPhoto} from "../utils/photoUtils";
-import {formatDate, isDateInPast, isValidDate} from "../utils/dateValidator";
-import {buildDrivingPrivileges} from "../utils/drivingPrivilegeBuilder";
-import {DrivingPrivilege} from "./types/DrivingPrivilege";
+import { Request, Response } from "express";
+import {
+  getDocumentsTableName,
+  getPhotosBucketName,
+} from "../config/appConfig";
+import { CredentialType } from "../types/CredentialType";
+import { isAuthenticated } from "../utils/isAuthenticated";
+import { logger } from "../middleware/logger";
+import { randomUUID } from "node:crypto";
+import { uploadPhoto } from "../services/s3Service";
+import { MdlData } from "./types/MdlData";
+import { MdlRequestBody } from "./types/MdlRequestBody";
+import { saveDocument } from "../services/databaseService";
+import { getPhoto } from "../utils/photoUtils";
+import { formatDate, isDateInPast, isValidDate } from "../utils/dateValidator";
+import { buildDrivingPrivileges } from "../utils/drivingPrivilegeBuilder";
+import { DrivingPrivilege } from "./types/DrivingPrivilege";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
@@ -166,7 +169,9 @@ function getDefaultIssueDate() {
 }
 
 function getDefaultExpiryDate(defaultIssueDate: any) {
-  const expiryDate = new Date(`${defaultIssueDate.year}-${defaultIssueDate.month}-${defaultIssueDate.day}`)
+  const expiryDate = new Date(
+    `${defaultIssueDate.year}-${defaultIssueDate.month}-${defaultIssueDate.day}`,
+  );
   expiryDate.setFullYear(expiryDate.getFullYear() + 10);
   expiryDate.setDate(expiryDate.getDate() - 1);
   return {
