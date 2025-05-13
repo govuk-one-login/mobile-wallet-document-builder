@@ -1,20 +1,17 @@
-import { Request, Response } from "express";
-import {
-  getDocumentsTableName,
-  getPhotosBucketName,
-} from "../config/appConfig";
-import { CredentialType } from "../types/CredentialType";
-import { isAuthenticated } from "../utils/isAuthenticated";
-import { logger } from "../middleware/logger";
-import { randomUUID } from "node:crypto";
-import { uploadPhoto } from "../services/s3Service";
-import { MdlData } from "./types/MdlData";
-import { MdlRequestBody } from "./types/MdlRequestBody";
-import { saveDocument } from "../services/databaseService";
-import { getPhoto } from "../utils/photoUtils";
-import { formatDate, isDateInPast, isValidDate } from "../utils/dateValidator";
-import { buildDrivingPrivileges } from "../utils/drivingPrivilegeBuilder";
-import { DrivingPrivilege } from "./types/DrivingPrivilege";
+import {Request, Response} from "express";
+import {getDocumentsTableName, getPhotosBucketName,} from "../config/appConfig";
+import {CredentialType} from "../types/CredentialType";
+import {isAuthenticated} from "../utils/isAuthenticated";
+import {logger} from "../middleware/logger";
+import {randomUUID} from "node:crypto";
+import {uploadPhoto} from "../services/s3Service";
+import {MdlData} from "./types/MdlData";
+import {MdlRequestBody} from "./types/MdlRequestBody";
+import {saveDocument} from "../services/databaseService";
+import {getPhoto} from "../utils/photoUtils";
+import {formatDate, isDateInPast, isValidDate} from "../utils/dateValidator";
+import {buildDrivingPrivileges} from "../utils/drivingPrivilegeBuilder";
+import {DrivingPrivilege} from "./types/DrivingPrivilege";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
@@ -23,17 +20,11 @@ export async function mdlDocumentBuilderGetController(
   res: Response,
 ): Promise<void> {
   try {
-    const today = new Date();
-    const day = String(today.getDate()).padStart(2, "0");
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const year = today.getFullYear();
+    const defaultIssueDate = getDefaultIssueDate();
 
     res.render("mdl-document-details-form.njk", {
-      todayDate: {
-        day,
-        month,
-        year,
-      },
+      defaultIssueDate,
+      defaultExpiryDate: getDefaultExpiryDate(defaultIssueDate),
       authenticated: isAuthenticated(req),
     });
   } catch (error) {
@@ -89,9 +80,12 @@ export async function mdlDocumentBuilderPostController(
     }
 
     if (Object.keys(errors).length > 0) {
+      const defaultIssueDate = getDefaultIssueDate();
       return res.render("mdl-document-details-form.njk", {
+        defaultIssueDate,
+        defaultExpiryDate: getDefaultExpiryDate(defaultIssueDate),
+        authenticated: isAuthenticated(req),
         errors,
-        isAuthenticated: isAuthenticated(req),
       });
     }
 
@@ -160,4 +154,24 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
   };
 
   return data;
+}
+
+function getDefaultIssueDate() {
+  const today = new Date();
+  return {
+    day: String(today.getDate()).padStart(2, "0"),
+    month: String(today.getMonth() + 1).padStart(2, "0"),
+    year: today.getFullYear().toString(),
+  };
+}
+
+function getDefaultExpiryDate(defaultIssueDate: any) {
+  const expiryDate = new Date(`${defaultIssueDate.year}-${defaultIssueDate.month}-${defaultIssueDate.day}`)
+  expiryDate.setFullYear(expiryDate.getFullYear() + 10);
+  expiryDate.setDate(expiryDate.getDate() - 1);
+  return {
+    day: String(expiryDate.getDate()).padStart(2, "0"),
+    month: String(expiryDate.getMonth() + 1).padStart(2, "0"),
+    year: expiryDate.getFullYear().toString(),
+  };
 }
