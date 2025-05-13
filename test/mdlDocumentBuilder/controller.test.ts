@@ -7,7 +7,7 @@ import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
-import {buildMdlRequestBody} from "../utils/mdlRequestBodyBuilder";
+import { buildMdlRequestBody } from "../utils/mdlRequestBodyBuilder";
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
@@ -33,6 +33,11 @@ describe("controller.ts", () => {
 
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
         authenticated: false,
+        todayDate: {
+          day: "12",
+          month: "05",
+          year: 2025,
+        },
       });
     });
 
@@ -44,6 +49,11 @@ describe("controller.ts", () => {
 
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
         authenticated: true,
+        todayDate: {
+          day: "12",
+          month: "05",
+          year: 2025,
+        },
       });
     });
 
@@ -82,6 +92,13 @@ describe("controller.ts", () => {
       resident_address: "Flat 11, Blashford, Adelaide Road",
       resident_postal_code: "NW3 3RX",
       resident_city: "London",
+      vehicleCategoryCode: ["A", "B"],
+      "fullPrivilegeIssue-day": ["01", "01"],
+      "fullPrivilegeIssue-month": ["05", "05"],
+      "fullPrivilegeIssue-year": ["2025", "2025"],
+      "fullPrivilegeExpiry-day": ["", "10"],
+      "fullPrivilegeExpiry-month": ["", "08"],
+      "fullPrivilegeExpiry-year": ["", "2030"],
       throwError: "",
     };
 
@@ -165,6 +182,18 @@ describe("controller.ts", () => {
             resident_address: "Flat 11, Blashford, Adelaide Road",
             resident_postal_code: "NW3 3RX",
             resident_city: "London",
+            full_driving_privileges: [
+              {
+                vehicle_category_code: "A",
+                issue_date: "01-05-2025",
+                expiry_date: null,
+              },
+              {
+                vehicle_category_code: "B",
+                issue_date: "01-05-2025",
+                expiry_date: "10-08-2030",
+              },
+            ],
           },
           vcType: "mobileDrivingLicence",
         });
@@ -210,7 +239,7 @@ describe("controller.ts", () => {
           "birth-day": "",
           "birth-month": "08",
           "birth-year": "",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -234,7 +263,7 @@ describe("controller.ts", () => {
           "birth-day": "29",
           "birth-month": "02",
           "birth-year": "2019",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -258,7 +287,7 @@ describe("controller.ts", () => {
           "birth-day": "10",
           "birth-month": "08",
           "birth-year": "2026",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -282,7 +311,7 @@ describe("controller.ts", () => {
           "issue-day": "04",
           "issue-month": "",
           "issue-year": "",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -306,7 +335,7 @@ describe("controller.ts", () => {
           "issue-day": "31",
           "issue-month": "06",
           "issue-year": "2020",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -330,7 +359,7 @@ describe("controller.ts", () => {
           "issue-day": "02",
           "issue-month": "08",
           "issue-year": "2030",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -354,7 +383,7 @@ describe("controller.ts", () => {
           "expiry-day": "05",
           "expiry-month": "",
           "expiry-year": "",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -378,7 +407,7 @@ describe("controller.ts", () => {
           "expiry-day": "03",
           "expiry-month": "08",
           "expiry-year": "2019",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -402,7 +431,7 @@ describe("controller.ts", () => {
           "expiry-day": "45",
           "expiry-month": "14",
           "expiry-year": "pp!",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },

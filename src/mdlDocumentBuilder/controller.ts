@@ -12,7 +12,9 @@ import { MdlData } from "./types/MdlData";
 import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
-import {formatDate, isDateInPast, isValidDate} from "../utils/dateValidator";
+import { formatDate, isDateInPast, isValidDate } from "../utils/dateValidator";
+import { buildDrivingPrivileges } from "../utils/drivingPrivilegeBuilder";
+import { DrivingPrivilege } from "./types/DrivingPrivilege";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
@@ -21,7 +23,17 @@ export async function mdlDocumentBuilderGetController(
   res: Response,
 ): Promise<void> {
   try {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const year = today.getFullYear();
+
     res.render("mdl-document-details-form.njk", {
+      todayDate: {
+        day,
+        month,
+        year,
+      },
       authenticated: isAuthenticated(req),
     });
   } catch (error) {
@@ -122,6 +134,13 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
     "expiry-day": expiryDay,
     "expiry-month": expiryMonth,
     "expiry-year": expiryYear,
+    vehicleCategoryCode: _vehicleCategoryCode,
+    "fullPrivilegeIssue-day": _fullPrivilegeIssueDay,
+    "fullPrivilegeIssue-month": _fullPrivilegeIssueMonth,
+    "fullPrivilegeIssue-year": _fullPrivilegeIssueYear,
+    "fullPrivilegeExpiry-day": _fullPrivilegeExpiryDay,
+    "fullPrivilegeExpiry-month": _fullPrivilegeExpiryMonth,
+    "fullPrivilegeExpiry-year": _fullPrivilegeExpiryYear,
     ...newObject
   } = body;
 
@@ -129,12 +148,16 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
   const issueDateStr = formatDate(issueDay, issueMonth, issueYear);
   const expiryDateStr = formatDate(expiryDay, expiryMonth, expiryYear);
 
+  const drivingPrivileges: DrivingPrivilege[] = buildDrivingPrivileges(body);
+
   const data: MdlData = {
     ...newObject,
     portrait: s3Uri,
     birth_date: birthDateStr,
     issue_date: issueDateStr,
     expiry_date: expiryDateStr,
+    full_driving_privileges: drivingPrivileges,
   };
+
   return data;
 }

@@ -1,3 +1,5 @@
+import { DrivingPrivilege } from "./DrivingPrivilege";
+
 export interface MdlData {
   family_name: string;
   given_name: string;
@@ -12,4 +14,5 @@ export interface MdlData {
   resident_address: string;
   resident_postal_code: string;
   resident_city: string;
+  full_driving_privileges: DrivingPrivilege[];
 }
