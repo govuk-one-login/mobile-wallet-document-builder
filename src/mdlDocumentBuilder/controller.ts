@@ -170,8 +170,7 @@ function getDefaultDates(): {
 } {
   const issueDate = new Date();
   const expiryDate = new Date(issueDate);
-  const expiryTtl = 10;
-  expiryDate.setFullYear(expiryDate.getFullYear() + expiryTtl);
+  expiryDate.setFullYear(expiryDate.getFullYear() + 10); // Expires in 10 years
   expiryDate.setDate(expiryDate.getDate() - 1);
 
   return {
