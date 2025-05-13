@@ -10,5 +10,5 @@ export interface VeteranCardData {
   serviceNumber: string;
   serviceBranch: string;
   photo: string;
-  credentialTtlMinutes: string;
+  credentialTtlMinutes: number;
 }

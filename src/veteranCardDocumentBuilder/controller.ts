@@ -20,26 +20,8 @@ export async function veteranCardDocumentBuilderGetController(
   res: Response,
 ): Promise<void> {
   try {
-    const now = new Date();
-    const oneYearLater = new Date(now);
-    oneYearLater.setFullYear(now.getFullYear() + 1);
-
-    const oneYearTtl = Math.floor((oneYearLater.getTime() - now.getTime()) / (1000 * 60));
-    const oneMinuteTtl = 1;
-
     res.render("veteran-card-document-details-form.njk", {
       authenticated: isAuthenticated(req),
-      credentialExpiryOptions: [
-        {
-          text: "1 Year",
-          value: oneYearTtl.toString(),
-          checked: true
-        },
-        {
-          text: "1 Minute",
-          value: oneMinuteTtl.toString()
-        }
-      ]
     });
   } catch (error) {
     logger.error(
@@ -59,11 +41,19 @@ export async function veteranCardDocumentBuilderPostController(
     const bucketName = getPhotosBucketName();
     const documentId = randomUUID();
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
-
     const s3Uri = `s3://${bucketName}/${documentId}`;
     const body: VeteranCardRequestBody = req.body;
+    console.log(body);
 
-    const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
+    const now = new Date();
+    const oneYearLater = new Date(now);
+    oneYearLater.setFullYear(now.getFullYear() + 1);
+    const oneYearTtl = Math.floor((oneYearLater.getTime() - now.getTime()) / (1000 * 60));
+    const oneMinuteTtl = 1;
+    const credentialTtlMinutes = req.body.credentialTtl === "oneMinute" ? oneMinuteTtl : oneYearTtl;
+    console.log(credentialTtlMinutes);
+
+    const data = buildVeteranCardDataFromRequestBody(body, s3Uri, credentialTtlMinutes);
     await saveDocument(getDocumentsTableName(), {
       documentId,
       data,
@@ -83,11 +73,17 @@ export async function veteranCardDocumentBuilderPostController(
   }
 }
 
-function buildVeteranCardDataFromRequestBody(
-  body: VeteranCardRequestBody,
-  s3Uri: string,
-) {
-  const { throwError: _throwError, ...newObject } = body;
-  const data: VeteranCardData = { ...newObject, photo: s3Uri };
+function buildVeteranCardDataFromRequestBody(body: VeteranCardRequestBody, s3Uri: string, credentialTtlMinutes: number) {
+  const {
+    throwError: _throwError,
+    ...newObject
+  } = body;
+
+  const data: VeteranCardData = {
+    ...newObject,
+    credentialTtlMinutes: credentialTtlMinutes,
+    photo: s3Uri
+  };
+
   return data;
 }

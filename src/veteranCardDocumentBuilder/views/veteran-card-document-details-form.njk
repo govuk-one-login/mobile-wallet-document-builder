@@ -194,14 +194,24 @@
             }) }}
             {{ govukRadios({
               classes: "govuk-radios--small",
-              name: "credentialTtlMinutes",
+              name: "credentialTtl",
               fieldset: {
                 legend: {
                   text: "When should the credential expire?",
                   classes: "govuk-fieldset__legend--s"
                 }
               },
-              items: credentialExpiryOptions
+              items: [
+                 {
+                   value: "oneYear",
+                   text: "1 Year",
+                   checked: true
+                 },
+                 {
+                   value: "oneMinute",
+                   text: "1 Minute"
+                 }
+               ]
             }) }}
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
             {{ govukSelect({
