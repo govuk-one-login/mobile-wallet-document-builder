@@ -25,6 +25,13 @@ jest.mock("fs");
 
 describe("controller.ts", () => {
   describe("get", () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date("2025-05-02T00:00:00Z"));
+    })
+    afterAll(() => {
+      jest.useRealTimers();
+    })
     it("should render the form for inputting the mDL document details when the user is not authenticated (no id_token in cookies)", async () => {
       const req = getMockReq({ cookies: {} });
       const { res } = getMockRes();
@@ -34,7 +41,7 @@ describe("controller.ts", () => {
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
         authenticated: false,
         todayDate: {
-          day: "12",
+          day: "02",
           month: "05",
           year: 2025,
         },
@@ -50,7 +57,7 @@ describe("controller.ts", () => {
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
         authenticated: true,
         todayDate: {
-          day: "12",
+          day: "02",
           month: "05",
           year: 2025,
         },
