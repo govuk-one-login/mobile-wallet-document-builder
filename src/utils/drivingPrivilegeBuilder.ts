@@ -14,9 +14,8 @@ export function buildDrivingPrivileges(
   const expiryMonth = stringToArray(body["fullPrivilegeExpiry-month"]);
   const expiryYear = stringToArray(body["fullPrivilegeExpiry-year"]);
   const vehicleCategoryCode = stringToArray(body.vehicleCategoryCode);
-  const numberOfPrivileges = vehicleCategoryCode.length;
 
-  for (let i = 0; i < numberOfPrivileges; i++) {
+  for (let i = 0; i < vehicleCategoryCode.length; i++) {
     const issueDate =
       issueDay[i] === "" || issueMonth[i] === "" || issueYear[i] === ""
         ? null
