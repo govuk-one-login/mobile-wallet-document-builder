@@ -23,17 +23,10 @@ export async function mdlDocumentBuilderGetController(
   res: Response,
 ): Promise<void> {
   try {
-    const today = new Date();
-    const day = String(today.getDate()).padStart(2, "0");
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const year = today.getFullYear();
-
+    const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
     res.render("mdl-document-details-form.njk", {
-      todayDate: {
-        day,
-        month,
-        year,
-      },
+      defaultIssueDate,
+      defaultExpiryDate,
       authenticated: isAuthenticated(req),
     });
   } catch (error) {
@@ -89,9 +82,12 @@ export async function mdlDocumentBuilderPostController(
     }
 
     if (Object.keys(errors).length > 0) {
+      const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
       return res.render("mdl-document-details-form.njk", {
+        defaultIssueDate,
+        defaultExpiryDate,
+        authenticated: isAuthenticated(req),
         errors,
-        isAuthenticated: isAuthenticated(req),
       });
     }
 
@@ -160,4 +156,33 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
   };
 
   return data;
+}
+
+interface DateParts {
+  day: string;
+  month: string;
+  year: string;
+}
+
+function getDefaultDates(): {
+  defaultIssueDate: DateParts;
+  defaultExpiryDate: DateParts;
+} {
+  const issueDate = new Date();
+  const expiryDate = new Date(issueDate);
+  expiryDate.setFullYear(expiryDate.getFullYear() + 10); // Expires in 10 years
+  expiryDate.setDate(expiryDate.getDate() - 1);
+
+  return {
+    defaultIssueDate: getDateParts(issueDate),
+    defaultExpiryDate: getDateParts(expiryDate),
+  };
+}
+
+function getDateParts(date: Date): DateParts {
+  return {
+    day: String(date.getDate()).padStart(2, "0"),
+    month: String(date.getMonth() + 1).padStart(2, "0"),
+    year: date.getFullYear().toString(),
+  };
 }

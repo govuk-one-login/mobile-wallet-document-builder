@@ -24,14 +24,16 @@ jest.mock("../../src/services/s3Service", () => ({
 jest.mock("fs");
 
 describe("controller.ts", () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date("2025-05-02T00:00:00Z"));
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   describe("get", () => {
-    beforeEach(() => {
-      jest.useFakeTimers();
-      jest.setSystemTime(new Date("2025-05-02T00:00:00Z"));
-    })
-    afterAll(() => {
-      jest.useRealTimers();
-    })
     it("should render the form for inputting the mDL document details when the user is not authenticated (no id_token in cookies)", async () => {
       const req = getMockReq({ cookies: {} });
       const { res } = getMockRes();
@@ -40,10 +42,15 @@ describe("controller.ts", () => {
 
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
         authenticated: false,
-        todayDate: {
+        defaultIssueDate: {
           day: "02",
           month: "05",
-          year: 2025,
+          year: "2025",
+        },
+        defaultExpiryDate: {
+          day: "01",
+          month: "05",
+          year: "2035",
         },
       });
     });
@@ -56,10 +63,15 @@ describe("controller.ts", () => {
 
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
         authenticated: true,
-        todayDate: {
+        defaultIssueDate: {
           day: "02",
           month: "05",
-          year: 2025,
+          year: "2025",
+        },
+        defaultExpiryDate: {
+          day: "01",
+          month: "05",
+          year: "2035",
         },
       });
     });
@@ -222,6 +234,7 @@ describe("controller.ts", () => {
           );
         });
       });
+
       describe("when the error scenario 'ERROR:401' is selected", () => {
         it("should redirect to the credential offer page with 'mobileDrivingLicence' and 'ERROR:401' in the query params", async () => {
           const req = getMockReq({
@@ -240,6 +253,7 @@ describe("controller.ts", () => {
         });
       });
     });
+
     describe("Date validation", () => {
       it("should render an error when the birthdate has empty fields", async () => {
         const body = buildMdlRequestBody({
@@ -259,7 +273,17 @@ describe("controller.ts", () => {
             errors: expect.objectContaining({
               birth_date: "Enter a valid birth date",
             }),
-            isAuthenticated: true,
+            authenticated: true,
+            defaultIssueDate: {
+              day: "02",
+              month: "05",
+              year: "2025",
+            },
+            defaultExpiryDate: {
+              day: "01",
+              month: "05",
+              year: "2035",
+            },
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -283,7 +307,17 @@ describe("controller.ts", () => {
             errors: expect.objectContaining({
               birth_date: "Enter a valid birth date",
             }),
-            isAuthenticated: true,
+            authenticated: true,
+            defaultIssueDate: {
+              day: "02",
+              month: "05",
+              year: "2025",
+            },
+            defaultExpiryDate: {
+              day: "01",
+              month: "05",
+              year: "2035",
+            },
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -307,7 +341,17 @@ describe("controller.ts", () => {
             errors: expect.objectContaining({
               birth_date: "Enter a valid birth date",
             }),
-            isAuthenticated: true,
+            authenticated: true,
+            defaultIssueDate: {
+              day: "02",
+              month: "05",
+              year: "2025",
+            },
+            defaultExpiryDate: {
+              day: "01",
+              month: "05",
+              year: "2035",
+            },
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -331,7 +375,17 @@ describe("controller.ts", () => {
             errors: expect.objectContaining({
               issue_date: "Enter a valid issue date",
             }),
-            isAuthenticated: true,
+            authenticated: true,
+            defaultIssueDate: {
+              day: "02",
+              month: "05",
+              year: "2025",
+            },
+            defaultExpiryDate: {
+              day: "01",
+              month: "05",
+              year: "2035",
+            },
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -355,7 +409,17 @@ describe("controller.ts", () => {
             errors: expect.objectContaining({
               issue_date: "Enter a valid issue date",
             }),
-            isAuthenticated: true,
+            authenticated: true,
+            defaultIssueDate: {
+              day: "02",
+              month: "05",
+              year: "2025",
+            },
+            defaultExpiryDate: {
+              day: "01",
+              month: "05",
+              year: "2035",
+            },
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -379,7 +443,17 @@ describe("controller.ts", () => {
             errors: expect.objectContaining({
               issue_date: "Enter a valid issue date",
             }),
-            isAuthenticated: true,
+            authenticated: true,
+            defaultIssueDate: {
+              day: "02",
+              month: "05",
+              year: "2025",
+            },
+            defaultExpiryDate: {
+              day: "01",
+              month: "05",
+              year: "2035",
+            },
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -403,7 +477,17 @@ describe("controller.ts", () => {
             errors: expect.objectContaining({
               expiry_date: "Enter a valid expiry date",
             }),
-            isAuthenticated: true,
+            authenticated: true,
+            defaultIssueDate: {
+              day: "02",
+              month: "05",
+              year: "2025",
+            },
+            defaultExpiryDate: {
+              day: "01",
+              month: "05",
+              year: "2035",
+            },
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -427,7 +511,17 @@ describe("controller.ts", () => {
             errors: expect.objectContaining({
               expiry_date: "Enter a valid expiry date",
             }),
-            isAuthenticated: true,
+            authenticated: true,
+            defaultIssueDate: {
+              day: "02",
+              month: "05",
+              year: "2025",
+            },
+            defaultExpiryDate: {
+              day: "01",
+              month: "05",
+              year: "2035",
+            },
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -451,7 +545,17 @@ describe("controller.ts", () => {
             errors: expect.objectContaining({
               expiry_date: "Enter a valid expiry date",
             }),
-            isAuthenticated: true,
+            authenticated: true,
+            defaultIssueDate: {
+              day: "02",
+              month: "05",
+              year: "2025",
+            },
+            defaultExpiryDate: {
+              day: "01",
+              month: "05",
+              year: "2035",
+            },
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
