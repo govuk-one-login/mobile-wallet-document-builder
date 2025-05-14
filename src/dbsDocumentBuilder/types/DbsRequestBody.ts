@@ -18,5 +18,6 @@ export interface DbsRequestBody {
   postalCode: string;
   certificateNumber: string;
   applicationNumber: string;
+  credentialTtl: string;
   throwError: string;
 }

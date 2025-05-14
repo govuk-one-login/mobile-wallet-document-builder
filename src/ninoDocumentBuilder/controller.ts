@@ -7,6 +7,8 @@ import { isAuthenticated } from "../utils/isAuthenticated";
 import { getDocumentsTableName } from "../config/appConfig";
 import { NinoRequestBody } from "./types/NinoRequestBody";
 import { NinoData } from "./types/NinoData";
+import {getCredentialTtl} from "../utils/CredentialTtl";
+
 
 const CREDENTIAL_TYPE = CredentialType.socialSecurityCredential;
 
@@ -33,8 +35,9 @@ export async function ninoDocumentBuilderPostController(
     logger.info(`Processing NINO document with documentId ${documentId}`);
     const body: NinoRequestBody = req.body;
     const selectedError = body["throwError"];
+    const credentialTtlMinutes = getCredentialTtl(body.credentialTtl);
 
-    const data = buildNinoDataFromRequestBody(body);
+    const data = buildNinoDataFromRequestBody(body, credentialTtlMinutes);
     await saveDocument(getDocumentsTableName(), {
       documentId,
       data,
@@ -50,8 +53,8 @@ export async function ninoDocumentBuilderPostController(
   }
 }
 
-function buildNinoDataFromRequestBody(body: NinoRequestBody) {
+function buildNinoDataFromRequestBody(body: NinoRequestBody, credentialTtlMinutes: number) {
   const { throwError: _throwError, ...newObject } = body;
-  const data: NinoData = { ...newObject };
+  const data: NinoData = { ...newObject, credentialTtlMinutes: credentialTtlMinutes };
   return data;
 }

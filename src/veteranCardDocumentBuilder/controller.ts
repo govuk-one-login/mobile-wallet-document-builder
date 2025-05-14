@@ -1,17 +1,15 @@
-import { Request, Response } from "express";
-import { randomUUID } from "node:crypto";
-import { saveDocument } from "../services/databaseService";
-import { CredentialType } from "../types/CredentialType";
-import { logger } from "../middleware/logger";
-import { isAuthenticated } from "../utils/isAuthenticated";
-import { uploadPhoto } from "../services/s3Service";
-import {
-  getDocumentsTableName,
-  getPhotosBucketName,
-} from "../config/appConfig";
-import { VeteranCardData } from "./types/VeteranCardData";
-import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
-import { getPhoto } from "../utils/photoUtils";
+import {Request, Response} from "express";
+import {randomUUID} from "node:crypto";
+import {saveDocument} from "../services/databaseService";
+import {CredentialType} from "../types/CredentialType";
+import {logger} from "../middleware/logger";
+import {isAuthenticated} from "../utils/isAuthenticated";
+import {uploadPhoto} from "../services/s3Service";
+import {getDocumentsTableName, getPhotosBucketName,} from "../config/appConfig";
+import {VeteranCardData} from "./types/VeteranCardData";
+import {VeteranCardRequestBody} from "./types/VeteranCardRequestBody";
+import {getPhoto} from "../utils/photoUtils";
+import {getCredentialTtl} from "../utils/CredentialTtl";
 
 const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
@@ -43,15 +41,7 @@ export async function veteranCardDocumentBuilderPostController(
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
     const s3Uri = `s3://${bucketName}/${documentId}`;
     const body: VeteranCardRequestBody = req.body;
-    console.log(body);
-
-    const now = new Date();
-    const oneYearLater = new Date(now);
-    oneYearLater.setFullYear(now.getFullYear() + 1);
-    const oneYearTtl = Math.floor((oneYearLater.getTime() - now.getTime()) / (1000 * 60));
-    const oneMinuteTtl = 1;
-    const credentialTtlMinutes = req.body.credentialTtl === "oneMinute" ? oneMinuteTtl : oneYearTtl;
-    console.log(credentialTtlMinutes);
+    const credentialTtlMinutes = getCredentialTtl(body.credentialTtl);
 
     const data = buildVeteranCardDataFromRequestBody(body, s3Uri, credentialTtlMinutes);
     await saveDocument(getDocumentsTableName(), {
