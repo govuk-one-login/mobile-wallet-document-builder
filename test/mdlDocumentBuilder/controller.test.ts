@@ -202,7 +202,7 @@ describe("controller.ts", () => {
             resident_postal_code: "NW3 3RX",
             resident_city: "London",
             un_distinguishing_sign: "UK",
-            full_driving_privileges: [
+            driving_privileges: [
               {
                 vehicle_category_code: "A",
                 issue_date: "01-05-2025",
