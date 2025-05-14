@@ -5,18 +5,16 @@ import { formatDate } from "./dateValidator";
 export function buildDrivingPrivileges(
   body: MdlRequestBody,
 ): DrivingPrivilege[] {
-  if (!body.vehicleCategoryCode) {
-    return [];
-  }
   const drivingPrivileges: DrivingPrivilege[] = [];
+
   const issueDay = stringToArray(body["fullPrivilegeIssue-day"]);
   const issueMonth = stringToArray(body["fullPrivilegeIssue-month"]);
   const issueYear = stringToArray(body["fullPrivilegeIssue-year"]);
   const expiryDay = stringToArray(body["fullPrivilegeExpiry-day"]);
   const expiryMonth = stringToArray(body["fullPrivilegeExpiry-month"]);
   const expiryYear = stringToArray(body["fullPrivilegeExpiry-year"]);
-  const numberOfPrivileges = stringToArray(body.vehicleCategoryCode).length;
   const vehicleCategoryCode = stringToArray(body.vehicleCategoryCode);
+  const numberOfPrivileges = vehicleCategoryCode.length;
 
   for (let i = 0; i < numberOfPrivileges; i++) {
     const issueDate =
