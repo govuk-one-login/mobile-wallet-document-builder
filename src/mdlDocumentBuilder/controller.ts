@@ -131,7 +131,7 @@ function buildMdlDataFromRequestBody(
   const expiryMonth = body["expiry-month"];
   const expiryYear = body["expiry-year"];
 
-  const mdlData: MdlData = {
+  const data: MdlData = {
     family_name: body.family_name,
     given_name: body.given_name,
     portrait: s3Uri,
@@ -149,7 +149,7 @@ function buildMdlDataFromRequestBody(
     un_distinguishing_sign: "UK",
   };
 
-  return mdlData;
+  return data;
 }
 
 interface DateParts {
