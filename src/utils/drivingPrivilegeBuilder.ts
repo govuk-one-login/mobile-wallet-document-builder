@@ -5,39 +5,35 @@ import { formatDate } from "./dateValidator";
 export function buildDrivingPrivileges(
   body: MdlRequestBody,
 ): DrivingPrivilege[] {
-  if (!body.vehicleCategoryCode) {
-    return [];
-  }
   const drivingPrivileges: DrivingPrivilege[] = [];
-  const issueDay = stringToArray(body["fullPrivilegeIssue-day"]);
-  const issueMonth = stringToArray(body["fullPrivilegeIssue-month"]);
-  const issueYear = stringToArray(body["fullPrivilegeIssue-year"]);
-  const expiryDay = stringToArray(body["fullPrivilegeExpiry-day"]);
-  const expiryMonth = stringToArray(body["fullPrivilegeExpiry-month"]);
-  const expiryYear = stringToArray(body["fullPrivilegeExpiry-year"]);
-  const numberOfPrivileges = stringToArray(body.vehicleCategoryCode).length;
-  const vehicleCategoryCode = stringToArray(body.vehicleCategoryCode);
 
-  for (let i = 0; i < numberOfPrivileges; i++) {
-    const issueDate =
-      issueDay[i] === "" || issueMonth[i] === "" || issueYear[i] === ""
-        ? null
-        : formatDate(issueDay[i], issueMonth[i], issueYear[i]);
-    const expiryDate =
-      expiryDay[i] === "" || expiryMonth[i] === "" || expiryYear[i] === ""
-        ? null
-        : formatDate(expiryDay[i], expiryMonth[i], expiryYear[i]);
+  const issueDay = toArray(body["fullPrivilegeIssue-day"]);
+  const issueMonth = toArray(body["fullPrivilegeIssue-month"]);
+  const issueYear = toArray(body["fullPrivilegeIssue-year"]);
+  const expiryDay = toArray(body["fullPrivilegeExpiry-day"]);
+  const expiryMonth = toArray(body["fullPrivilegeExpiry-month"]);
+  const expiryYear = toArray(body["fullPrivilegeExpiry-year"]);
 
+  const vehicleCategoryCode = toArray(body.vehicleCategoryCode);
+
+  for (let i = 0; i < vehicleCategoryCode.length; i++) {
     const privilege: DrivingPrivilege = {
       vehicle_category_code: vehicleCategoryCode[i],
-      issue_date: issueDate,
-      expiry_date: expiryDate,
     };
+
+    const issueDate = getDate(issueDay[i], issueMonth[i], issueYear[i]);
+    const expiryDate = getDate(expiryDay[i], expiryMonth[i], expiryYear[i]);
+
+    if (issueDate) privilege.issue_date = issueDate;
+    if (expiryDate) privilege.expiry_date = expiryDate;
+
     drivingPrivileges.push(privilege);
   }
-
   return drivingPrivileges;
 }
 
-const stringToArray = (input: string | string[]): string[] =>
+const toArray = (input: string | string[]): string[] =>
   Array.isArray(input) ? input : [input];
+
+const getDate = (day: string, month: string, year: string): string | null =>
+  day && month && year ? formatDate(day, month, year) : null;
