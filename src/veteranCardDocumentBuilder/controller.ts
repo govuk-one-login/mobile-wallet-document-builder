@@ -66,6 +66,7 @@ export async function veteranCardDocumentBuilderPostController(
 function buildVeteranCardDataFromRequestBody(body: VeteranCardRequestBody, s3Uri: string, credentialTtlMinutes: number) {
   const {
     throwError: _throwError,
+    credentialTtl: _credentialTtl,
     ...newObject
   } = body;
 
