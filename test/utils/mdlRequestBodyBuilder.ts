@@ -24,6 +24,13 @@ export function buildMdlRequestBody(
     resident_postal_code: "NW3 3RX",
     resident_city: "London",
     throwError: "",
+    vehicleCategoryCode: [],
+    "fullPrivilegeIssue-day": [],
+    "fullPrivilegeIssue-month": [],
+    "fullPrivilegeIssue-year": [],
+    "fullPrivilegeExpiry-day": [],
+    "fullPrivilegeExpiry-month": [],
+    "fullPrivilegeExpiry-year": [],
   };
   return { ...defaults, ...overrides };
 }
