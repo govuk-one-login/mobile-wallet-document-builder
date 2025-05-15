@@ -14,7 +14,6 @@ import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
 import { formatDate, isDateInPast, isValidDate } from "../utils/dateValidator";
 import { buildDrivingPrivileges } from "../utils/drivingPrivilegeBuilder";
-import { DrivingPrivilege } from "./types/DrivingPrivilege";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
@@ -118,41 +117,36 @@ export async function mdlDocumentBuilderPostController(
   }
 }
 
-function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
-  const {
-    throwError: _throwError,
-    "birth-day": birthDay,
-    "birth-month": birthMonth,
-    "birth-year": birthYear,
-    "issue-day": issueDay,
-    "issue-month": issueMonth,
-    "issue-year": issueYear,
-    "expiry-day": expiryDay,
-    "expiry-month": expiryMonth,
-    "expiry-year": expiryYear,
-    vehicleCategoryCode: _vehicleCategoryCode,
-    "fullPrivilegeIssue-day": _fullPrivilegeIssueDay,
-    "fullPrivilegeIssue-month": _fullPrivilegeIssueMonth,
-    "fullPrivilegeIssue-year": _fullPrivilegeIssueYear,
-    "fullPrivilegeExpiry-day": _fullPrivilegeExpiryDay,
-    "fullPrivilegeExpiry-month": _fullPrivilegeExpiryMonth,
-    "fullPrivilegeExpiry-year": _fullPrivilegeExpiryYear,
-    ...newObject
-  } = body;
-
-  const birthDateStr = formatDate(birthDay, birthMonth, birthYear);
-  const issueDateStr = formatDate(issueDay, issueMonth, issueYear);
-  const expiryDateStr = formatDate(expiryDay, expiryMonth, expiryYear);
-
-  const drivingPrivileges: DrivingPrivilege[] = buildDrivingPrivileges(body);
+function buildMdlDataFromRequestBody(
+  body: MdlRequestBody,
+  s3Uri: string,
+): MdlData {
+  const birthDay = body["birth-day"];
+  const birthMonth = body["birth-month"];
+  const birthYear = body["birth-year"];
+  const issueDay = body["issue-day"];
+  const issueMonth = body["issue-month"];
+  const issueYear = body["issue-year"];
+  const expiryDay = body["expiry-day"];
+  const expiryMonth = body["expiry-month"];
+  const expiryYear = body["expiry-year"];
 
   const data: MdlData = {
-    ...newObject,
+    family_name: body.family_name,
+    given_name: body.given_name,
     portrait: s3Uri,
-    birth_date: birthDateStr,
-    issue_date: issueDateStr,
-    expiry_date: expiryDateStr,
-    full_driving_privileges: drivingPrivileges,
+    birth_date: formatDate(birthDay, birthMonth, birthYear),
+    birth_place: body.birth_place,
+    issue_date: formatDate(issueDay, issueMonth, issueYear),
+    expiry_date: formatDate(expiryDay, expiryMonth, expiryYear),
+    issuing_authority: body.issuing_authority,
+    issuing_country: body.issuing_country,
+    document_number: body.document_number,
+    resident_address: body.resident_address,
+    resident_postal_code: body.resident_postal_code,
+    resident_city: body.resident_city,
+    full_driving_privileges: buildDrivingPrivileges(body),
+    un_distinguishing_sign: "UK",
   };
 
   return data;
