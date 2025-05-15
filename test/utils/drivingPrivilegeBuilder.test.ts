@@ -1,7 +1,7 @@
 import {
   buildDrivingPrivileges,
   getDate,
-  toArray,
+  stringToArray,
 } from "../../src/utils/drivingPrivilegeBuilder";
 import { buildMdlRequestBody } from "./mdlRequestBodyBuilder";
 
@@ -129,11 +129,11 @@ describe("buildDrivingPrivileges", () => {
 
 describe("toArray", () => {
   it("should convert string to array", () => {
-    expect(toArray("test")).toEqual(["test"]);
+    expect(stringToArray("test")).toEqual(["test"]);
   });
 
   it("should keep array as is", () => {
-    expect(toArray(["test1", "test2"])).toEqual(["test1", "test2"]);
+    expect(stringToArray(["test1", "test2"])).toEqual(["test1", "test2"]);
   });
 });
 

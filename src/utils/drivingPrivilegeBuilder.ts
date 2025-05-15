@@ -12,13 +12,13 @@ export function buildDrivingPrivileges(
 ): DrivingPrivilege[] {
   const drivingPrivileges: DrivingPrivilege[] = [];
 
-  const issueDays = toArray(body["fullPrivilegeIssue-day"]);
-  const issueMonths = toArray(body["fullPrivilegeIssue-month"]);
-  const issueYears = toArray(body["fullPrivilegeIssue-year"]);
-  const expiryDays = toArray(body["fullPrivilegeExpiry-day"]);
-  const expiryMonths = toArray(body["fullPrivilegeExpiry-month"]);
-  const expiryYears = toArray(body["fullPrivilegeExpiry-year"]);
-  const vehicleCategoryCodes = toArray(body.vehicleCategoryCode);
+  const issueDays = stringToArray(body["fullPrivilegeIssue-day"]);
+  const issueMonths = stringToArray(body["fullPrivilegeIssue-month"]);
+  const issueYears = stringToArray(body["fullPrivilegeIssue-year"]);
+  const expiryDays = stringToArray(body["fullPrivilegeExpiry-day"]);
+  const expiryMonths = stringToArray(body["fullPrivilegeExpiry-month"]);
+  const expiryYears = stringToArray(body["fullPrivilegeExpiry-year"]);
+  const vehicleCategoryCodes = stringToArray(body.vehicleCategoryCode);
 
   for (let i = 0; i < vehicleCategoryCodes.length; i++) {
     const drivingPrivilege: DrivingPrivilege = {
@@ -37,9 +37,9 @@ export function buildDrivingPrivileges(
 }
 
 /**
- * Converts a value to an array if it's not already one.
+ * Converts a string value to an array if it's not already one.
  */
-export function toArray(input: string | string[]): string[] {
+export function stringToArray(input: string | string[]): string[] {
   return Array.isArray(input) ? input : [input];
 }
 
