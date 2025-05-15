@@ -14,5 +14,5 @@ export interface MdlData {
   resident_address: string;
   resident_postal_code: string;
   resident_city: string;
-  full_driving_privileges: DrivingPrivilege[];
+  driving_privileges: DrivingPrivilege[];
 }

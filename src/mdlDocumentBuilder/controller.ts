@@ -152,7 +152,7 @@ function buildMdlDataFromRequestBody(body: MdlRequestBody, s3Uri: string) {
     birth_date: birthDateStr,
     issue_date: issueDateStr,
     expiry_date: expiryDateStr,
-    full_driving_privileges: drivingPrivileges,
+    driving_privileges: drivingPrivileges,
   };
 
   return data;
