@@ -7,7 +7,7 @@ import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
-import {buildMdlRequestBody} from "../utils/mdlRequestBodyBuilder";
+import { buildMdlRequestBody } from "../utils/mdlRequestBodyBuilder";
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
@@ -210,7 +210,7 @@ describe("controller.ts", () => {
           "birth-day": "",
           "birth-month": "08",
           "birth-year": "",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -234,7 +234,7 @@ describe("controller.ts", () => {
           "birth-day": "29",
           "birth-month": "02",
           "birth-year": "2019",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -258,7 +258,7 @@ describe("controller.ts", () => {
           "birth-day": "10",
           "birth-month": "08",
           "birth-year": "2026",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -282,7 +282,7 @@ describe("controller.ts", () => {
           "issue-day": "04",
           "issue-month": "",
           "issue-year": "",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -306,7 +306,7 @@ describe("controller.ts", () => {
           "issue-day": "31",
           "issue-month": "06",
           "issue-year": "2020",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -330,7 +330,7 @@ describe("controller.ts", () => {
           "issue-day": "02",
           "issue-month": "08",
           "issue-year": "2030",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -354,7 +354,7 @@ describe("controller.ts", () => {
           "expiry-day": "05",
           "expiry-month": "",
           "expiry-year": "",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -378,7 +378,7 @@ describe("controller.ts", () => {
           "expiry-day": "03",
           "expiry-month": "08",
           "expiry-year": "2019",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },
@@ -402,7 +402,7 @@ describe("controller.ts", () => {
           "expiry-day": "45",
           "expiry-month": "14",
           "expiry-year": "pp!",
-        })
+        });
         const req = getMockReq({
           body,
           cookies: { id_token: "id_token" },

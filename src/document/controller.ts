@@ -38,8 +38,6 @@ export async function documentController(
       (data as VeteranCardData).photo = photo;
     }
 
-    console.log(data);
-
     if (tableItem.vcType === CredentialType.mobileDrivingLicence) {
       const s3Uri = (data as MdlData).portrait;
 
@@ -58,12 +56,10 @@ export async function documentController(
 
     console.log(data);
     return;
-
   } catch (error) {
     logger.error(error, "An error happened processing request to get document");
     res.status(500).send();
     return;
-
   }
 }
 

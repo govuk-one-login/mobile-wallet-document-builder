@@ -7,7 +7,7 @@ import { isAuthenticated } from "../utils/isAuthenticated";
 import { getDocumentsTableName } from "../config/appConfig";
 import { DbsRequestBody } from "./types/DbsRequestBody";
 import { DbsData } from "./types/DbsData";
-import {getCredentialTtl} from "../utils/CredentialTtl";
+import { getCredentialTtl } from "../utils/CredentialTtl";
 
 const CREDENTIAL_TYPE = CredentialType.basicCheckCredential;
 
@@ -52,8 +52,15 @@ export async function dbsDocumentBuilderPostController(
   }
 }
 
-function buildDbsDataFromRequestBody(body: DbsRequestBody, credentialTtlMinutes: number) {
-  const { throwError: _throwError, credentialTtl: _credentialTtl, ...newObject } = body;
+function buildDbsDataFromRequestBody(
+  body: DbsRequestBody,
+  credentialTtlMinutes: number,
+) {
+  const {
+    throwError: _throwError,
+    credentialTtl: _credentialTtl,
+    ...newObject
+  } = body;
   const data: DbsData = {
     certificateType: "basic",
     outcome: "Result clear",
