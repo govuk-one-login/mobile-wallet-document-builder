@@ -59,6 +59,7 @@ describe("controller.ts", () => {
       postalCode: "NW3 3RX",
       certificateNumber: "009878863",
       applicationNumber: "E0023455534",
+      credentialTtl: "oneYear",
       throwError: "",
     };
 
@@ -112,6 +113,7 @@ describe("controller.ts", () => {
             certificateType: "basic",
             outcome: "Result clear",
             policeRecordsCheck: "Clear",
+            credentialTtlMinutes: 525600,
           },
           vcType: "BasicCheckCredential",
         });
