@@ -135,11 +135,6 @@ describe("toArray", () => {
   it("should keep array as is", () => {
     expect(toArray(["test1", "test2"])).toEqual(["test1", "test2"]);
   });
-
-  it("should handle undefined and null", () => {
-    expect(toArray(undefined)).toEqual([]);
-    expect(toArray(null)).toEqual([]);
-  });
 });
 
 describe("getDate", () => {

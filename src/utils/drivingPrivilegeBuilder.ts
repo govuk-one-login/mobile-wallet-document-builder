@@ -38,11 +38,8 @@ export function buildDrivingPrivileges(
 
 /**
  * Converts a value to an array if it's not already one.
- * Handles undefined and null values by returning an empty array.
  */
-export function toArray(input: string | string[] | undefined | null): string[] {
-  if (input === undefined || input === null) return [];
-
+export function toArray(input: string | string[]): string[] {
   return Array.isArray(input) ? input : [input];
 }
 
