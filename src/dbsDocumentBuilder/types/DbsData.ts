@@ -21,5 +21,5 @@ export interface DbsData {
   certificateType: string;
   outcome: string;
   policeRecordsCheck: string;
-  credentialTtlMinutes?: number;
+  credentialTtlMinutes: number;
 }
