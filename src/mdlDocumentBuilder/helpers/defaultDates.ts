@@ -41,7 +41,7 @@ export function getDefaultDates(): {
  * @example
  * getDateParts(new Date("2025-05-16")); // { day: "16", month: "05", year: "2025" }
  */
-function getDateParts(date: Date): DateParts {
+export function getDateParts(date: Date): DateParts {
   return {
     day: String(date.getDate()).padStart(2, "0"),
     month: String(date.getMonth() + 1).padStart(2, "0"),
