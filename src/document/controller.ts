@@ -53,8 +53,7 @@ export async function documentController(
     }
 
     res.status(200).json(tableItem);
-
-    console.log(data);
+    
     return;
   } catch (error) {
     logger.error(error, "An error happened processing request to get document");
