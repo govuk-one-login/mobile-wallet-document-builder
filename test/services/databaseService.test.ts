@@ -17,6 +17,7 @@ describe("databaseService.ts", () => {
       givenName: "Rose",
       familyName: "Andrews",
       nino: "QQ123456A",
+      credentialTtlMinutes: 525600,
     },
     vcType: "SocialSecurityCredential",
   } as TableItem;
