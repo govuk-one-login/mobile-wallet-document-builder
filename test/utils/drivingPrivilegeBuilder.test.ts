@@ -127,7 +127,7 @@ describe("buildDrivingPrivileges", () => {
   });
 });
 
-describe("toArray", () => {
+describe("stringToArray", () => {
   it("should convert string to array", () => {
     expect(stringToArray("test")).toEqual(["test"]);
   });
