@@ -2,31 +2,90 @@ import { MdlRequestBody } from "../types/MdlRequestBody";
 import { DrivingPrivilege } from "../types/DrivingPrivilege";
 import { formatDate } from "./dateFormatter";
 
+export function getFullDrivingPrivileges(body: MdlRequestBody) {
+  const fullIssueDays = stringToArray(body["fullPrivilegeIssue-day"]);
+  const fullIssueMonths = stringToArray(body["fullPrivilegeIssue-month"]);
+  const fullIssueYears = stringToArray(body["fullPrivilegeIssue-year"]);
+  const fullExpiryDays = stringToArray(body["fullPrivilegeExpiry-day"]);
+  const fullExpiryMonths = stringToArray(body["fullPrivilegeExpiry-month"]);
+  const fullExpiryYears = stringToArray(body["fullPrivilegeExpiry-year"]);
+  const fullVehicleCategoryCodes = stringToArray(body.fullVehicleCategoryCode);
+
+  return buildDrivingPrivileges(
+    fullIssueDays,
+    fullIssueMonths,
+    fullIssueYears,
+    fullExpiryDays,
+    fullExpiryMonths,
+    fullExpiryYears,
+    fullVehicleCategoryCodes,
+  );
+}
+
+export function getProvisionalDrivingPrivileges(body: MdlRequestBody) {
+  if (!body.provisionalVehicleCategoryCode) {
+    return [];
+  }
+
+  const provisionalVehicleCategoryCodes = stringToArray(
+    body.provisionalVehicleCategoryCode,
+  );
+  const provisionalIssueDays = stringToArray(
+    body["provisionalPrivilegeIssue-day"]!,
+  );
+  const provisionalIssueMonths = stringToArray(
+    body["provisionalPrivilegeIssue-month"]!,
+  );
+  const provisionalIssueYears = stringToArray(
+    body["provisionalPrivilegeIssue-year"]!,
+  );
+  const provisionalExpiryDays = stringToArray(
+    body["provisionalPrivilegeExpiry-day"]!,
+  );
+  const provisionalExpiryMonths = stringToArray(
+    body["provisionalPrivilegeExpiry-month"]!,
+  );
+  const provisionalExpiryYears = stringToArray(
+    body["provisionalPrivilegeExpiry-year"]!,
+  );
+
+  return buildDrivingPrivileges(
+    provisionalVehicleCategoryCodes,
+    provisionalIssueDays,
+    provisionalIssueMonths,
+    provisionalIssueYears,
+    provisionalExpiryDays,
+    provisionalExpiryMonths,
+    provisionalExpiryYears,
+  );
+}
+
+export const stringToArray = (input: string | string[]): string[] =>
+  Array.isArray(input) ? input : [input];
+
 export function buildDrivingPrivileges(
-  body: MdlRequestBody,
+  issueDays: string[],
+  issueMonths: string[],
+  issueYears: string[],
+  expiryDays: string[],
+  expiryMonths: string[],
+  expiryYears: string[],
+  vehicleCategoryCodes: string[],
 ): DrivingPrivilege[] {
   const drivingPrivileges: DrivingPrivilege[] = [];
 
-  const issueDay = stringToArray(body["fullPrivilegeIssue-day"]);
-  const issueMonth = stringToArray(body["fullPrivilegeIssue-month"]);
-  const issueYear = stringToArray(body["fullPrivilegeIssue-year"]);
-  const expiryDay = stringToArray(body["fullPrivilegeExpiry-day"]);
-  const expiryMonth = stringToArray(body["fullPrivilegeExpiry-month"]);
-  const expiryYear = stringToArray(body["fullPrivilegeExpiry-year"]);
-  const vehicleCategoryCode = stringToArray(body.vehicleCategoryCode);
-
-  for (let i = 0; i < vehicleCategoryCode.length; i++) {
+  for (let i = 0; i < vehicleCategoryCodes.length; i++) {
     const issueDate =
-      issueDay[i] === "" || issueMonth[i] === "" || issueYear[i] === ""
+      issueDays[i] === "" || issueMonths[i] === "" || issueYears[i] === ""
         ? null
-        : formatDate(issueDay[i], issueMonth[i], issueYear[i]);
+        : formatDate(issueDays[i], issueMonths[i], issueYears[i]);
     const expiryDate =
-      expiryDay[i] === "" || expiryMonth[i] === "" || expiryYear[i] === ""
+      expiryDays[i] === "" || expiryMonths[i] === "" || expiryYears[i] === ""
         ? null
-        : formatDate(expiryDay[i], expiryMonth[i], expiryYear[i]);
+        : formatDate(expiryDays[i], expiryMonths[i], expiryYears[i]);
 
     const privilege: DrivingPrivilege = {
-      vehicle_category_code: vehicleCategoryCode[i],
+      vehicle_category_code: vehicleCategoryCodes[i],
       issue_date: issueDate,
       expiry_date: expiryDate,
     };
@@ -35,6 +94,3 @@ export function buildDrivingPrivileges(
 
   return drivingPrivileges;
 }
-
-const stringToArray = (input: string | string[]): string[] =>
-  Array.isArray(input) ? input : [input];

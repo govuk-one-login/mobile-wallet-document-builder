@@ -13,7 +13,10 @@ import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
 import { validateDateFields } from "./helpers/dateValidator";
-import { buildDrivingPrivileges } from "./helpers/drivingPrivilegeBuilder";
+import {
+  getFullDrivingPrivileges,
+  getProvisionalDrivingPrivileges,
+} from "./helpers/drivingPrivilegeBuilder";
 import { getDefaultDates } from "./helpers/defaultDates";
 import { formatDate } from "./helpers/dateFormatter";
 
@@ -45,6 +48,7 @@ export async function mdlDocumentBuilderPostController(
 ): Promise<void> {
   try {
     const body: MdlRequestBody = req.body;
+    console.log(body);
 
     const errors = validateDateFields(body);
 
@@ -99,6 +103,9 @@ function buildMdlDataFromRequestBody(
   const expiryMonth = body["expiry-month"];
   const expiryYear = body["expiry-year"];
 
+  const fullDrivingPrivileges = getFullDrivingPrivileges(body);
+  const provisionalDrivingPrivileges = getProvisionalDrivingPrivileges(body);
+
   return {
     family_name: body.family_name,
     given_name: body.given_name,
@@ -113,7 +120,8 @@ function buildMdlDataFromRequestBody(
     resident_address: body.resident_address,
     resident_postal_code: body.resident_postal_code,
     resident_city: body.resident_city,
-    full_driving_privileges: buildDrivingPrivileges(body),
+    full_driving_privileges: fullDrivingPrivileges,
+    ...(provisionalDrivingPrivileges.length !== 0 && { provisional_driving_privileges: provisionalDrivingPrivileges }),
     un_distinguishing_sign: "UK",
   };
 }
