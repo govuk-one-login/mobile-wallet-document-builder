@@ -12,8 +12,8 @@ import { MdlData } from "./types/MdlData";
 import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
-import { formatDate, isDateInPast, isValidDate } from "../utils/dateValidator";
-import { buildDrivingPrivileges } from "../utils/drivingPrivilegeBuilder";
+import { formatDate, isDateInPast, isValidDate } from "./helpers/dateValidator";
+import { buildDrivingPrivileges } from "./helpers/drivingPrivilegeBuilder";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
