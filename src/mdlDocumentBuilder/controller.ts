@@ -121,7 +121,9 @@ function buildMdlDataFromRequestBody(
     resident_postal_code: body.resident_postal_code,
     resident_city: body.resident_city,
     full_driving_privileges: fullDrivingPrivileges,
-    ...(provisionalDrivingPrivileges.length !== 0 && { provisional_driving_privileges: provisionalDrivingPrivileges }),
+    ...(provisionalDrivingPrivileges.length !== 0 && {
+      provisional_driving_privileges: provisionalDrivingPrivileges,
+    }),
     un_distinguishing_sign: "UK",
   };
 }
