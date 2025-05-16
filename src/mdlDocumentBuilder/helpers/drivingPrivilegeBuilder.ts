@@ -1,6 +1,6 @@
 import { MdlRequestBody } from "../types/MdlRequestBody";
 import { DrivingPrivilege } from "../types/DrivingPrivilege";
-import { formatDate } from "./dateValidator";
+import { formatDate } from "./dateFormatter";
 
 export function buildDrivingPrivileges(
   body: MdlRequestBody,
