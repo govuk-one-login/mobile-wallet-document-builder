@@ -66,7 +66,7 @@ describe("controller.ts", () => {
       serviceNumber: "25057386",
       serviceBranch: "HM Naval Service",
       photo: "420x525.jpg",
-      credentialTtl: "525600",
+      credentialTtl: "oneYear",
       throwError: "",
     };
 
