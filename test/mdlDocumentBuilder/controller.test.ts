@@ -149,52 +149,100 @@ describe("controller.ts", () => {
     );
 
     describe("given the photo has been stored successfully", () => {
-      it(`should call the function to save the document with the correct arguments`, async () => {
-        const req = getMockReq({
-          body: requestBody,
+      describe("when there are no provisional driving privileges", () => {
+        it("should call the function to save the document with the correct arguments (without provisional_driving_privileges)", async () => {
+          const req = getMockReq({
+            body: buildMdlRequestBody({ provisionalVehicleCategoryCode: "" }),
+          });
+          const { res } = getMockRes();
+
+          await mdlDocumentBuilderPostController(req, res);
+
+          expect(saveDocument).toHaveBeenCalledWith("testTable", {
+            documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            vcType: "mobileDrivingLicence",
+            data: {
+              family_name: "Edwards-Smith",
+              given_name: "Sarah Elizabeth",
+              portrait:
+                "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+              birth_date: "06-03-1975",
+              birth_place: "London",
+              issue_date: "08-04-2019",
+              expiry_date: "08-04-2029",
+              issuing_authority: "DVLA",
+              issuing_country: "GB",
+              document_number: "HALL9655293DH5RO",
+              full_driving_privileges: [
+                {
+                  vehicle_category_code: "A",
+                  issue_date: "01-05-2025",
+                  expiry_date: null,
+                },
+                {
+                  vehicle_category_code: "B",
+                  issue_date: "01-05-2025",
+                  expiry_date: "10-08-2030",
+                },
+              ],
+              resident_address: "Flat 11, Blashford, Adelaide Road",
+              resident_postal_code: "NW3 3RX",
+              resident_city: "London",
+              un_distinguishing_sign: "UK",
+            },
+          });
         });
-        const { res } = getMockRes();
+      });
 
-        await mdlDocumentBuilderPostController(req, res);
+      describe("when there are provisional driving privileges", () => {
+        it(`should call the function to save the document with the correct arguments (all attributes)`, async () => {
+          const req = getMockReq({
+            body: requestBody,
+          });
+          const { res } = getMockRes();
 
-        expect(saveDocument).toHaveBeenCalledWith("testTable", {
-          documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-          vcType: "mobileDrivingLicence",
-          data: {
-            family_name: "Edwards-Smith",
-            given_name: "Sarah Elizabeth",
-            portrait: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-            birth_date: "06-03-1975",
-            birth_place: "London",
-            issue_date: "08-04-2019",
-            expiry_date: "08-04-2029",
-            issuing_authority: "DVLA",
-            issuing_country: "GB",
-            document_number: "HALL9655293DH5RO",
-            full_driving_privileges: [
-              {
-                vehicle_category_code: "A",
-                issue_date: "01-05-2025",
-                expiry_date: null,
-              },
-              {
-                vehicle_category_code: "B",
-                issue_date: "01-05-2025",
-                expiry_date: "10-08-2030",
-              },
-            ],
-            provisional_driving_privileges: [
-              {
-                expiry_date: "03-03-2033",
-                issue_date: "04-03-2023",
-                vehicle_category_code: "C",
-              },
-            ],
-            resident_address: "Flat 11, Blashford, Adelaide Road",
-            resident_postal_code: "NW3 3RX",
-            resident_city: "London",
-            un_distinguishing_sign: "UK",
-          },
+          await mdlDocumentBuilderPostController(req, res);
+
+          expect(saveDocument).toHaveBeenCalledWith("testTable", {
+            documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            vcType: "mobileDrivingLicence",
+            data: {
+              family_name: "Edwards-Smith",
+              given_name: "Sarah Elizabeth",
+              portrait:
+                "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+              birth_date: "06-03-1975",
+              birth_place: "London",
+              issue_date: "08-04-2019",
+              expiry_date: "08-04-2029",
+              issuing_authority: "DVLA",
+              issuing_country: "GB",
+              document_number: "HALL9655293DH5RO",
+              full_driving_privileges: [
+                {
+                  vehicle_category_code: "A",
+                  issue_date: "01-05-2025",
+                  expiry_date: null,
+                },
+                {
+                  vehicle_category_code: "B",
+                  issue_date: "01-05-2025",
+                  expiry_date: "10-08-2030",
+                },
+              ],
+              provisional_driving_privileges: [
+                {
+                  expiry_date: "03-03-2033",
+                  issue_date: "04-03-2023",
+                  vehicle_category_code: "C",
+                },
+              ],
+              resident_address: "Flat 11, Blashford, Adelaide Road",
+              resident_postal_code: "NW3 3RX",
+              resident_city: "London",
+              un_distinguishing_sign: "UK",
+            },
+          });
         });
       });
     });
@@ -234,7 +282,7 @@ describe("controller.ts", () => {
       });
     });
 
-    describe("Date validation", () => {
+    describe("date validation errors", () => {
       it("should render an error when the birthdate has empty fields", async () => {
         const body = buildMdlRequestBody({
           "birth-day": "",
