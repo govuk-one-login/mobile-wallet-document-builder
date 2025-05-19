@@ -218,7 +218,7 @@ describe("controller.ts", () => {
               issuing_authority: "DVLA",
               issuing_country: "GB",
               document_number: "HALL9655293DH5RO",
-              full_driving_privileges: [
+              driving_privileges: [
                 {
                   vehicle_category_code: "A",
                   issue_date: "01-05-2025",
