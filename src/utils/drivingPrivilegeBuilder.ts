@@ -37,7 +37,7 @@ export function buildDrivingPrivileges(
 }
 
 /**
- * Converts a string value to an array if it's not already one.
+ * Puts string value into an array if it's not already in one.
  */
 export function stringToArray(input: string | string[]): string[] {
   return Array.isArray(input) ? input : [input];
