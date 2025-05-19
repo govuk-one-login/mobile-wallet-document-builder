@@ -18,7 +18,7 @@ import { MdlRequestBody } from "../types/MdlRequestBody";
  *   "issue-day": "15", "issue-month": "4", "issue-year": "2022",
  *   "expiry-day": "30", "expiry-month": "6", "expiry-year": "2030"
  * };
- * const errors = validateDateFields(body); { birth_date: "Enter a valid birth date" }
+ * validateDateFields(body); // { birth_date: "Enter a valid birth date" }
  */
 export function validateDateFields(
   body: MdlRequestBody,
