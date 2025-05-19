@@ -81,8 +81,8 @@ export async function mdlDocumentBuilderPostController(
     );
   } catch (error) {
     logger.error(
-      { error, body: req.body },
-      "An error occurred processing Driving Licence document request",
+      error,
+      "An error happened processing Driving Licence document request",
     );
     res.render("500.njk");
   }
