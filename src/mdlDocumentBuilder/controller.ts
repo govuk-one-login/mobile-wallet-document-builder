@@ -119,7 +119,7 @@ function buildMdlDataFromRequestBody(
     resident_address: body.resident_address,
     resident_postal_code: body.resident_postal_code,
     resident_city: body.resident_city,
-    full_driving_privileges: fullDrivingPrivileges,
+    driving_privileges: fullDrivingPrivileges,
     ...(provisionalDrivingPrivileges.length !== 0 && {
       provisional_driving_privileges: provisionalDrivingPrivileges,
     }),
