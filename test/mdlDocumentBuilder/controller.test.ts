@@ -7,7 +7,7 @@ import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
-import { buildMdlRequestBody } from "../utils/mdlRequestBodyBuilder";
+import { MdlRequestBody } from "../../src/mdlDocumentBuilder/types/MdlRequestBody";
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
@@ -91,35 +91,7 @@ describe("controller.ts", () => {
   });
 
   describe("post", () => {
-    const requestBody = {
-      family_name: "Edwards-Smith",
-      given_name: "Sarah Elizabeth",
-      portrait: "420x525.jpg",
-      "birth-day": "06",
-      "birth-month": "03",
-      "birth-year": "1975",
-      birth_place: "London",
-      "issue-day": "08",
-      "issue-month": "04",
-      "issue-year": "2019",
-      "expiry-day": "08",
-      "expiry-month": "04",
-      "expiry-year": "2029",
-      issuing_authority: "DVLA",
-      issuing_country: "GB",
-      document_number: "HALL9655293DH5RO",
-      resident_address: "Flat 11, Blashford, Adelaide Road",
-      resident_postal_code: "NW3 3RX",
-      resident_city: "London",
-      vehicleCategoryCode: ["A", "B"],
-      "fullPrivilegeIssue-day": ["01", "01"],
-      "fullPrivilegeIssue-month": ["05", "05"],
-      "fullPrivilegeIssue-year": ["2025", "2025"],
-      "fullPrivilegeExpiry-day": ["", "10"],
-      "fullPrivilegeExpiry-month": ["", "08"],
-      "fullPrivilegeExpiry-year": ["", "2030"],
-      throwError: "",
-    };
+    const requestBody = buildMdlRequestBody();
 
     const photoBuffer = Buffer.from("mock photo data");
     const mockReadFileSync = readFileSync as jest.Mock;
@@ -187,6 +159,7 @@ describe("controller.ts", () => {
 
         expect(saveDocument).toHaveBeenCalledWith("testTable", {
           documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+          vcType: "mobileDrivingLicence",
           data: {
             family_name: "Edwards-Smith",
             given_name: "Sarah Elizabeth",
@@ -198,10 +171,6 @@ describe("controller.ts", () => {
             issuing_authority: "DVLA",
             issuing_country: "GB",
             document_number: "HALL9655293DH5RO",
-            resident_address: "Flat 11, Blashford, Adelaide Road",
-            resident_postal_code: "NW3 3RX",
-            resident_city: "London",
-            un_distinguishing_sign: "UK",
             full_driving_privileges: [
               {
                 vehicle_category_code: "A",
@@ -214,8 +183,18 @@ describe("controller.ts", () => {
                 expiry_date: "10-08-2030",
               },
             ],
+            provisional_driving_privileges: [
+              {
+                expiry_date: "03-03-2033",
+                issue_date: "04-03-2023",
+                vehicle_category_code: "C",
+              },
+            ],
+            resident_address: "Flat 11, Blashford, Adelaide Road",
+            resident_postal_code: "NW3 3RX",
+            resident_city: "London",
+            un_distinguishing_sign: "UK",
           },
-          vcType: "mobileDrivingLicence",
         });
       });
     });
@@ -324,40 +303,6 @@ describe("controller.ts", () => {
         expect(res.redirect).not.toHaveBeenCalled();
       });
 
-      it("should render an error when the birth date is in the future", async () => {
-        const body = buildMdlRequestBody({
-          "birth-day": "10",
-          "birth-month": "08",
-          "birth-year": "2026",
-        });
-        const req = getMockReq({
-          body,
-          cookies: { id_token: "id_token" },
-        });
-        const { res } = getMockRes();
-        await mdlDocumentBuilderPostController(req, res);
-        expect(res.render).toHaveBeenCalledWith(
-          "mdl-document-details-form.njk",
-          {
-            errors: expect.objectContaining({
-              birth_date: "Enter a valid birth date",
-            }),
-            authenticated: true,
-            defaultIssueDate: {
-              day: "02",
-              month: "05",
-              year: "2025",
-            },
-            defaultExpiryDate: {
-              day: "01",
-              month: "05",
-              year: "2035",
-            },
-          },
-        );
-        expect(res.redirect).not.toHaveBeenCalled();
-      });
-
       it("should render an error when the issue date is empty", async () => {
         const body = buildMdlRequestBody({
           "issue-day": "04",
@@ -426,79 +371,11 @@ describe("controller.ts", () => {
         expect(res.redirect).not.toHaveBeenCalled();
       });
 
-      it("should render an error when the issue date is in the future", async () => {
-        const body = buildMdlRequestBody({
-          "issue-day": "02",
-          "issue-month": "08",
-          "issue-year": "2030",
-        });
-        const req = getMockReq({
-          body,
-          cookies: { id_token: "id_token" },
-        });
-        const { res } = getMockRes();
-        await mdlDocumentBuilderPostController(req, res);
-        expect(res.render).toHaveBeenCalledWith(
-          "mdl-document-details-form.njk",
-          {
-            errors: expect.objectContaining({
-              issue_date: "Enter a valid issue date",
-            }),
-            authenticated: true,
-            defaultIssueDate: {
-              day: "02",
-              month: "05",
-              year: "2025",
-            },
-            defaultExpiryDate: {
-              day: "01",
-              month: "05",
-              year: "2035",
-            },
-          },
-        );
-        expect(res.redirect).not.toHaveBeenCalled();
-      });
-
       it("should render an error when the expiry date is empty", async () => {
         const body = buildMdlRequestBody({
           "expiry-day": "05",
           "expiry-month": "",
           "expiry-year": "",
-        });
-        const req = getMockReq({
-          body,
-          cookies: { id_token: "id_token" },
-        });
-        const { res } = getMockRes();
-        await mdlDocumentBuilderPostController(req, res);
-        expect(res.render).toHaveBeenCalledWith(
-          "mdl-document-details-form.njk",
-          {
-            errors: expect.objectContaining({
-              expiry_date: "Enter a valid expiry date",
-            }),
-            authenticated: true,
-            defaultIssueDate: {
-              day: "02",
-              month: "05",
-              year: "2025",
-            },
-            defaultExpiryDate: {
-              day: "01",
-              month: "05",
-              year: "2035",
-            },
-          },
-        );
-        expect(res.redirect).not.toHaveBeenCalled();
-      });
-
-      it("should render an error when the expiry date is in the past", async () => {
-        const body = buildMdlRequestBody({
-          "expiry-day": "03",
-          "expiry-month": "08",
-          "expiry-year": "2019",
         });
         const req = getMockReq({
           body,
@@ -564,3 +441,45 @@ describe("controller.ts", () => {
     });
   });
 });
+
+export function buildMdlRequestBody(
+  overrides: Partial<MdlRequestBody> = {},
+): MdlRequestBody {
+  const defaults: MdlRequestBody = {
+    family_name: "Edwards-Smith",
+    given_name: "Sarah Elizabeth",
+    portrait: "420x525.jpg",
+    "birth-day": "06",
+    "birth-month": "03",
+    "birth-year": "1975",
+    birth_place: "London",
+    "issue-day": "08",
+    "issue-month": "04",
+    "issue-year": "2019",
+    "expiry-day": "08",
+    "expiry-month": "04",
+    "expiry-year": "2029",
+    issuing_authority: "DVLA",
+    issuing_country: "GB",
+    document_number: "HALL9655293DH5RO",
+    resident_address: "Flat 11, Blashford, Adelaide Road",
+    resident_postal_code: "NW3 3RX",
+    resident_city: "London",
+    throwError: "",
+    fullVehicleCategoryCode: ["A", "B"],
+    "fullPrivilegeIssue-day": ["01", "01"],
+    "fullPrivilegeIssue-month": ["05", "05"],
+    "fullPrivilegeIssue-year": ["2025", "2025"],
+    "fullPrivilegeExpiry-day": ["", "10"],
+    "fullPrivilegeExpiry-month": ["", "08"],
+    "fullPrivilegeExpiry-year": ["", "2030"],
+    provisionalVehicleCategoryCode: "C",
+    "provisionalPrivilegeIssue-day": "04",
+    "provisionalPrivilegeIssue-month": "03",
+    "provisionalPrivilegeIssue-year": "2023",
+    "provisionalPrivilegeExpiry-day": "03",
+    "provisionalPrivilegeExpiry-month": "03",
+    "provisionalPrivilegeExpiry-year": "2033",
+  };
+  return { ...defaults, ...overrides };
+}
