@@ -23,9 +23,9 @@ describe("validateDateFields", () => {
 
   it("should return an error for an invalid birth date", () => {
     const body = {
-      "birth-day": "32",
+      "birth-day": "32", // 32 is not a valid day
       "birth-month": "01",
-      "birth-year": "2025", // 32 is not a valid day
+      "birth-year": "2025",
       "issue-day": "14",
       "issue-month": "05",
       "issue-year": "2025",
@@ -44,9 +44,9 @@ describe("validateDateFields", () => {
       "birth-day": "01",
       "birth-month": "01",
       "birth-year": "2025",
-      "issue-day": "99",
+      "issue-day": "99", // 99 is not a valid day
       "issue-month": "05",
-      "issue-year": "2025", // 99 is not a valid day
+      "issue-year": "2025",
       "expiry-day": "16",
       "expiry-month": "06",
       "expiry-year": "2025",
@@ -65,9 +65,9 @@ describe("validateDateFields", () => {
       "issue-day": "15",
       "issue-month": "05",
       "issue-year": "2025",
-      "expiry-day": "00",
+      "expiry-day": "00", // 00 is not a valid day
       "expiry-month": "06",
-      "expiry-year": "2025", // 00 is not a valid day
+      "expiry-year": "2025",
     } as MdlRequestBody;
 
     expect(validateDateFields(body)).toEqual({
@@ -77,15 +77,15 @@ describe("validateDateFields", () => {
 
   it("should return errors for multiple invalid dates", () => {
     const body = {
-      "birth-day": "32",
+      "birth-day": "32", // 32 is not a valid day
       "birth-month": "01",
-      "birth-year": "2025", // 32 is not a valid day
-      "issue-day": "aa",
+      "birth-year": "2025",
+      "issue-day": "aa", // aa is not a valid day
       "issue-month": "05",
-      "issue-year": "2025", // aa is not a valid day
-      "expiry-day": "$$",
+      "issue-year": "2025",
+      "expiry-day": "$$", // $$ is not a valid day
       "expiry-month": "06",
-      "expiry-year": "2025", // $$ is not a valid day
+      "expiry-year": "2025",
     } as MdlRequestBody;
 
     expect(validateDateFields(body)).toEqual({
