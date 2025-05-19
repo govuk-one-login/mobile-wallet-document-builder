@@ -64,7 +64,11 @@ export function validateDateFields(
  * isValidDate("15", "13", "2023"); // false (Invalid month)
  * isValidDate("abc", "2", "2023"); // false (Invalid day)
  */
-export function isValidDate(dayStr: string, monthStr: string, yearStr: string) {
+export function isValidDate(
+  dayStr: string,
+  monthStr: string,
+  yearStr: string,
+): boolean {
   const dayNum = parseInt(dayStr);
   const monthNum = parseInt(monthStr);
   const yearNum = parseInt(yearStr);
