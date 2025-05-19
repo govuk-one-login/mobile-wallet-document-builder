@@ -1,4 +1,4 @@
-FROM node:20.19.1-alpine3.20@sha256:76bacbf09e7a2a999b5cf058c3d543216919f7dad9b00ae040cc9c39635fcc65
+FROM node:20.19.2-alpine3.20@sha256:3bc9a4c4cc25cfde1e8f946341c85f333c36517aafda829b4bb7e785e9b5995c
 
 RUN apk update && apk upgrade busybox
 
