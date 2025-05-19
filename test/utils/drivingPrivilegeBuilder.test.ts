@@ -1,5 +1,5 @@
 import { buildMdlRequestBody } from "./mdlRequestBodyBuilder";
-import {buildDrivingPrivileges} from "../../src/mdlDocumentBuilder/helpers/drivingPrivilegeBuilder";
+import { buildDrivingPrivileges } from "../../src/mdlDocumentBuilder/helpers/drivingPrivilegeBuilder";
 
 describe("buildDrivingPrivilege", () => {
   it("should build a single driving privilege when numPrivileges is 1", () => {
