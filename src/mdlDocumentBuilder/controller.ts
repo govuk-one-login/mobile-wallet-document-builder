@@ -48,7 +48,6 @@ export async function mdlDocumentBuilderPostController(
 ): Promise<void> {
   try {
     const body: MdlRequestBody = req.body;
-    console.log(body);
 
     const errors = validateDateFields(body);
 
