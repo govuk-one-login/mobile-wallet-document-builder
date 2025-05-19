@@ -145,7 +145,7 @@ function buildMdlDataFromRequestBody(
     resident_address: body.resident_address,
     resident_postal_code: body.resident_postal_code,
     resident_city: body.resident_city,
-    full_driving_privileges: buildDrivingPrivileges(body),
+    driving_privileges: buildDrivingPrivileges(body),
     un_distinguishing_sign: "UK",
   };
 
