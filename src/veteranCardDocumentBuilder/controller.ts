@@ -41,7 +41,6 @@ export async function veteranCardDocumentBuilderPostController(
     const bucketName = getPhotosBucketName();
     const documentId = randomUUID();
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
-
     const s3Uri = `s3://${bucketName}/${documentId}`;
     const body: VeteranCardRequestBody = req.body;
 
@@ -69,7 +68,17 @@ function buildVeteranCardDataFromRequestBody(
   body: VeteranCardRequestBody,
   s3Uri: string,
 ) {
-  const { throwError: _throwError, ...newObject } = body;
-  const data: VeteranCardData = { ...newObject, photo: s3Uri };
+  const {
+    throwError: _throwError,
+    credentialTtl: _credentialTtl,
+    ...newObject
+  } = body;
+
+  const data: VeteranCardData = {
+    ...newObject,
+    credentialTtlMinutes: Number(body.credentialTtl),
+    photo: s3Uri,
+  };
+
   return data;
 }

@@ -3,5 +3,6 @@ export interface NinoRequestBody {
   givenName: string;
   familyName: string;
   nino: string;
+  credentialTtl: string;
   throwError: string;
 }

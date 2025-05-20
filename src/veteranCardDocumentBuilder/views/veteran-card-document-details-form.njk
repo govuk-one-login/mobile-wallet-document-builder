@@ -5,6 +5,7 @@
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% extends "base.njk" %}
 {% set pageTitle = "Please enter the Veteran Card document details:" %}
 {% block content %}
@@ -120,7 +121,8 @@
                 "id": "photo",
                 "name": "photo",
                 "label": {
-                    "text": "Choose photo"
+                    "text": "Choose photo",
+                    "classes": "govuk-label--s"
                 },
                 "items": [
                     {
@@ -189,6 +191,27 @@
                         "text": "EXIF"
                     }
                 ]
+            }) }}
+            {{ govukRadios({
+                classes: "govuk-radios--small",
+                name: "credentialTtl",
+                fieldset: {
+                    legend: {
+                        text: "When should the credential expire?",
+                        classes: "govuk-fieldset__legend--s"
+                    }
+                },
+                items: [
+                    {
+                        value: "525600",
+                        text: "1 Year",
+                        checked: true
+                    },
+                    {
+                        value: "1",
+                        text: "1 Minute"
+                    }
+               ]
             }) }}
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
             {{ govukSelect({

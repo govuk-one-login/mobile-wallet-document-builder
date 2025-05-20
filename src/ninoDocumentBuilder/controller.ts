@@ -51,7 +51,14 @@ export async function ninoDocumentBuilderPostController(
 }
 
 function buildNinoDataFromRequestBody(body: NinoRequestBody) {
-  const { throwError: _throwError, ...newObject } = body;
-  const data: NinoData = { ...newObject };
+  const {
+    throwError: _throwError,
+    credentialTtl: _credentialTtl,
+    ...newObject
+  } = body;
+  const data: NinoData = {
+    ...newObject,
+    credentialTtlMinutes: Number(body.credentialTtl),
+  };
   return data;
 }

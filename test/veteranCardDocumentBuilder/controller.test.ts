@@ -66,6 +66,7 @@ describe("controller.ts", () => {
       serviceNumber: "25057386",
       serviceBranch: "HM Naval Service",
       photo: "420x525.jpg",
+      credentialTtl: "525600",
       throwError: "",
     };
 
@@ -146,6 +147,7 @@ describe("controller.ts", () => {
             "cardExpiryDate-year": "2029",
             serviceNumber: "25057386",
             serviceBranch: "HM Naval Service",
+            credentialTtlMinutes: 525600,
             photo: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           },
           vcType: "digitalVeteranCard",

@@ -3,6 +3,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% extends "base.njk" %}
 {% set pageTitle = "Please enter the Clear Basic DBS Check document details:" %}
 {% block content %}
@@ -249,6 +250,27 @@
                 "classes": "govuk-!-width-one-third",
                 "value": "Clear",
                 "disabled": true
+            }) }}
+            {{ govukRadios({
+                classes: "govuk-radios--small",
+                name: "credentialTtl",
+                fieldset: {
+                    legend: {
+                        text: "When should the credential expire?",
+                        classes: "govuk-fieldset__legend--s"
+                    }
+                },
+                items: [
+                    {
+                        value: "525600",
+                        text: "1 Year",
+                        checked: true
+                    },
+                    {
+                        value: "1",
+                        text: "1 Minute"
+                    }
+                ]
             }) }}
             {{ govukSelect({
                 "id": "throw-error",
