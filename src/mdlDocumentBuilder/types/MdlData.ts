@@ -16,4 +16,5 @@ export interface MdlData {
   resident_city: string;
   driving_privileges: DrivingPrivilege[];
   un_distinguishing_sign: string;
+  provisional_driving_privileges?: DrivingPrivilege[];
 }

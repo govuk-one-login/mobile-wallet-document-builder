@@ -18,12 +18,19 @@ export interface MdlRequestBody {
   resident_address: string;
   resident_postal_code: string;
   resident_city: string;
-  vehicleCategoryCode: string | string[];
+  fullVehicleCategoryCode: string | string[];
   "fullPrivilegeIssue-day": string | string[];
   "fullPrivilegeIssue-month": string | string[];
   "fullPrivilegeIssue-year": string | string[];
   "fullPrivilegeExpiry-day": string | string[];
   "fullPrivilegeExpiry-month": string | string[];
   "fullPrivilegeExpiry-year": string | string[];
+  provisionalVehicleCategoryCode?: string | string[];
+  "provisionalPrivilegeIssue-day"?: string | string[];
+  "provisionalPrivilegeIssue-month"?: string | string[];
+  "provisionalPrivilegeIssue-year"?: string | string[];
+  "provisionalPrivilegeExpiry-day"?: string | string[];
+  "provisionalPrivilegeExpiry-month"?: string | string[];
+  "provisionalPrivilegeExpiry-year"?: string | string[];
   throwError: string;
 }

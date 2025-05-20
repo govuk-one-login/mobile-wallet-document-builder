@@ -1,527 +1,379 @@
+{% extends "base.njk" %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
-{% extends "base.njk" %}
 {% set pageTitle = "Please enter the Driving Licence document details:" %}
-{% set dateError = false %}
 {% block content %}
-    <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
-    <form action="/build-mdl-document" method="post">
+  <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
+  <form action="/build-mdl-document" method="post">
+    {% call govukFieldset({
+      legend: {
+      text: pageTitle,
+      classes: "govuk-fieldset__legend--m",
+      isPageHeading: true
+      }
+      }) %}
+      {{ govukInput({
+        "label": {
+          "text": "Given name",
+          "classes": "govuk-label--s"
+        },
+        "classes": "govuk-!-width-one-third",
+        "id": "given_name",
+        "name": "given_name",
+        "autocomplete": "given_name",
+        "spellcheck": false,
+        "value": "Sarah Elizabeth"
+      }) }}
+      {{ govukInput({
+        "label": {
+          "text": "Family name",
+          "classes": "govuk-label--s"
+        },
+        "classes": "govuk-!-width-one-third",
+        "id": "family_name",
+        "name": "family_name",
+        "autocomplete": "family_name",
+        "spellcheck": false,
+        "value": "Edwards"
+      }) }}
+      {% if errors['birth_date'] %}
+        {% set dobError = { text: errors['birth_date'] } %}
+      {% endif %}
+      {{ govukDateInput({
+            "id": "birth_date",
+            "namePrefix": "birth",
+            "fieldset": {
+            "legend": {
+            "text": "Date of birth",
+            "classes": "govuk-fieldset__legend--s"
+            }
+            },
+            "errorMessage": dobError,
+            "items": [
+            {
+            "classes": "govuk-input--width-2",
+            "name": "day",
+            "value": "06"
+            },
+            {
+            "classes": "govuk-input--width-2",
+            "name": "month",
+            "value": "03"
+            },
+            {
+            "classes": "govuk-input--width-3",
+            "name": "year",
+            "value": "1975"
+            }
+            ]
+            }) }}
+      {{ govukInput({
+        "label": {
+          "text": "Place of birth",
+          "classes": "govuk-label--s"
+        },
+        "classes": "govuk-!-width-one-third",
+        "id": "birth_place",
+        "name": "birth_place",
+        "autocomplete": "birth_place",
+        "spellcheck": false,
+        "value": "London"
+      }) }}
+      {% macro drivingPrivilegesFieldset(type, legendText) %}
         {% call govukFieldset({
-            legend: {
-            text: "Please enter the Driving Licence document details:",
-            classes: "govuk-fieldset__legend--m",
-            isPageHeading: true
-            } }) %}
-            {{ govukInput({
-                "label": {
-                    "text": "Given name",
-                    "classes": "govuk-label--s"
-                },
-                "classes": "govuk-!-width-one-third",
-                "id": "given_name",
-                "name": "given_name",
-                "autocomplete": "given_name",
-                "spellcheck": false,
-                "value": "Sarah Elizabeth"
-            }) }}
-            {{ govukInput({
-                "label": {
-                    "text": "Family name",
-                    "classes": "govuk-label--s"
-                },
-                "classes": "govuk-!-width-one-third",
-                "id": "family_name",
-                "name": "family_name",
-                "autocomplete": "family_name",
-                "spellcheck": false,
-                "value": "Edwards"
-            }) }}
-            {% if errors['birth_date'] %}
-                {% set dobError = { text: errors['birth_date'] } %}
-            {% endif %}
-            {{ govukDateInput({
-                        "id": "birth_date",
-                        "namePrefix": "birth",
-                        "fieldset": {
-                        "legend": {
-                        "text": "Date of birth",
-                        "classes": "govuk-fieldset__legend--s"
-                        }
-                        },
-                        "errorMessage": dobError,
-                        "items": [
-                        {
-                        "classes": "govuk-input--width-2",
-                        "name": "day",
-                        "value": "06"
-                        },
-                        {
-                        "classes": "govuk-input--width-2",
-                        "name": "month",
-                        "value": "03"
-                        },
-                        {
-                        "classes": "govuk-input--width-3",
-                        "name": "year",
-                        "value": "1975"
-                        }
-                        ]
-                        }) }}
-            {{ govukInput({
-                "label": {
-                    "text": "Place of birth",
-                    "classes": "govuk-label--s"
-                },
-                "classes": "govuk-!-width-one-third",
-                "id": "birth_place",
-                "name": "birth_place",
-                "autocomplete": "birth_place",
-                "spellcheck": false,
-                "value": "London"
-            }) }}
-            {% call govukFieldset({
-                legend: {
-                text: "Add your full driving privileges",
-                classes: "govuk-fieldset__legend--s",
-                isPageHeading: false
-                }
-                }) %}
-                <div id="drivingPrivilege"></div>
-                <button id="add-button"
-                        class="govuk-button govuk-button--secondary"
-                        onclick="addDrivingPrivileges()"
-                        type="button">Add</button>
-                <script>
-                const MAX_ENTRIES = 5;
-                const addButton = document.querySelector('#add-button');
-                const drivingPrivilegesContainer = document.getElementById('drivingPrivilege');
-                let entryCount = 0;
-
-                addDrivingPrivileges();
-
-                function getDrivingPrivilegesCount() {
-                    return drivingPrivilegesContainer.children.length;
-                }
-
-                function updateAddButtonState() {
-                    addButton.disabled = getDrivingPrivilegesCount() >= MAX_ENTRIES;
-                }
-
-                function updateDeleteButtonState() {
-                    const deleteButtons = drivingPrivilegesContainer.querySelectorAll('button[onclick^="deleteDrivingPrivileges"]');
-                    deleteButtons.forEach(button => button.disabled = getDrivingPrivilegesCount() <= 1);
-                }
-
-                function deleteDrivingPrivileges(elem) {
-                    elem.parentNode.removeChild(elem);
-                    entryCount--;
-                    updateAddButtonState();
-                    updateDeleteButtonState();
-                }
-
-                function addDrivingPrivileges() {
-                entryCount++;
-                const container = document.createElement('div');
-                container.innerHTML = `
-
-                {% call govukFieldset({
-                "legend": {
-                    "classes": "govuk-fieldset__legend--s",
-                    "isPageHeading": false
-                }
-                }) %}
-                {{ govukSelect({
-                    "id": "vehicle_category_code",
-                    "name": "vehicleCategoryCode",
-                    "namePrefix": "full",
-                    "label": {
-                        "text": "Vehicle category code"
-                    },
-                    "items": [
-                    {
-                        "value": "A",
-                        "text": "A - Motorcycle"
-                    },
-                    {
-                        "value": "A1",
-                        "text": "A1 - Motorcycle"
-                    },
-                    {
-                        "value": "B",
-                        "text": "B - Vehicle",
-                        "selected": true
-                    },
-                    {
-                        "value": "BE",
-                        "text": "BE - Vehicle with Trailer"
-                    },
-                    {
-                        "value": "C",
-                        "text": "C - Truck"
-                    },
-                    {
-                        "value": "C1",
-                        "text": "C1 - Small Truck"
-                    },
-                    {
-                        "value": "C1E",
-                        "text": "C1E - Small Truck with Trailer"
-                    },
-                    {
-                        "value": "CE",
-                        "text": "CE - Truck with Trailer"
-                    },
-                    {
-                        "value": "D",
-                        "text": "D - Bus"
-                    },
-                    {
-                        "value": "D1",
-                        "text": "D1 - Small Bus"
-                    },
-                    {
-                        "value": "D1E",
-                        "text": "D1E - Small Bus with Trailer"
-                    },
-                    {
-                        "value": "DE",
-                        "text": "DE - Bus with Trailer"
-                    }
-                ]
-                }) }}
-                {{ govukDateInput({
-                    "id": "issue_date",
-                    "namePrefix": "fullPrivilegeIssue",
-                    "fieldset": {
-                        "legend": {
-                            "text": "Date of issue",
-                            "classes": "govuk-label--s"
-                        }
-                    },
-                    "items": [
-                        {
-                            "classes": "govuk-input--width-2",
-                            "name": "day",
-                            "value": defaultIssueDate.day
-                        },
-                        {
-                            "classes": "govuk-input--width-2",
-                            "name": "month",
-                            "value": defaultIssueDate.month
-                        },
-                        {
-                            "classes": "govuk-input--width-3",
-                            "name": "year",
-                            "value": defaultIssueDate.year
-                        }
-                    ]
-                }) }}
-                {{ govukDateInput({
-                    "id": "expiry_date",
-                    "namePrefix": "fullPrivilegeExpiry",
-                    "fieldset": {
-                        "legend": {
-                            "text": "Date of expiry",
-                            "classes": "govuk-label--s"
-                        }
-                    },
-                    "items": [
-                        {
-                            "classes": "govuk-input--width-2",
-                            "name": "day"
-                        },
-                        {
-                            "classes": "govuk-input--width-2",
-                            "name": "month"
-                        },
-                        {
-                            "classes": "govuk-input--width-3",
-                            "name": "year"
-                        }
-                    ]
-                }) }}
-
-                <button class="govuk-button govuk-button--secondary" onclick="deleteDrivingPrivileges(this.parentNode.parentNode)" type="button">Delete</button>
-                {% endcall %}
-                `;
-                document.getElementById("drivingPrivilege").appendChild(container);
-                updateAddButtonState();
-                updateDeleteButtonState();
-                }
-                updateAddButtonState();
-                 updateDeleteButtonState();
-                </script>
-            {% endcall %}
-            {% if errors['issue_date'] %}
-                {% set issueError = { text: errors['issue_date'] } %}
-            {% endif %}
-            {{ govukDateInput({
-                        "id": "issue_date",
-                        "namePrefix": "issue",
-                        "fieldset": {
-                        "legend": {
-                        "text": "Driving licence issue date",
-                        "classes": "govuk-fieldset__legend--s"
-                        }
-                        },
-                        "errorMessage": issueError,
-                        "items": [
-                        {
-                        "classes": "govuk-input--width-2",
-                        "name": "day",
-                        "value": defaultIssueDate.day
-                        },
-                        {
-                        "classes": "govuk-input--width-2",
-                        "name": "month",
-                        "value": defaultIssueDate.month
-                        },
-                        {
-                        "classes": "govuk-input--width-3",
-                        "name": "year",
-                        "value": defaultIssueDate.year
-                        }
-                        ]
-                        }) }}
-            {% if errors['expiry_date'] %}
-                {% set expiryError = { text: errors['expiry_date'] } %}
-            {% endif %}
-            {{ govukDateInput({
-                        "id": "expiry_date",
-                        "namePrefix": "expiry",
-                        "fieldset": {
-                        "legend": {
-                        "text": "Driving licence expiry date",
-                        "classes": "govuk-fieldset__legend--s"
-                        }
-                        },
-                        "errorMessage": expiryError,
-                        "items": [
-                        {
-                        "classes": "govuk-input--width-2",
-                        "name": "day",
-                        "value": defaultExpiryDate.day
-                        },
-                        {
-                        "classes": "govuk-input--width-2",
-                        "name": "month",
-                        "value": defaultExpiryDate.month
-                        },
-                        {
-                        "classes": "govuk-input--width-3",
-                        "name": "year",
-                        "value": defaultExpiryDate.year
-                        }
-                        ]
-                        }) }}
-            {{ govukInput({
-                "label": {
-                    "text": "Issuing authority",
-                    "classes": "govuk-label--s"
-                },
-                "id": "issuing_authority",
-                "name": "issuing_authority",
-                "classes": "govuk-!-width-one-third",
-                "spellcheck": false,
-                "value": "DVLA"
-            }) }}
-            {{ govukInput({
-                "label": {
-                    "text": "Issuing country",
-                    "classes": "govuk-label--s"
-                },
-                "id": "issuing_country",
-                "name": "issuing_country",
-                "classes": "govuk-!-width-one-third",
-                "spellcheck": false,
-                "value": "GB"
-            }) }}
-            {{ govukInput({
-                "label": {
-                    "text": "Licence number",
-                    "classes": "govuk-label--s"
-                },
-                "id": "document_number",
-                "name": "document_number",
-                "classes": "govuk-!-width-one-third",
-                "spellcheck": false,
-                "value": "HALL9655293DH5RO"
-            }) }}
-            {% call govukFieldset({
-                "legend": {
-                "text": "Permanent place of
-                residence",
-                "classes": "govuk-fieldset__legend--s",
-                "isPageHeading": false
-                }
-                }) %}
-                {{ govukInput({
-                    "label": {
-                        "text": "Flat number"
-                    },
-                    "id": "resident_address",
-                    "name": "resident_address",
-                    "classes": "govuk-input--width-5",
-                    "spellcheck": false,
-                    "autocomplete": "address-line1",
-                    "value": "Flat 11"
-                }) }}
-                {{ govukInput({
-                    "label": {
-                        "text": "Building name"
-                    },
-                    "id": "resident_address",
-                    "name": "resident_address",
-                    "classes": "govuk-input--width-20",
-                    "spellcheck": false,
-                    "autocomplete": "address-line2",
-                    "value": "Blashford"
-                }) }}
-                {{ govukInput({
-                    "label": {
-                        "text": "Street name"
-                    },
-                    "id": "resident_address",
-                    "name": "resident_address",
-                    "classes": "govuk-input--width-20",
-                    "spellcheck": false,
-                    "autocomplete": "address-line3",
-                    "value": "Adelaide Road"
-                }) }}
-            {% endcall %}
-            {{ govukInput({
-                "label": {
-                    "text": "Postal code"
-                },
-                "id": "resident_postal_code",
-                "name": "resident_postal_code",
-                "classes": "govuk-input--width-10",
-                "spellcheck": false,
-                "autocomplete": "resident_postal_code",
-                "value": "NW3 3RX"
-            }) }}
-            {{ govukInput({
-                "label": {
-                    "text": "City"
-                },
-                "id": "resident_city",
-                "name": "resident_city",
-                "classes": "govuk-input--width-20",
-                "spellcheck": false,
-                "autocomplete": "resident_city",
-                "value": "London"
-            }) }}
-            {{ govukSelect({
-                "id": "portrait",
-                "name": "portrait",
-                "label": {
-                    "text": "Choose a photo",
-                    "classes": "govuk-label--s"
-                },
-                "items": [
-                    {
-                        "value": "100x125.jpg",
-                        "text": "JPEG 1 - 100x125"
-                    },
-                    {
-                        "value": "140x175.jpg",
-                        "text": "JPEG 2 - 140x175"
-                    },
-                    {
-                        "value": "300x375.jpg",
-                        "text": "JPEG 3 - 300x375"
-                    },
-                    {
-                        "value": "420x525.jpg",
-                        "text": "JPEG 4 - 420x525",
-                        "selected": true
-                    },
-                    {
-                        "value": "600x750.jpg",
-                        "text": "JPEG 5 - 600x750"
-                    },
-                    {
-                        "value": "600x910.jpg",
-                        "text": "JPEG 6 - 600x910"
-                    },
-                    {
-                        "value": "760x750.jpg",
-                        "text": "JPEG 7 - 760x750"
-                    },
-                    {
-                        "value": "100x125.png",
-                        "text": "PNG 1 - 100x125"
-                    },
-                    {
-                        "value": "140x175.png",
-                        "text": "PNG 2 - 140x175"
-                    },
-                    {
-                        "value": "300x375.png",
-                        "text": "PNG 3 - 300x375"
-                    },
-                    {
-                        "value": "420x525.png",
-                        "text": "PNG 4 - 420x525"
-                    },
-                    {
-                        "value": "600x750.png",
-                        "text": "PNG 5 - 600x750"
-                    },
-                    {
-                        "value": "600x910.png",
-                        "text": "PNG 6 - 600x910"
-                    },
-                    {
-                        "value": "760x750.png",
-                        "text": "PNG 7 - 760x750"
-                    },
-                    {
-                        "value": "JFIF.jfif",
-                        "text": "JFIF"
-                    },
-                    {
-                        "value": "EXIF.jpg",
-                        "text": "EXIF"
-                    }
-                ]
-            }) }}
-            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-            {{ govukSelect({
-                "id": "throw-error",
-                "name": "throwError",
-                "label": {
-                    "text": "Throw an error",
-                    "classes": "govuk-label--s"
-                },
-                "items": [
-                    {
-                        "value": "",
-                        "text": "No error",
-                        "selected": true
-                    },
-                    {
-                        "value": "ERROR:401",
-                        "text": "401"
-                    },
-                    {
-                        "value": "ERROR:CLIENT",
-                        "text": "400 (invalid client) "
-                    },
-                    {
-                        "value": "ERROR:GRANT",
-                        "text": "400 (invalid grant)"
-                    },
-                    {
-                        "value": "ERROR:500",
-                        "text": "500"
-                    }
-                ]
-            }) }}
+          legend: { text: legendText, classes: "govuk-fieldset__legend--s" }
+          }) %}
+          <div id="{{ type }}DrivingPrivilege"></div>
+          <button id="add-{{ type }}-button"
+                  class="govuk-button govuk-button--secondary"
+                  onclick="addDrivingPrivileges('{{ type }}')"
+                  type="button">Add</button>
         {% endcall %}
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
-    </form>
+      {% endmacro %}
+      {{ drivingPrivilegesFieldset('full', 'Driving privileges') }}
+      {{ drivingPrivilegesFieldset('provisional', 'Provisional driving privileges (optional)') }}
+      {% if errors['issue_date'] %}
+        {% set issueError = { text: errors['issue_date'] } %}
+      {% endif %}
+      {{ govukDateInput({
+            id: "issue_date",
+            namePrefix: "issue",
+            fieldset: {
+            legend: {
+            text: "Driving licence issue date",
+            classes: "govuk-fieldset__legend--s"
+            }
+            },
+            "errorMessage": issueError,
+            items: [
+            { classes: "govuk-input--width-2", name: "day", value: defaultIssueDate.day },
+            { classes: "govuk-input--width-2", name: "month", value: defaultIssueDate.month },
+            { classes: "govuk-input--width-3", name: "year", value: defaultIssueDate.year}
+            ]
+            }) }}
+      {% if errors['expiry_date'] %}
+        {% set expiryError = { text: errors['expiry_date'] } %}
+      {% endif %}
+      {{ govukDateInput({
+            id: "expiry_date",
+            namePrefix: "expiry",
+            fieldset: {
+            legend: { text: "Driving licence expiry date", classes: "govuk-fieldset__legend--s" }
+            },
+            "errorMessage": expiryError,
+            items: [
+            { classes: "govuk-input--width-2", name: "day", value: defaultExpiryDate.day },
+            { classes: "govuk-input--width-2", name: "month", value: defaultExpiryDate.month },
+            { classes: "govuk-input--width-3", name: "year", value: defaultExpiryDate.year }
+            ]
+            }) }}
+      {{ govukInput({
+        "label": {
+          "text": "Issuing authority",
+          "classes": "govuk-label--s"
+        },
+        "id": "issuing_authority",
+        "name": "issuing_authority",
+        "classes": "govuk-!-width-one-third",
+        "spellcheck": false,
+        "value": "DVLA"
+      }) }}
+      {{ govukInput({
+        "label": {
+          "text": "Issuing country",
+          "classes": "govuk-label--s"
+        },
+        "id": "issuing_country",
+        "name": "issuing_country",
+        "classes": "govuk-!-width-one-third",
+        "spellcheck": false,
+        "value": "GB"
+      }) }}
+      {{ govukInput({
+        "label": {
+          "text": "Licence number",
+          "classes": "govuk-label--s"
+        },
+        "id": "document_number",
+        "name": "document_number",
+        "classes": "govuk-!-width-one-third",
+        "spellcheck": false,
+        "value": "HALL9655293DH5RO"
+      }) }}
+      {% call govukFieldset({
+        "legend": {
+        "text": "Permanent place of
+        residence",
+        "classes": "govuk-fieldset__legend--s",
+        "isPageHeading": false
+        }
+        }) %}
+        {{ govukInput({
+          "label": {
+            "text": "Flat number"
+          },
+          "id": "resident_address",
+          "name": "resident_address",
+          "classes": "govuk-input--width-5",
+          "spellcheck": false,
+          "autocomplete": "address-line1",
+          "value": "Flat 11"
+        }) }}
+        {{ govukInput({
+          "label": {
+            "text": "Building name"
+          },
+          "id": "resident_address",
+          "name": "resident_address",
+          "classes": "govuk-input--width-20",
+          "spellcheck": false,
+          "autocomplete": "address-line2",
+          "value": "Blashford"
+        }) }}
+        {{ govukInput({
+          "label": {
+            "text": "Street name"
+          },
+          "id": "resident_address",
+          "name": "resident_address",
+          "classes": "govuk-input--width-20",
+          "spellcheck": false,
+          "autocomplete": "address-line3",
+          "value": "Adelaide Road"
+        }) }}
+        {{ govukInput({
+          "label": {
+            "text": "Postal code"
+          },
+          "id": "resident_postal_code",
+          "name": "resident_postal_code",
+          "classes": "govuk-input--width-10",
+          "spellcheck": false,
+          "autocomplete": "resident_postal_code",
+          "value": "NW3 3RX"
+        }) }}
+        {{ govukInput({
+          "label": {
+            "text": "City"
+          },
+          "id": "resident_city",
+          "name": "resident_city",
+          "classes": "govuk-input--width-20",
+          "spellcheck": false,
+          "autocomplete": "resident_city",
+          "value": "London"
+        }) }}
+      {% endcall %}
+      {{ govukSelect({
+        "id": "portrait",
+        "name": "portrait",
+        "label": {
+          "text": "Choose a photo",
+          "classes": "govuk-label--s"
+        },
+        "items": [
+          {
+            "value": "100x125.jpg",
+            "text": "JPEG 1 - 100x125"
+          },
+          {
+            "value": "140x175.jpg",
+            "text": "JPEG 2 - 140x175"
+          },
+          {
+            "value": "300x375.jpg",
+            "text": "JPEG 3 - 300x375"
+          },
+          {
+            "value": "420x525.jpg",
+            "text": "JPEG 4 - 420x525",
+            "selected": true
+          },
+          {
+            "value": "600x750.jpg",
+            "text": "JPEG 5 - 600x750"
+          },
+          {
+            "value": "600x910.jpg",
+            "text": "JPEG 6 - 600x910"
+          },
+          {
+            "value": "760x750.jpg",
+            "text": "JPEG 7 - 760x750"
+          },
+          {
+            "value": "100x125.png",
+            "text": "PNG 1 - 100x125"
+          },
+          {
+            "value": "140x175.png",
+            "text": "PNG 2 - 140x175"
+          },
+          {
+            "value": "300x375.png",
+            "text": "PNG 3 - 300x375"
+          },
+          {
+            "value": "420x525.png",
+            "text": "PNG 4 - 420x525"
+          },
+          {
+            "value": "600x750.png",
+            "text": "PNG 5 - 600x750"
+          },
+          {
+            "value": "600x910.png",
+            "text": "PNG 6 - 600x910"
+          },
+          {
+            "value": "760x750.png",
+            "text": "PNG 7 - 760x750"
+          },
+          {
+            "value": "JFIF.jfif",
+            "text": "JFIF"
+          },
+          {
+            "value": "EXIF.jpg",
+            "text": "EXIF"
+          }
+        ]
+      }) }}
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+      {{ govukSelect({
+        "id": "throw-error",
+        "name": "throwError",
+        "label": {
+          "text": "Throw an error",
+          "classes": "govuk-label--s"
+        },
+        "items": [
+          {
+            "value": "",
+            "text": "No error",
+            "selected": true
+          },
+          {
+            "value": "ERROR:401",
+            "text": "401"
+          },
+          {
+            "value": "ERROR:CLIENT",
+            "text": "400 (invalid client) "
+          },
+          {
+            "value": "ERROR:GRANT",
+            "text": "400 (invalid grant)"
+          },
+          {
+            "value": "ERROR:500",
+            "text": "500"
+          }
+        ]
+      }) }}
+    {% endcall %}
+    {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+  </form>
+  <script>
+      const MAX_ENTRIES = 5;
+      function addDrivingPrivileges(type) {
+          const containerId = type + "DrivingPrivilege";
+          const container = document.getElementById(containerId);
+          const addButton = document.getElementById(`add-${type}-button`);
+
+          if (container.children.length >= MAX_ENTRIES) {
+              return;
+          }
+          const entry = document.createElement('div');
+          entry.innerHTML = `
+                      {% call govukFieldset({ "legend": { "classes": "govuk-fieldset__legend--s", "isPageHeading": false } }) %}
+                        {{ govukSelect({ "id": "${type}_vehicle_category_code", "name": "${type}VehicleCategoryCode", "label": { "text": "Vehicle category code" }, "items": [ { "value": "A", "text": "A - Motorcycle" }, { "value": "A1", "text": "A1 - Motorcycle" }, { "value": "B", "text": "B - Vehicle", "selected": true }, { "value": "BE", "text": "BE - Vehicle with Trailer" }, { "value": "C", "text": "C - Truck" }, { "value": "C1", "text": "C1 - Small Truck" }, { "value": "C1E", "text": "C1E - Small Truck with Trailer" }, { "value": "CE", "text": "CE - Truck with Trailer" }, { "value": "D", "text": "D - Bus" }, { "value": "D1", "text": "D1 - Small Bus" }, { "value": "D1E", "text": "D1E - Small Bus with Trailer" }, { "value": "DE", "text": "DE - Bus with Trailer" } ] }) }}
+                        {{ govukDateInput({ "id": "${type}_issue_date", "namePrefix": "${type}PrivilegeIssue", "fieldset": { "legend": { "text": "Issue date (optional)", "classes": "govuk-label--s" } }, "items": [ { "classes": "govuk-input--width-2", "name": "day", "value": defaultIssueDate.day }, { "classes": "govuk-input--width-2", "name": "month", "value": defaultIssueDate.month }, { "classes": "govuk-input--width-3", "name": "year", "value": defaultIssueDate.year } ] }) }}
+                        {{ govukDateInput({ "id": "${type}_expiry_date", "namePrefix": "${type}PrivilegeExpiry", "fieldset": { "legend": { "text": "Expiry date (optional)", "classes": "govuk-label--s" } }, "items": [ { "classes": "govuk-input--width-2", "name": "day" }, { "classes": "govuk-input--width-2", "name": "month" }, { "classes": "govuk-input--width-3", "name": "year" } ] }) }}
+                        <button class="govuk-button govuk-button--secondary" onclick="deleteDrivingPrivileges(this.parentNode.parentNode, '${type}')" type="button">Delete</button>
+                      {% endcall %}
+                    `;
+          container.appendChild(entry);
+          updateAddButtonState(type);
+      }
+
+      function deleteDrivingPrivileges(element, type) {
+          element.parentNode.removeChild(element);
+          updateAddButtonState(type);
+      }
+
+      function updateAddButtonState(type) {
+          const containerId = type + "DrivingPrivilege";
+          const container = document.getElementById(containerId);
+          const addButton = document.getElementById(`add-${type}-button`);
+          addButton.disabled = container.children.length >= MAX_ENTRIES;
+      }
+
+      addDrivingPrivileges('full');
+      updateAddButtonState('full');
+      updateAddButtonState('provisional');
+  </script>
 {% endblock %}
