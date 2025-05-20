@@ -7,7 +7,6 @@ import { isAuthenticated } from "../utils/isAuthenticated";
 import { getDocumentsTableName } from "../config/appConfig";
 import { DbsRequestBody } from "./types/DbsRequestBody";
 import { DbsData } from "./types/DbsData";
-import { getCredentialTtl } from "../utils/CredentialTtl";
 
 const CREDENTIAL_TYPE = CredentialType.basicCheckCredential;
 
@@ -34,9 +33,8 @@ export async function dbsDocumentBuilderPostController(
     logger.info(`Processing DBS document with documentId ${documentId}`);
     const body: DbsRequestBody = req.body;
     const selectedError = body["throwError"];
-    const credentialTtlMinutes = getCredentialTtl(body.credentialTtl);
 
-    const data = buildDbsDataFromRequestBody(body, credentialTtlMinutes);
+    const data = buildDbsDataFromRequestBody(body);
     await saveDocument(getDocumentsTableName(), {
       documentId,
       data,
@@ -52,10 +50,7 @@ export async function dbsDocumentBuilderPostController(
   }
 }
 
-function buildDbsDataFromRequestBody(
-  body: DbsRequestBody,
-  credentialTtlMinutes: number,
-) {
+function buildDbsDataFromRequestBody(body: DbsRequestBody) {
   const {
     throwError: _throwError,
     credentialTtl: _credentialTtl,
@@ -65,7 +60,7 @@ function buildDbsDataFromRequestBody(
     certificateType: "basic",
     outcome: "Result clear",
     policeRecordsCheck: "Clear",
-    credentialTtlMinutes: credentialTtlMinutes,
+    credentialTtlMinutes: Number(body.credentialTtl),
     ...newObject,
   };
   return data;

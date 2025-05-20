@@ -12,7 +12,6 @@ import {
 import { VeteranCardData } from "./types/VeteranCardData";
 import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
 import { getPhoto } from "../utils/photoUtils";
-import { getCredentialTtl } from "../utils/CredentialTtl";
 
 const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
@@ -44,13 +43,8 @@ export async function veteranCardDocumentBuilderPostController(
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
     const s3Uri = `s3://${bucketName}/${documentId}`;
     const body: VeteranCardRequestBody = req.body;
-    const credentialTtlMinutes = getCredentialTtl(body.credentialTtl);
 
-    const data = buildVeteranCardDataFromRequestBody(
-      body,
-      s3Uri,
-      credentialTtlMinutes,
-    );
+    const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
       documentId,
       data,
@@ -73,7 +67,6 @@ export async function veteranCardDocumentBuilderPostController(
 function buildVeteranCardDataFromRequestBody(
   body: VeteranCardRequestBody,
   s3Uri: string,
-  credentialTtlMinutes: number,
 ) {
   const {
     throwError: _throwError,
@@ -83,7 +76,7 @@ function buildVeteranCardDataFromRequestBody(
 
   const data: VeteranCardData = {
     ...newObject,
-    credentialTtlMinutes: credentialTtlMinutes,
+    credentialTtlMinutes: Number(body.credentialTtl),
     photo: s3Uri,
   };
 

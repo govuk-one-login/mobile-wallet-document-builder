@@ -50,7 +50,7 @@ describe("controller.ts", () => {
       givenName: "Irene",
       familyName: "Adler",
       nino: "QQ123456A",
-      credentialTtlMinutes: "oneYear",
+      credentialTtl: "525600",
       throwError: "",
     };
 
