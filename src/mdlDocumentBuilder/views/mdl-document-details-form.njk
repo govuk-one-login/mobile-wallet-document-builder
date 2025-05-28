@@ -39,6 +39,19 @@
         "spellcheck": false,
         "value": "Edwards"
       }) }}
+      {{ govukInput({
+         "label": {
+           "text": "Title",
+           "classes": "govuk-label--s"
+         },
+         hint: { html: 'DVLA set values are “Mr”, "Mrs”, “Miss”, “Ms”, “Dr” <br>and “Rev” or free-text up to 15 characters' },
+          "classes": "govuk-!-width-one-third",
+          "id": "title",
+          "name": "title",
+          "autocomplete": "title",
+          "spellcheck": true,
+          "value": "Miss"
+      }) }}
       {% if errors['birth_date'] %}
         {% set dobError = { text: errors['birth_date'] } %}
       {% endif %}

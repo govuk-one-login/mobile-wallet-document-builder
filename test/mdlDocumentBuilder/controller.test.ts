@@ -164,6 +164,7 @@ describe("controller.ts", () => {
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
+              title: "Miss",
               portrait:
                 "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
               birth_date: "06-03-1975",
@@ -209,6 +210,7 @@ describe("controller.ts", () => {
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
+              title: "Miss",
               portrait:
                 "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
               birth_date: "06-03-1975",
@@ -496,6 +498,7 @@ export function buildMdlRequestBody(
   const defaults: MdlRequestBody = {
     family_name: "Edwards-Smith",
     given_name: "Sarah Elizabeth",
+    title: "Miss",
     portrait: "420x525.jpg",
     "birth-day": "06",
     "birth-month": "03",

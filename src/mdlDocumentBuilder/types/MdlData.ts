@@ -3,6 +3,7 @@ import { DrivingPrivilege } from "./DrivingPrivilege";
 export interface MdlData {
   family_name: string;
   given_name: string;
+  title: string;
   portrait: string;
   birth_date: string;
   birth_place: string;

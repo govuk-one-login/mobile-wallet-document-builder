@@ -1,6 +1,7 @@
 export interface MdlRequestBody {
   family_name: string;
   given_name: string;
+  title: string;
   portrait: string;
   "birth-day": string;
   "birth-month": string;

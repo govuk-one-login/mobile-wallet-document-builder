@@ -108,6 +108,7 @@ function buildMdlDataFromRequestBody(
   return {
     family_name: body.family_name,
     given_name: body.given_name,
+    title: body.title,
     portrait: s3Uri,
     birth_date: formatDate(birthDay, birthMonth, birthYear),
     birth_place: body.birth_place,
