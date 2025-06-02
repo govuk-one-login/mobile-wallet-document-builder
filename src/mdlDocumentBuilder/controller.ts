@@ -109,6 +109,7 @@ function buildMdlDataFromRequestBody(
     family_name: body.family_name,
     given_name: body.given_name,
     title: body.title,
+    welsh_licence: body.welsh_licence === "true",
     portrait: s3Uri,
     birth_date: formatDate(birthDay, birthMonth, birthYear),
     birth_place: body.birth_place,
