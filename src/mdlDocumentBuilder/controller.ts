@@ -75,10 +75,19 @@ export async function mdlDocumentBuilderPostController(
       vcType: CREDENTIAL_TYPE,
     });
 
-    const selectedError = body["throwError"] || "";
-    res.redirect(
-      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
-    );
+    const selectedError = body["throwError"];
+
+    if (
+        selectedError === "" ||
+        selectedError === "ERROR:401" ||
+        selectedError === "ERROR:500" ||
+        selectedError === "ERROR:CLIENT" ||
+        selectedError === "ERROR:GRANT"
+    ) {
+      res.redirect(
+          `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
+      );
+    }
   } catch (error) {
     logger.error(
       error,
