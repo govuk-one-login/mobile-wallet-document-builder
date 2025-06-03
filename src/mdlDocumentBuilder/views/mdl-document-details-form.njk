@@ -53,27 +53,6 @@
           "spellcheck": true,
           "value": "Miss"
       }) }}
-      {{ govukRadios({
-        classes: "govuk-radios--small",
-        name: "welsh_licence",
-        fieldset: {
-          legend: {
-            text: "Bilingual Welsh licence",
-            classes: "govuk-fieldset__legend--s"
-          }
-        },
-        items: [
-          {
-            value: "false",
-            text: "No",
-            checked: true
-          },
-          {
-            value: "true",
-            text: "Yes"
-          }
-        ]
-      }) }}
       {% if errors['birth_date'] %}
         {% set dobError = { text: errors['birth_date'] } %}
       {% endif %}
@@ -116,6 +95,27 @@
         "autocomplete": "birth_place",
         "spellcheck": false,
         "value": "London"
+      }) }}
+      {{ govukRadios({
+        classes: "govuk-radios--small",
+        name: "welsh_licence",
+        fieldset: {
+        legend: {
+          text: "Bilingual Welsh licence",
+          classes: "govuk-fieldset__legend--s"
+        }
+        },
+        items: [
+        {
+          value: "false",
+          text: "No",
+          checked: true
+        },
+        {
+          value: "true",
+          text: "Yes"
+        }
+        ]
       }) }}
       {% macro drivingPrivilegesFieldset(type, legendText) %}
         {% call govukFieldset({
