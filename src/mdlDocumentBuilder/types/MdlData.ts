@@ -4,6 +4,7 @@ export interface MdlData {
   family_name: string;
   given_name: string;
   title: string;
+  welsh_licence: boolean;
   portrait: string;
   birth_date: string;
   birth_place: string;

@@ -165,6 +165,7 @@ describe("controller.ts", () => {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
               title: "Miss",
+              welsh_licence: false,
               portrait:
                 "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
               birth_date: "06-03-1975",
@@ -211,6 +212,7 @@ describe("controller.ts", () => {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
               title: "Miss",
+              welsh_licence: false,
               portrait:
                 "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
               birth_date: "06-03-1975",
@@ -499,6 +501,7 @@ export function buildMdlRequestBody(
     family_name: "Edwards-Smith",
     given_name: "Sarah Elizabeth",
     title: "Miss",
+    welsh_licence: "false",
     portrait: "420x525.jpg",
     "birth-day": "06",
     "birth-month": "03",

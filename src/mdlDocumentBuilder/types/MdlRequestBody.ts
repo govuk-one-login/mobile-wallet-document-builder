@@ -2,6 +2,7 @@ export interface MdlRequestBody {
   family_name: string;
   given_name: string;
   title: string;
+  welsh_licence: string;
   portrait: string;
   "birth-day": string;
   "birth-month": string;
