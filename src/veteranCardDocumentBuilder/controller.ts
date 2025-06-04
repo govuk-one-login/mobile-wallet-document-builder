@@ -54,14 +54,14 @@ export async function veteranCardDocumentBuilderPostController(
     const selectedError = body["throwError"];
 
     if (
-        selectedError === "" ||
-        selectedError === "ERROR:401" ||
-        selectedError === "ERROR:500" ||
-        selectedError === "ERROR:CLIENT" ||
-        selectedError === "ERROR:GRANT"
+      selectedError === "" ||
+      selectedError === "ERROR:401" ||
+      selectedError === "ERROR:500" ||
+      selectedError === "ERROR:CLIENT" ||
+      selectedError === "ERROR:GRANT"
     ) {
       res.redirect(
-          `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
+        `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
       );
     }
   } catch (error) {
