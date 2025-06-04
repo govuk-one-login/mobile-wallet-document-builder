@@ -12,6 +12,9 @@ import {
 import { VeteranCardData } from "./types/VeteranCardData";
 import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
 import { getPhoto } from "../utils/photoUtils";
+import { ERROR_CODES } from "../utils/errorCodes";
+import { isValidErrorCode } from "../utils/isValidErrorCode";
+import { NinoRequestBody } from "../ninoDocumentBuilder/types/NinoRequestBody";
 
 const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
@@ -22,13 +25,14 @@ export async function veteranCardDocumentBuilderGetController(
   try {
     res.render("veteran-card-document-details-form.njk", {
       authenticated: isAuthenticated(req),
+      errorCodes: ERROR_CODES,
     });
   } catch (error) {
     logger.error(
       error,
       "An error happened rendering Veteran Card document page",
     );
-    res.render("500.njk");
+    res.render("error.njk");
   }
 }
 
@@ -37,13 +41,12 @@ export async function veteranCardDocumentBuilderPostController(
   res: Response,
 ): Promise<void> {
   try {
-    const { photoBuffer, mimeType } = getPhoto(req.body.photo);
+    const body: VeteranCardRequestBody = req.body;
+    const { photoBuffer, mimeType } = getPhoto(body.photo);
     const bucketName = getPhotosBucketName();
     const documentId = randomUUID();
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
     const s3Uri = `s3://${bucketName}/${documentId}`;
-    const body: VeteranCardRequestBody = req.body;
-
     const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
       documentId,
@@ -52,24 +55,18 @@ export async function veteranCardDocumentBuilderPostController(
     });
 
     const selectedError = body["throwError"];
-
-    if (
-      selectedError === "" ||
-      selectedError === "ERROR:401" ||
-      selectedError === "ERROR:500" ||
-      selectedError === "ERROR:CLIENT" ||
-      selectedError === "ERROR:GRANT"
-    ) {
-      res.redirect(
-        `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
-      );
+    if (!isValidErrorCode(selectedError)) {
+      return res.render("error.njk");
     }
+    res.redirect(
+      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
+    );
   } catch (error) {
     logger.error(
       error,
       "An error happened processing Veteran Card document request",
     );
-    res.render("500.njk");
+    res.render("error.njk");
   }
 }
 

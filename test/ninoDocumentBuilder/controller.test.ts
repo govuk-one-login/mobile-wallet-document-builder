@@ -4,6 +4,7 @@ import {
   ninoDocumentBuilderGetController,
   ninoDocumentBuilderPostController,
 } from "../../src/ninoDocumentBuilder/controller";
+import { ERROR_CODES } from "../../src/utils/errorCodes";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
 
 jest.mock("node:crypto", () => ({
@@ -25,6 +26,7 @@ describe("controller.ts", () => {
         "nino-document-details-form.njk",
         {
           authenticated: false,
+          errorCodes: ERROR_CODES,
         },
       );
     });
@@ -39,6 +41,7 @@ describe("controller.ts", () => {
         "nino-document-details-form.njk",
         {
           authenticated: true,
+          errorCodes: ERROR_CODES,
         },
       );
     });
@@ -66,7 +69,7 @@ describe("controller.ts", () => {
 
         await ninoDocumentBuilderPostController(req, res);
 
-        expect(res.render).toHaveBeenCalledWith("500.njk");
+        expect(res.render).toHaveBeenCalledWith("error.njk");
       });
     });
 

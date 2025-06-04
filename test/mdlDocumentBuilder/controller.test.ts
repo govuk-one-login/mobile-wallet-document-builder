@@ -8,6 +8,7 @@ import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
 import { MdlRequestBody } from "../../src/mdlDocumentBuilder/types/MdlRequestBody";
+import { ERROR_CODES } from "../../src/utils/errorCodes";
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
@@ -52,6 +53,7 @@ describe("controller.ts", () => {
           month: "05",
           year: "2035",
         },
+        errorCodes: ERROR_CODES,
       });
     });
 
@@ -73,6 +75,7 @@ describe("controller.ts", () => {
           month: "05",
           year: "2035",
         },
+        errorCodes: ERROR_CODES,
       });
     });
 
@@ -86,7 +89,7 @@ describe("controller.ts", () => {
 
       await mdlDocumentBuilderGetController(req, res);
 
-      expect(res.render).toHaveBeenCalledWith("500.njk");
+      expect(res.render).toHaveBeenCalledWith("error.njk");
     });
   });
 
@@ -110,7 +113,7 @@ describe("controller.ts", () => {
 
         await mdlDocumentBuilderPostController(req, res);
 
-        expect(res.render).toHaveBeenCalledWith("500.njk");
+        expect(res.render).toHaveBeenCalledWith("error.njk");
       });
     });
 
@@ -336,6 +339,7 @@ describe("controller.ts", () => {
               month: "05",
               year: "2035",
             },
+            errorCodes: ERROR_CODES,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -370,6 +374,7 @@ describe("controller.ts", () => {
               month: "05",
               year: "2035",
             },
+            errorCodes: ERROR_CODES,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -404,6 +409,7 @@ describe("controller.ts", () => {
               month: "05",
               year: "2035",
             },
+            errorCodes: ERROR_CODES,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -438,6 +444,7 @@ describe("controller.ts", () => {
               month: "05",
               year: "2035",
             },
+            errorCodes: ERROR_CODES,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -472,6 +479,7 @@ describe("controller.ts", () => {
               month: "05",
               year: "2035",
             },
+            errorCodes: ERROR_CODES,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -506,6 +514,7 @@ describe("controller.ts", () => {
               month: "05",
               year: "2035",
             },
+            errorCodes: ERROR_CODES,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();

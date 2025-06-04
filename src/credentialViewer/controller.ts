@@ -41,7 +41,7 @@ export async function credentialViewerController(
     });
   } catch (error) {
     logger.error(error, "An error happened.");
-    res.render("500.njk");
+    res.render("error.njk");
   }
 }
 

@@ -7,6 +7,7 @@ import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
+import { ERROR_CODES } from "../../src/utils/errorCodes";
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
@@ -34,6 +35,7 @@ describe("controller.ts", () => {
         "veteran-card-document-details-form.njk",
         {
           authenticated: false,
+          errorCodes: ERROR_CODES,
         },
       );
     });
@@ -48,6 +50,7 @@ describe("controller.ts", () => {
         "veteran-card-document-details-form.njk",
         {
           authenticated: true,
+          errorCodes: ERROR_CODES,
         },
       );
     });
@@ -87,7 +90,7 @@ describe("controller.ts", () => {
 
         await veteranCardDocumentBuilderPostController(req, res);
 
-        expect(res.render).toHaveBeenCalledWith("500.njk");
+        expect(res.render).toHaveBeenCalledWith("error.njk");
       });
     });
 

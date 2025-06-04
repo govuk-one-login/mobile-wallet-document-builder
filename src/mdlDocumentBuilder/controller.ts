@@ -19,6 +19,8 @@ import {
 } from "./helpers/drivingPrivilegeBuilder";
 import { getDefaultDates } from "./helpers/defaultDates";
 import { formatDate } from "./helpers/dateFormatter";
+import { ERROR_CODES } from "../utils/errorCodes";
+import { isValidErrorCode } from "../utils/isValidErrorCode";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
@@ -32,13 +34,14 @@ export async function mdlDocumentBuilderGetController(
       defaultIssueDate,
       defaultExpiryDate,
       authenticated: isAuthenticated(req),
+      errorCodes: ERROR_CODES,
     });
   } catch (error) {
     logger.error(
       error,
       "An error happened rendering Driving Licence document page",
     );
-    res.render("500.njk");
+    res.render("error.njk");
   }
 }
 
@@ -57,6 +60,7 @@ export async function mdlDocumentBuilderPostController(
         defaultIssueDate,
         defaultExpiryDate,
         authenticated: isAuthenticated(req),
+        errorCodes: ERROR_CODES,
         errors,
       });
     }
@@ -76,24 +80,18 @@ export async function mdlDocumentBuilderPostController(
     });
 
     const selectedError = body["throwError"];
-
-    if (
-      selectedError === "" ||
-      selectedError === "ERROR:401" ||
-      selectedError === "ERROR:500" ||
-      selectedError === "ERROR:CLIENT" ||
-      selectedError === "ERROR:GRANT"
-    ) {
-      res.redirect(
-        `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
-      );
+    if (!isValidErrorCode(selectedError)) {
+      return res.render("error.njk");
     }
+    res.redirect(
+      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
+    );
   } catch (error) {
     logger.error(
       error,
       "An error happened processing Driving Licence document request",
     );
-    res.render("500.njk");
+    res.render("error.njk");
   }
 }
 

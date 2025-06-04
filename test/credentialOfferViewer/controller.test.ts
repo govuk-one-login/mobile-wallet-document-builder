@@ -88,6 +88,6 @@ describe("controller.ts", () => {
 
     await credentialOfferViewerController(req, res);
 
-    expect(res.render).toHaveBeenCalledWith("500.njk");
+    expect(res.render).toHaveBeenCalledWith("error.njk");
   });
 });

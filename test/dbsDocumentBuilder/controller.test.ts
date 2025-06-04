@@ -4,6 +4,7 @@ import {
 } from "../../src/dbsDocumentBuilder/controller";
 import * as databaseService from "../../src/services/databaseService";
 import { getMockReq, getMockRes } from "@jest-mock/express";
+import { ERROR_CODES } from "../../src/utils/errorCodes";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
 
 jest.mock("node:crypto", () => ({
@@ -23,6 +24,7 @@ describe("controller.ts", () => {
 
       expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
         authenticated: false,
+        errorCodes: ERROR_CODES,
       });
     });
 
@@ -34,6 +36,7 @@ describe("controller.ts", () => {
 
       expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
         authenticated: true,
+        errorCodes: ERROR_CODES,
       });
     });
   });
@@ -75,7 +78,7 @@ describe("controller.ts", () => {
 
         await dbsDocumentBuilderPostController(req, res);
 
-        expect(res.render).toHaveBeenCalledWith("500.njk");
+        expect(res.render).toHaveBeenCalledWith("error.njk");
       });
     });
 
