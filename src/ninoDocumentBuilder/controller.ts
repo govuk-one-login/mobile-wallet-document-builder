@@ -9,7 +9,6 @@ import { NinoRequestBody } from "./types/NinoRequestBody";
 import { NinoData } from "./types/NinoData";
 import { ERROR_CODES } from "../utils/errorCodes";
 import { isValidErrorCode } from "../utils/isValidErrorCode";
-import { DbsRequestBody } from "../dbsDocumentBuilder/types/DbsRequestBody";
 
 const CREDENTIAL_TYPE = CredentialType.socialSecurityCredential;
 

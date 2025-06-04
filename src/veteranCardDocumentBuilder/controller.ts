@@ -14,7 +14,6 @@ import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
 import { getPhoto } from "../utils/photoUtils";
 import { ERROR_CODES } from "../utils/errorCodes";
 import { isValidErrorCode } from "../utils/isValidErrorCode";
-import { NinoRequestBody } from "../ninoDocumentBuilder/types/NinoRequestBody";
 
 const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
