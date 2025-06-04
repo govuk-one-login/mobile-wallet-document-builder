@@ -41,9 +41,17 @@ export async function dbsDocumentBuilderPostController(
       vcType: CREDENTIAL_TYPE,
     });
 
-    res.redirect(
-      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
-    );
+    if (
+      selectedError === "" ||
+      selectedError === "ERROR:401" ||
+      selectedError === "ERROR:500" ||
+      selectedError === "ERROR:CLIENT" ||
+      selectedError === "ERROR:GRANT"
+    ) {
+      res.redirect(
+        `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
+      );
+    }
   } catch (error) {
     logger.error(error, "An error happened processing DBS document request");
     res.render("500.njk");

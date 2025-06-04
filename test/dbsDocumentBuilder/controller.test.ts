@@ -153,6 +153,26 @@ describe("controller.ts", () => {
           );
         });
       });
+
+      describe("when one of the error scenarios has been selected", () => {
+        it.each(["ERROR:401", "ERROR:500", "ERROR:CLIENT", "ERROR:GRANT"])(
+          "should redirect with the correct error parameter when selectedError is '%s'",
+          async (selectedError) => {
+            const req = getMockReq({
+              body: { ...requestBody, ...{ throwError: selectedError } },
+            });
+            const { res } = getMockRes();
+            await dbsDocumentBuilderPostController(req, res);
+
+            const expectedRedirect =
+              selectedError === "SOME_OTHER_ERROR"
+                ? "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential&error="
+                : `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential&error=${selectedError}`;
+
+            expect(res.redirect).toHaveBeenCalledWith(expectedRedirect);
+          },
+        );
+      });
     });
   });
 });
