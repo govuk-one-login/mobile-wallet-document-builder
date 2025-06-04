@@ -200,8 +200,8 @@ describe("controller.ts", () => {
 
             const expectedRedirect =
               selectedError === "SOME_OTHER_ERROR"
-                ? "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential&error="
-                : `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential&error=${selectedError}`;
+                ? "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error="
+                : `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=${selectedError}`;
 
             expect(res.redirect).toHaveBeenCalledWith(expectedRedirect);
           },
