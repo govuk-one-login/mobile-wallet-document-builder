@@ -19,8 +19,8 @@ import {
 } from "./helpers/drivingPrivilegeBuilder";
 import { getDefaultDates } from "./helpers/defaultDates";
 import { formatDate } from "./helpers/dateFormatter";
-import { ERROR_CODES } from "../utils/errorCodes";
-import { isValidErrorCode } from "../utils/isValidErrorCode";
+import { isErrorCode } from "../utils/isErrorCode";
+import { ERROR_CHOICES } from "../utils/errorChoices";
 
 const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
 
@@ -34,7 +34,7 @@ export async function mdlDocumentBuilderGetController(
       defaultIssueDate,
       defaultExpiryDate,
       authenticated: isAuthenticated(req),
-      errorCodes: ERROR_CODES,
+      errorChoices: ERROR_CHOICES,
     });
   } catch (error) {
     logger.error(
@@ -60,7 +60,7 @@ export async function mdlDocumentBuilderPostController(
         defaultIssueDate,
         defaultExpiryDate,
         authenticated: isAuthenticated(req),
-        errorCodes: ERROR_CODES,
+        errorChoices: ERROR_CHOICES,
         errors,
       });
     }
@@ -80,12 +80,11 @@ export async function mdlDocumentBuilderPostController(
     });
 
     const selectedError = body["throwError"];
-    if (!isValidErrorCode(selectedError)) {
-      return res.render("error.njk");
+    let redirectUrl = `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}`;
+    if (isErrorCode(selectedError)) {
+      redirectUrl += `&error=${selectedError}`;
     }
-    res.redirect(
-      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
-    );
+    res.redirect(redirectUrl);
   } catch (error) {
     logger.error(
       error,

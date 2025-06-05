@@ -12,8 +12,8 @@ import {
 import { VeteranCardData } from "./types/VeteranCardData";
 import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
 import { getPhoto } from "../utils/photoUtils";
-import { ERROR_CODES } from "../utils/errorCodes";
-import { isValidErrorCode } from "../utils/isValidErrorCode";
+import { isErrorCode } from "../utils/isErrorCode";
+import { ERROR_CHOICES } from "../utils/errorChoices";
 
 const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
@@ -24,7 +24,7 @@ export async function veteranCardDocumentBuilderGetController(
   try {
     res.render("veteran-card-document-details-form.njk", {
       authenticated: isAuthenticated(req),
-      errorCodes: ERROR_CODES,
+      errorChoices: ERROR_CHOICES,
     });
   } catch (error) {
     logger.error(
@@ -54,12 +54,11 @@ export async function veteranCardDocumentBuilderPostController(
     });
 
     const selectedError = body["throwError"];
-    if (!isValidErrorCode(selectedError)) {
-      return res.render("error.njk");
+    let redirectUrl = `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}`;
+    if (isErrorCode(selectedError)) {
+      redirectUrl += `&error=${selectedError}`;
     }
-    res.redirect(
-      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
-    );
+    res.redirect(redirectUrl);
   } catch (error) {
     logger.error(
       error,

@@ -7,8 +7,8 @@ import { isAuthenticated } from "../utils/isAuthenticated";
 import { getDocumentsTableName } from "../config/appConfig";
 import { DbsRequestBody } from "./types/DbsRequestBody";
 import { DbsData } from "./types/DbsData";
-import { ERROR_CODES } from "../utils/errorCodes";
-import { isValidErrorCode } from "../utils/isValidErrorCode";
+import { isErrorCode } from "../utils/isErrorCode";
+import { ERROR_CHOICES } from "../utils/errorChoices";
 
 const CREDENTIAL_TYPE = CredentialType.basicCheckCredential;
 
@@ -19,7 +19,7 @@ export async function dbsDocumentBuilderGetController(
   try {
     res.render("dbs-document-details-form.njk", {
       authenticated: isAuthenticated(req),
-      errorCodes: ERROR_CODES,
+      errorChoices: ERROR_CHOICES,
     });
   } catch (error) {
     logger.error(error, "An error happened rendering DBS document page");
@@ -42,12 +42,11 @@ export async function dbsDocumentBuilderPostController(
     });
 
     const selectedError = body["throwError"];
-    if (!isValidErrorCode(selectedError)) {
-      return res.render("error.njk");
+    let redirectUrl = `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}`;
+    if (isErrorCode(selectedError)) {
+      redirectUrl += `&error=${selectedError}`;
     }
-    res.redirect(
-      `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
-    );
+    res.redirect(redirectUrl);
   } catch (error) {
     logger.error(error, "An error happened processing DBS document request");
     res.render("error.njk");

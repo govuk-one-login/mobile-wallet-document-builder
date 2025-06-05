@@ -4,7 +4,7 @@ import {
 } from "../../src/dbsDocumentBuilder/controller";
 import * as databaseService from "../../src/services/databaseService";
 import { getMockReq, getMockRes } from "@jest-mock/express";
-import { ERROR_CODES } from "../../src/utils/errorCodes";
+import { ERROR_CHOICES } from "../../src/utils/errorChoices";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
 
 jest.mock("node:crypto", () => ({
@@ -24,7 +24,7 @@ describe("controller.ts", () => {
 
       expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
         authenticated: false,
-        errorCodes: ERROR_CODES,
+        errorChoices: ERROR_CHOICES,
       });
     });
 
@@ -36,7 +36,7 @@ describe("controller.ts", () => {
 
       expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
         authenticated: true,
-        errorCodes: ERROR_CODES,
+        errorChoices: ERROR_CHOICES,
       });
     });
   });
@@ -124,6 +124,21 @@ describe("controller.ts", () => {
     });
 
     describe("given the document has been saved successfully", () => {
+      describe("when an unknown error code has been received in the request body", () => {
+        it("should redirect to the credential offer page with only 'BasicCheckCredential' in the query params", async () => {
+          const req = getMockReq({
+            body: requestBody,
+          });
+          const { res } = getMockRes();
+
+          await dbsDocumentBuilderPostController(req, res);
+
+          expect(res.redirect).toHaveBeenCalledWith(
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential",
+          );
+        });
+      });
+
       describe("when an error scenario has not been selected", () => {
         it("should redirect to the credential offer page with only 'BasicCheckCredential' in the query params", async () => {
           const req = getMockReq({
@@ -134,30 +149,12 @@ describe("controller.ts", () => {
           await dbsDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential&error=",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential",
           );
         });
       });
 
-      describe("when the error scenario 'ERROR:500' has been selected", () => {
-        it("should redirect to the credential offer page with 'BasicCheckCredential' and 'ERROR:500' in the query params", async () => {
-          const req = getMockReq({
-            body: {
-              ...requestBody,
-              ...{ throwError: "ERROR:500" },
-            },
-          });
-          const { res } = getMockRes();
-
-          await dbsDocumentBuilderPostController(req, res);
-
-          expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential&error=ERROR:500",
-          );
-        });
-      });
-
-      describe("when one of the error scenarios has been selected", () => {
+      describe("when an error scenario has been selected", () => {
         it.each(["ERROR:401", "ERROR:500", "ERROR:CLIENT", "ERROR:GRANT"])(
           "should redirect with the correct error parameter when selectedError is '%s'",
           async (selectedError) => {
@@ -165,14 +162,12 @@ describe("controller.ts", () => {
               body: { ...requestBody, ...{ throwError: selectedError } },
             });
             const { res } = getMockRes();
+
             await dbsDocumentBuilderPostController(req, res);
 
-            const expectedRedirect =
-              selectedError === "SOME_OTHER_ERROR"
-                ? "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential&error="
-                : `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential&error=${selectedError}`;
-
-            expect(res.redirect).toHaveBeenCalledWith(expectedRedirect);
+            expect(res.redirect).toHaveBeenCalledWith(
+              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=BasicCheckCredential&error=${selectedError}`,
+            );
           },
         );
       });

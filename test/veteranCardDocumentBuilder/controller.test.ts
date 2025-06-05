@@ -7,7 +7,7 @@ import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
-import { ERROR_CODES } from "../../src/utils/errorCodes";
+import { ERROR_CHOICES } from "../../src/utils/errorChoices";
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
@@ -35,7 +35,7 @@ describe("controller.ts", () => {
         "veteran-card-document-details-form.njk",
         {
           authenticated: false,
-          errorCodes: ERROR_CODES,
+          errorChoices: ERROR_CHOICES,
         },
       );
     });
@@ -50,7 +50,7 @@ describe("controller.ts", () => {
         "veteran-card-document-details-form.njk",
         {
           authenticated: true,
-          errorCodes: ERROR_CODES,
+          errorChoices: ERROR_CHOICES,
         },
       );
     });
@@ -159,6 +159,21 @@ describe("controller.ts", () => {
     });
 
     describe("given the document and photo have been stored successfully", () => {
+      describe("when an unknown error code has been received in the request body", () => {
+        it("should redirect to the credential offer page with only 'digitalVeteranCard' in the query params", async () => {
+          const req = getMockReq({
+            body: requestBody,
+          });
+          const { res } = getMockRes();
+
+          await veteranCardDocumentBuilderPostController(req, res);
+
+          expect(res.redirect).toHaveBeenCalledWith(
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard",
+          );
+        });
+      });
+
       describe("when an error scenario has not been selected", () => {
         it("should redirect to the credential offer page with only 'digitalVeteranCard' in the query params", async () => {
           const req = getMockReq({
@@ -169,29 +184,12 @@ describe("controller.ts", () => {
           await veteranCardDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard",
           );
         });
       });
 
-      describe("when the error scenario 'ERROR:401' has been selected", () => {
-        it("should redirect to the credential offer page with 'digitalVeteranCard' and 'ERROR:401' in the query params", async () => {
-          const req = getMockReq({
-            body: {
-              ...requestBody,
-              ...{ throwError: "ERROR:401" },
-            },
-          });
-          const { res } = getMockRes();
-
-          await veteranCardDocumentBuilderPostController(req, res);
-
-          expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=ERROR:401",
-          );
-        });
-      });
-      describe("when one of the error scenarios has been selected", () => {
+      describe("when an error scenario has been selected", () => {
         it.each(["ERROR:CLIENT", "ERROR:500", "ERROR:401", "ERROR:GRANT"])(
           "should redirect with the correct error parameter when selectedError is '%s'",
           async (selectedError) => {
@@ -201,12 +199,9 @@ describe("controller.ts", () => {
             const { res } = getMockRes();
             await veteranCardDocumentBuilderPostController(req, res);
 
-            const expectedRedirect =
-              selectedError === "SOME_OTHER_ERROR"
-                ? "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error="
-                : `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=${selectedError}`;
-
-            expect(res.redirect).toHaveBeenCalledWith(expectedRedirect);
+            expect(res.redirect).toHaveBeenCalledWith(
+              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=${selectedError}`,
+            );
           },
         );
       });
