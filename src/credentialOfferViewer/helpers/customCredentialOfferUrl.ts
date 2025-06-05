@@ -48,7 +48,7 @@ export function customiseCredentialOfferUrl(
   credentialOfferUrl: string,
   selectedApp: string,
   allApps: App[],
-  errorScenario: string,
+  errorScenario: string | undefined,
 ) {
   const app = allApps.filter((app) => app.value === selectedApp);
   const appPath = app[0].path;

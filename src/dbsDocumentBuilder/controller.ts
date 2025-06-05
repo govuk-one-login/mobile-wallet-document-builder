@@ -7,6 +7,8 @@ import { isAuthenticated } from "../utils/isAuthenticated";
 import { getDocumentsTableName } from "../config/appConfig";
 import { DbsRequestBody } from "./types/DbsRequestBody";
 import { DbsData } from "./types/DbsData";
+import { isErrorCode } from "../utils/isErrorCode";
+import { ERROR_CHOICES } from "../utils/errorChoices";
 
 const CREDENTIAL_TYPE = CredentialType.basicCheckCredential;
 
@@ -17,6 +19,7 @@ export async function dbsDocumentBuilderGetController(
   try {
     res.render("dbs-document-details-form.njk", {
       authenticated: isAuthenticated(req),
+      errorChoices: ERROR_CHOICES,
     });
   } catch (error) {
     logger.error(error, "An error happened rendering DBS document page");
@@ -29,29 +32,21 @@ export async function dbsDocumentBuilderPostController(
   res: Response,
 ): Promise<void> {
   try {
-    const documentId = randomUUID();
-    logger.info(`Processing DBS document with documentId ${documentId}`);
     const body: DbsRequestBody = req.body;
-    const selectedError = body["throwError"];
-
     const data = buildDbsDataFromRequestBody(body);
+    const documentId = randomUUID();
     await saveDocument(getDocumentsTableName(), {
       documentId,
       data,
       vcType: CREDENTIAL_TYPE,
     });
 
-    if (
-      selectedError === "" ||
-      selectedError === "ERROR:401" ||
-      selectedError === "ERROR:500" ||
-      selectedError === "ERROR:CLIENT" ||
-      selectedError === "ERROR:GRANT"
-    ) {
-      res.redirect(
-        `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
-      );
+    const selectedError = body["throwError"];
+    let redirectUrl = `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}`;
+    if (isErrorCode(selectedError)) {
+      redirectUrl += `&error=${selectedError}`;
     }
+    res.redirect(redirectUrl);
   } catch (error) {
     logger.error(error, "An error happened processing DBS document request");
     res.render("500.njk");

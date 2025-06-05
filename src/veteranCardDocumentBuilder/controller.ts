@@ -12,6 +12,8 @@ import {
 import { VeteranCardData } from "./types/VeteranCardData";
 import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
 import { getPhoto } from "../utils/photoUtils";
+import { isErrorCode } from "../utils/isErrorCode";
+import { ERROR_CHOICES } from "../utils/errorChoices";
 
 const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
 
@@ -22,6 +24,7 @@ export async function veteranCardDocumentBuilderGetController(
   try {
     res.render("veteran-card-document-details-form.njk", {
       authenticated: isAuthenticated(req),
+      errorChoices: ERROR_CHOICES,
     });
   } catch (error) {
     logger.error(
@@ -37,13 +40,12 @@ export async function veteranCardDocumentBuilderPostController(
   res: Response,
 ): Promise<void> {
   try {
-    const { photoBuffer, mimeType } = getPhoto(req.body.photo);
+    const body: VeteranCardRequestBody = req.body;
+    const { photoBuffer, mimeType } = getPhoto(body.photo);
     const bucketName = getPhotosBucketName();
     const documentId = randomUUID();
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
     const s3Uri = `s3://${bucketName}/${documentId}`;
-    const body: VeteranCardRequestBody = req.body;
-
     const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
       documentId,
@@ -52,18 +54,11 @@ export async function veteranCardDocumentBuilderPostController(
     });
 
     const selectedError = body["throwError"];
-
-    if (
-      selectedError === "" ||
-      selectedError === "ERROR:401" ||
-      selectedError === "ERROR:500" ||
-      selectedError === "ERROR:CLIENT" ||
-      selectedError === "ERROR:GRANT"
-    ) {
-      res.redirect(
-        `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}&error=${selectedError}`,
-      );
+    let redirectUrl = `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}`;
+    if (isErrorCode(selectedError)) {
+      redirectUrl += `&error=${selectedError}`;
     }
+    res.redirect(redirectUrl);
   } catch (error) {
     logger.error(
       error,

@@ -8,6 +8,7 @@ import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
 import { MdlRequestBody } from "../../src/mdlDocumentBuilder/types/MdlRequestBody";
+import { ERROR_CHOICES } from "../../src/utils/errorChoices";
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
@@ -52,6 +53,7 @@ describe("controller.ts", () => {
           month: "05",
           year: "2035",
         },
+        errorChoices: ERROR_CHOICES,
       });
     });
 
@@ -73,6 +75,7 @@ describe("controller.ts", () => {
           month: "05",
           year: "2035",
         },
+        errorChoices: ERROR_CHOICES,
       });
     });
 
@@ -252,6 +255,21 @@ describe("controller.ts", () => {
     });
 
     describe("given the document and photo have been stored successfully", () => {
+      describe("when an unknown error code has been received in the request body", () => {
+        it("should redirect to the credential offer page with only 'mobileDrivingLicence' in the query params", async () => {
+          const req = getMockReq({
+            body: requestBody,
+          });
+          const { res } = getMockRes();
+
+          await mdlDocumentBuilderPostController(req, res);
+
+          expect(res.redirect).toHaveBeenCalledWith(
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence",
+          );
+        });
+      });
+
       describe("when an error scenario has not been selected", () => {
         it("should redirect to the credential offer page with only 'mobileDrivingLicence' in the query params", async () => {
           const req = getMockReq({
@@ -262,30 +280,12 @@ describe("controller.ts", () => {
           await mdlDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence&error=",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence",
           );
         });
       });
 
-      describe("when the error scenario 'ERROR:401' is selected", () => {
-        it("should redirect to the credential offer page with 'mobileDrivingLicence' and 'ERROR:401' in the query params", async () => {
-          const req = getMockReq({
-            body: {
-              ...requestBody,
-              ...{ throwError: "ERROR:401" },
-            },
-          });
-          const { res } = getMockRes();
-
-          await mdlDocumentBuilderPostController(req, res);
-
-          expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence&error=ERROR:401",
-          );
-        });
-      });
-
-      describe("when one error scenario has been selected", () => {
+      describe("when an error scenario has been selected", () => {
         it.each(["ERROR:GRANT", "ERROR:500", "ERROR:401", "ERROR:CLIENT"])(
           "should redirect with the correct error parameter when selectedError is '%s'",
           async (selectedError) => {
@@ -295,12 +295,9 @@ describe("controller.ts", () => {
             const { res } = getMockRes();
             await mdlDocumentBuilderPostController(req, res);
 
-            const expectedRedirect =
-              selectedError === "SOME_OTHER_ERROR"
-                ? "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence&error="
-                : `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence&error=${selectedError}`;
-
-            expect(res.redirect).toHaveBeenCalledWith(expectedRedirect);
+            expect(res.redirect).toHaveBeenCalledWith(
+              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence&error=${selectedError}`,
+            );
           },
         );
       });
@@ -336,6 +333,7 @@ describe("controller.ts", () => {
               month: "05",
               year: "2035",
             },
+            errorChoices: ERROR_CHOICES,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -370,6 +368,7 @@ describe("controller.ts", () => {
               month: "05",
               year: "2035",
             },
+            errorChoices: ERROR_CHOICES,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -404,6 +403,7 @@ describe("controller.ts", () => {
               month: "05",
               year: "2035",
             },
+            errorChoices: ERROR_CHOICES,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -438,6 +438,7 @@ describe("controller.ts", () => {
               month: "05",
               year: "2035",
             },
+            errorChoices: ERROR_CHOICES,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -472,6 +473,7 @@ describe("controller.ts", () => {
               month: "05",
               year: "2035",
             },
+            errorChoices: ERROR_CHOICES,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -506,6 +508,7 @@ describe("controller.ts", () => {
               month: "05",
               year: "2035",
             },
+            errorChoices: ERROR_CHOICES,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
