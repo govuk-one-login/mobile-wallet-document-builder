@@ -89,7 +89,7 @@ describe("controller.ts", () => {
 
       await mdlDocumentBuilderGetController(req, res);
 
-      expect(res.render).toHaveBeenCalledWith("error.njk");
+      expect(res.render).toHaveBeenCalledWith("500.njk");
     });
   });
 
@@ -113,7 +113,7 @@ describe("controller.ts", () => {
 
         await mdlDocumentBuilderPostController(req, res);
 
-        expect(res.render).toHaveBeenCalledWith("error.njk");
+        expect(res.render).toHaveBeenCalledWith("500.njk");
       });
     });
 

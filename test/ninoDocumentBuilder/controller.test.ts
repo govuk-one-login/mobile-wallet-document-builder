@@ -69,7 +69,7 @@ describe("controller.ts", () => {
 
         await ninoDocumentBuilderPostController(req, res);
 
-        expect(res.render).toHaveBeenCalledWith("error.njk");
+        expect(res.render).toHaveBeenCalledWith("500.njk");
       });
     });
 

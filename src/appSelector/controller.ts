@@ -26,7 +26,7 @@ export function appSelectorGetController(
       });
     } catch (error) {
       logger.error(error, "An error happened rendering app selection page");
-      res.render("error.njk");
+      res.render("500.njk");
     }
   };
 }
@@ -59,7 +59,7 @@ export function appSelectorPostController(
       }
     } catch (error) {
       logger.error(error, "An error happened selecting app");
-      res.render("error.njk");
+      res.render("500.njk");
     }
   };
 }

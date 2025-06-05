@@ -23,7 +23,7 @@ export async function ninoDocumentBuilderGetController(
     });
   } catch (error) {
     logger.error(error, "An error happened rendering NINO document page");
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }
 
@@ -49,7 +49,7 @@ export async function ninoDocumentBuilderPostController(
     res.redirect(redirectUrl);
   } catch (error) {
     logger.error(error, "An error happened processing NINO document request");
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }
 

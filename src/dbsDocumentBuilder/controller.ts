@@ -23,7 +23,7 @@ export async function dbsDocumentBuilderGetController(
     });
   } catch (error) {
     logger.error(error, "An error happened rendering DBS document page");
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }
 
@@ -49,7 +49,7 @@ export async function dbsDocumentBuilderPostController(
     res.redirect(redirectUrl);
   } catch (error) {
     logger.error(error, "An error happened processing DBS document request");
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }
 

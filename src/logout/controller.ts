@@ -21,6 +21,6 @@ export function logoutGetController(req: Request, res: Response): void {
     );
   } catch (error) {
     logger.error(error, "An error happened trying to logout");
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }

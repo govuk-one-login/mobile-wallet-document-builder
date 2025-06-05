@@ -31,7 +31,7 @@ export async function veteranCardDocumentBuilderGetController(
       error,
       "An error happened rendering Veteran Card document page",
     );
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }
 
@@ -64,7 +64,7 @@ export async function veteranCardDocumentBuilderPostController(
       error,
       "An error happened processing Veteran Card document request",
     );
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }
 

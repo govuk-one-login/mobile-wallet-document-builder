@@ -48,6 +48,6 @@ export async function credentialOfferViewerController(
       error,
       "An error happened processing credential offer request",
     );
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }

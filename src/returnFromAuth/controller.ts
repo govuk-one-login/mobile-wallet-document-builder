@@ -47,6 +47,6 @@ export async function returnFromAuthGetController(
     res.redirect(`/select-document`);
   } catch (error) {
     logger.error(error, "An error happened returning from auth");
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }

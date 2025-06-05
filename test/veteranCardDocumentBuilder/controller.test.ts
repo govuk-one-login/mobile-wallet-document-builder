@@ -90,7 +90,7 @@ describe("controller.ts", () => {
 
         await veteranCardDocumentBuilderPostController(req, res);
 
-        expect(res.render).toHaveBeenCalledWith("error.njk");
+        expect(res.render).toHaveBeenCalledWith("500.njk");
       });
     });
 

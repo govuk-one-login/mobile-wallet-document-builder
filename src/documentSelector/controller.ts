@@ -12,7 +12,7 @@ export function documentSelectorGetController(
     });
   } catch (error) {
     logger.error(error, "An error happened rendering document selection page");
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }
 
@@ -42,6 +42,6 @@ export function documentSelectorPostController(
       error,
       "An error happened processing request to select document",
     );
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }

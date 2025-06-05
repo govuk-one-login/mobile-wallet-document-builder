@@ -41,7 +41,7 @@ export async function mdlDocumentBuilderGetController(
       error,
       "An error happened rendering Driving Licence document page",
     );
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }
 
@@ -90,7 +90,7 @@ export async function mdlDocumentBuilderPostController(
       error,
       "An error happened processing Driving Licence document request",
     );
-    res.render("error.njk");
+    res.render("500.njk");
   }
 }
 
