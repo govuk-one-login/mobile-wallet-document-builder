@@ -24,7 +24,7 @@ export async function documentController(
 
     const { data } = tableItem;
 
-    if (tableItem.vcType === CredentialType.digitalVeteranCard) {
+    if (tableItem.vcType === CredentialType.VeteranCardCredential) {
       const s3Uri = (data as VeteranCardData).photo;
 
       const { bucketName, fileName } = getBucketAndFileName(s3Uri);

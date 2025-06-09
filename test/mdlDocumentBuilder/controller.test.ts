@@ -163,7 +163,7 @@ describe("controller.ts", () => {
 
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
             documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-            vcType: "mobileDrivingLicence",
+            vcType: "org.iso.18013.5.1.mDL",
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
@@ -210,7 +210,7 @@ describe("controller.ts", () => {
 
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
             documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-            vcType: "mobileDrivingLicence",
+            vcType: "org.iso.18013.5.1.mDL",
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
@@ -256,7 +256,7 @@ describe("controller.ts", () => {
 
     describe("given the document and photo have been stored successfully", () => {
       describe("when an unknown error code has been received in the request body", () => {
-        it("should redirect to the credential offer page with only 'mobileDrivingLicence' in the query params", async () => {
+        it("should redirect to the credential offer page with only 'org.iso.18013.5.1.mDL' in the query params", async () => {
           const req = getMockReq({
             body: requestBody,
           });
@@ -265,13 +265,13 @@ describe("controller.ts", () => {
           await mdlDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL",
           );
         });
       });
 
       describe("when an error scenario has not been selected", () => {
-        it("should redirect to the credential offer page with only 'mobileDrivingLicence' in the query params", async () => {
+        it("should redirect to the credential offer page with only 'org.iso.18013.5.1.mDL' in the query params", async () => {
           const req = getMockReq({
             body: requestBody,
           });
@@ -280,7 +280,7 @@ describe("controller.ts", () => {
           await mdlDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL",
           );
         });
       });
@@ -296,7 +296,7 @@ describe("controller.ts", () => {
             await mdlDocumentBuilderPostController(req, res);
 
             expect(res.redirect).toHaveBeenCalledWith(
-              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=mobileDrivingLicence&error=${selectedError}`,
+              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL&error=${selectedError}`,
             );
           },
         );

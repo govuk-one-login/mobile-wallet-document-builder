@@ -10,7 +10,7 @@ import { DbsData } from "./types/DbsData";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 
-const CREDENTIAL_TYPE = CredentialType.basicCheckCredential;
+const CREDENTIAL_TYPE = CredentialType.BasicDisclosureCredential;
 
 export async function dbsDocumentBuilderGetController(
   req: Request,
