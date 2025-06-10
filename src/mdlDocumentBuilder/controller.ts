@@ -22,7 +22,7 @@ import { formatDate } from "./helpers/dateFormatter";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 
-const CREDENTIAL_TYPE = CredentialType.mobileDrivingLicence;
+const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
 
 export async function mdlDocumentBuilderGetController(
   req: Request,
