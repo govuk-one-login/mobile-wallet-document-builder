@@ -153,7 +153,7 @@ describe("controller.ts", () => {
             credentialTtlMinutes: 525600,
             photo: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           },
-          vcType: "VeteranCardCredential",
+          vcType: "DigitalVeteranCard",
         });
       });
     });
@@ -169,7 +169,7 @@ describe("controller.ts", () => {
           await veteranCardDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=VeteranCardCredential",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=DigitalVeteranCard",
           );
         });
       });
@@ -184,7 +184,7 @@ describe("controller.ts", () => {
           await veteranCardDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=VeteranCardCredential",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=DigitalVeteranCard",
           );
         });
       });
@@ -200,7 +200,7 @@ describe("controller.ts", () => {
             await veteranCardDocumentBuilderPostController(req, res);
 
             expect(res.redirect).toHaveBeenCalledWith(
-              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=VeteranCardCredential&error=${selectedError}`,
+              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=DigitalVeteranCard&error=${selectedError}`,
             );
           },
         );
