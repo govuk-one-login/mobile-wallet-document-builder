@@ -153,14 +153,14 @@ describe("controller.ts", () => {
             credentialTtlMinutes: 525600,
             photo: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           },
-          vcType: "digitalVeteranCard",
+          vcType: "DigitalVeteranCard",
         });
       });
     });
 
     describe("given the document and photo have been stored successfully", () => {
       describe("when an unknown error code has been received in the request body", () => {
-        it("should redirect to the credential offer page with only 'digitalVeteranCard' in the query params", async () => {
+        it("should redirect to the credential offer page with only 'VeteranCardCredential' in the query params", async () => {
           const req = getMockReq({
             body: requestBody,
           });
@@ -169,13 +169,13 @@ describe("controller.ts", () => {
           await veteranCardDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=DigitalVeteranCard",
           );
         });
       });
 
       describe("when an error scenario has not been selected", () => {
-        it("should redirect to the credential offer page with only 'digitalVeteranCard' in the query params", async () => {
+        it("should redirect to the credential offer page with only 'VeteranCardCredential' in the query params", async () => {
           const req = getMockReq({
             body: requestBody,
           });
@@ -184,7 +184,7 @@ describe("controller.ts", () => {
           await veteranCardDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=DigitalVeteranCard",
           );
         });
       });
@@ -200,7 +200,7 @@ describe("controller.ts", () => {
             await veteranCardDocumentBuilderPostController(req, res);
 
             expect(res.redirect).toHaveBeenCalledWith(
-              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=digitalVeteranCard&error=${selectedError}`,
+              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=DigitalVeteranCard&error=${selectedError}`,
             );
           },
         );

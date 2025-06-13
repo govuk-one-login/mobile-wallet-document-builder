@@ -1,6 +1,6 @@
 export enum CredentialType {
-  socialSecurityCredential = "SocialSecurityCredential",
-  basicCheckCredential = "BasicCheckCredential",
-  digitalVeteranCard = "digitalVeteranCard",
-  mobileDrivingLicence = "mobileDrivingLicence",
+  SocialSecurityCredential = "SocialSecurityCredential",
+  BasicDisclosureCredential = "BasicDisclosureCredential",
+  DigitalVeteranCard = "DigitalVeteranCard",
+  MobileDrivingLicence = "org.iso.18013.5.1.mDL",
 }

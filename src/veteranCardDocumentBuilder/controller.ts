@@ -15,7 +15,7 @@ import { getPhoto } from "../utils/photoUtils";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 
-const CREDENTIAL_TYPE = CredentialType.digitalVeteranCard;
+const CREDENTIAL_TYPE = CredentialType.DigitalVeteranCard;
 
 export async function veteranCardDocumentBuilderGetController(
   req: Request,

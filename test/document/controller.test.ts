@@ -99,7 +99,7 @@ describe("controller.ts", () => {
     getDocument.mockReturnValueOnce({
       documentId: documentId,
       data: veteranCardData,
-      vcType: "digitalVeteranCard",
+      vcType: "DigitalVeteranCard",
     });
     getPhoto.mockReturnValueOnce(undefined);
 
@@ -136,7 +136,7 @@ describe("controller.ts", () => {
     getDocument.mockReturnValueOnce({
       documentId: documentId,
       data: veteranCardData,
-      vcType: "digitalVeteranCard",
+      vcType: "DigitalVeteranCard",
     });
     const mockedPhoto = "mockBase64EncodedPhoto";
     getPhoto.mockReturnValueOnce(mockedPhoto);
@@ -159,7 +159,7 @@ describe("controller.ts", () => {
     getDocument.mockReturnValueOnce({
       documentId: documentId,
       data: mdlData,
-      vcType: "mobileDrivingLicence",
+      vcType: "org.iso.18013.5.1.mDL",
     });
     const mockedPhoto = "mockBase64EncodedPhoto";
     getPhoto.mockReturnValueOnce(mockedPhoto);

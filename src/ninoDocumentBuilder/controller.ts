@@ -10,7 +10,7 @@ import { NinoData } from "./types/NinoData";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 
-const CREDENTIAL_TYPE = CredentialType.socialSecurityCredential;
+const CREDENTIAL_TYPE = CredentialType.SocialSecurityCredential;
 
 export async function ninoDocumentBuilderGetController(
   req: Request,
