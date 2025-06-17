@@ -12,7 +12,7 @@ import { createPublicKey, JsonWebKey } from "node:crypto";
 const bs58 = require("bs58");
 
 const ACCESS_TOKEN_SIGNING_ALGORITHM = "ES256";
-const ACCESS_TOKEN_JWT_TYPE = "openid4vci-proof+jwt";
+const PROOF_TOKEN_JWT_TYPE = "openid4vci-proof+jwt";
 
 export async function getProofJwt(
   nonce: string,
@@ -26,7 +26,7 @@ export async function getProofJwt(
 
   const header = {
     alg: ACCESS_TOKEN_SIGNING_ALGORITHM,
-    typ: ACCESS_TOKEN_JWT_TYPE,
+    typ: PROOF_TOKEN_JWT_TYPE,
     kid: didKey,
   };
   const encodedHeader = base64Encoder(header);
