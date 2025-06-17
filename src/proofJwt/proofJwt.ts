@@ -11,7 +11,7 @@ import format from "ecdsa-sig-formatter";
 import { createPublicKey, JsonWebKey } from "node:crypto";
 const bs58 = require("bs58");
 
-const ACCESS_TOKEN_SIGNING_ALGORITHM = "ES256";
+const PROOF_TOKEN_SIGNING_ALGORITHM = "ES256";
 const PROOF_TOKEN_JWT_TYPE = "openid4vci-proof+jwt";
 
 export async function getProofJwt(
@@ -25,7 +25,7 @@ export async function getProofJwt(
   const didKey = createDidKey(publicKeyJwk);
 
   const header = {
-    alg: ACCESS_TOKEN_SIGNING_ALGORITHM,
+    alg: PROOF_TOKEN_SIGNING_ALGORITHM,
     typ: PROOF_TOKEN_JWT_TYPE,
     kid: didKey,
   };
