@@ -80,7 +80,7 @@ describe("accessToken.ts", () => {
       );
 
       expect(response).toEqual(
-        "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2tfa2V5X2lkIn0.eyJzdWIiOiJtb2NrX3dhbGxldF9zdWJqZWN0X2lkIiwiaXNzIjoibW9ja19hdWRpZW5jZSIsImF1ZCI6Im1vY2tfaXNzdWVyIiwiY3JlZGVudGlhbF9pZGVudGlmaWVycyI6WyJtb2NrX2NyZWRlbnRpYWxfaWRlbnRpZmllciJdLCJjX25vbmNlIjoiMWEwZmFjMDUtNGIzOC00ODBmLTljYmQtYjA0NmVhYmUxZTIyIn0.mocked_signature",
+        "eyJhbGciOiJFUzI1NiIsInR5cCI6ImF0K2p3dCIsImtpZCI6Im1vY2tfa2V5X2lkIn0.eyJzdWIiOiJtb2NrX3dhbGxldF9zdWJqZWN0X2lkIiwiaXNzIjoibW9ja19hdWRpZW5jZSIsImF1ZCI6Im1vY2tfaXNzdWVyIiwiY3JlZGVudGlhbF9pZGVudGlmaWVycyI6WyJtb2NrX2NyZWRlbnRpYWxfaWRlbnRpZmllciJdLCJjX25vbmNlIjoiMWEwZmFjMDUtNGIzOC00ODBmLTljYmQtYjA0NmVhYmUxZTIyIn0.mocked_signature",
       );
     });
   });

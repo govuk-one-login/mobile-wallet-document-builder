@@ -6,7 +6,7 @@ import { randomUUID, UUID } from "node:crypto";
 import { base64Encoder } from "../../utils/base64Encoder";
 
 const ACCESS_TOKEN_SIGNING_ALGORITHM = "ES256";
-const ACCESS_TOKEN_JWT_TYPE = "JWT";
+const ACCESS_TOKEN_JWT_TYPE = "at+jwt";
 const ACCESS_TOKEN_KMS_SIGNING_ALGORITHM = "ECDSA_SHA_256";
 
 export async function getJwtAccessToken(
