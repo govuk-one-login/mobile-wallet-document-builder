@@ -5,7 +5,7 @@ import { customiseCredentialOfferUrl } from "./helpers/customCredentialOfferUrl"
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { UserInfo } from "./types/UserInfo";
-import { apps } from "../config/appConfig";
+import { apps, getEnvironment } from "../config/appConfig";
 
 export async function credentialOfferViewerController(
   req: Request,
@@ -42,6 +42,7 @@ export async function credentialOfferViewerController(
       authenticated: isAuthenticated(req),
       universalLink: customisedCredentialOfferUrl,
       qrCode,
+      environment: getEnvironment(),
     });
   } catch (error) {
     logger.error(
