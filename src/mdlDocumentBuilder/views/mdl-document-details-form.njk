@@ -1,0 +1,404 @@
+{% extends "base.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% set pageTitle = "Please enter the Driving Licence document details:" %}
+{% block content %}
+  <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
+  <form action="/build-mdl-document" method="post">
+    {% call govukFieldset({
+      legend: {
+      text: pageTitle,
+      classes: "govuk-fieldset__legend--m",
+      isPageHeading: true
+      }
+      }) %}
+      {{ govukInput({
+        "label": {
+          "text": "Given name",
+          "classes": "govuk-label--s"
+        },
+        "classes": "govuk-!-width-one-third",
+        "id": "given_name",
+        "name": "given_name",
+        "autocomplete": "given_name",
+        "spellcheck": false,
+        "value": "Sarah Elizabeth"
+      }) }}
+      {{ govukInput({
+        "label": {
+          "text": "Family name",
+          "classes": "govuk-label--s"
+        },
+        "classes": "govuk-!-width-one-third",
+        "id": "family_name",
+        "name": "family_name",
+        "autocomplete": "family_name",
+        "spellcheck": false,
+        "value": "Edwards"
+      }) }}
+      {{ govukInput({
+         "label": {
+           "text": "Title",
+           "classes": "govuk-label--s"
+         },
+         hint: { html: 'DVLA set values are “Mr”, "Mrs”, “Miss”, “Ms”, “Dr” <br>and “Rev” or free-text up to 15 characters' },
+          "classes": "govuk-!-width-one-third",
+          "id": "title",
+          "name": "title",
+          "autocomplete": "title",
+          "spellcheck": true,
+          "value": "Miss"
+      }) }}
+      {% if errors['birth_date'] %}
+        {% set dobError = { text: errors['birth_date'] } %}
+      {% endif %}
+      {{ govukDateInput({
+            "id": "birth_date",
+            "namePrefix": "birth",
+            "fieldset": {
+            "legend": {
+            "text": "Date of birth",
+            "classes": "govuk-fieldset__legend--s"
+            }
+            },
+            "errorMessage": dobError,
+            "items": [
+            {
+            "classes": "govuk-input--width-2",
+            "name": "day",
+            "value": "06"
+            },
+            {
+            "classes": "govuk-input--width-2",
+            "name": "month",
+            "value": "03"
+            },
+            {
+            "classes": "govuk-input--width-3",
+            "name": "year",
+            "value": "1975"
+            }
+            ]
+            }) }}
+      {{ govukInput({
+        "label": {
+          "text": "Place of birth",
+          "classes": "govuk-label--s"
+        },
+        "classes": "govuk-!-width-one-third",
+        "id": "birth_place",
+        "name": "birth_place",
+        "autocomplete": "birth_place",
+        "spellcheck": false,
+        "value": "London"
+      }) }}
+      {{ govukRadios({
+        classes: "govuk-radios--small",
+        name: "welsh_licence",
+        fieldset: {
+        legend: {
+          text: "Bilingual Welsh licence",
+          classes: "govuk-fieldset__legend--s"
+        }
+        },
+        items: [
+        {
+          value: "false",
+          text: "No",
+          checked: true
+        },
+        {
+          value: "true",
+          text: "Yes"
+        }
+        ]
+      }) }}
+      {% macro drivingPrivilegesFieldset(type, legendText) %}
+        {% call govukFieldset({
+          legend: { text: legendText, classes: "govuk-fieldset__legend--s" }
+          }) %}
+          <div id="{{ type }}DrivingPrivilege"></div>
+          <button id="add-{{ type }}-button"
+                  class="govuk-button govuk-button--secondary"
+                  onclick="addDrivingPrivileges('{{ type }}')"
+                  type="button">Add</button>
+        {% endcall %}
+      {% endmacro %}
+      {{ drivingPrivilegesFieldset('full', 'Driving privileges') }}
+      {{ drivingPrivilegesFieldset('provisional', 'Provisional driving privileges (optional)') }}
+      {% if errors['issue_date'] %}
+        {% set issueError = { text: errors['issue_date'] } %}
+      {% endif %}
+      {{ govukDateInput({
+            id: "issue_date",
+            namePrefix: "issue",
+            fieldset: {
+            legend: {
+            text: "Driving licence issue date",
+            classes: "govuk-fieldset__legend--s"
+            }
+            },
+            "errorMessage": issueError,
+            items: [
+            { classes: "govuk-input--width-2", name: "day", value: defaultIssueDate.day },
+            { classes: "govuk-input--width-2", name: "month", value: defaultIssueDate.month },
+            { classes: "govuk-input--width-3", name: "year", value: defaultIssueDate.year}
+            ]
+            }) }}
+      {% if errors['expiry_date'] %}
+        {% set expiryError = { text: errors['expiry_date'] } %}
+      {% endif %}
+      {{ govukDateInput({
+            id: "expiry_date",
+            namePrefix: "expiry",
+            fieldset: {
+            legend: { text: "Driving licence expiry date", classes: "govuk-fieldset__legend--s" }
+            },
+            "errorMessage": expiryError,
+            items: [
+            { classes: "govuk-input--width-2", name: "day", value: defaultExpiryDate.day },
+            { classes: "govuk-input--width-2", name: "month", value: defaultExpiryDate.month },
+            { classes: "govuk-input--width-3", name: "year", value: defaultExpiryDate.year }
+            ]
+            }) }}
+      {{ govukInput({
+        "label": {
+          "text": "Issuing authority",
+          "classes": "govuk-label--s"
+        },
+        "id": "issuing_authority",
+        "name": "issuing_authority",
+        "classes": "govuk-!-width-one-third",
+        "spellcheck": false,
+        "value": "DVLA"
+      }) }}
+      {{ govukInput({
+        "label": {
+          "text": "Issuing country",
+          "classes": "govuk-label--s"
+        },
+        "id": "issuing_country",
+        "name": "issuing_country",
+        "classes": "govuk-!-width-one-third",
+        "spellcheck": false,
+        "value": "GB"
+      }) }}
+      {{ govukInput({
+        "label": {
+          "text": "Licence number",
+          "classes": "govuk-label--s"
+        },
+        "id": "document_number",
+        "name": "document_number",
+        "classes": "govuk-!-width-one-third",
+        "spellcheck": false,
+        "value": "HALL9655293DH5RO"
+      }) }}
+      {% call govukFieldset({
+        "legend": {
+        "text": "Permanent place of
+        residence",
+        "classes": "govuk-fieldset__legend--s",
+        "isPageHeading": false
+        }
+        }) %}
+        {{ govukInput({
+          "label": {
+            "text": "Flat number"
+          },
+          "id": "resident_address",
+          "name": "resident_address",
+          "classes": "govuk-input--width-5",
+          "spellcheck": false,
+          "autocomplete": "address-line1",
+          "value": "Flat 11"
+        }) }}
+        {{ govukInput({
+          "label": {
+            "text": "Building name"
+          },
+          "id": "resident_address",
+          "name": "resident_address",
+          "classes": "govuk-input--width-20",
+          "spellcheck": false,
+          "autocomplete": "address-line2",
+          "value": "Blashford"
+        }) }}
+        {{ govukInput({
+          "label": {
+            "text": "Street name"
+          },
+          "id": "resident_address",
+          "name": "resident_address",
+          "classes": "govuk-input--width-20",
+          "spellcheck": false,
+          "autocomplete": "address-line3",
+          "value": "Adelaide Road"
+        }) }}
+        {{ govukInput({
+          "label": {
+            "text": "Postal code"
+          },
+          "id": "resident_postal_code",
+          "name": "resident_postal_code",
+          "classes": "govuk-input--width-10",
+          "spellcheck": false,
+          "autocomplete": "resident_postal_code",
+          "value": "NW3 3RX"
+        }) }}
+        {{ govukInput({
+          "label": {
+            "text": "City"
+          },
+          "id": "resident_city",
+          "name": "resident_city",
+          "classes": "govuk-input--width-20",
+          "spellcheck": false,
+          "autocomplete": "resident_city",
+          "value": "London"
+        }) }}
+      {% endcall %}
+      {{ govukSelect({
+        "id": "portrait",
+        "name": "portrait",
+        "label": {
+          "text": "Choose a photo",
+          "classes": "govuk-label--s"
+        },
+        "items": [
+          {
+            "value": "100x125.jpg",
+            "text": "JPEG 1 - 100x125"
+          },
+          {
+            "value": "140x175.jpg",
+            "text": "JPEG 2 - 140x175"
+          },
+          {
+            "value": "300x375.jpg",
+            "text": "JPEG 3 - 300x375"
+          },
+          {
+            "value": "420x525.jpg",
+            "text": "JPEG 4 - 420x525",
+            "selected": true
+          },
+          {
+            "value": "600x750.jpg",
+            "text": "JPEG 5 - 600x750"
+          },
+          {
+            "value": "600x910.jpg",
+            "text": "JPEG 6 - 600x910"
+          },
+          {
+            "value": "760x750.jpg",
+            "text": "JPEG 7 - 760x750"
+          },
+          {
+            "value": "100x125.png",
+            "text": "PNG 1 - 100x125"
+          },
+          {
+            "value": "140x175.png",
+            "text": "PNG 2 - 140x175"
+          },
+          {
+            "value": "300x375.png",
+            "text": "PNG 3 - 300x375"
+          },
+          {
+            "value": "420x525.png",
+            "text": "PNG 4 - 420x525"
+          },
+          {
+            "value": "600x750.png",
+            "text": "PNG 5 - 600x750"
+          },
+          {
+            "value": "600x910.png",
+            "text": "PNG 6 - 600x910"
+          },
+          {
+            "value": "760x750.png",
+            "text": "PNG 7 - 760x750"
+          },
+          {
+            "value": "JFIF.jfif",
+            "text": "JFIF"
+          },
+          {
+            "value": "EXIF.jpg",
+            "text": "EXIF"
+          }
+        ]
+      }) }}
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+      {{ govukSelect({
+        "id": "throw-error",
+        "name": "throwError",
+        "label": {
+          "text": "Throw an error",
+          "classes": "govuk-label--s"
+        },
+        "items": errorChoices
+      }) }}
+    {% endcall %}
+    {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+  </form>
+  <script>
+      const MAX_ENTRIES = 5;
+      function addDrivingPrivileges(type) {
+          const containerId = type + "DrivingPrivilege";
+          const container = document.getElementById(containerId);
+          const addButton = document.getElementById(`add-${type}-button`);
+
+          if (container.children.length >= MAX_ENTRIES) {
+              return;
+          }
+          const entry = document.createElement('div');
+          entry.innerHTML = `
+                      {% call govukFieldset({ "legend": { "classes": "govuk-fieldset__legend--s", "isPageHeading": false } }) %}
+                        {{ govukSelect({ "id": "${type}_vehicle_category_code", "name": "${type}VehicleCategoryCode", "label": { "text": "Vehicle category code" },
+                          "items": [ { "value": "AM", "text": "AM - Mopeds and light quadricycles" }, { "value": "P", "text": "P – Mopeds with a maximum design speed of over 45 km/h (28 mph) but not more than 50 km/h (31 mph)" },
+                            { "value": "Q", "text": "Q – Trial e-scooters" }, { "value": "A1", "text": "A1 – Light motorcycles up to 125cc" }, { "value": "A2", "text": "A2 – Motorcycles with a power output up to 35 kW" },
+                            { "value": "A", "text": "A – Motorcycles over 35 kW or with a power-to-weight ratio exceeding 0.2 kW/kg" }, { "value": "B", "text": "B - Cars (up to 3,500 kg MAM)", "selected": true },
+                            { "value": "B", "text": "B - Automatic transmission cars" }, { "value": "BE", "text": "BE - Car and trailer combinations (up to 3,500 kg MAM)" }, { "value": "B1", "text": "B1 - Light vehicles and quadricycles" },
+                            { "value": "C1", "text": "C1 - Medium-sized vehicles (3,500–7,500 kg MAM)" }, { "value": "C1E", "text": "C1E - C1 vehicles with a trailer over 750 kg (combined MAM up to 12,000 kg)" },
+                            { "value": "C", "text": "C - Large vehicles over 7,500 kg MAM" }, { "value": "CE", "text": "CE - C vehicles with a trailer over 750 kg" }, { "value": "D1", "text": "D1 - Minibuses (no more than 16 passenger seats)" },
+                            { "value": "D1E", "text": "D1E - D1 vehicles with a trailer over 750 kg (combined MAM up to 12,000 kg)" }, { "value": "D", "text": "D - Buses (more than 8 passenger seats)" },
+                            { "value": "DE", "text": "DE - D vehicles with a trailer over 750 kg" }, { "value": "F", "text": "F - Agricultural tractor" }, { "value": "G", "text": "G - Road roller" },
+                            { "value": "H", "text": "H - Tracked vehicles" }, { "value": "K", "text": "K - Mowing machine or pedestrian-controlled vehicle" }, { "value": "L", "text": "L - Electrically propelled vehicle" },
+                            { "value": "M", "text": "M - Trolley vehicles" }, { "value": "N", "text": "N - Exempt from duty" } ] }) }}
+                        {{ govukDateInput({ "id": "${type}_issue_date", "namePrefix": "${type}PrivilegeIssue", "fieldset": { "legend": { "text": "Issue date (optional)", "classes": "govuk-label--s" } },
+                          "items": [ { "classes": "govuk-input--width-2", "name": "day", "value": defaultIssueDate.day }, { "classes": "govuk-input--width-2", "name": "month", "value": defaultIssueDate.month }, { "classes": "govuk-input--width-3", "name": "year", "value": defaultIssueDate.year } ] }) }}
+                        {{ govukDateInput({ "id": "${type}_expiry_date", "namePrefix": "${type}PrivilegeExpiry", "fieldset": { "legend": { "text": "Expiry date (optional)", "classes": "govuk-label--s" } },
+                          "items": [ { "classes": "govuk-input--width-2", "name": "day" }, { "classes": "govuk-input--width-2", "name": "month" }, { "classes": "govuk-input--width-3", "name": "year" } ] }) }}
+                        <button class="govuk-button govuk-button--secondary" onclick="deleteDrivingPrivileges(this.parentNode.parentNode, '${type}')" type="button">Delete</button>
+                      {% endcall %}
+                    `;
+          container.appendChild(entry);
+          updateAddButtonState(type);
+      }
+
+      function deleteDrivingPrivileges(element, type) {
+          element.parentNode.removeChild(element);
+          updateAddButtonState(type);
+      }
+
+      function updateAddButtonState(type) {
+          const containerId = type + "DrivingPrivilege";
+          const container = document.getElementById(containerId);
+          const addButton = document.getElementById(`add-${type}-button`);
+          addButton.disabled = container.children.length >= MAX_ENTRIES;
+      }
+
+      addDrivingPrivileges('full');
+      updateAddButtonState('full');
+      updateAddButtonState('provisional');
+  </script>
+{% endblock %}
