@@ -1,0 +1,55 @@
+name: Publish package to GitHub Packages
+
+on: workflow_dispatch
+
+jobs:
+  publish-package:
+    runs-on: ubuntu-latest
+    name: Publish package
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Retrieve package version from package.json
+        id: current_version
+        run: |
+          version=$(jq -r .version package.json)
+          echo "Current version: $version"
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Check if package version has been bumped
+        run: |
+          git fetch --tags
+          # Get the latest tag and strip 'v' prefix, default to '0.0.0' if no tags exist
+          previous_version=$(git tag --sort=-v:refname | sed 's/^v//' | head -n 1 || echo "0.0.0")
+          current_version="${{ steps.current_version.outputs.version }}"
+          
+          echo "Previous version: $previous_version"
+          echo "Current version: $current_version"
+          
+          if [ "$previous_version" = "$current_version" ]; then
+            echo "Version has not been bumped from $previous_version"
+            exit 1
+          else
+            echo "Version bumped from $previous_version to $current_version"
+          fi
+
+      - name: Create and push tag
+        run: |
+          new_tag="v${{ steps.current_version.outputs.version }}"
+          echo "Creating tag: $new_tag"
+          git tag "$new_tag"
+          git push origin "$new_tag"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 #v2.3.2
+        with:
+          tag_name: v${{ steps.current_version.outputs.version }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
