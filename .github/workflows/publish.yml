@@ -1,0 +1,62 @@
+name: Publish package to GitHub Packages
+
+on: workflow_dispatch
+
+jobs:
+  publish-package:
+    runs-on: ubuntu-latest
+    name: Publish package
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Retrieve package version from package.json
+        id: current_version
+        run: |
+          version=$(jq -r .version package.json)
+          echo "Current version: $version"
+          echo version=$version >> $GITHUB_OUTPUT
+
+      - name: Check if package version has been bumped
+        run: |
+          git fetch --tags
+          previous_version=$(git tag --sort=-v:refname | head -n 1 || echo "none")
+          echo "Previous version: $previous_version"
+
+          if [ "$previous_version" == ${{ steps.current_version.outputs.version }} ]; then
+            echo "Version has not been bumped."
+            exit 1
+          else
+            echo "Version been bumped."
+            exit 0
+          fi
+
+      - name: Create and push tag
+        run: |
+          new_tag=v${{ steps.current_version.outputs.version }}
+          git tag $new_tag
+          git push origin $new_tag
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 #v0.1.15
+        with:
+          tag_name: v${{ steps.current_version.outputs.version }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
