@@ -5,9 +5,9 @@ import { logger } from "./logger";
 
 export function auth(configuration: AuthMiddlewareConfiguration) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    req.oidc = await getOIDCClient(configuration).catch((err: Error) => {
-      logger.error("Error building OIDC Client", err);
-      throw new Error(err.message);
+    req.oidc = await getOIDCClient(configuration).catch((error: Error) => {
+      logger.error(error);
+      throw new Error("Error building OIDC Client");
     });
     next();
   };
