@@ -39,13 +39,9 @@ const APP_VIEWS = [
 
 export async function createApp(): Promise<express.Application> {
   const app: express.Application = express();
-
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
-  app.use(auth(getOIDCConfig()));
   app.use(loggerMiddleware);
-  app.use(noCacheMiddleware);
-
   app.use((req, res, next) => {
     req.log = req.log.child({
       trace: res.locals.trace,
@@ -56,7 +52,6 @@ export async function createApp(): Promise<express.Application> {
   app.use("/public", express.static(path.join(__dirname, "public")));
   app.use(express.static(path.join(__dirname, "assets")));
   app.use("/assets", express.static(path.join(__dirname, "assets")));
-
   app.set(
     "view engine",
     nunjucks.configure(APP_VIEWS, {
@@ -64,7 +59,8 @@ export async function createApp(): Promise<express.Application> {
       noCache: true,
     }),
   );
-
+  app.use(noCacheMiddleware);
+  app.use(auth(getOIDCConfig()));
   app.use(returnFromAuthRouter);
   app.use(appSelectorRouter);
   app.use(documentSelectorRouter);
@@ -80,6 +76,5 @@ export async function createApp(): Promise<express.Application> {
   app.use(credentialViewerRouter);
   app.use(veteranCardDocumentBuilderRouter);
   app.use(mdlDocumentBuilderRouter);
-
   return app;
 }

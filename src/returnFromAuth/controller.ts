@@ -64,6 +64,7 @@ export async function returnFromAuthGetController(
     res.redirect(`/select-document`);
   } catch (error) {
     const message =
+      /* eslint-disable @typescript-eslint/no-explicit-any */
       typeof error === "string" ? error : ((error as any)?.message ?? "");
     logger.error(`OAuth callback failed: ${message}`);
     res.render("500.njk");
