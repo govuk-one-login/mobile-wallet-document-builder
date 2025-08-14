@@ -22,10 +22,13 @@ export async function returnFromAuthGetController(
   try {
     // Handle OAuth error responses from the authorization server
     if (req.query.error) {
-      logger.error("OAuth authorization failed", {
-        error: req.query.error,
-        error_description: req.query.error_description,
-      });
+      logger.error(
+        {
+          error: req.query.error,
+          error_description: req.query.error_description,
+        },
+        "OAuth authorization failed",
+      );
       res.render("500.njk");
       return;
     }
@@ -60,10 +63,10 @@ export async function returnFromAuthGetController(
 
     res.redirect(`/select-document`);
   } catch (error) {
-    logger.error("OAuth callback processing failed", {
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    });
+    const message =
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      typeof error === "string" ? error : ((error as any)?.message ?? "");
+    logger.error(`OAuth callback failed: ${message}`);
     res.render("500.njk");
     return;
   }

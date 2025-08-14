@@ -60,10 +60,10 @@ describe("controller.ts", () => {
 
     await returnFromAuthGetController(req, res);
 
-    expect(loggerErrorSpy).toHaveBeenCalledWith("OAuth authorization failed", {
-      error: "access_denied",
-      error_description: "User denied access",
-    });
+    expect(loggerErrorSpy).toHaveBeenCalledWith(
+      { error: "access_denied", error_description: "User denied access" },
+      "OAuth authorization failed",
+    );
     expect(res.render).toHaveBeenCalledWith("500.njk");
     expect(res.redirect).not.toHaveBeenCalled();
   });
@@ -76,10 +76,10 @@ describe("controller.ts", () => {
 
     await returnFromAuthGetController(req, res);
 
-    expect(loggerErrorSpy).toHaveBeenCalledWith("OAuth authorization failed", {
-      error: "server_error",
-      error_description: undefined,
-    });
+    expect(loggerErrorSpy).toHaveBeenCalledWith(
+      { error: "server_error", error_description: undefined },
+      "OAuth authorization failed",
+    );
     expect(res.render).toHaveBeenCalledWith("500.njk");
   });
 
@@ -92,34 +92,26 @@ describe("controller.ts", () => {
     await returnFromAuthGetController(req, res);
 
     expect(loggerErrorSpy).toHaveBeenCalledWith(
-      "OAuth callback processing failed",
-      {
-        error: "JWT signing failed",
-        stack: error.stack,
-      },
+      "OAuth callback failed: JWT signing failed",
     );
     expect(res.render).toHaveBeenCalledWith("500.njk");
   });
 
   it("should return 500 on OIDC callback failure", async () => {
-    const error = new Error("Token exchange failed");
+    const errorMessage = "Token exchange failed";
     const req = createOidcMockReq();
-    req.oidc!.callback = jest.fn().mockRejectedValue(error);
+    req.oidc!.callback = jest.fn().mockRejectedValue({ message: errorMessage });
     const { res } = getMockRes();
 
     await returnFromAuthGetController(req, res);
 
     expect(loggerErrorSpy).toHaveBeenCalledWith(
-      "OAuth callback processing failed",
-      {
-        error: "Token exchange failed",
-        stack: error.stack,
-      },
+      "OAuth callback failed: Token exchange failed",
     );
     expect(res.render).toHaveBeenCalledWith("500.njk");
   });
 
-  it("should handle non-Error exceptions", async () => {
+  it("should handle string errors", async () => {
     const error = "String error";
     buildAssertionJwt.mockRejectedValue(error);
     const req = createOidcMockReq();
@@ -128,11 +120,7 @@ describe("controller.ts", () => {
     await returnFromAuthGetController(req, res);
 
     expect(loggerErrorSpy).toHaveBeenCalledWith(
-      "OAuth callback processing failed",
-      {
-        error: "String error",
-        stack: undefined,
-      },
+      "OAuth callback failed: String error",
     );
     expect(res.render).toHaveBeenCalledWith("500.njk");
   });

@@ -4,7 +4,11 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">Something went wrong</h1>
-            <p class="govuk-body">Try again later.</p>
+            {% if errorMessage %}
+                <p class="govuk-body">{{ errorMessage }}</p>
+            {% else %}
+                <p class="govuk-body">Please try again later.</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
