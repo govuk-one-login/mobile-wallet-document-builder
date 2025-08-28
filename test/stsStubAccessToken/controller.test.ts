@@ -2,15 +2,15 @@ process.env.STS_SIGNING_KEY_ID = "mock_signing_key_id";
 process.env.ACCESS_TOKEN_TTL_IN_SECS = "100";
 import { stsStubAccessTokenController } from "../../src/stsStubAccessToken/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
-import * as accessToken from "../../src/stsStubAccessToken/token/accessToken";
+import * as accessToken from "../../src/stsStubAccessToken/token/createAccessToken";
 import * as validateTokenRequest from "../../src/stsStubAccessToken/token/validateTokenRequest";
 
 jest.mock("../../src/stsStubAccessToken/token/validateTokenRequest", () => ({
   validateGrantType: jest.fn(),
   getPreAuthorizedCodePayload: jest.fn(),
 }));
-jest.mock("../../src/stsStubAccessToken/token/accessToken", () => ({
-  getJwtAccessToken: jest.fn(),
+jest.mock("../../src/stsStubAccessToken/token/createAccessToken", () => ({
+  createAccessToken: jest.fn(),
 }));
 
 describe("controller.ts", () => {
@@ -32,7 +32,7 @@ describe("controller.ts", () => {
       validateTokenRequest.getPreAuthorizedCodePayload as jest.Mock;
     getPreAuthorizedCodePayload.mockReturnValueOnce({ mock: "payload" });
 
-    const createAccessToken = accessToken.getJwtAccessToken as jest.Mock;
+    const createAccessToken = accessToken.createAccessToken as jest.Mock;
     createAccessToken.mockReturnValueOnce(
       "eyJ0eXAiOiJKV1Qh.eyJzdWIiOiM.9nQevZ--Asqx5ltCWvw_AvVNDA",
     );
@@ -172,7 +172,7 @@ describe("controller.ts", () => {
       validateTokenRequest.getPreAuthorizedCodePayload as jest.Mock;
     getPreAuthorizedCodePayload.mockReturnValueOnce({ mock: "payload" });
 
-    const createAccessToken = accessToken.getJwtAccessToken as jest.Mock;
+    const createAccessToken = accessToken.createAccessToken as jest.Mock;
     createAccessToken.mockRejectedValueOnce(new Error("SOME_ERROR"));
 
     await stsStubAccessTokenController(req, res);

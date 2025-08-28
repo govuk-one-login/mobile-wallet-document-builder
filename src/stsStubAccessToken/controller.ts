@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getJwtAccessToken } from "./token/accessToken";
+import { createAccessToken } from "./token/createAccessToken";
 import {
   validateGrantType,
   getPreAuthorizedCodePayload,
@@ -40,16 +40,19 @@ export async function stsStubAccessTokenController(
 
     logger.info(`Valid pre-authorized code received: ${preAuthorizedCode}`);
 
-    const accessToken = await getJwtAccessToken(
+    const accessTokenTtl = Number(getAccessTokenTtlInSecs());
+
+    const accessToken = await createAccessToken(
       getHardcodedWalletSubjectId(),
       payload,
       getStsSigningKeyId(),
+      accessTokenTtl,
     );
 
     res.status(200).json({
       access_token: accessToken,
       token_type: "bearer",
-      expires_in: Number(getAccessTokenTtlInSecs()),
+      expires_in: accessTokenTtl,
     });
     return;
   } catch (error) {
