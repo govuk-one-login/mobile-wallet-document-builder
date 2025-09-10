@@ -9,8 +9,10 @@ import { DbsRequestBody } from "./types/DbsRequestBody";
 import { DbsData } from "./types/DbsData";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
+import { getTimeToLiveEpoch } from "../mdlDocumentBuilder/helpers/defaultDates";
 
 const CREDENTIAL_TYPE = CredentialType.BasicDisclosureCredential;
+const TTL_MINUTES = 43200;
 
 export async function dbsDocumentBuilderGetController(
   req: Request,
@@ -34,11 +36,13 @@ export async function dbsDocumentBuilderPostController(
   try {
     const body: DbsRequestBody = req.body;
     const data = buildDbsDataFromRequestBody(body);
+    const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
     const documentId = randomUUID();
     await saveDocument(getDocumentsTableName(), {
       documentId,
       data,
       vcType: CREDENTIAL_TYPE,
+      timeToLive,
     });
 
     const selectedError = body["throwError"];
