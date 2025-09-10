@@ -34,5 +34,6 @@ export interface MdlRequestBody {
   "provisionalPrivilegeExpiry-day"?: string | string[];
   "provisionalPrivilegeExpiry-month"?: string | string[];
   "provisionalPrivilegeExpiry-year"?: string | string[];
+  credentialTtl: string;
   throwError: string;
 }
