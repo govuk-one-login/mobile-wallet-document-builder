@@ -53,7 +53,7 @@ describe("controller.ts", () => {
       givenName: "Irene",
       familyName: "Adler",
       nino: "QQ123456A",
-      credentialTtl: "525600",
+      credentialTtl: "43200",
       throwError: "",
     };
 
@@ -89,7 +89,7 @@ describe("controller.ts", () => {
             givenName: "Irene",
             familyName: "Adler",
             nino: "QQ123456A",
-            credentialTtlMinutes: 525600,
+            credentialTtlMinutes: 43200,
           },
           vcType: "SocialSecurityCredential",
         });
