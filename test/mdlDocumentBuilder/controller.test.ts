@@ -164,6 +164,7 @@ describe("controller.ts", () => {
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
             documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
             vcType: "org.iso.18013.5.1.mDL",
+            timeToLive: 1748736000,
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
@@ -212,6 +213,7 @@ describe("controller.ts", () => {
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
             documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
             vcType: "org.iso.18013.5.1.mDL",
+            timeToLive: 1748736000,
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",

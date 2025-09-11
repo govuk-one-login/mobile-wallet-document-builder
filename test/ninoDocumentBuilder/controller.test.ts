@@ -15,6 +15,15 @@ jest.mock("../../src/services/databaseService", () => ({
 }));
 
 describe("controller.ts", () => {
+  const nowMilliSec = 1757582135042;
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(nowMilliSec);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   describe("get", () => {
     it("should render the form for inputting NINO document details when user is not authenticated (no id_token in cookies)", async () => {
       const req = getMockReq({ cookies: {} });
@@ -92,6 +101,7 @@ describe("controller.ts", () => {
             credentialTtlMinutes: 43200,
           },
           vcType: "SocialSecurityCredential",
+          timeToLive: 1760174135,
         });
       });
     });

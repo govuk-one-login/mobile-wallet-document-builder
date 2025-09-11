@@ -1,6 +1,7 @@
 import {
   getDateParts,
   getDefaultDates,
+  getTimeToLiveEpoch,
 } from "../../../src/mdlDocumentBuilder/helpers/defaultDates";
 
 describe("getDateParts", () => {
@@ -61,5 +62,28 @@ describe("getDefaultDates", () => {
 
     expect(defaultIssueDate).toEqual({ day: "01", month: "01", year: "2020" });
     expect(defaultExpiryDate).toEqual({ day: "31", month: "12", year: "2029" });
+  });
+});
+
+describe("getTimeToLiveEpoch", () => {
+  const nowMilliSec = 1757582135042;
+
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(nowMilliSec);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it("should return current epoch seconds when ttlMinutes is 0", () => {
+    expect(getTimeToLiveEpoch(0)).toEqual(Math.floor(nowMilliSec / 1000));
+  });
+
+  it("should add the ttlMinutes and return correct epoch seconds in the future", () => {
+    const ttlMinutes = 1000;
+    expect(getTimeToLiveEpoch(ttlMinutes)).toEqual(
+      Math.floor((nowMilliSec + ttlMinutes * 60 * 1000) / 1000),
+    );
   });
 });

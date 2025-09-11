@@ -10,6 +10,15 @@ import "aws-sdk-client-mock-jest";
 import { TableItem } from "../../src/types/TableItem";
 
 describe("databaseService.ts", () => {
+  const nowMilliSec = 1757582135042;
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(nowMilliSec);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   const item = {
     documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
     data: {
@@ -20,6 +29,7 @@ describe("databaseService.ts", () => {
       credentialTtlMinutes: 43200,
     },
     vcType: "SocialSecurityCredential",
+    timeToLive: 1760174135,
   } as TableItem;
 
   it("should save a document to the database table", async () => {
