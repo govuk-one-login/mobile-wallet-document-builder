@@ -9,8 +9,10 @@ import { NinoRequestBody } from "./types/NinoRequestBody";
 import { NinoData } from "./types/NinoData";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
+import { getTimeToLiveEpoch } from "../mdlDocumentBuilder/helpers/defaultDates";
 
 const CREDENTIAL_TYPE = CredentialType.SocialSecurityCredential;
+const TTL_MINUTES = 43200;
 
 export async function ninoDocumentBuilderGetController(
   req: Request,
@@ -35,10 +37,12 @@ export async function ninoDocumentBuilderPostController(
     const body: NinoRequestBody = req.body;
     const data = buildNinoDataFromRequestBody(body);
     const documentId = randomUUID();
+    const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
     await saveDocument(getDocumentsTableName(), {
       documentId,
       data,
       vcType: CREDENTIAL_TYPE,
+      timeToLive,
     });
 
     const selectedError = body["throwError"];

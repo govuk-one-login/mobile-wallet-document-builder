@@ -14,8 +14,10 @@ import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
 import { getPhoto } from "../utils/photoUtils";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
+import { getTimeToLiveEpoch } from "../mdlDocumentBuilder/helpers/defaultDates";
 
 const CREDENTIAL_TYPE = CredentialType.DigitalVeteranCard;
+const TTL_MINUTES = 43200;
 
 export async function veteranCardDocumentBuilderGetController(
   req: Request,
@@ -46,11 +48,13 @@ export async function veteranCardDocumentBuilderPostController(
     const documentId = randomUUID();
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
     const s3Uri = `s3://${bucketName}/${documentId}`;
+    const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
     const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
       documentId,
       data,
       vcType: CREDENTIAL_TYPE,
+      timeToLive,
     });
 
     const selectedError = body["throwError"];
