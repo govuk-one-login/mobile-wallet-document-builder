@@ -2,7 +2,11 @@ import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
-import { apps, getEnvironment, getCookieExpiry } from "../config/appConfig";
+import {
+  apps,
+  getEnvironment,
+  getCookieExpiryInMilliseconds,
+} from "../config/appConfig";
 import { nonStagingApps, stagingApps } from "./views/apps";
 
 export interface AppSelectorConfig {
@@ -34,7 +38,7 @@ export function appSelectorGetController(
 export function appSelectorPostController(
   config: AppSelectorConfig = {
     environment: getEnvironment(),
-    cookieExpiry: getCookieExpiry(),
+    cookieExpiry: getCookieExpiryInMilliseconds(),
   },
 ): ExpressRouteFunction {
   return function (req: Request, res: Response): void {

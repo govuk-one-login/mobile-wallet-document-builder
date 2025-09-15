@@ -16,12 +16,7 @@ export async function credentialOfferViewerController(
     const selectedApp = req.cookies.app as string;
     const credentialType = req.query.type as string;
     const errorScenario = req.query.error as string;
-
-    const userInfo: UserInfo = await req.oidc.userinfo(
-      req.cookies.access_token,
-      { method: "GET", via: "header" },
-    );
-    const walletSubjectId = userInfo.wallet_subject_id;
+    const walletSubjectId = req.cookies.wallet_subject_id as string;
 
     const credentialOfferUrl = await getCredentialOfferUrl(
       walletSubjectId,

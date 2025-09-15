@@ -3,7 +3,7 @@ import { logger } from "../middleware/logger";
 import { getSelfUrl } from "../config/appConfig";
 import { deleteCookies } from "./utils/deleteCookies";
 
-const COOKIES_TO_DELETE = ["id_token", "access_token", "app"];
+const COOKIES_TO_DELETE = ["id_token", "state", "nonce", "app", "wallet_subject_id"];
 
 export function logoutGetController(req: Request, res: Response): void {
   try {

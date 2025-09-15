@@ -405,8 +405,8 @@ Resources:
               Value: !Ref ClientSigningKey
             - Name: OIDC_ISSUER_DISCOVERY_ENDPOINT
               Value: !FindInMap [EnvironmentVariables, !Ref Environment, OidcIssuerEndpoint]
-            - Name: COOKIE_TTL_IN_SECS
-              Value: 3600
+            - Name: COOKIE_TTL_IN_MILLISECONDS
+              Value: 3600000
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp
