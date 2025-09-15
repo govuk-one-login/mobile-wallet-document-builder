@@ -123,14 +123,14 @@ describe("appConfig.ts", () => {
     expect(getOIDCDiscoveryEndpoint()).toEqual("test-discovery-endpoint");
   });
 
-  it("should throw an error if COOKIE_TTL_IN_SECS environment variable is not set", () => {
+  it("should throw an error if COOKIE_TTL_IN_MILLISECONDS environment variable is not set", () => {
     expect(() => getCookieExpiryInMilliseconds()).toThrow(
-      new Error("COOKIE_TTL_IN_SECS environment variable not set"),
+      new Error("COOKIE_TTL_IN_MILLISECONDS environment variable not set"),
     );
   });
 
-  it("should return COOKIE_TTL_IN_SECS environment variable value if set", () => {
-    process.env.COOKIE_TTL_IN_SECS = "200";
+  it("should return COOKIE_TTL_IN_MILLISECONDS environment variable value if set", () => {
+    process.env.COOKIE_TTL_IN_MILLISECONDS = "200000";
     expect(getCookieExpiryInMilliseconds()).toEqual(200000);
   });
 
