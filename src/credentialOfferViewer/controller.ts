@@ -4,7 +4,6 @@ import { getCredentialOfferUrl } from "./services/credentialOfferService";
 import { customiseCredentialOfferUrl } from "./helpers/customCredentialOfferUrl";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import { UserInfo } from "./types/UserInfo";
 import { apps, getEnvironment } from "../config/appConfig";
 
 export async function credentialOfferViewerController(

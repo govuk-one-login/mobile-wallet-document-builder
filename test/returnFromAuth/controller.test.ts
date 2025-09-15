@@ -22,7 +22,6 @@ describe("controller.ts", () => {
     .spyOn(logger, "error")
     .mockImplementation(() => undefined);
 
-
   const createOidcMockReq = (overrides = {}) => {
     const userinfo = { wallet_subject_id: WALLET_SUBJECT_ID };
     return getMockReq({
@@ -58,8 +57,8 @@ describe("controller.ts", () => {
     const req = getMockReq({
       oidc: {
         callbackParams: jest.fn().mockReturnValue({
-          error: 'some_error',
-          error_description: 'Some error description',
+          error: "some_error",
+          error_description: "Some error description",
         }),
       },
     });
@@ -79,7 +78,7 @@ describe("controller.ts", () => {
     const req = getMockReq({
       oidc: {
         callbackParams: jest.fn().mockReturnValue({
-          error: 'some_error',
+          error: "some_error",
         }),
       },
     });
@@ -159,10 +158,10 @@ describe("controller.ts", () => {
         },
       },
     );
-    expect(req.oidc!.userinfo).toHaveBeenCalledWith(
-      "access_token",
-      { method: "GET", via: "header" },
-    );
+    expect(req.oidc!.userinfo).toHaveBeenCalledWith("access_token", {
+      method: "GET",
+      via: "header",
+    });
     expect(res.cookie).toHaveBeenNthCalledWith(1, "id_token", "id_token", {
       httpOnly: true,
       maxAge: 100000,

@@ -44,7 +44,7 @@ describe("controller.ts", () => {
       "state",
       "nonce",
       "app",
-      "wallet_subject_id"
+      "wallet_subject_id",
     ]);
   });
 });
