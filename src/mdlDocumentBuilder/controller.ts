@@ -98,7 +98,7 @@ export async function mdlDocumentBuilderPostController(
   }
 }
 
-function getRandomIntInclusive() {
+export function getRandomIntInclusive() {
   const minCeiled = Math.ceil(100000);
   const maxFloored = Math.floor(999999);
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
