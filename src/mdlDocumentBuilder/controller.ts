@@ -23,6 +23,7 @@ import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
+let DRIVING_LICENCE_NUMBER: string;
 
 export async function mdlDocumentBuilderGetController(
   req: Request,
@@ -30,9 +31,11 @@ export async function mdlDocumentBuilderGetController(
 ): Promise<void> {
   try {
     const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
+    DRIVING_LICENCE_NUMBER = "EDWAR" + getRandomIntInclusive() + "SE5RO";
     res.render("mdl-document-details-form.njk", {
       defaultIssueDate,
       defaultExpiryDate,
+      drivingLicenceNumber: DRIVING_LICENCE_NUMBER,
       authenticated: isAuthenticated(req),
       errorChoices: ERROR_CHOICES,
     });
@@ -59,6 +62,7 @@ export async function mdlDocumentBuilderPostController(
       return res.render("mdl-document-details-form.njk", {
         defaultIssueDate,
         defaultExpiryDate,
+        drivingLicenceNumber: DRIVING_LICENCE_NUMBER,
         authenticated: isAuthenticated(req),
         errorChoices: ERROR_CHOICES,
         errors,
@@ -92,6 +96,12 @@ export async function mdlDocumentBuilderPostController(
     );
     res.render("500.njk");
   }
+}
+
+function getRandomIntInclusive() {
+  const minCeiled = Math.ceil(100000);
+  const maxFloored = Math.floor(999999);
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
 
 function buildMdlDataFromRequestBody(
