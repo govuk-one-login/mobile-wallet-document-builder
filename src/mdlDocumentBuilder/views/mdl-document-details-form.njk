@@ -394,83 +394,91 @@
           ).join('');
       }
 
-      function addDrivingPrivileges(type, selectedCategory = 'AM', defaultRestrictionCodes = '') {
-          const containerId = type + "DrivingPrivilege";
-          const container = document.getElementById(containerId);
-          const addButton = document.getElementById(`add-${type}-button`);
+     function addDrivingPrivileges(type, selectedCategory = 'AM', defaultRestrictionCodes = '') {
+         const containerId = type + "DrivingPrivilege";
+         const container = document.getElementById(containerId);
+         const addButton = document.getElementById(`add-${type}-button`);
 
-          if (container.children.length >= MAX_ENTRIES) {
-              return;
-          }
+         if (container.children.length >= MAX_ENTRIES) {
+             return;
+         }
 
-          const entry = document.createElement('div');
-          entry.innerHTML = `
-              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s"></legend>
-              <div class="govuk-form-group">
-                  <label class="govuk-label" for="${type}_vehicle_category_code_${container.children.length}">Vehicle category code</label>
-                  <select class="govuk-select" id="${type}_vehicle_category_code_${container.children.length}" name="${type}VehicleCategoryCode">
-                      ${getVehicleOptions(selectedCategory)}
-                  </select>
-              </div>
-              <div class="govuk-form-group">
-                  <label class="govuk-label" for="${type}_restriction_codes_${container.children.length}">Restriction codes (optional)</label>
-                  <input class="govuk-input govuk-input--width-20" id="${type}_restriction_codes_${container.children.length}" name="${type}RestrictionCodes" type="text" value=${defaultRestrictionCodes}>
-              </div>
-              <div class="govuk-form-group">
-                  <fieldset class="govuk-fieldset" role="group">
-                      <legend class="govuk-fieldset__legend govuk-label--s">Issue date (optional)</legend>
-                      <div class="govuk-date-input" id="${type}_issue_date_${container.children.length}">
-                          <div class="govuk-date-input__item">
-                              <div class="govuk-form-group">
-                                  <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeIssue-day-${container.children.length}">Day</label>
-                                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="${type}PrivilegeIssue-day-${container.children.length}" name="${type}PrivilegeIssue-day" type="text" value="${defaultIssueDateValues.day}" inputmode="numeric">
-                              </div>
-                          </div>
-                          <div class="govuk-date-input__item">
-                              <div class="govuk-form-group">
-                                  <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeIssue-month-${container.children.length}">Month</label>
-                                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="${type}PrivilegeIssue-month-${container.children.length}" name="${type}PrivilegeIssue-month" type="text" value="${defaultIssueDateValues.month}" inputmode="numeric">
-                              </div>
-                          </div>
-                          <div class="govuk-date-input__item">
-                              <div class="govuk-form-group">
-                                  <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeIssue-year-${container.children.length}">Year</label>
-                                  <input class="govuk-input govuk-date-input__input govuk-input--width-3" id="${type}PrivilegeIssue-year-${container.children.length}" name="${type}PrivilegeIssue-year" type="text" value="${defaultIssueDateValues.year}" inputmode="numeric">
-                              </div>
-                          </div>
-                      </div>
-                  </fieldset>
-              </div>
-              <div class="govuk-form-group">
-                  <fieldset class="govuk-fieldset" role="group">
-                      <legend class="govuk-fieldset__legend govuk-label--s">Expiry date (optional)</legend>
-                      <div class="govuk-date-input" id="${type}_expiry_date_${container.children.length}">
-                          <div class="govuk-date-input__item">
-                              <div class="govuk-form-group">
-                                  <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeExpiry-day-${container.children.length}">Day</label>
-                                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="${type}PrivilegeExpiry-day-${container.children.length}" name="${type}PrivilegeExpiry-day" type="text" inputmode="numeric">
-                              </div>
-                          </div>
-                          <div class="govuk-date-input__item">
-                              <div class="govuk-form-group">
-                                  <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeExpiry-month-${container.children.length}">Month</label>
-                                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="${type}PrivilegeExpiry-month-${container.children.length}" name="${type}PrivilegeExpiry-month" type="text" inputmode="numeric">
-                              </div>
-                          </div>
-                          <div class="govuk-date-input__item">
-                              <div class="govuk-form-group">
-                                  <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeExpiry-year-${container.children.length}">Year</label>
-                                  <input class="govuk-input govuk-date-input__input govuk-input--width-3" id="${type}PrivilegeExpiry-year-${container.children.length}" name="${type}PrivilegeExpiry-year" type="text" inputmode="numeric">
-                              </div>
-                          </div>
-                      </div>
-                  </fieldset>
-              </div>
-              <button class="govuk-button govuk-button--secondary" onclick="deleteDrivingPrivileges(this.parentNode, '${type}')" type="button">Delete</button>
-          `;
-          container.appendChild(entry);
-          updateAddButtonState(type);
-      }
+         const entry = document.createElement('div');
+
+         const restrictionCodesInput = (type === 'full')
+             ? `
+             <div class="govuk-form-group">
+                 <label class="govuk-label" for="${type}_restriction_codes_${container.children.length}">Restriction codes (optional)</label>
+                 <input class="govuk-input govuk-input--width-20" id="${type}_restriction_codes_${container.children.length}" name="${type}RestrictionCodes" type="text" value="${defaultRestrictionCodes}">
+             </div>
+             `
+             : '';
+
+         entry.innerHTML = `
+             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s"></legend>
+             <div class="govuk-form-group">
+                 <label class="govuk-label" for="${type}_vehicle_category_code_${container.children.length}">Vehicle category code</label>
+                 <select class="govuk-select" id="${type}_vehicle_category_code_${container.children.length}" name="${type}VehicleCategoryCode">
+                     ${getVehicleOptions(selectedCategory)}
+                 </select>
+             </div>
+             ${restrictionCodesInput}
+             <div class="govuk-form-group">
+                 <fieldset class="govuk-fieldset" role="group">
+                     <legend class="govuk-fieldset__legend govuk-label--s">Issue date (optional)</legend>
+                     <div class="govuk-date-input" id="${type}_issue_date_${container.children.length}">
+                         <div class="govuk-date-input__item">
+                             <div class="govuk-form-group">
+                                 <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeIssue-day-${container.children.length}">Day</label>
+                                 <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="${type}PrivilegeIssue-day-${container.children.length}" name="${type}PrivilegeIssue-day" type="text" value="${defaultIssueDateValues.day}" inputmode="numeric">
+                             </div>
+                         </div>
+                         <div class="govuk-date-input__item">
+                             <div class="govuk-form-group">
+                                 <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeIssue-month-${container.children.length}">Month</label>
+                                 <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="${type}PrivilegeIssue-month-${container.children.length}" name="${type}PrivilegeIssue-month" type="text" value="${defaultIssueDateValues.month}" inputmode="numeric">
+                             </div>
+                         </div>
+                         <div class="govuk-date-input__item">
+                             <div class="govuk-form-group">
+                                 <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeIssue-year-${container.children.length}">Year</label>
+                                 <input class="govuk-input govuk-date-input__input govuk-input--width-3" id="${type}PrivilegeIssue-year-${container.children.length}" name="${type}PrivilegeIssue-year" type="text" value="${defaultIssueDateValues.year}" inputmode="numeric">
+                             </div>
+                         </div>
+                     </div>
+                 </fieldset>
+             </div>
+             <div class="govuk-form-group">
+                 <fieldset class="govuk-fieldset" role="group">
+                     <legend class="govuk-fieldset__legend govuk-label--s">Expiry date (optional)</legend>
+                     <div class="govuk-date-input" id="${type}_expiry_date_${container.children.length}">
+                         <div class="govuk-date-input__item">
+                             <div class="govuk-form-group">
+                                 <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeExpiry-day-${container.children.length}">Day</label>
+                                 <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="${type}PrivilegeExpiry-day-${container.children.length}" name="${type}PrivilegeExpiry-day" type="text" inputmode="numeric">
+                             </div>
+                         </div>
+                         <div class="govuk-date-input__item">
+                             <div class="govuk-form-group">
+                                 <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeExpiry-month-${container.children.length}">Month</label>
+                                 <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="${type}PrivilegeExpiry-month-${container.children.length}" name="${type}PrivilegeExpiry-month" type="text" inputmode="numeric">
+                             </div>
+                         </div>
+                         <div class="govuk-date-input__item">
+                             <div class="govuk-form-group">
+                                 <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeExpiry-year-${container.children.length}">Year</label>
+                                 <input class="govuk-input govuk-date-input__input govuk-input--width-3" id="${type}PrivilegeExpiry-year-${container.children.length}" name="${type}PrivilegeExpiry-year" type="text" inputmode="numeric">
+                             </div>
+                         </div>
+                     </div>
+                 </fieldset>
+             </div>
+             <button class="govuk-button govuk-button--secondary" onclick="deleteDrivingPrivileges(this.parentNode, '${type}')" type="button">Delete</button>
+         `;
+
+         container.appendChild(entry);
+         updateAddButtonState(type);
+     }
 
       function deleteDrivingPrivileges(element, type) {
           element.parentNode.removeChild(element);
