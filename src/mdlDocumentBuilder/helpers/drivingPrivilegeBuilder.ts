@@ -2,6 +2,17 @@ import { MdlRequestBody } from "../types/MdlRequestBody";
 import { DrivingPrivilege } from "../types/DrivingPrivilege";
 import { formatDate } from "./dateFormatter";
 
+interface BuildDrivingPrivilegesParams {
+  vehicleCategoryCodes: string[];
+  issueDays: string[];
+  issueMonths: string[];
+  issueYears: string[];
+  expiryDays: string[];
+  expiryMonths: string[];
+  expiryYears: string[];
+  restrictionCodes?: string[];
+}
+
 export function getFullDrivingPrivileges(body: MdlRequestBody) {
   const fullIssueDays = stringToArray(body["fullPrivilegeIssue-day"]);
   const fullIssueMonths = stringToArray(body["fullPrivilegeIssue-month"]);
@@ -10,6 +21,7 @@ export function getFullDrivingPrivileges(body: MdlRequestBody) {
   const fullExpiryMonths = stringToArray(body["fullPrivilegeExpiry-month"]);
   const fullExpiryYears = stringToArray(body["fullPrivilegeExpiry-year"]);
   const fullVehicleCategoryCodes = stringToArray(body.fullVehicleCategoryCode);
+  const fullRestrictionCodes = stringToArray(body.fullRestrictionCodes);
 
   return buildDrivingPrivileges({
     vehicleCategoryCodes: fullVehicleCategoryCodes,
@@ -19,6 +31,7 @@ export function getFullDrivingPrivileges(body: MdlRequestBody) {
     expiryDays: fullExpiryDays,
     expiryMonths: fullExpiryMonths,
     expiryYears: fullExpiryYears,
+    restrictionCodes: fullRestrictionCodes,
   });
 }
 
@@ -63,16 +76,6 @@ export function getProvisionalDrivingPrivileges(body: MdlRequestBody) {
 export const stringToArray = (input: string | string[]): string[] =>
   Array.isArray(input) ? input : [input];
 
-interface BuildDrivingPrivilegesParams {
-  vehicleCategoryCodes: string[];
-  issueDays: string[];
-  issueMonths: string[];
-  issueYears: string[];
-  expiryDays: string[];
-  expiryMonths: string[];
-  expiryYears: string[];
-}
-
 export function buildDrivingPrivileges({
   vehicleCategoryCodes,
   issueDays,
@@ -81,6 +84,7 @@ export function buildDrivingPrivileges({
   expiryDays,
   expiryMonths,
   expiryYears,
+  restrictionCodes,
 }: BuildDrivingPrivilegesParams): DrivingPrivilege[] {
   const drivingPrivileges: DrivingPrivilege[] = [];
 
@@ -89,15 +93,26 @@ export function buildDrivingPrivileges({
       issueDays[i] === "" || issueMonths[i] === "" || issueYears[i] === ""
         ? null
         : formatDate(issueDays[i], issueMonths[i], issueYears[i]);
+
     const expiryDate =
       expiryDays[i] === "" || expiryMonths[i] === "" || expiryYears[i] === ""
         ? null
         : formatDate(expiryDays[i], expiryMonths[i], expiryYears[i]);
 
+    const codes = [];
+    if (restrictionCodes) {
+      for (const code of restrictionCodes[i].split(",")) {
+        if (code) {
+          codes.push({ code });
+        }
+      }
+    }
+
     const privilege: DrivingPrivilege = {
       vehicle_category_code: vehicleCategoryCodes[i],
       issue_date: issueDate,
       expiry_date: expiryDate,
+      codes: codes.length > 0 ? codes : null,
     };
     drivingPrivileges.push(privilege);
   }
