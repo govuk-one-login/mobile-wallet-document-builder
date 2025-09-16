@@ -351,8 +351,50 @@
     {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
   </form>
   <script>
-      const MAX_ENTRIES = 5;
-      function addDrivingPrivileges(type) {
+      const MAX_ENTRIES = 20;
+      const defaultVehicleCategories = ['Q', 'B', 'A1', 'C1', 'D1'];
+      const defaultRestrictionCodes = [["01", "32", "44(3)", "44(5)"], ["35", "32"], ["101", "44(8)", "122"], ["44", "20", "79(3)", "71", "97"], []];
+      const defaultIssueDateValues = {
+          day: '{{ defaultIssueDate.day }}',
+          month: '{{ defaultIssueDate.month}}',
+          year: '{{ defaultIssueDate.year}}'
+      };
+
+      function getVehicleOptions(selectedValue = 'AM') {
+          const options = [
+              { value: "AM", text: "AM - Mopeds and light quadricycles" },
+              { value: "P", text: "P – Mopeds with a maximum design speed of over 45 km/h (28 mph) but not more than 50 km/h (31 mph)" },
+              { value: "Q", text: "Q – Trial e-scooters" },
+              { value: "A1", text: "A1 – Light motorcycles up to 125cc" },
+              { value: "A2", text: "A2 – Motorcycles with a power output up to 35 kW" },
+              { value: "A", text: "A – Motorcycles over 35 kW or with a power-to-weight ratio exceeding 0.2 kW/kg" },
+              { value: "B", text: "B - Cars (up to 3,500 kg MAM)" },
+              { value: "B", text: "B - Automatic transmission cars" },
+              { value: "BE", text: "BE - Car and trailer combinations (up to 3,500 kg MAM)" },
+              { value: "B1", text: "B1 - Light vehicles and quadricycles" },
+              { value: "C1", text: "C1 - Medium-sized vehicles (3,500–7,500 kg MAM)" },
+              { value: "C1E", text: "C1E - C1 vehicles with a trailer over 750 kg (combined MAM up to 12,000 kg)" },
+              { value: "C", text: "C - Large vehicles over 7,500 kg MAM" },
+              { value: "CE", text: "CE - C vehicles with a trailer over 750 kg" },
+              { value: "D1", text: "D1 - Minibuses (no more than 16 passenger seats)" },
+              { value: "D1E", text: "D1E - D1 vehicles with a trailer over 750 kg (combined MAM up to 12,000 kg)" },
+              { value: "D", text: "D - Buses (more than 8 passenger seats)" },
+              { value: "DE", text: "DE - D vehicles with a trailer over 750 kg" },
+              { value: "F", text: "F - Agricultural tractor" },
+              { value: "G", text: "G - Road roller" },
+              { value: "H", text: "H - Tracked vehicles" },
+              { value: "K", text: "K - Mowing machine or pedestrian-controlled vehicle" },
+              { value: "L", text: "L - Electrically propelled vehicle" },
+              { value: "M", text: "M - Trolley vehicles" },
+              { value: "N", text: "N - Exempt from duty" }
+          ];
+
+          return options.map(option =>
+              `<option value="${option.value}" ${option.value === selectedValue ? 'selected' : ''}>${option.text}</option>`
+          ).join('');
+      }
+
+      function addDrivingPrivileges(type, selectedCategory = 'AM', defaultRestrictionCodes = '') {
           const containerId = type + "DrivingPrivilege";
           const container = document.getElementById(containerId);
           const addButton = document.getElementById(`add-${type}-button`);
@@ -360,27 +402,72 @@
           if (container.children.length >= MAX_ENTRIES) {
               return;
           }
+
           const entry = document.createElement('div');
           entry.innerHTML = `
-                      {% call govukFieldset({ "legend": { "classes": "govuk-fieldset__legend--s", "isPageHeading": false } }) %}
-                        {{ govukSelect({ "id": "${type}_vehicle_category_code", "name": "${type}VehicleCategoryCode", "label": { "text": "Vehicle category code" },
-                          "items": [ { "value": "AM", "text": "AM - Mopeds and light quadricycles" }, { "value": "P", "text": "P – Mopeds with a maximum design speed of over 45 km/h (28 mph) but not more than 50 km/h (31 mph)" },
-                            { "value": "Q", "text": "Q – Trial e-scooters" }, { "value": "A1", "text": "A1 – Light motorcycles up to 125cc" }, { "value": "A2", "text": "A2 – Motorcycles with a power output up to 35 kW" },
-                            { "value": "A", "text": "A – Motorcycles over 35 kW or with a power-to-weight ratio exceeding 0.2 kW/kg" }, { "value": "B", "text": "B - Cars (up to 3,500 kg MAM)", "selected": true },
-                            { "value": "B", "text": "B - Automatic transmission cars" }, { "value": "BE", "text": "BE - Car and trailer combinations (up to 3,500 kg MAM)" }, { "value": "B1", "text": "B1 - Light vehicles and quadricycles" },
-                            { "value": "C1", "text": "C1 - Medium-sized vehicles (3,500–7,500 kg MAM)" }, { "value": "C1E", "text": "C1E - C1 vehicles with a trailer over 750 kg (combined MAM up to 12,000 kg)" },
-                            { "value": "C", "text": "C - Large vehicles over 7,500 kg MAM" }, { "value": "CE", "text": "CE - C vehicles with a trailer over 750 kg" }, { "value": "D1", "text": "D1 - Minibuses (no more than 16 passenger seats)" },
-                            { "value": "D1E", "text": "D1E - D1 vehicles with a trailer over 750 kg (combined MAM up to 12,000 kg)" }, { "value": "D", "text": "D - Buses (more than 8 passenger seats)" },
-                            { "value": "DE", "text": "DE - D vehicles with a trailer over 750 kg" }, { "value": "F", "text": "F - Agricultural tractor" }, { "value": "G", "text": "G - Road roller" },
-                            { "value": "H", "text": "H - Tracked vehicles" }, { "value": "K", "text": "K - Mowing machine or pedestrian-controlled vehicle" }, { "value": "L", "text": "L - Electrically propelled vehicle" },
-                            { "value": "M", "text": "M - Trolley vehicles" }, { "value": "N", "text": "N - Exempt from duty" } ] }) }}
-                        {{ govukDateInput({ "id": "${type}_issue_date", "namePrefix": "${type}PrivilegeIssue", "fieldset": { "legend": { "text": "Issue date (optional)", "classes": "govuk-label--s" } },
-                          "items": [ { "classes": "govuk-input--width-2", "name": "day", "value": defaultIssueDate.day }, { "classes": "govuk-input--width-2", "name": "month", "value": defaultIssueDate.month }, { "classes": "govuk-input--width-3", "name": "year", "value": defaultIssueDate.year } ] }) }}
-                        {{ govukDateInput({ "id": "${type}_expiry_date", "namePrefix": "${type}PrivilegeExpiry", "fieldset": { "legend": { "text": "Expiry date (optional)", "classes": "govuk-label--s" } },
-                          "items": [ { "classes": "govuk-input--width-2", "name": "day" }, { "classes": "govuk-input--width-2", "name": "month" }, { "classes": "govuk-input--width-3", "name": "year" } ] }) }}
-                        <button class="govuk-button govuk-button--secondary" onclick="deleteDrivingPrivileges(this.parentNode.parentNode, '${type}')" type="button">Delete</button>
-                      {% endcall %}
-                    `;
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s"></legend>
+              <div class="govuk-form-group">
+                  <label class="govuk-label" for="${type}_vehicle_category_code_${container.children.length}">Vehicle category code</label>
+                  <select class="govuk-select" id="${type}_vehicle_category_code_${container.children.length}" name="${type}VehicleCategoryCode">
+                      ${getVehicleOptions(selectedCategory)}
+                  </select>
+              </div>
+              <div class="govuk-form-group">
+                  <label class="govuk-label" for="${type}_restriction_codes_${container.children.length}">Restriction codes (optional)</label>
+                  <input class="govuk-input govuk-input--width-20" id="${type}_restriction_codes_${container.children.length}" name="${type}RestrictionCodes" type="text" value=${defaultRestrictionCodes}>
+              </div>
+              <div class="govuk-form-group">
+                  <fieldset class="govuk-fieldset" role="group">
+                      <legend class="govuk-fieldset__legend govuk-label--s">Issue date (optional)</legend>
+                      <div class="govuk-date-input" id="${type}_issue_date_${container.children.length}">
+                          <div class="govuk-date-input__item">
+                              <div class="govuk-form-group">
+                                  <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeIssue-day-${container.children.length}">Day</label>
+                                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="${type}PrivilegeIssue-day-${container.children.length}" name="${type}PrivilegeIssue-day" type="text" value="${defaultIssueDateValues.day}" inputmode="numeric">
+                              </div>
+                          </div>
+                          <div class="govuk-date-input__item">
+                              <div class="govuk-form-group">
+                                  <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeIssue-month-${container.children.length}">Month</label>
+                                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="${type}PrivilegeIssue-month-${container.children.length}" name="${type}PrivilegeIssue-month" type="text" value="${defaultIssueDateValues.month}" inputmode="numeric">
+                              </div>
+                          </div>
+                          <div class="govuk-date-input__item">
+                              <div class="govuk-form-group">
+                                  <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeIssue-year-${container.children.length}">Year</label>
+                                  <input class="govuk-input govuk-date-input__input govuk-input--width-3" id="${type}PrivilegeIssue-year-${container.children.length}" name="${type}PrivilegeIssue-year" type="text" value="${defaultIssueDateValues.year}" inputmode="numeric">
+                              </div>
+                          </div>
+                      </div>
+                  </fieldset>
+              </div>
+              <div class="govuk-form-group">
+                  <fieldset class="govuk-fieldset" role="group">
+                      <legend class="govuk-fieldset__legend govuk-label--s">Expiry date (optional)</legend>
+                      <div class="govuk-date-input" id="${type}_expiry_date_${container.children.length}">
+                          <div class="govuk-date-input__item">
+                              <div class="govuk-form-group">
+                                  <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeExpiry-day-${container.children.length}">Day</label>
+                                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="${type}PrivilegeExpiry-day-${container.children.length}" name="${type}PrivilegeExpiry-day" type="text" inputmode="numeric">
+                              </div>
+                          </div>
+                          <div class="govuk-date-input__item">
+                              <div class="govuk-form-group">
+                                  <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeExpiry-month-${container.children.length}">Month</label>
+                                  <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="${type}PrivilegeExpiry-month-${container.children.length}" name="${type}PrivilegeExpiry-month" type="text" inputmode="numeric">
+                              </div>
+                          </div>
+                          <div class="govuk-date-input__item">
+                              <div class="govuk-form-group">
+                                  <label class="govuk-label govuk-date-input__label" for="${type}PrivilegeExpiry-year-${container.children.length}">Year</label>
+                                  <input class="govuk-input govuk-date-input__input govuk-input--width-3" id="${type}PrivilegeExpiry-year-${container.children.length}" name="${type}PrivilegeExpiry-year" type="text" inputmode="numeric">
+                              </div>
+                          </div>
+                      </div>
+                  </fieldset>
+              </div>
+              <button class="govuk-button govuk-button--secondary" onclick="deleteDrivingPrivileges(this.parentNode, '${type}')" type="button">Delete</button>
+          `;
           container.appendChild(entry);
           updateAddButtonState(type);
       }
@@ -397,8 +484,14 @@
           addButton.disabled = container.children.length >= MAX_ENTRIES;
       }
 
-      addDrivingPrivileges('full');
-      updateAddButtonState('full');
-      updateAddButtonState('provisional');
+      function initialiseDrivingPrivileges() {
+          for (let i = 0; i < 5; i++) {
+              addDrivingPrivileges('full', defaultVehicleCategories[i], defaultRestrictionCodes[i]);
+          }
+          updateAddButtonState('full');
+          updateAddButtonState('provisional');
+      }
+
+      initialiseDrivingPrivileges();
   </script>
 {% endblock %}
