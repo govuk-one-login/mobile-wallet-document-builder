@@ -1,5 +1,4 @@
 import {
-  getRandomIntInclusive,
   mdlDocumentBuilderGetController,
   mdlDocumentBuilderPostController,
 } from "../../src/mdlDocumentBuilder/controller";
@@ -96,6 +95,25 @@ describe("controller.ts", () => {
 
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
+  });
+
+  it("should produce different licence numbers", async () => {
+    jest.spyOn(Math, "random").mockReset();
+    jest
+      .spyOn(Math, "random")
+      .mockReturnValueOnce(0)
+      .mockReturnValueOnce(0.999999);
+
+    const req = getMockReq({ cookies: { id_token: "id_token" } });
+    const { res } = getMockRes();
+
+    await mdlDocumentBuilderGetController(req, res);
+    let [, model] = (res.render as jest.Mock).mock.lastCall;
+    expect(model.drivingLicenceNumber).toBe("EDWAR100000SE5RO");
+
+    await mdlDocumentBuilderGetController(req, res);
+    [, model] = (res.render as jest.Mock).mock.lastCall;
+    expect(model.drivingLicenceNumber).toBe("EDWAR999999SE5RO");
   });
 
   describe("post", () => {
@@ -339,7 +357,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
+            drivingLicenceNumber: "EDWAR999999SE5RO",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -375,7 +393,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
+            drivingLicenceNumber: "EDWAR999999SE5RO",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -411,7 +429,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
+            drivingLicenceNumber: "EDWAR999999SE5RO",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -447,7 +465,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
+            drivingLicenceNumber: "EDWAR999999SE5RO",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -483,7 +501,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
+            drivingLicenceNumber: "EDWAR999999SE5RO",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -519,30 +537,12 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
+            drivingLicenceNumber: "EDWAR999999SE5RO",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
       });
     });
-  });
-});
-
-describe("getRandomIntInclusive", () => {
-  it("should always return a number within range 100000 and 999999", () => {
-    for (let i = 0; i < 1000; i++) {
-      const value = getRandomIntInclusive();
-      expect(value).toBeGreaterThanOrEqual(100000);
-      expect(value).toBeLessThanOrEqual(999999);
-    }
-  });
-
-  it("should produce varying results", () => {
-    const values = new Set<number>();
-    for (let i = 0; i < 1000; i++) {
-      values.add(getRandomIntInclusive());
-    }
-    expect(values.size).toBeGreaterThan(1);
   });
 });
 
