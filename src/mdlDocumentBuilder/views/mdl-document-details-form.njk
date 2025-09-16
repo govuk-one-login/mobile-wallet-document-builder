@@ -408,8 +408,11 @@
          const restrictionCodesInput = (type === 'full')
              ? `
              <div class="govuk-form-group">
+                 <div id="restriction-codes-hint" class="govuk-hint">
+                    Enter any restriction codes, separated by commas. For example, 01,02,44(7).
+                 </div>
                  <label class="govuk-label" for="${type}_restriction_codes_${container.children.length}">Restriction codes (optional)</label>
-                 <input class="govuk-input govuk-input--width-20" id="${type}_restriction_codes_${container.children.length}" name="${type}RestrictionCodes" type="text" value="${defaultRestrictionCodes}">
+                 <input class="govuk-input govuk-input--width-20" id="${type}_restriction_codes_${container.children.length}" name="${type}RestrictionCodes" type="text" value="${defaultRestrictionCodes}" aria-describedby="restriction-codes-hint">
              </div>
              `
              : '';
