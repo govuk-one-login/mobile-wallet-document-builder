@@ -24,18 +24,17 @@ jest.mock("../../src/services/s3Service", () => ({
   uploadPhoto: jest.fn(),
 }));
 jest.mock("fs");
-let randomSpy: jest.SpyInstance<number, []>;
 
 describe("controller.ts", () => {
   beforeAll(() => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date("2025-05-02T00:00:00Z"));
-    randomSpy = jest.spyOn(Math, "random").mockReturnValue(0.5);
+    jest.spyOn(Math, "random").mockReturnValue(0.5);
   });
 
   afterAll(() => {
     jest.useRealTimers();
-    randomSpy.mockRestore();
+    jest.spyOn(Math, "random").mockRestore();
   });
 
   describe("get", () => {
@@ -530,7 +529,7 @@ describe("controller.ts", () => {
 });
 
 describe("getRandomIntInclusive", () => {
-  it("should always return a number withing range [100000, 999999]", () => {
+  it("should always return a number within range 100000 and 999999", () => {
     for (let i = 0; i < 1000; i++) {
       const value = getRandomIntInclusive();
       expect(value).toBeGreaterThanOrEqual(100000);
