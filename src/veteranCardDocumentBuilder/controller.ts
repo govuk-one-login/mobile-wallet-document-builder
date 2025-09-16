@@ -14,7 +14,7 @@ import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
 import { getPhoto } from "../utils/photoUtils";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
-import { getTimeToLiveEpoch } from "../mdlDocumentBuilder/helpers/defaultDates";
+import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 
 const CREDENTIAL_TYPE = CredentialType.DigitalVeteranCard;
 const TTL_MINUTES = 43200;

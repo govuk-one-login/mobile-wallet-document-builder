@@ -17,10 +17,11 @@ import {
   getFullDrivingPrivileges,
   getProvisionalDrivingPrivileges,
 } from "./helpers/drivingPrivilegeBuilder";
-import { getDefaultDates, getTimeToLiveEpoch } from "./helpers/defaultDates";
+import { getDefaultDates } from "./helpers/defaultDates";
 import { formatDate } from "./helpers/dateFormatter";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
+import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
 const TTL_MINUTES = 43200;

@@ -9,7 +9,7 @@ import { NinoRequestBody } from "./types/NinoRequestBody";
 import { NinoData } from "./types/NinoData";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
-import { getTimeToLiveEpoch } from "../mdlDocumentBuilder/helpers/defaultDates";
+import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 
 const CREDENTIAL_TYPE = CredentialType.SocialSecurityCredential;
 const TTL_MINUTES = 43200;

@@ -9,7 +9,7 @@ import { DbsRequestBody } from "./types/DbsRequestBody";
 import { DbsData } from "./types/DbsData";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
-import { getTimeToLiveEpoch } from "../mdlDocumentBuilder/helpers/defaultDates";
+import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 
 const CREDENTIAL_TYPE = CredentialType.BasicDisclosureCredential;
 const TTL_MINUTES = 43200;
