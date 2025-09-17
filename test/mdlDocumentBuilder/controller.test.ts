@@ -28,15 +28,21 @@ describe("controller.ts", () => {
   beforeAll(() => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date("2025-05-02T00:00:00Z"));
-    jest.spyOn(Math, "random").mockReturnValue(0.5);
+
   });
 
   afterAll(() => {
     jest.useRealTimers();
-    jest.spyOn(Math, "random").mockRestore();
   });
 
   describe("get", () => {
+    beforeEach(() => {
+      jest.spyOn(Math, "random").mockReturnValue(0.5);
+    });
+
+    afterEach(() => {
+      jest.spyOn(Math, "random").mockRestore();
+    });
     it("should render the form for inputting the mDL document details when the user is not authenticated (no id_token in cookies)", async () => {
       const req = getMockReq({ cookies: {} });
       const { res } = getMockRes();
