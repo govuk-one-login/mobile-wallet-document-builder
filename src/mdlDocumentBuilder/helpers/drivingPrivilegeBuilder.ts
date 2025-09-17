@@ -84,7 +84,7 @@ export function buildDrivingPrivileges({
   expiryDays,
   expiryMonths,
   expiryYears,
-  restrictionCodes,
+  restrictionCodes = undefined,
 }: BuildDrivingPrivilegesParams): DrivingPrivilege[] {
   const drivingPrivileges: DrivingPrivilege[] = [];
 
