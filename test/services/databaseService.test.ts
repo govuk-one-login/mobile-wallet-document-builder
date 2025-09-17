@@ -10,15 +10,6 @@ import "aws-sdk-client-mock-jest";
 import { TableItem } from "../../src/types/TableItem";
 
 describe("databaseService.ts", () => {
-  const nowMilliSec = 1757582135042;
-  beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(nowMilliSec);
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-  });
-
   const item = {
     documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
     data: {
