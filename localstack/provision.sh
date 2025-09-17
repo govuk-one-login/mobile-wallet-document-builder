@@ -7,6 +7,9 @@ aws --endpoint-url=http://localhost:4566 dynamodb create-table \
     --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
     --region eu-west-2
 
+aws --endpoint-url=http://localhost:4566 dynamodb update-time-to-live --table-name documents \
+                      --time-to-live-specification Enabled=true,AttributeName=timeToLive
+
 aws --endpoint-url=http://localhost:4566 s3api create-bucket \
     --bucket photos \
     --region eu-west-2 \

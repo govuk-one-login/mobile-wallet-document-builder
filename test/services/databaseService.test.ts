@@ -17,9 +17,10 @@ describe("databaseService.ts", () => {
       givenName: "Rose",
       familyName: "Andrews",
       nino: "QQ123456A",
-      credentialTtlMinutes: 525600,
+      credentialTtlMinutes: 43200,
     },
     vcType: "SocialSecurityCredential",
+    timeToLive: 1760174135,
   } as TableItem;
 
   it("should save a document to the database table", async () => {

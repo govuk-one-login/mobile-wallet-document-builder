@@ -9,4 +9,5 @@ export interface TableItem {
   documentId: UUID;
   data: NinoData | DbsData | VeteranCardData | MdlData;
   vcType: CredentialType;
+  timeToLive: number;
 }
