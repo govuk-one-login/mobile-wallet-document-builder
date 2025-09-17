@@ -15,6 +15,15 @@ jest.mock("../../src/services/databaseService", () => ({
 }));
 
 describe("controller.ts", () => {
+  const nowMilliSec = 1757582135042;
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(nowMilliSec);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   describe("get", () => {
     it("should render the form for inputting DBS document details when user is not authenticated (no id_token in cookies)", async () => {
       const req = getMockReq({ cookies: {} });
@@ -62,7 +71,7 @@ describe("controller.ts", () => {
       postalCode: "NW3 3RX",
       certificateNumber: "009878863",
       applicationNumber: "E0023455534",
-      credentialTtl: "525600",
+      credentialTtl: "43200",
       throwError: "",
     };
 
@@ -116,9 +125,10 @@ describe("controller.ts", () => {
             certificateType: "basic",
             outcome: "Result clear",
             policeRecordsCheck: "Clear",
-            credentialTtlMinutes: 525600,
+            credentialTtlMinutes: 43200,
           },
           vcType: "BasicDisclosureCredential",
+          timeToLive: 1760174135,
         });
       });
     });
