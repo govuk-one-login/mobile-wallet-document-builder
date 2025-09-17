@@ -86,36 +86,42 @@ export function buildDrivingPrivileges({
   expiryYears,
   restrictionCodes = undefined,
 }: BuildDrivingPrivilegesParams): DrivingPrivilege[] {
-  const drivingPrivileges: DrivingPrivilege[] = [];
+  return vehicleCategoryCodes.map((categoryCode, i) => ({
+    vehicle_category_code: categoryCode,
+    issue_date: createDateFromParts(
+      issueDays[i],
+      issueMonths[i],
+      issueYears[i],
+    ),
+    expiry_date: createDateFromParts(
+      expiryDays[i],
+      expiryMonths[i],
+      expiryYears[i],
+    ),
+    codes: restrictionCodes?.[i]
+      ? parseRestrictionCodes(restrictionCodes[i])
+      : null,
+  }));
+}
 
-  for (let i = 0; i < vehicleCategoryCodes.length; i++) {
-    const issueDate =
-      issueDays[i] === "" || issueMonths[i] === "" || issueYears[i] === ""
-        ? null
-        : formatDate(issueDays[i], issueMonths[i], issueYears[i]);
+function createDateFromParts(
+  day: string,
+  month: string,
+  year: string,
+): string | null {
+  return day === "" || month === "" || year === ""
+    ? null
+    : formatDate(day, month, year);
+}
 
-    const expiryDate =
-      expiryDays[i] === "" || expiryMonths[i] === "" || expiryYears[i] === ""
-        ? null
-        : formatDate(expiryDays[i], expiryMonths[i], expiryYears[i]);
+function parseRestrictionCodes(
+  restrictionCodes: string,
+): { code: string }[] | null {
+  const codes = restrictionCodes
+    .split(",")
+    .map((code) => code.trim())
+    .filter((code) => code !== "")
+    .map((code) => ({ code }));
 
-    const codes = [];
-    if (restrictionCodes) {
-      for (const code of restrictionCodes[i].split(",")) {
-        if (code) {
-          codes.push({ code });
-        }
-      }
-    }
-
-    const privilege: DrivingPrivilege = {
-      vehicle_category_code: vehicleCategoryCodes[i],
-      issue_date: issueDate,
-      expiry_date: expiryDate,
-      codes: codes.length > 0 ? codes : null,
-    };
-    drivingPrivileges.push(privilege);
-  }
-
-  return drivingPrivileges;
+  return codes.length > 0 ? codes : null;
 }
