@@ -187,6 +187,7 @@ describe("controller.ts", () => {
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
             documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
             vcType: "org.iso.18013.5.1.mDL",
+            timeToLive: 1748736000,
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
@@ -217,6 +218,7 @@ describe("controller.ts", () => {
               resident_postal_code: "NW3 3RX",
               resident_city: "London",
               un_distinguishing_sign: "UK",
+              credentialTtlMinutes: 43200,
             },
           });
         });
@@ -234,6 +236,7 @@ describe("controller.ts", () => {
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
             documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
             vcType: "org.iso.18013.5.1.mDL",
+            timeToLive: 1748736000,
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
@@ -271,6 +274,7 @@ describe("controller.ts", () => {
               resident_postal_code: "NW3 3RX",
               resident_city: "London",
               un_distinguishing_sign: "UK",
+              credentialTtlMinutes: 43200,
             },
           });
         });
@@ -586,6 +590,7 @@ export function buildMdlRequestBody(
     "provisionalPrivilegeExpiry-day": "03",
     "provisionalPrivilegeExpiry-month": "03",
     "provisionalPrivilegeExpiry-year": "2033",
+    credentialTtl: "43200",
   };
   return { ...defaults, ...overrides };
 }

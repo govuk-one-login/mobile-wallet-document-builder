@@ -24,6 +24,15 @@ jest.mock("../../src/services/s3Service", () => ({
 jest.mock("fs");
 
 describe("controller.ts", () => {
+  const nowMilliSec = 1757582135042;
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(nowMilliSec);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   describe("get", () => {
     it("should render the form for inputting the Veteran Card document details when the user is not authenticated (no id_token in cookies)", async () => {
       const req = getMockReq({ cookies: {} });
@@ -69,7 +78,7 @@ describe("controller.ts", () => {
       serviceNumber: "25057386",
       serviceBranch: "HM Naval Service",
       photo: "420x525.jpg",
-      credentialTtl: "525600",
+      credentialTtl: "43200",
       throwError: "",
     };
 
@@ -150,10 +159,11 @@ describe("controller.ts", () => {
             "cardExpiryDate-year": "2029",
             serviceNumber: "25057386",
             serviceBranch: "HM Naval Service",
-            credentialTtlMinutes: 525600,
+            credentialTtlMinutes: 43200,
             photo: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           },
           vcType: "DigitalVeteranCard",
+          timeToLive: 1760174135,
         });
       });
     });

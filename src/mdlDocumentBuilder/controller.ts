@@ -21,9 +21,12 @@ import { getDefaultDates } from "./helpers/defaultDates";
 import { formatDate } from "./helpers/dateFormatter";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
+import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
 let DRIVING_LICENCE_NUMBER: string;
+const TTL_MINUTES = 43200;
+
 
 export async function mdlDocumentBuilderGetController(
   req: Request,
@@ -75,12 +78,13 @@ export async function mdlDocumentBuilderPostController(
 
     const { photoBuffer, mimeType } = getPhoto(body.portrait);
     await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
-
+    const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
     const data = buildMdlDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
       documentId,
       data,
       vcType: CREDENTIAL_TYPE,
+      timeToLive,
     });
 
     const selectedError = body["throwError"];
@@ -142,5 +146,6 @@ function buildMdlDataFromRequestBody(
       provisional_driving_privileges: provisionalDrivingPrivileges,
     }),
     un_distinguishing_sign: "UK",
+    credentialTtlMinutes: Number(body.credentialTtl),
   };
 }

@@ -19,4 +19,5 @@ export interface MdlData {
   driving_privileges: DrivingPrivilege[];
   un_distinguishing_sign: string;
   provisional_driving_privileges?: DrivingPrivilege[];
+  credentialTtlMinutes: number;
 }
