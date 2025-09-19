@@ -21,6 +21,7 @@ export interface MdlRequestBody {
   resident_postal_code: string;
   resident_city: string;
   fullVehicleCategoryCode: string | string[];
+  fullRestrictionCodes: string | string[];
   "fullPrivilegeIssue-day": string | string[];
   "fullPrivilegeIssue-month": string | string[];
   "fullPrivilegeIssue-year": string | string[];
