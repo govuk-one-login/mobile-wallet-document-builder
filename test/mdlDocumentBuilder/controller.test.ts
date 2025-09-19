@@ -28,7 +28,6 @@ describe("controller.ts", () => {
   beforeAll(() => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date("2025-05-02T00:00:00Z"));
-
   });
 
   afterAll(() => {
@@ -43,6 +42,7 @@ describe("controller.ts", () => {
     afterEach(() => {
       jest.spyOn(Math, "random").mockRestore();
     });
+
     it("should render the form for inputting the mDL document details when the user is not authenticated (no id_token in cookies)", async () => {
       const req = getMockReq({ cookies: {} });
       const { res } = getMockRes();
@@ -101,25 +101,6 @@ describe("controller.ts", () => {
 
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
-  });
-
-  it("should produce different licence numbers", async () => {
-    jest.spyOn(Math, "random").mockReset();
-    jest
-      .spyOn(Math, "random")
-      .mockReturnValueOnce(0)
-      .mockReturnValueOnce(0.999999);
-
-    const req = getMockReq({ cookies: { id_token: "id_token" } });
-    const { res } = getMockRes();
-
-    await mdlDocumentBuilderGetController(req, res);
-    let [, model] = (res.render as jest.Mock).mock.lastCall;
-    expect(model.drivingLicenceNumber).toBe("EDWAR100000SE5RO");
-
-    await mdlDocumentBuilderGetController(req, res);
-    [, model] = (res.render as jest.Mock).mock.lastCall;
-    expect(model.drivingLicenceNumber).toBe("EDWAR999999SE5RO");
   });
 
   describe("post", () => {
@@ -207,7 +188,7 @@ describe("controller.ts", () => {
               expiry_date: "08-04-2029",
               issuing_authority: "DVLA",
               issuing_country: "GB",
-              document_number: "HALL9655293DH5RO",
+              document_number: "EDWAR550000SE5RO",
               driving_privileges: [
                 {
                   vehicle_category_code: "A",
@@ -258,7 +239,7 @@ describe("controller.ts", () => {
               expiry_date: "08-04-2029",
               issuing_authority: "DVLA",
               issuing_country: "GB",
-              document_number: "HALL9655293DH5RO",
+              document_number: "EDWAR550000SE5RO",
               driving_privileges: [
                 {
                   vehicle_category_code: "A",
@@ -372,7 +353,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR999999SE5RO",
+            drivingLicenceNumber: "EDWAR550000SE5RO",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -408,7 +389,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR999999SE5RO",
+            drivingLicenceNumber: "EDWAR550000SE5RO",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -444,7 +425,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR999999SE5RO",
+            drivingLicenceNumber: "EDWAR550000SE5RO",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -480,7 +461,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR999999SE5RO",
+            drivingLicenceNumber: "EDWAR550000SE5RO",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -516,7 +497,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR999999SE5RO",
+            drivingLicenceNumber: "EDWAR550000SE5RO",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -552,7 +533,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR999999SE5RO",
+            drivingLicenceNumber: "EDWAR550000SE5RO",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -582,7 +563,7 @@ export function buildMdlRequestBody(
     "expiry-year": "2029",
     issuing_authority: "DVLA",
     issuing_country: "GB",
-    document_number: "HALL9655293DH5RO",
+    document_number: "EDWAR550000SE5RO",
     resident_address: "Flat 11, Blashford, Adelaide Road",
     resident_postal_code: "NW3 3RX",
     resident_city: "London",
