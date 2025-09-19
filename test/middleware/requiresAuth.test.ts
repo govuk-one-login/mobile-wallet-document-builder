@@ -3,7 +3,7 @@ import { requiresAuth } from "../../src/middleware/requiresAuth";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
 process.env.SELF = "http://localhost:3000";
-process.env.COOKIE_TTL_IN_SECS = "100";
+process.env.COOKIE_TTL_IN_MILLISECONDS = "100";
 
 describe("requiresAuth.ts", () => {
   it("should redirect to /select-app if app not in cookies", () => {

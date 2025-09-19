@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
-import { TokenSet } from "openid-client";
+import { CallbackParamsType, TokenSet, UserinfoResponse } from "openid-client";
 import { buildClientAssertion } from "./clientAssertion/buildClientAssertion";
-import { getClientSigningKeyId, getCookieExpiry } from "../config/appConfig";
+import {
+  getClientSigningKeyId,
+  getCookieExpiryInMilliseconds,
+} from "../config/appConfig";
 import { Jwt } from "../types/Jwt";
 
 /**
@@ -20,12 +23,12 @@ export async function returnFromAuthGetController(
   res: Response,
 ): Promise<void> {
   try {
-    // Handle OAuth error responses from the authorization server
-    if (req.query.error) {
+    const queryParams: CallbackParamsType = req.oidc.callbackParams(req);
+    if (queryParams?.error) {
       logger.error(
         {
-          error: req.query.error,
-          error_description: req.query.error_description,
+          error: queryParams.error,
+          error_description: queryParams.error_description,
         },
         "OAuth authorization failed",
       );
@@ -54,12 +57,19 @@ export async function returnFromAuthGetController(
       },
     );
 
+    const accessToken = tokenSet.access_token!;
+    const userInfo: UserinfoResponse = await req.oidc.userinfo(accessToken, {
+      method: "GET",
+      via: "header",
+    });
+
     const cookieOptions = {
       httpOnly: true,
-      maxAge: getCookieExpiry(),
+      maxAge: getCookieExpiryInMilliseconds(),
     };
-    res.cookie("access_token", tokenSet.access_token, cookieOptions);
+
     res.cookie("id_token", tokenSet.id_token, cookieOptions);
+    res.cookie("wallet_subject_id", userInfo.wallet_subject_id, cookieOptions);
 
     res.redirect(`/select-document`);
   } catch (error) {

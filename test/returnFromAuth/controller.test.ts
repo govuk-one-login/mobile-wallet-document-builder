@@ -3,8 +3,11 @@ import { returnFromAuthGetController } from "../../src/returnFromAuth/controller
 import { logger } from "../../src/middleware/logger";
 import * as assertionJwt from "../../src/returnFromAuth/clientAssertion/buildClientAssertion";
 
-process.env.COOKIE_TTL_IN_SECS = "100";
+process.env.COOKIE_TTL_IN_MILLISECONDS = "100000";
 process.env.CLIENT_SIGNING_KEY_ID = "14122ec4-cdd0-4154-8275-04363c15fbd9";
+
+const WALLET_SUBJECT_ID =
+  "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i";
 
 jest.mock(
   "../../src/returnFromAuth/clientAssertion/buildClientAssertion",
@@ -19,8 +22,8 @@ describe("controller.ts", () => {
     .spyOn(logger, "error")
     .mockImplementation(() => undefined);
 
-  // Helper function to create a OIDC mock request
   const createOidcMockReq = (overrides = {}) => {
+    const userinfo = { wallet_subject_id: WALLET_SUBJECT_ID };
     return getMockReq({
       cookies: { nonce: "test_nonce", state: "test_state" },
       oidc: {
@@ -38,6 +41,7 @@ describe("controller.ts", () => {
             token_endpoint: "http://localhost:8000/token",
           },
         },
+        userinfo: jest.fn().mockImplementation(() => userinfo),
       },
       ...overrides,
     });
@@ -51,9 +55,11 @@ describe("controller.ts", () => {
 
   it("should return 500 on OAuth error in query parameters", async () => {
     const req = getMockReq({
-      query: {
-        error: "access_denied",
-        error_description: "User denied access",
+      oidc: {
+        callbackParams: jest.fn().mockReturnValue({
+          error: "some_error",
+          error_description: "Some error description",
+        }),
       },
     });
     const { res } = getMockRes();
@@ -61,7 +67,7 @@ describe("controller.ts", () => {
     await returnFromAuthGetController(req, res);
 
     expect(loggerErrorSpy).toHaveBeenCalledWith(
-      { error: "access_denied", error_description: "User denied access" },
+      { error: "some_error", error_description: "Some error description" },
       "OAuth authorization failed",
     );
     expect(res.render).toHaveBeenCalledWith("500.njk");
@@ -70,14 +76,18 @@ describe("controller.ts", () => {
 
   it("should handle OAuth error without description", async () => {
     const req = getMockReq({
-      query: { error: "server_error" },
+      oidc: {
+        callbackParams: jest.fn().mockReturnValue({
+          error: "some_error",
+        }),
+      },
     });
     const { res } = getMockRes();
 
     await returnFromAuthGetController(req, res);
 
     expect(loggerErrorSpy).toHaveBeenCalledWith(
-      { error: "server_error", error_description: undefined },
+      { error: "some_error", error_description: undefined },
       "OAuth authorization failed",
     );
     expect(res.render).toHaveBeenCalledWith("500.njk");
@@ -131,14 +141,11 @@ describe("controller.ts", () => {
 
     await returnFromAuthGetController(req, res);
 
-    // Verify client assertion was called correctly
     expect(buildAssertionJwt).toHaveBeenCalledWith(
       "test_client_id",
       "http://localhost:8000/token",
       "14122ec4-cdd0-4154-8275-04363c15fbd9",
     );
-
-    // Verify OIDC callback was called with correct parameters
     expect(req.oidc!.callback).toHaveBeenCalledWith(
       "http://localhost:3000/test",
       { code: "auth_code_123" },
@@ -151,20 +158,20 @@ describe("controller.ts", () => {
         },
       },
     );
-
-    // Verify cookies were set with correct options
-    expect(res.cookie).toHaveBeenNthCalledWith(
-      1,
-      "access_token",
-      "access_token",
-      { httpOnly: true, maxAge: 100000 },
-    );
-    expect(res.cookie).toHaveBeenNthCalledWith(2, "id_token", "id_token", {
+    expect(req.oidc!.userinfo).toHaveBeenCalledWith("access_token", {
+      method: "GET",
+      via: "header",
+    });
+    expect(res.cookie).toHaveBeenNthCalledWith(1, "id_token", "id_token", {
       httpOnly: true,
       maxAge: 100000,
     });
-
-    // Verify redirect
+    expect(res.cookie).toHaveBeenNthCalledWith(
+      2,
+      "wallet_subject_id",
+      WALLET_SUBJECT_ID,
+      { httpOnly: true, maxAge: 100000 },
+    );
     expect(res.redirect).toHaveBeenCalledWith("/select-document");
     expect(loggerErrorSpy).not.toHaveBeenCalled();
   });
