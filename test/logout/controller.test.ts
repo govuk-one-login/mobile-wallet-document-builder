@@ -41,8 +41,10 @@ describe("controller.ts", () => {
     expect(req.oidc.endSessionUrl).toHaveBeenCalled();
     expect(deleteCookies).toHaveBeenCalledWith(req, res, [
       "id_token",
-      "access_token",
+      "state",
+      "nonce",
       "app",
+      "wallet_subject_id",
     ]);
   });
 });

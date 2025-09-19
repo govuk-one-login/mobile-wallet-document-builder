@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "./logger";
-import { getSelfUrl, getCookieExpiry } from "../config/appConfig";
+import { getSelfUrl, getCookieExpiryInMilliseconds } from "../config/appConfig";
 import { generators } from "openid-client";
 
 const VECTORS_OF_TRUST = `["Cl"]`;
@@ -32,11 +32,11 @@ export function getAuthorizationUrl(req: Request, res: Response) {
 
   res.cookie("nonce", nonce, {
     httpOnly: true,
-    maxAge: getCookieExpiry(),
+    maxAge: getCookieExpiryInMilliseconds(),
   });
   res.cookie("state", state, {
     httpOnly: true,
-    maxAge: getCookieExpiry(),
+    maxAge: getCookieExpiryInMilliseconds(),
   });
 
   return req.oidc.authorizationUrl({

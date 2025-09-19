@@ -6,7 +6,7 @@ import { getMockReq, getMockRes } from "@jest-mock/express";
 const ENVIRONMENT = "test";
 process.env.ENVIRONMENT = ENVIRONMENT;
 
-export const WALLET_SUBJECT_ID =
+const WALLET_SUBJECT_ID =
   "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i";
 
 jest.mock(
@@ -35,7 +35,6 @@ describe("controller.ts", () => {
   const customiseCredentialOfferUrl =
     customCredentialOfferUrl.customiseCredentialOfferUrl as jest.Mock;
 
-  const userinfo = { wallet_subject_id: WALLET_SUBJECT_ID };
   const req = getMockReq({
     params: {
       documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
@@ -43,14 +42,11 @@ describe("controller.ts", () => {
     cookies: {
       app: "some-build-app",
       id_token: "id_token",
-      access_token: "access_token",
+      wallet_subject_id: WALLET_SUBJECT_ID,
     },
     query: {
       type: "BasicCheckCredential",
       error: "",
-    },
-    oidc: {
-      userinfo: jest.fn().mockImplementation(() => userinfo),
     },
   });
   const { res } = getMockRes();
@@ -66,7 +62,6 @@ describe("controller.ts", () => {
 
     await credentialOfferViewerController(req, res);
 
-    expect(req.oidc.userinfo).toHaveBeenCalled();
     expect(getCredentialOfferUrl).toHaveBeenCalledWith(
       WALLET_SUBJECT_ID,
       "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
