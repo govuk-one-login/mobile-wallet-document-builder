@@ -27,7 +27,6 @@ const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
 let DRIVING_LICENCE_NUMBER: string;
 const TTL_MINUTES = 43200;
 
-
 export async function mdlDocumentBuilderGetController(
   req: Request,
   res: Response,
