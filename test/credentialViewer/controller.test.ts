@@ -29,7 +29,6 @@ describe("controller.ts", () => {
   const { res } = getMockRes();
 
   it("should render the credential page", async () => {
-    // arrange
     const accessToken =
       "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjJjZWQyMmUyLWMxNWItNGUwMi1hYTVmLTdhMTBhMmVhY2NjNyJ9.eyJzdWIiOiJ1cm46ZmRjOndhbGxldC5hY2NvdW50Lmdvdi51azoyMDI0OkR0UFQ4eC1kcF83M3RubFkzS05UaUNpdHppTjlHRWhlckQxNmJxeE50OWkiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwODAiLCJjcmVkZW50aWFsX2lkZW50aWZpZXJzIjpbIjM2ODRlYzZkLTkyZGQtNDJhOC1iZjRjLWZhMjAwYTgzYjkyYyJdLCJjX25vbmNlIjoiMmQ4NzJkYzUtMDdlNi00ZmU4LWI1Y2ItYWQ4OWNiYzY4MzcyIn0.4tIHPhrWzRJhhE8f4OnqRda-y8M10H42r5J5KVPS7iLrFR1amJzCMd3O0KEjVke2ISam9qKe50J9p4qs3O5N-A";
     const mockTokenResponse = {
@@ -38,7 +37,6 @@ describe("controller.ts", () => {
       },
     } as AxiosResponse;
     mockedAxios.post.mockResolvedValueOnce(mockTokenResponse);
-
     const proofJwt =
       "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImRpZDprZXk6ekRuYWVXN2FUQ3R6Sll4TWc1dXJlcXV0V1dNTnFvb25jVGZrdFhNYmI1aVg2OEJweCJ9.eyJpc3MiOiJ1cm46ZmRjOmdvdjp1azp3YWxsZXQiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwODAiLCJpYXQiOjE3MzY0NDUwMDMzMjYsIm5vbmNlIjoiMmQ4NzJkYzUtMDdlNi00ZmU4LWI1Y2ItYWQ4OWNiYzY4MzcyIn0.D6nzSe_K9oiN3Ux7T2CobYuAiBUruGoXc9tFoSSj0rkwbPWdGCIwQQ-XHqqa803v7hKNOteAnUx6w178SrfDZw";
     const mockProofJwtResponse = {
@@ -47,20 +45,17 @@ describe("controller.ts", () => {
       },
     } as AxiosResponse;
     mockedAxios.get.mockResolvedValueOnce(mockProofJwtResponse);
-
     const credential =
       "eyJraWQiOiI3OGZhMTMxZDY3N2MxYWMwZjE3MmM1M2I0N2FjMTY5YTk1YWQwZDkyYzM4YmQ3OTRhNzBkYTU5MDMyMDU4Mjc0IiwidHlwIjoiSldUIiwiYWxnIjoiRVMyNTYifQ.eyJzdWIiOiJkaWQ6a2V5OnpEbmFlVzdhVEN0ekpZeE1nNXVyZXF1dFdXTU5xb29uY1Rma3RYTWJiNWlYNjhCcHgiLCJuYmYiOjE3MzY0NDUwMDMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MCIsImNvbnRleHQiOlsiaHR0cHM6Ly93d3cudzMub3JnLzIwMTgvY3JlZGVudGlhbHMvdjEiXSwiZXhwIjoxNzY3OTgxMDAzLCJpYXQiOjE3MzY0NDUwMDMsInZjIjp7InR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJTb2NpYWxTZWN1cml0eUNyZWRlbnRpYWwiXSwiY3JlZGVudGlhbFN1YmplY3QiOnsibmFtZSI6W3sibmFtZVBhcnRzIjpbeyJ2YWx1ZSI6Ik1yIiwidHlwZSI6IlRpdGxlIn0seyJ2YWx1ZSI6IlNhcmFoIiwidHlwZSI6IkdpdmVuTmFtZSJ9LHsidmFsdWUiOiJFbGl6YWJldGgiLCJ0eXBlIjoiR2l2ZW5OYW1lIn0seyJ2YWx1ZSI6IkVkd2FyZHMiLCJ0eXBlIjoiRmFtaWx5TmFtZSJ9XX1dLCJzb2NpYWxTZWN1cml0eVJlY29yZCI6W3sicGVyc29uYWxOdW1iZXIiOiJRUTEyMzQ1NkMifV19fX0.w22z4JkIQ_KdTimjEshPUY75VdPXfCPAHaRTBMEcIP5bVrMvibR5cKM2c3U1GsSGwKvCScVlq12qOIf6x0q5sA";
     const mockCredentialResponse = {
       data: {
-        credential: credential,
+        credentials: [{ credential: credential }],
       },
     } as AxiosResponse;
     mockedAxios.post.mockResolvedValueOnce(mockCredentialResponse);
 
-    // act
     await credentialViewerController(req, res);
 
-    // assert
     expect(mockedAxios.post).toHaveBeenNthCalledWith(
       1,
       "https://doc-builder.test/token",
@@ -106,13 +101,10 @@ describe("controller.ts", () => {
   });
 
   it("should render an error page when an error happens", async () => {
-    // arrange
     mockedAxios.post.mockRejectedValueOnce("SOME_ERROR");
 
-    // act
     await credentialViewerController(req, res);
 
-    // assert
     expect(res.render).toHaveBeenCalledWith("500.njk");
   });
 });
