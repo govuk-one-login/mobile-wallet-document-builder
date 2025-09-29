@@ -104,5 +104,5 @@ export async function getCredential(
       },
     },
   );
-  return response.data.credential;
+  return response.data.credentials[0].credential;
 }
