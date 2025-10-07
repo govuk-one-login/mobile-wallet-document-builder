@@ -3,7 +3,7 @@ import { getCriEndpoint } from "../../config/appConfig";
 
 export interface RevokeResult {
   message: string;
-  messageType: "success" | "error";
+  messageType: "success" | "error" | "info";
 }
 
 const REVOKE_PATH = "/revoke";
@@ -31,12 +31,12 @@ export async function revokeCredentials(
   if (statusCode === 404) {
     return {
       message: "No credential found for this driving licence number",
-      messageType: "error",
+      messageType: "info",
     };
   }
   return {
     message:
-      "An error happened and the credential(s) may not have been revoked",
+      "Something went wrong and the credential(s) may not have been revoked",
     messageType: "error",
   };
 }

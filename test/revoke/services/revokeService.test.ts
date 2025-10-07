@@ -50,7 +50,7 @@ describe("revokeService.ts", () => {
     });
   });
 
-  it("should return error message when CRI returns 404", async () => {
+  it("should return info message when CRI returns 404", async () => {
     const mockCriResponse = {
       status: 404,
     } as AxiosResponse;
@@ -60,7 +60,7 @@ describe("revokeService.ts", () => {
 
     expect(response).toEqual({
       message: "No credential found for this driving licence number",
-      messageType: "error",
+      messageType: "info",
     });
   });
 
@@ -74,7 +74,7 @@ describe("revokeService.ts", () => {
 
     expect(response).toEqual({
       message:
-        "An error happened and the credential(s) may not have been revoked",
+        "Something went wrong and the credential(s) may not have been revoked",
       messageType: "error",
     });
   });
