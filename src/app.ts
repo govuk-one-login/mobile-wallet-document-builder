@@ -62,10 +62,9 @@ export async function createApp(): Promise<express.Application> {
     }),
   );
   app.use(noCacheMiddleware);
-
   app.use(revokeRouter);
-  app.use(appSelectorRouter);
   app.use(auth(getOIDCConfig()));
+  app.use(appSelectorRouter);
   app.use(returnFromAuthRouter);
   app.use(documentSelectorRouter);
   app.use(dbsDocumentBuilderRouter);
