@@ -1,7 +1,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% extends "base.njk" %}
-{% set pageTitle = "Please enter the driving licence number associated with the credentials to revoke:" %}
+{% set pageTitle = "Please enter the driving licence number associated with the credentials you wish to revoke:" %}
 {% block content %}
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
     {% if message %}
@@ -13,16 +14,23 @@
         </div>
     {% endif %}
     <form action="/revoke" method="post">
-        {{ govukInput({
-            "label": {
-                "text": "Driving licence number",
-                "classes": "govuk-label--s"
-            },
-            "id": "driving-licence-number",
-            "name": "drivingLicenceNumber",
-            "classes": "govuk-!-width-one-third",
-            "spellcheck": false
-        }) }}
+        {% call govukFieldset({
+            "legend": {
+            "text": "Please enter the driving licence number associated with the credentials you wish to revoke:",
+            "classes": "govuk-fieldset__legend--m",
+            "isPageHeading": true
+            } }) %}
+            {{ govukInput({
+                "label": {
+                    "text": "Driving licence number",
+                    "classes": "govuk-label--s"
+                },
+                "id": "driving-licence-number",
+                "name": "drivingLicenceNumber",
+                "classes": "govuk-!-width-one-third",
+                "spellcheck": false
+            }) }}
+        {% endcall %}
         {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
     </form>
 {% endblock %}
