@@ -8,8 +8,8 @@
 {% set pageTitle = "Please enter the Driving Licence document details:" %}
 {% block content %}
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
-    {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
     <form action="/build-mdl-document" method="post">
+        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
         {% call govukFieldset({
             legend: {
             text: pageTitle,
