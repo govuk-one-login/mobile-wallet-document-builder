@@ -8,6 +8,7 @@
 {% set pageTitle = "Please enter the Driving Licence document details:" %}
 {% block content %}
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
+    {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
     <form action="/build-mdl-document" method="post">
         {% call govukFieldset({
             legend: {
@@ -41,24 +42,24 @@
                 "value": "Edwards"
             }) }}
             {{ govukInput({
-                "label": {
-                    "text": "Title",
-                    "classes": "govuk-label--s"
-                },
-                "hint": {
-                    "html": "DVLA set values are “Mr”, \"Mrs”, “Miss”, “Ms”, “Dr” <br>and “Rev” or free-text up to 15 characters"
-                },
-                "classes": "govuk-!-width-one-third",
-                "id": "title",
-                "name": "title",
-                "autocomplete": "title",
-                "spellcheck": true,
-                "value": "Miss"
-            }) }}
-            {% if errors['birth_date'] %}
-                {% set dobError = { text: errors['birth_date'] } %}
-            {% endif %}
-            {{ govukDateInput({
+                        "label": {
+                        "text": "Title",
+                        "classes": "govuk-label--s"
+                        },
+                        "hint": {
+                        "html": "DVLA set values are “Mr”, \"Mrs”, “Miss”, “Ms”, “Dr” <br>and “Rev” or free-text up to 15 characters"
+                        },
+                        "classes": "govuk-!-width-one-third",
+                        "id": "title",
+                        "name": "title",
+                        "autocomplete": "title",
+                        "spellcheck": true,
+                        "value": "Miss"
+                        }) }}
+                        {% if errors['birth_date'] %}
+                            {% set dobError = { text: errors['birth_date'] } %}
+                        {% endif %}
+                        {{ govukDateInput({
                         "id": "birth_date",
                         "namePrefix": "birth",
                         "fieldset": {
@@ -86,47 +87,47 @@
                         }
                         ]
                         }) }}
-            {{ govukInput({
-                "label": {
-                    "text": "Place of birth",
-                    "classes": "govuk-label--s"
-                },
-                "classes": "govuk-!-width-one-third",
-                "id": "birth_place",
-                "name": "birth_place",
-                "autocomplete": "birth_place",
-                "spellcheck": false,
-                "value": "London"
-            }) }}
-            {{ govukRadios({
-                "classes": "govuk-radios--small",
-                "name": "welsh_licence",
-                "fieldset": {
-                    "legend": {
+                        {{ govukInput({
+                        "label": {
+                        "text": "Place of birth",
+                        "classes": "govuk-label--s"
+                        },
+                        "classes": "govuk-!-width-one-third",
+                        "id": "birth_place",
+                        "name": "birth_place",
+                        "autocomplete": "birth_place",
+                        "spellcheck": false,
+                        "value": "London"
+                        }) }}
+                        {{ govukRadios({
+                        "classes": "govuk-radios--small",
+                        "name": "welsh_licence",
+                        "fieldset": {
+                        "legend": {
                         "text": "Bilingual Welsh licence",
                         "classes": "govuk-fieldset__legend--s"
-                    }
-                },
-                "items": [
-                    {
+                        }
+                        },
+                        "items": [
+                        {
                         "value": "false",
                         "text": "No",
                         "checked": true
-                    },
-                    {
+                        },
+                        {
                         "value": "true",
                         "text": "Yes"
-                    }
-                ]
-            }) }}
-            {% macro drivingPrivilegesFieldset(type, legendText) %}
-                {% call govukFieldset({
-                    legend: { text: legendText, classes: "govuk-fieldset__legend--s" }
-                    }) %}
-                    <div id="{{ type }}DrivingPrivilege"></div>
-                    <button id="add-{{ type }}-button"
-                            class="govuk-button govuk-button--secondary"
-                            onclick="addDrivingPrivileges('{{ type }}')"
+                        }
+                        ]
+                        }) }}
+                        {% macro drivingPrivilegesFieldset(type, legendText) %}
+                            {% call govukFieldset({
+                                legend: { text: legendText, classes: "govuk-fieldset__legend--s" }
+                                }) %}
+                                <div id="{{ type }}DrivingPrivilege"></div>
+                                <button id="add-{{ type }}-button"
+                                        class="govuk-button govuk-button--secondary"
+                                        onclick="addDrivingPrivileges('{{ type }}') "
                             type="button">Add</button>
                 {% endcall %}
             {% endmacro %}
