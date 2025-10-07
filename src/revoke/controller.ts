@@ -14,7 +14,7 @@ export async function revokePostController(
   res: Response,
 ): Promise<void> {
   try {
-    const drivingLicenceNumber = req.body["driving-licence-number"];
+    const drivingLicenceNumber = req.body["drivingLicenceNumber"];
 
     const result = await revokeCredentials(drivingLicenceNumber);
 

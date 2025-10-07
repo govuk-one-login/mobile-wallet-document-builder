@@ -28,7 +28,7 @@ describe("revoke", () => {
 
     const req = getMockReq({
       body: {
-        "driving-licence-number": "EDWAR210513SE5RO",
+        drivingLicenceNumber: "EDWAR210513SE5RO",
       },
     });
     const { res } = getMockRes();
