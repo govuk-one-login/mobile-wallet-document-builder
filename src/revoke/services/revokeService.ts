@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getCriEndpoint } from "../../config/appConfig";
 
 export interface RevokeResult {
   message: string;
@@ -9,9 +8,10 @@ export interface RevokeResult {
 const REVOKE_PATH = "/revoke";
 
 export async function revokeCredentials(
+  criUrl: string,
   drivingLicenceNumber: string,
 ): Promise<RevokeResult> {
-  const revokeUrl = getCriEndpoint() + REVOKE_PATH;
+  const revokeUrl = criUrl + REVOKE_PATH;
 
   const response = await axios.post(
     revokeUrl,

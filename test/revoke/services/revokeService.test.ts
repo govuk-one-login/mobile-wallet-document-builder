@@ -1,22 +1,15 @@
 import axios, { AxiosResponse } from "axios";
 import { revokeCredentials } from "../../../src/revoke/services/revokeService";
-import { getCriEndpoint } from "../../../src/config/appConfig";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock("../../../src/config/appConfig");
-const mockedGetCriEndpoint = getCriEndpoint as jest.MockedFunction<
-  typeof getCriEndpoint
->;
-
-export const CRI_URL = "https://test-cri.example.com";
-export const DRIVING_LICENCE_NUMBER = "EDWAR210513SE5RO";
+const CRI_URL = "https://test-cri.example.com";
+const DRIVING_LICENCE_NUMBER = "EDWAR210513SE5RO";
 
 describe("revokeService.ts", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedGetCriEndpoint.mockReturnValue(CRI_URL);
   });
 
   it("should send POST request to the CRI to revoke credentials", async () => {
@@ -25,7 +18,7 @@ describe("revokeService.ts", () => {
     } as AxiosResponse;
     mockedAxios.post.mockResolvedValue(mockCriResponse);
 
-    await revokeCredentials(DRIVING_LICENCE_NUMBER);
+    await revokeCredentials(CRI_URL, DRIVING_LICENCE_NUMBER);
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
       `${CRI_URL}/revoke`,
@@ -42,7 +35,7 @@ describe("revokeService.ts", () => {
     } as AxiosResponse;
     mockedAxios.post.mockResolvedValue(mockCriResponse);
 
-    const response = await revokeCredentials(DRIVING_LICENCE_NUMBER);
+    const response = await revokeCredentials(CRI_URL, DRIVING_LICENCE_NUMBER);
 
     expect(response).toEqual({
       message: "Credential(s) successfully revoked",
@@ -56,7 +49,7 @@ describe("revokeService.ts", () => {
     } as AxiosResponse;
     mockedAxios.post.mockResolvedValue(mockCriResponse);
 
-    const response = await revokeCredentials(DRIVING_LICENCE_NUMBER);
+    const response = await revokeCredentials(CRI_URL, DRIVING_LICENCE_NUMBER);
 
     expect(response).toEqual({
       message: "No credential found for this driving licence number",
@@ -70,7 +63,7 @@ describe("revokeService.ts", () => {
     } as AxiosResponse;
     mockedAxios.post.mockResolvedValue(mockCriResponse);
 
-    const response = await revokeCredentials(DRIVING_LICENCE_NUMBER);
+    const response = await revokeCredentials(CRI_URL, DRIVING_LICENCE_NUMBER);
 
     expect(response).toEqual({
       message:
@@ -82,8 +75,8 @@ describe("revokeService.ts", () => {
   it("should propagate error thrown by axios", async () => {
     mockedAxios.post.mockRejectedValue(new Error("Network error"));
 
-    await expect(revokeCredentials(DRIVING_LICENCE_NUMBER)).rejects.toThrow(
-      "Network error",
-    );
+    await expect(
+      revokeCredentials(CRI_URL, DRIVING_LICENCE_NUMBER),
+    ).rejects.toThrow("Network error");
   });
 });

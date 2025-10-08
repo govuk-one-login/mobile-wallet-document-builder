@@ -1,4 +1,5 @@
 import {
+  RevokeConfig,
   revokeGetController,
   revokePostController,
 } from "../../src/revoke/controller";
@@ -9,13 +10,24 @@ jest.mock("../../src/revoke/services/revokeService", () => ({
   revokeCredentials: jest.fn(),
 }));
 
+const CRI_URL = "https://test-cri.example.com";
+const DRIVING_LICENCE_NUMBER = "EDWAR210513SE5RO";
+
 describe("revoke", () => {
+  let config: RevokeConfig;
+
+  beforeEach(async () => {
+    config = {
+      criUrl: CRI_URL,
+    };
+  });
+
   describe("revokeGetController", () => {
     const req = getMockReq();
     const { res } = getMockRes();
 
     it("should render the revoke form", () => {
-      revokeGetController(req, res);
+      revokeGetController()(req, res);
 
       expect(res.render).toHaveBeenCalledWith("revoke-form.njk");
     });
@@ -28,7 +40,7 @@ describe("revoke", () => {
 
     const req = getMockReq({
       body: {
-        drivingLicenceNumber: "EDWAR210513SE5RO",
+        drivingLicenceNumber: DRIVING_LICENCE_NUMBER,
       },
     });
     const { res } = getMockRes();
@@ -40,9 +52,12 @@ describe("revoke", () => {
       };
       (revokeCredentials as jest.Mock).mockResolvedValue(mockResult);
 
-      await revokePostController(req, res);
+      await revokePostController(config)(req, res);
 
-      expect(revokeCredentials).toHaveBeenCalledWith("EDWAR210513SE5RO");
+      expect(revokeCredentials).toHaveBeenCalledWith(
+        CRI_URL,
+        DRIVING_LICENCE_NUMBER,
+      );
       expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
         message: "Credential successfully revoked",
         messageType: "success",
@@ -56,9 +71,12 @@ describe("revoke", () => {
       };
       (revokeCredentials as jest.Mock).mockResolvedValue(mockResult);
 
-      await revokePostController(req, res);
+      await revokePostController(config)(req, res);
 
-      expect(revokeCredentials).toHaveBeenCalledWith("EDWAR210513SE5RO");
+      expect(revokeCredentials).toHaveBeenCalledWith(
+        CRI_URL,
+        DRIVING_LICENCE_NUMBER,
+      );
       expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
         message: "No credential found for this driving licence number",
         messageType: "error",
@@ -70,7 +88,7 @@ describe("revoke", () => {
         new Error("Unexpected error"),
       );
 
-      await revokePostController(req, res);
+      await revokePostController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
