@@ -17,7 +17,7 @@ export async function buildClientAssertion(
 ): Promise<Jwt> {
   const header = { alg: TOKEN_SIGNING_ALGORITHM, typ: TOKEN_JWT_TYPE };
 
-  const timeNow = new Date().getTime();
+  const timeNow = Date.now();
   const payload = {
     iss: clientId,
     sub: clientId,
