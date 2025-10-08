@@ -1,6 +1,5 @@
 import { CredentialOffer } from "../types/CredentialOfferResponse";
 import { App } from "../../config/appConfig";
-import { ERROR_CHOICES } from "../../utils/errorChoices";
 
 const WALLET_URL_PATH_SPLITTER = "account.gov.uk/wallet/";
 const CREDENTIAL_OFFER_SPLITTER = "credential_offer=";
