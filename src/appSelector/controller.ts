@@ -10,22 +10,18 @@ import {
 import { nonStagingApps, stagingApps } from "./views/apps";
 
 export interface AppSelectorConfig {
-  environment: string;
+  environment?: string;
   cookieExpiry?: number;
 }
 
-export function appSelectorGetController(
-  config: AppSelectorConfig = {
-    environment: getEnvironment(),
-  },
-): ExpressRouteFunction {
+export function appSelectorGetController({
+  environment = getEnvironment(),
+} = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {
       res.render("select-app-form.njk", {
         apps:
-          config.environment === "staging"
-            ? stagingApps(apps)
-            : nonStagingApps(apps),
+          environment === "staging" ? stagingApps(apps) : nonStagingApps(apps),
         authenticated: isAuthenticated(req),
       });
     } catch (error) {
@@ -35,12 +31,10 @@ export function appSelectorGetController(
   };
 }
 
-export function appSelectorPostController(
-  config: AppSelectorConfig = {
-    environment: getEnvironment(),
-    cookieExpiry: getCookieExpiryInMilliseconds(),
-  },
-): ExpressRouteFunction {
+export function appSelectorPostController({
+  environment = getEnvironment(),
+  cookieExpiry = getCookieExpiryInMilliseconds(),
+}: AppSelectorConfig = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {
       const selectedApp = req.body["select-app-choice"];
@@ -48,14 +42,14 @@ export function appSelectorPostController(
       if (selectedApp) {
         res.cookie("app", selectedApp, {
           httpOnly: true,
-          maxAge: config.cookieExpiry,
+          maxAge: cookieExpiry,
         });
         res.redirect(`/select-document`);
       } else {
         res.render("select-app-form.njk", {
           isInvalid: selectedApp === undefined,
           apps:
-            config.environment === "staging"
+            environment === "staging"
               ? stagingApps(apps)
               : nonStagingApps(apps),
           authenticated: isAuthenticated(req),
