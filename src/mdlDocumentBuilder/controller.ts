@@ -24,8 +24,9 @@ import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
-let DRIVING_LICENCE_NUMBER: string;
 const TTL_MINUTES = 43200;
+
+let drivingLicenceNumber: string;
 
 export async function mdlDocumentBuilderGetController(
   req: Request,
@@ -33,11 +34,11 @@ export async function mdlDocumentBuilderGetController(
 ): Promise<void> {
   try {
     const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-    DRIVING_LICENCE_NUMBER = "EDWAR" + getRandomIntInclusive() + "SE5RO";
+    drivingLicenceNumber = "EDWAR" + getRandomIntInclusive() + "SE5RO";
     res.render("mdl-document-details-form.njk", {
       defaultIssueDate,
       defaultExpiryDate,
-      drivingLicenceNumber: DRIVING_LICENCE_NUMBER,
+      drivingLicenceNumber,
       authenticated: isAuthenticated(req),
       errorChoices: ERROR_CHOICES,
     });
@@ -58,36 +59,36 @@ export async function mdlDocumentBuilderPostController(
     const body: MdlRequestBody = req.body;
 
     const errors = validateDateFields(body);
-
     if (Object.keys(errors).length > 0) {
       const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
       return res.render("mdl-document-details-form.njk", {
         defaultIssueDate,
         defaultExpiryDate,
-        drivingLicenceNumber: DRIVING_LICENCE_NUMBER,
+        drivingLicenceNumber,
         authenticated: isAuthenticated(req),
         errorChoices: ERROR_CHOICES,
         errors,
       });
     }
 
-    const documentId = randomUUID();
+    const itemId = randomUUID();
     const bucketName = getPhotosBucketName();
-    const s3Uri = `s3://${bucketName}/${documentId}`;
+    const s3Uri = `s3://${bucketName}/${itemId}`;
 
     const { photoBuffer, mimeType } = getPhoto(body.portrait);
-    await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
+    await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
     const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
     const data = buildMdlDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
-      documentId,
+      itemId,
+      documentId: data.document_number,
       data,
       vcType: CREDENTIAL_TYPE,
       timeToLive,
     });
 
     const selectedError = body["throwError"];
-    let redirectUrl = `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}`;
+    let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
     if (isErrorCode(selectedError)) {
       redirectUrl += `&error=${selectedError}`;
     }
