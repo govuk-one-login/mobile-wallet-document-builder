@@ -69,13 +69,13 @@ export function isValidDate(
   monthStr: string,
   yearStr: string,
 ): boolean {
-  const dayNum = parseInt(dayStr);
-  const monthNum = parseInt(monthStr);
-  const yearNum = parseInt(yearStr);
+  const dayNum = Number.parseInt(dayStr);
+  const monthNum = Number.parseInt(monthStr);
+  const yearNum = Number.parseInt(yearStr);
 
   const date = new Date(yearNum, monthNum - 1, dayNum); // Month is 0-indexed in JavaScript
 
-  if (isNaN(date.getTime())) return false;
+  if (Number.isNaN(date.getTime())) return false;
 
   return (
     date.getFullYear() === yearNum &&
