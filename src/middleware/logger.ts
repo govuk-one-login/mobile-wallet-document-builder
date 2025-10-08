@@ -27,7 +27,7 @@ const logger = pino({
   },
 });
 
-const ignorePaths = [
+const ignorePaths = new Set<string>([
   "/public/stylesheets/application.css",
   "/assets/images/govuk-crest.png",
   "/assets/fonts/light-94a07e06a1-v2.woff2",
@@ -35,12 +35,12 @@ const ignorePaths = [
   "/assets/images/favicon.ico",
   "/healthcheck",
   "/",
-];
+]);
 
 const loggerMiddleware = PinoHttp({
   logger,
   wrapSerializers: false,
-  autoLogging: { ignore: (req) => ignorePaths.includes(req.url!) },
+  autoLogging: { ignore: (req) => ignorePaths.has(req.url!) },
   customErrorMessage: function (error, res) {
     return "Request errored with status code: " + res.statusCode;
   },
