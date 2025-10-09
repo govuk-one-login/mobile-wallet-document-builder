@@ -13,7 +13,7 @@ jest.mock("../../src/services/s3Service", () => ({
 const getDocument = documentStore.getDocument as jest.Mock;
 const getPhoto = s3Service.getPhoto as jest.Mock;
 
-const documentId = "2e0fac05-4b38-480f-9cbd-b046eabe1e46";
+const itemId = "2e0fac05-4b38-480f-9cbd-b046eabe1e46";
 const bucketName = "photosBucket";
 
 const ninoData = {
@@ -34,13 +34,13 @@ const veteranCardData = {
   "cardExpiryDate-year": "2029",
   serviceNumber: "25057386",
   serviceBranch: "HM Naval Service",
-  photo: "s3://photosBucket/" + documentId,
+  photo: "s3://photosBucket/" + itemId,
 };
 
 const mdlData = {
   family_name: "Edwards-Smith",
   given_name: "Sarah Elizabeth",
-  portrait: "s3://photosBucket/" + documentId,
+  portrait: "s3://photosBucket/" + itemId,
   "birth-day": "06",
   "birth-month": "03",
   "birth-year": "1975",
@@ -67,7 +67,7 @@ describe("controller.ts", () => {
   it("should return 500 if an error happens when trying to process the request", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
-      params: { documentId: documentId },
+      params: { itemId },
     });
     const getDocument = documentStore.getDocument as jest.Mock;
     getDocument.mockRejectedValueOnce(new Error("SOME_ERROR"));
@@ -80,13 +80,13 @@ describe("controller.ts", () => {
   it("should return 404 if the NINO document was not found", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
-      params: { documentId: documentId },
+      params: { itemId },
     });
     getDocument.mockReturnValueOnce(undefined);
 
     await documentController(req, res);
 
-    expect(getDocument).toHaveBeenCalledWith("testTable", documentId);
+    expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
     expect(getPhoto).not.toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(404);
   });
@@ -94,10 +94,10 @@ describe("controller.ts", () => {
   it("should return 404 if the Veteran Card photo was not found", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
-      params: { documentId: documentId },
+      params: { itemId },
     });
     getDocument.mockReturnValueOnce({
-      documentId: documentId,
+      itemId,
       data: veteranCardData,
       vcType: "DigitalVeteranCard",
     });
@@ -105,25 +105,25 @@ describe("controller.ts", () => {
 
     await documentController(req, res);
 
-    expect(getDocument).toHaveBeenCalledWith("testTable", documentId);
-    expect(getPhoto).toHaveBeenCalledWith(documentId, bucketName);
+    expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
+    expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
     expect(res.status).toHaveBeenCalledWith(404);
   });
 
   it("should return 200 and the NINO document as JSON", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
-      params: { documentId: documentId },
+      params: { itemId },
     });
     getDocument.mockReturnValueOnce({
-      documentId: documentId,
+      itemId,
       data: ninoData,
       vcType: "SocialSecurityCredential",
     });
 
     await documentController(req, res);
 
-    expect(getDocument).toHaveBeenCalledWith("testTable", documentId);
+    expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
     expect(getPhoto).not.toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(200);
   });
@@ -131,10 +131,10 @@ describe("controller.ts", () => {
   it("should return 200 and the Veteran Card document as JSON", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
-      params: { documentId: documentId },
+      params: { itemId },
     });
     getDocument.mockReturnValueOnce({
-      documentId: documentId,
+      itemId,
       data: veteranCardData,
       vcType: "DigitalVeteranCard",
     });
@@ -146,18 +146,18 @@ describe("controller.ts", () => {
     const veteranCardDocumentWithPhoto = { ...veteranCardData };
     veteranCardDocumentWithPhoto.photo = mockedPhoto;
 
-    expect(getDocument).toHaveBeenCalledWith("testTable", documentId);
-    expect(getPhoto).toHaveBeenCalledWith(documentId, bucketName);
+    expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
+    expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
   it("should return 200 and the mDL document as JSON", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
-      params: { documentId: documentId },
+      params: { itemId },
     });
     getDocument.mockReturnValueOnce({
-      documentId: documentId,
+      itemId,
       data: mdlData,
       vcType: "org.iso.18013.5.1.mDL",
     });
@@ -169,8 +169,8 @@ describe("controller.ts", () => {
     const mobileDrivingLicenceDocumentWithPhoto = { ...mdlData };
     mobileDrivingLicenceDocumentWithPhoto.portrait = mockedPhoto;
 
-    expect(getDocument).toHaveBeenCalledWith("testTable", documentId);
-    expect(getPhoto).toHaveBeenCalledWith(documentId, bucketName);
+    expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
+    expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
     expect(res.status).toHaveBeenCalledWith(200);
   });
 });
