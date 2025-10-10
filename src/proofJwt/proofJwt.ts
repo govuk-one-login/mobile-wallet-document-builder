@@ -9,6 +9,7 @@ import {
 import { getKmsConfig } from "../config/aws";
 import format from "ecdsa-sig-formatter";
 import { createPublicKey, JsonWebKey } from "node:crypto";
+
 const bs58 = require("bs58");
 
 const PROOF_TOKEN_SIGNING_ALGORITHM = "ES256";
@@ -128,10 +129,9 @@ export const createJwkFromRawPublicKey = (
     stringPublicKey +
     "\n-----END PUBLIC KEY-----";
 
-  const jsonWebKey = createPublicKey(formattedPublicKey).export({
+  return createPublicKey(formattedPublicKey).export({
     format: "jwk",
   });
-  return jsonWebKey;
 };
 
 export const uint8ArrayToBase64 = (uint8Array: Uint8Array) => {

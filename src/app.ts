@@ -5,7 +5,7 @@ import { credentialOfferViewerRouter } from "./credentialOfferViewer/router";
 import { documentRouter } from "./document/router";
 import { stsStubAccessTokenRouter } from "./stsStubAccessToken/router";
 import nunjucks from "nunjucks";
-import path from "path";
+import path from "node:path";
 import { stsStubJwksRouter } from "./stsStubJwks/router";
 import { documentSelectorRouter } from "./documentSelector/router";
 import { ninoDocumentBuilderRouter } from "./ninoDocumentBuilder/router";
