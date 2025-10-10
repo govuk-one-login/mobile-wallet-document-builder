@@ -6,7 +6,7 @@ const CREDENTIAL_OFFER_PATH = "/credential_offer";
 
 export async function getCredentialOfferUrl(
   walletSubjectId: string,
-  documentId: string,
+  itemId: string,
   credentialType: string,
 ): Promise<string> {
   const criUrl = getCriEndpoint();
@@ -15,12 +15,12 @@ export async function getCredentialOfferUrl(
   const response = await axios.get(credentialOfferUrl, {
     params: {
       walletSubjectId: walletSubjectId,
-      documentId: documentId,
+      itemId: itemId,
       credentialType: credentialType,
     },
   });
 
-  logger.info(`Fetched credential offer for documentId ${documentId}`);
+  logger.info(`Fetched credential offer for item with ID ${itemId}`);
 
   return response.data;
 }

@@ -44,21 +44,25 @@ export async function veteranCardDocumentBuilderPostController(
   try {
     const body: VeteranCardRequestBody = req.body;
     const { photoBuffer, mimeType } = getPhoto(body.photo);
+
     const bucketName = getPhotosBucketName();
-    const documentId = randomUUID();
-    await uploadPhoto(photoBuffer, documentId, bucketName, mimeType);
-    const s3Uri = `s3://${bucketName}/${documentId}`;
-    const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
+    const itemId = randomUUID();
+    await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
+
+    const s3Uri = `s3://${bucketName}/${itemId}`;
     const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
+    const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
+
     await saveDocument(getDocumentsTableName(), {
-      documentId,
+      itemId,
+      documentId: data.serviceNumber,
       data,
       vcType: CREDENTIAL_TYPE,
       timeToLive,
     });
 
     const selectedError = body["throwError"];
-    let redirectUrl = `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}`;
+    let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
     if (isErrorCode(selectedError)) {
       redirectUrl += `&error=${selectedError}`;
     }

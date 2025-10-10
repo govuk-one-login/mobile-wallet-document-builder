@@ -25,12 +25,12 @@ export async function saveDocument(
 
 export async function getDocument(
   tableName: string,
-  documentId: string,
+  itemId: string,
 ): Promise<TableItem | undefined> {
   const command = new GetCommand({
     TableName: tableName,
     Key: {
-      documentId,
+      itemId,
     },
   });
 
@@ -38,7 +38,7 @@ export async function getDocument(
 
   const item = response.Item;
   if (!item) {
-    logger.error(`Document with documentId ${documentId} not found`);
+    logger.error(`Item with ID ${itemId} not found`);
     return undefined;
   }
   return item as TableItem;

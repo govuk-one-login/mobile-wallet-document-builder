@@ -11,7 +11,7 @@ export async function credentialOfferViewerController(
   res: Response,
 ): Promise<void> {
   try {
-    const { documentId } = req.params;
+    const { itemId } = req.params;
     const selectedApp = req.cookies.app as string;
     const credentialType = req.query.type as string;
     const errorScenario = req.query.error as string;
@@ -19,7 +19,7 @@ export async function credentialOfferViewerController(
 
     const credentialOfferUrl = await getCredentialOfferUrl(
       walletSubjectId,
-      documentId,
+      itemId,
       credentialType,
     );
 

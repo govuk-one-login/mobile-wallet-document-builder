@@ -3,6 +3,6 @@ import { documentController } from "./controller";
 
 const router = express.Router();
 
-router.get("/document/:documentId", documentController);
+router.get("/document/:itemId", documentController);
 
 export { router as documentRouter };

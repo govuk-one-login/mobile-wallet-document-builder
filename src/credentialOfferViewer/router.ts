@@ -5,7 +5,7 @@ import { requiresAuth } from "../middleware/requiresAuth";
 const router = express.Router();
 
 router.get(
-  "/view-credential-offer/:documentId",
+  "/view-credential-offer/:itemId",
   requiresAuth,
   credentialOfferViewerController,
 );

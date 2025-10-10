@@ -7,11 +7,13 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { saveDocument, getDocument } from "../../src/services/databaseService";
 import "aws-sdk-client-mock-jest";
-import { TableItem } from "../../src/types/TableItem";
+import { UUID } from "node:crypto";
+import { CredentialType } from "../../src/types/CredentialType";
 
 describe("databaseService.ts", () => {
   const item = {
-    documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+    itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46" as UUID,
+    documentId: "QQ123456A",
     data: {
       title: "Ms",
       givenName: "Rose",
@@ -19,9 +21,9 @@ describe("databaseService.ts", () => {
       nino: "QQ123456A",
       credentialTtlMinutes: 43200,
     },
-    vcType: "SocialSecurityCredential",
+    vcType: "SocialSecurityCredential" as CredentialType,
     timeToLive: 1760174135,
-  } as TableItem;
+  };
 
   it("should save a document to the database table", async () => {
     const putItemCommand = {
@@ -53,11 +55,11 @@ describe("databaseService.ts", () => {
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });
 
-  it("should get a document from the database table by documentId and return it", async () => {
+  it("should get a document from the database table by ID and return it", async () => {
     const getCommandInput = {
       TableName: "testTable",
       Key: {
-        documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+        itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
       },
     };
     const databaseMockClient = mockClient(DynamoDBDocumentClient);
