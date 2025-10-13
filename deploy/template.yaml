@@ -619,7 +619,7 @@ Resources:
         - AttributeName: itemId
           AttributeType: S
       BillingMode: PAY_PER_REQUEST
-      TableName: !Sub "${AWS::StackName}-documents-temporary"
+      TableName: !Sub "${AWS::StackName}-documents"
       KeySchema:
         - AttributeName: itemId
           KeyType: HASH
