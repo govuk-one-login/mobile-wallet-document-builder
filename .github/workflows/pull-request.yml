@@ -36,7 +36,7 @@ jobs:
         run: npm run test
 
       - name: Setup SAM CLI
-        uses: aws-actions/setup-sam@f664fad9e12492edfc187a31f575537dfbb0ff63 # pin@v2
+        uses: aws-actions/setup-sam@c71dd89d980e49367c70391e8ada4353f52f2800 # pin@v2
         with:
           version: 1.90.0
           use-installer: true
