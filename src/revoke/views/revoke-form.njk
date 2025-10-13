@@ -30,6 +30,9 @@
                         "classes": "govuk-!-width-one-third",
                         "hint": "For a digital driving licence the document identifier is the driving licence number"
                         "spellcheck": false
+                        "errorMessage": {
+                        "text": error
+                        } if error
                         }) }}
         {% endcall %}
         {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}

@@ -22,9 +22,9 @@ describe("revokeService.ts", () => {
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
       `${CRI_URL}/revoke`,
-      { documentId: DOCUMENT_ID },
       expect.objectContaining({
         validateStatus: expect.any(Function),
+        params: { documentId: DOCUMENT_ID },
       }),
     );
   });

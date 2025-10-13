@@ -11,7 +11,7 @@ jest.mock("../../src/revoke/services/revokeService", () => ({
 }));
 
 const CRI_URL = "https://test-cri.example.com";
-const DOCUMENT_ID = "ABC123DEF567";
+const DOCUMENT_ID = "ABC123def567";
 
 describe("revoke", () => {
   let config: RevokeConfig;
@@ -45,6 +45,40 @@ describe("revoke", () => {
     });
     const { res } = getMockRes();
 
+    it.each([
+      "shrt", // 4 characters but minimum is 5
+      "documentIdIsTooLong1234567", // 26 characters but maximum is 25
+      "spaces are not ok",
+      "invalidChars@!",
+    ])(
+      "should render an error when the document ID is invalid ('%s')",
+      async (invalidId) => {
+        const req = getMockReq({
+          body: {
+            documentId: invalidId,
+          },
+        });
+
+        await revokePostController(config)(req, res);
+
+        expect(revokeCredentials).not.toHaveBeenCalled();
+        expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
+          error:
+            "ID must be 5 to 25 characters long and contain only uppercase or lowercase letters and digits",
+        });
+      },
+    );
+
+    it("should render 500 error page if an unexpected error occurs", async () => {
+      (revokeCredentials as jest.Mock).mockRejectedValue(
+        new Error("Unexpected error"),
+      );
+
+      await revokePostController(config)(req, res);
+
+      expect(res.render).toHaveBeenCalledWith("500.njk");
+    });
+
     it("should render success message when revocation succeeds", async () => {
       const mockResult = {
         message: "Credential successfully revoked",
@@ -75,16 +109,6 @@ describe("revoke", () => {
         message: "No credential found for this document identifier",
         messageType: "error",
       });
-    });
-
-    it("should render 500 page if an unexpected error occurs", async () => {
-      (revokeCredentials as jest.Mock).mockRejectedValue(
-        new Error("Unexpected error"),
-      );
-
-      await revokePostController(config)(req, res);
-
-      expect(res.render).toHaveBeenCalledWith("500.njk");
     });
   });
 });

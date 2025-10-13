@@ -20,6 +20,12 @@ export function revokePostController({
   return async function (req: Request, res: Response): Promise<void> {
     try {
       const documentId = req.body["documentId"];
+      if (!validateDocumentId(documentId)) {
+        return res.render("revoke-form.njk", {
+          error:
+            "ID must be 5 to 25 characters long and contain only uppercase or lowercase letters and digits",
+        });
+      }
 
       const result = await revokeCredentials(criUrl, documentId);
 
@@ -35,4 +41,9 @@ export function revokePostController({
       res.render("500.njk");
     }
   };
+}
+
+function validateDocumentId(documentId: string): boolean {
+  const pattern = /^[a-zA-Z0-9]{5,25}$/;
+  return pattern.test(documentId);
 }

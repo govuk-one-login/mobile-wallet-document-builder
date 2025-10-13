@@ -13,13 +13,10 @@ export async function revokeCredentials(
 ): Promise<RevokeResult> {
   const revokeUrl = criUrl + REVOKE_PATH;
 
-  const response = await axios.post(
-    revokeUrl,
-    { documentId },
-    {
-      validateStatus: () => true,
-    },
-  );
+  const response = await axios.post(revokeUrl, {
+    validateStatus: () => true,
+    params: { documentId },
+  });
 
   const statusCode = response.status;
   if (statusCode === 202) {
