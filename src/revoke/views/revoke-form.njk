@@ -21,15 +21,16 @@
             "isPageHeading": true
             } }) %}
             {{ govukInput({
-                "label": {
-                    "text": "Document ID",
-                    "classes": "govuk-label--s"
-                },
-                "id": "document-id",
-                "name": "documentId",
-                "classes": "govuk-!-width-one-third",
-                "spellcheck": false
-            }) }}
+                        "label": {
+                        "text": "Document ID",
+                        "classes": "govuk-label--s"
+                        },
+                        "id": "document-id",
+                        "name": "documentId",
+                        "classes": "govuk-!-width-one-third",
+                        "hint": "For a digital driving licence the document identifier is the driving licence number"
+                        "spellcheck": false
+                        }) }}
         {% endcall %}
         {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
     </form>
