@@ -2,8 +2,8 @@
 
 aws --endpoint-url=http://localhost:4566 dynamodb create-table \
     --table-name documents \
-    --attribute-definitions AttributeName=documentId,AttributeType=S \
-    --key-schema AttributeName=documentId,KeyType=HASH \
+    --attribute-definitions AttributeName=itemId,AttributeType=S \
+    --key-schema AttributeName=itemId,KeyType=HASH \
     --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
     --region eu-west-2
 

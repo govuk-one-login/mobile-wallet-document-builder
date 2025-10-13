@@ -12,12 +12,12 @@ export async function documentController(
   res: Response,
 ): Promise<void> {
   try {
-    const { documentId } = req.params;
+    const { itemId } = req.params;
     const tableName = getDocumentsTableName();
-    const tableItem = await getDocument(tableName, documentId);
+    const tableItem = await getDocument(tableName, itemId);
 
     if (!tableItem) {
-      logger.error(`Document with ID ${documentId} not found`);
+      logger.error(`Document with ID ${itemId} not found`);
       res.status(404).send();
       return;
     }
@@ -31,7 +31,7 @@ export async function documentController(
 
       const photo = await getPhoto(fileName, bucketName);
       if (!photo) {
-        logger.error(`Photo for document with ID ${documentId} not found`);
+        logger.error(`Photo for document with ID ${itemId} not found`);
         res.status(404).send();
         return;
       }
@@ -45,7 +45,7 @@ export async function documentController(
 
       const photo = await getPhoto(fileName, bucketName);
       if (!photo) {
-        logger.error(`Photo for document with ID ${documentId} not found`);
+        logger.error(`Photo for document with ID ${itemId} not found`);
         res.status(404).send();
         return;
       }

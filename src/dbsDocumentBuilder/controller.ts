@@ -37,16 +37,17 @@ export async function dbsDocumentBuilderPostController(
     const body: DbsRequestBody = req.body;
     const data = buildDbsDataFromRequestBody(body);
     const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
-    const documentId = randomUUID();
+    const itemId = randomUUID();
     await saveDocument(getDocumentsTableName(), {
-      documentId,
+      itemId,
+      documentId: data.certificateNumber,
       data,
       vcType: CREDENTIAL_TYPE,
       timeToLive,
     });
 
     const selectedError = body["throwError"];
-    let redirectUrl = `/view-credential-offer/${documentId}?type=${CREDENTIAL_TYPE}`;
+    let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
     if (isErrorCode(selectedError)) {
       redirectUrl += `&error=${selectedError}`;
     }

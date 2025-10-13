@@ -6,7 +6,8 @@ import { CredentialType } from "./CredentialType";
 import { MdlData } from "../mdlDocumentBuilder/types/MdlData";
 
 export interface TableItem {
-  documentId: UUID;
+  itemId: UUID;
+  documentId: string;
   data: NinoData | DbsData | VeteranCardData | MdlData;
   vcType: CredentialType;
   timeToLive: number;

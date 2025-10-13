@@ -172,7 +172,8 @@ describe("controller.ts", () => {
           await mdlDocumentBuilderPostController(req, res);
 
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
-            documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            documentId: "EDWAR550000SE5RO",
             vcType: "org.iso.18013.5.1.mDL",
             timeToLive: 1748736000,
             data: {
@@ -223,7 +224,8 @@ describe("controller.ts", () => {
           await mdlDocumentBuilderPostController(req, res);
 
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
-            documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            documentId: "EDWAR550000SE5RO",
             vcType: "org.iso.18013.5.1.mDL",
             timeToLive: 1748736000,
             data: {

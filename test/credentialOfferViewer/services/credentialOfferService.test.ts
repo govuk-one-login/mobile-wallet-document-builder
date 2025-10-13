@@ -15,7 +15,7 @@ describe("credentialOfferService.ts", () => {
   const mockedAxios = axios as jest.Mocked<typeof axios>;
 
   it("should fetch and return the credential offer URI", async () => {
-    const documentId = "2e0fac05-4b38-480f-9cbd-b046eabe1e46";
+    const itemId = "2e0fac05-4b38-480f-9cbd-b046eabe1e46";
     const credentialType = "BasicCheckCredential";
     const criResponseMocked = {
       data: {
@@ -28,7 +28,7 @@ describe("credentialOfferService.ts", () => {
 
     const response = await getCredentialOfferUrl(
       WALLET_SUBJECT_ID,
-      documentId,
+      itemId,
       credentialType,
     );
 
@@ -37,7 +37,7 @@ describe("credentialOfferService.ts", () => {
       {
         params: {
           credentialType: "BasicCheckCredential",
-          documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+          itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           walletSubjectId: WALLET_SUBJECT_ID,
         },
       },
