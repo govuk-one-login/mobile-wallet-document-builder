@@ -101,7 +101,8 @@ describe("controller.ts", () => {
         await dbsDocumentBuilderPostController(req, res);
 
         expect(saveDocument).toHaveBeenCalledWith("testTable", {
-          documentId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+          itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+          documentId: "009878863",
           data: {
             "issuance-day": "16",
             "issuance-month": "1",
