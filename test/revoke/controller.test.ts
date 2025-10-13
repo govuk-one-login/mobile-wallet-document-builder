@@ -11,7 +11,7 @@ jest.mock("../../src/revoke/services/revokeService", () => ({
 }));
 
 const CRI_URL = "https://test-cri.example.com";
-const DRIVING_LICENCE_NUMBER = "EDWAR210513SE5RO";
+const DOCUMENT_ID = "ABC123DEF567";
 
 describe("revoke", () => {
   let config: RevokeConfig;
@@ -40,7 +40,7 @@ describe("revoke", () => {
 
     const req = getMockReq({
       body: {
-        drivingLicenceNumber: DRIVING_LICENCE_NUMBER,
+        documentId: DOCUMENT_ID,
       },
     });
     const { res } = getMockRes();
@@ -54,10 +54,7 @@ describe("revoke", () => {
 
       await revokePostController(config)(req, res);
 
-      expect(revokeCredentials).toHaveBeenCalledWith(
-        CRI_URL,
-        DRIVING_LICENCE_NUMBER,
-      );
+      expect(revokeCredentials).toHaveBeenCalledWith(CRI_URL, DOCUMENT_ID);
       expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
         message: "Credential successfully revoked",
         messageType: "success",
@@ -66,19 +63,16 @@ describe("revoke", () => {
 
     it("should render error message when revocation fails", async () => {
       const mockResult = {
-        message: "No credential found for this driving licence number",
+        message: "No credential found for this document identifier",
         messageType: "error" as const,
       };
       (revokeCredentials as jest.Mock).mockResolvedValue(mockResult);
 
       await revokePostController(config)(req, res);
 
-      expect(revokeCredentials).toHaveBeenCalledWith(
-        CRI_URL,
-        DRIVING_LICENCE_NUMBER,
-      );
+      expect(revokeCredentials).toHaveBeenCalledWith(CRI_URL, DOCUMENT_ID);
       expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
-        message: "No credential found for this driving licence number",
+        message: "No credential found for this document identifier",
         messageType: "error",
       });
     });

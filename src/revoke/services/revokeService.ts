@@ -9,13 +9,13 @@ const REVOKE_PATH = "/revoke";
 
 export async function revokeCredentials(
   criUrl: string,
-  drivingLicenceNumber: string,
+  documentId: string,
 ): Promise<RevokeResult> {
   const revokeUrl = criUrl + REVOKE_PATH;
 
   const response = await axios.post(
     revokeUrl,
-    { drivingLicenceNumber },
+    { documentId },
     {
       validateStatus: () => true,
     },
@@ -30,7 +30,7 @@ export async function revokeCredentials(
   }
   if (statusCode === 404) {
     return {
-      message: "No credential found for this driving licence number",
+      message: "No credential found for this document identifier",
       messageType: "info",
     };
   }

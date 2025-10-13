@@ -19,9 +19,9 @@ export function revokePostController({
 }: RevokeConfig = {}): ExpressRouteFunction {
   return async function (req: Request, res: Response): Promise<void> {
     try {
-      const drivingLicenceNumber = req.body["drivingLicenceNumber"];
+      const documentId = req.body["documentId"];
 
-      const result = await revokeCredentials(criUrl, drivingLicenceNumber);
+      const result = await revokeCredentials(criUrl, documentId);
 
       res.render("revoke-form.njk", {
         message: result.message,
