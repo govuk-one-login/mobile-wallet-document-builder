@@ -65,6 +65,7 @@ describe("revoke", () => {
         expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
           error:
             "ID must be 5 to 25 characters long and contain only uppercase or lowercase letters and digits",
+          value: invalidId,
         });
       },
     );
