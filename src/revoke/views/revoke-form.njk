@@ -1,0 +1,43 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% extends "base.njk" %}
+{% set pageTitle = "Please enter the document identifier associated with the credentials you wish to revoke:" %}
+{% block content %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
+    {% if message %}
+        <div class="govuk-notification-banner {% if messageType == 'success' %}govuk-notification-banner--success{% endif %} {% if messageType == 'error' %}govuk-notification-banner--error{% endif %} {% if messageType == 'info' %}govuk-notification-banner{% endif %}"
+             role="alert">
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">{{ message }}</p>
+            </div>
+        </div>
+    {% endif %}
+    <form action="/revoke" method="post">
+        {% call govukFieldset({
+            "legend": {
+            "text": "Please enter the document identifier associated with the credentials you wish to revoke:",
+            "classes": "govuk-fieldset__legend--m",
+            "isPageHeading": true
+            } }) %}
+            {{ govukInput({
+                        "label": {
+                        "text": "Document ID",
+                        "classes": "govuk-label--s"
+                        },
+                        "id": "document-id",
+                        "name": "documentId",
+                        "classes": "govuk-!-width-one-third",
+                        "hint": {
+                        "text": "For a digital driving licence the document identifier is the driving licence number"
+                        },
+                        "value": value,
+                        "spellcheck": false,
+                        "errorMessage": {
+                        "text": error
+                        } if error
+                        }) }}
+        {% endcall %}
+        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+    </form>
+{% endblock %}
