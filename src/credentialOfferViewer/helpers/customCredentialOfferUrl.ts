@@ -57,12 +57,12 @@ export function customiseCredentialOfferUrl(
 
   const newCredentialOfferUrl = replacePath(credentialOfferUrl, app.path);
 
-  if (!errorScenario) {
-    return newCredentialOfferUrl;
-  } else {
+  if (errorScenario) {
     return replacePreAuthorizedCodeWithError(
       newCredentialOfferUrl,
       errorScenario,
     );
+  } else {
+    return newCredentialOfferUrl;
   }
 }
