@@ -11,10 +11,9 @@ export async function revokeCredentials(
   criUrl: string,
   documentId: string,
 ): Promise<RevokeResult> {
-  const revokeUrl = criUrl + REVOKE_PATH;
+  const revokeUrl = criUrl + REVOKE_PATH + "/" + documentId;
 
   const response = await axios.post(revokeUrl, null, {
-    params: { documentId },
     validateStatus: () => true,
   });
 

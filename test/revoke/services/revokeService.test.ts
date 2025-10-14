@@ -13,6 +13,7 @@ describe("revokeService.ts", () => {
   });
 
   it("should send POST request to the CRI to revoke credentials", async () => {
+    const expectedRevokeUrl = "https://test-cri.example.com/revoke/ABC123DEF567";
     const mockCriResponse = {
       status: 202,
     } as AxiosResponse;
@@ -21,10 +22,9 @@ describe("revokeService.ts", () => {
     await revokeCredentials(CRI_URL, DOCUMENT_ID);
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      `${CRI_URL}/revoke`,
+      expectedRevokeUrl,
       null,
       expect.objectContaining({
-        params: { documentId: DOCUMENT_ID },
         validateStatus: expect.any(Function),
       }),
     );
