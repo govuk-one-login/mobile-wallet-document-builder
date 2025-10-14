@@ -64,8 +64,8 @@ export async function createApp(): Promise<express.Application> {
   app.use(noCacheMiddleware);
   app.use(revokeRouter);
   app.use(auth(getOIDCConfig()));
-  app.use(appSelectorRouter);
   app.use(returnFromAuthRouter);
+  app.use(appSelectorRouter);
   app.use(documentSelectorRouter);
   app.use(dbsDocumentBuilderRouter);
   app.use(ninoDocumentBuilderRouter);
