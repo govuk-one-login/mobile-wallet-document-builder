@@ -20,21 +20,32 @@ export async function refreshGetController(
 }
 
 export async function refreshPostController(
-  req: Request<{ credentialType: CredentialType }>,
+  req: Request,
   res: Response,
 ): Promise<void> {
   try {
     const { credentialType } = req.params;
-    const decision = req.body.refreshChoice;
+    const refreshChoice = req.body.refreshChoice;
 
-    if (decision === "No") {
-      res.render("no-update.njk", {
+    if (refreshChoice === "No") {
+      return res.render("no-update.njk", {
         authenticated: isAuthenticated(req),
         credentialType,
       });
-      return;
     }
-    res.render(templateByCredential[credentialType], {
+    const templateByCredential = {
+      [CredentialType.SocialSecurityCredential]:
+        "nino-document-details-form.njk",
+      [CredentialType.BasicDisclosureCredential]:
+        "dbs-document-details-form.njk",
+      [CredentialType.DigitalVeteranCard]:
+        "veteran-card-document-details-form.njk",
+      [CredentialType.MobileDrivingLicence]: "mdl-document-details-form.njk",
+    };
+    const template =
+      templateByCredential[credentialType as keyof typeof templateByCredential];
+
+    res.render(template, {
       authenticated: isAuthenticated(req),
       credentialType,
     });
@@ -43,10 +54,3 @@ export async function refreshPostController(
     res.render("500.njk");
   }
 }
-
-const templateByCredential: Record<CredentialType, string> = {
-  [CredentialType.SocialSecurityCredential]: "nino-document-details-form.njk",
-  [CredentialType.BasicDisclosureCredential]: "dbs-document-details-form.njk",
-  [CredentialType.DigitalVeteranCard]: "veteran-card-document-details-form.njk",
-  [CredentialType.MobileDrivingLicence]: "mdl-document-details-form.njk",
-};
