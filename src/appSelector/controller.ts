@@ -46,8 +46,8 @@ export function appSelectorPostController({
         });
         const credentialType = req.query["credentialType"];
         const redirectUrl = credentialType
-          ? `/select_document?credentialType=${credentialType}`
-          : "/select_document";
+          ? `/select-document/?credentialType=${credentialType}`
+          : `/select-document`;
 
         res.redirect(redirectUrl);
       } else {
