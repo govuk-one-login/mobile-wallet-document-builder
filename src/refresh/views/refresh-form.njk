@@ -1,41 +1,34 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% extends "base.njk" %}
 {% set pageTitle = "Would you like to issue an updated version of the revoked credential?" %}
-{% set showError = isInvalid %}
 {% block content %}
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
-    <form action="/refresh/{{credentialType}}" method="post">
-        {% call govukFieldset({
-            "legend": {
-            "classes": "govuk-fieldset__legend--m",
-            "isPageHeading": true
-            } }) %}
-            {{ govukRadios({
+    <form action="/refresh/{{ credentialType }}" method="post">
+        {{ govukRadios({
                 classes: "govuk-radios--medium",
-                name: "refreshChoice",
+                name: "refreshCredential",
                 fieldset: {
-                    legend: {
-                        text: "Would you like to issue an updated version of the revoked credential?",
-                        classes: "govuk-fieldset__legend--m"
-                    }
+                legend: {
+                text: "Would you like to issue an updated version of the revoked credential?",
+                classes: "govuk-fieldset__legend--m",
+                isPageHeading: true
+                }
                 },
                 items: [
-                    {
-                        value: "Yes",
-                        text: "Yes"
-                    },
-                    {
-                        value: "No",
-                        text: "No"
-                    }
+                {
+                value: "Yes",
+                text: "Yes"
+                },
+                {
+                value: "No",
+                text: "No"
+                }
                 ],
                 errorMessage: {
-                     text: "You must choose an option"
-                  } if showError
-            }) }}
-        {% endcall %}
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+                text: "You must choose an option"
+                } if error
+                }) }}
+        {{ govukButton({"text": "Continue", "preventDoubleClick": true}) }}
     </form>
 {% endblock %}

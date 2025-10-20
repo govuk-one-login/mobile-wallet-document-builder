@@ -9,15 +9,15 @@ export function refreshGetController(req: Request, res: Response): void {
 
 export function refreshPostController(req: Request, res: Response): void {
   const { credentialType } = req.params;
-  const refreshChoice = req.body.refreshChoice;
-  if (!refreshChoice) {
+  const { refreshCredential } = req.body;
+  if (!refreshCredential) {
     return res.render("refresh-form.njk", {
-      isInvalid: true,
+      error: true,
       credentialType,
     });
   }
 
-  if (refreshChoice === "No") {
+  if (refreshCredential === "No") {
     return res.redirect("/no-update");
   }
 
