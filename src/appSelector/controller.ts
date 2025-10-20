@@ -39,20 +39,9 @@ export function appSelectorPostController({
     try {
       const selectedApp = req.body["select-app-choice"];
 
-      if (selectedApp) {
-        res.cookie("app", selectedApp, {
-          httpOnly: true,
-          maxAge: cookieExpiry,
-        });
-        const credentialType = req.query["credentialType"];
-        const redirectUrl = credentialType
-          ? `/select-document/?credentialType=${credentialType}`
-          : `/select-document`;
-
-        res.redirect(redirectUrl);
-      } else {
-        res.render("select-app-form.njk", {
-          isInvalid: selectedApp === undefined,
+      if (!selectedApp) {
+        return res.render("select-app-form.njk", {
+          isInvalid: true,
           apps:
             environment === "staging"
               ? stagingApps(apps)
@@ -60,6 +49,18 @@ export function appSelectorPostController({
           authenticated: isAuthenticated(req),
         });
       }
+
+      res.cookie("app", selectedApp, {
+        httpOnly: true,
+        maxAge: cookieExpiry,
+      });
+
+      const credentialType = req.query["credentialType"];
+      const redirectUrl = credentialType
+        ? `/select-document/?credentialType=${credentialType}`
+        : `/select-document`;
+
+      res.redirect(redirectUrl);
     } catch (error) {
       logger.error(error, "An error happened selecting app");
       res.render("500.njk");
