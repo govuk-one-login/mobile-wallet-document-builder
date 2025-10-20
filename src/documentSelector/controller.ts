@@ -7,9 +7,26 @@ export function documentSelectorGetController(
   res: Response,
 ): void {
   try {
-    res.render("select-document-form.njk", {
-      authenticated: isAuthenticated(req),
-    });
+    const credentialType = req.query["credentialType"];
+    if (!credentialType) {
+      res.render("select-document-form.njk", {
+        authenticated: isAuthenticated(req),
+      });
+    }
+    if (credentialType === "SocialSecurityCredential") {
+      res.redirect(`/build-nino-document`);
+    } else if (credentialType === "BasicDisclosureCredential") {
+      res.redirect(`/build-dbs-document`);
+    } else if (credentialType === "DigitalVeteranCard") {
+      res.redirect(`/build-veteran-card-document`);
+    } else if (credentialType === "org.iso.18013.5.1.mDL") {
+      res.redirect(`/build-mdl-document`);
+    } else {
+      res.render("select-document-form.njk", {
+        isInvalid: credentialType === undefined,
+        authenticated: isAuthenticated(req),
+      });
+    }
   } catch (error) {
     logger.error(error, "An error happened rendering document selection page");
     res.render("500.njk");

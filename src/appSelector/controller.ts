@@ -44,7 +44,12 @@ export function appSelectorPostController({
           httpOnly: true,
           maxAge: cookieExpiry,
         });
-        res.redirect(`/select-document`);
+        const credentialType = req.query["credentialType"];
+        const redirectUrl = credentialType
+          ? `/select_document?credentialType=${credentialType}`
+          : "/select_document";
+
+        res.redirect(redirectUrl);
       } else {
         res.render("select-app-form.njk", {
           isInvalid: selectedApp === undefined,

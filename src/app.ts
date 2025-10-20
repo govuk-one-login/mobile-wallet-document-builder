@@ -23,6 +23,7 @@ import { veteranCardDocumentBuilderRouter } from "./veteranCardDocumentBuilder/r
 import { mdlDocumentBuilderRouter } from "./mdlDocumentBuilder/router";
 import { revokeRouter } from "./revoke/router";
 import { refreshRouter } from "./refresh/router";
+import { noUpdateRouter } from "./noUpdate/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/views"),
@@ -38,6 +39,7 @@ const APP_VIEWS = [
   path.join(__dirname, "../src/mdlDocumentBuilder/views"),
   path.join(__dirname, "../src/revoke/views"),
   path.join(__dirname, "../src/refresh/views"),
+  path.join(__dirname, "../src/noUpdate/views"),
   path.resolve("node_modules/govuk-frontend/dist"),
 ];
 
@@ -66,6 +68,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(noCacheMiddleware);
   app.use(revokeRouter);
   app.use(refreshRouter);
+  app.use(noUpdateRouter);
   app.use(auth(getOIDCConfig()));
   app.use(returnFromAuthRouter);
   app.use(appSelectorRouter);

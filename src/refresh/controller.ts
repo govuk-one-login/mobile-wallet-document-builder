@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { isAuthenticated } from "../utils/isAuthenticated";
 import { logger } from "../middleware/logger";
 import { CredentialType } from "../types/CredentialType";
 
@@ -10,7 +9,6 @@ export async function refreshGetController(
   try {
     const { credentialType } = req.params;
     res.render("refresh-form.njk", {
-      authenticated: isAuthenticated(req),
       credentialType,
     });
   } catch (error) {
@@ -28,27 +26,16 @@ export async function refreshPostController(
     const refreshChoice = req.body.refreshChoice;
 
     if (refreshChoice === "No") {
-      return res.render("no-update.njk", {
-        authenticated: isAuthenticated(req),
-        credentialType,
-      });
+      return res.redirect("/no-update");
     }
-    const templateByCredential = {
-      [CredentialType.SocialSecurityCredential]:
-        "nino-document-details-form.njk",
-      [CredentialType.BasicDisclosureCredential]:
-        "dbs-document-details-form.njk",
-      [CredentialType.DigitalVeteranCard]:
-        "veteran-card-document-details-form.njk",
-      [CredentialType.MobileDrivingLicence]: "mdl-document-details-form.njk",
-    };
-    const template =
-      templateByCredential[credentialType as keyof typeof templateByCredential];
 
-    res.render(template, {
-      authenticated: isAuthenticated(req),
-      credentialType,
-    });
+    if (
+      !Object.values(CredentialType).includes(credentialType as CredentialType)
+    ) {
+      throw new Error(`Unknown credential type: ${credentialType}`);
+    }
+
+    res.redirect(`/select-app/?credentialType=${credentialType}`);
   } catch (error) {
     logger.error(error, "An error happened processing refresh credential");
     res.render("500.njk");
