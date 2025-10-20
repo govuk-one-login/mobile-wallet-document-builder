@@ -11,21 +11,17 @@ describe("refresh", () => {
 
     it("should render the refresh form with authenticated user and credentialType", async () => {
       const req = getMockReq({
-        cookies: { id_token: "id_token" },
         params: { credentialType: credentialType },
       });
       const { res } = getMockRes();
       await refreshGetController(req, res);
       expect(res.render).toHaveBeenCalledWith("refresh-form.njk", {
-        authenticated: true,
         credentialType: "SocialSecurityCredential",
       });
     });
 
     it("should render the error page if an error happens trying to process request", async () => {
-      const req = getMockReq({
-        cookies: { id_token: "id_token" },
-      });
+      const req = getMockReq();
       const { res } = getMockRes();
       (res.render as jest.Mock).mockImplementationOnce(() => {
         throw new Error("error");
@@ -49,56 +45,36 @@ describe("refresh", () => {
       const { res } = getMockRes();
 
       await refreshPostController(req, res);
-      expect(res.render).toHaveBeenCalledWith("no-update.njk", {
-        authenticated: true,
-        credentialType: "SocialSecurityCredential",
-      });
+      expect(res.redirect).toHaveBeenCalledWith("/no-update");
     });
 
-    const cases: [CredentialType, string][] = [
-      [
-        CredentialType.SocialSecurityCredential,
-        "nino-document-details-form.njk",
-      ],
-      [
-        CredentialType.BasicDisclosureCredential,
-        "dbs-document-details-form.njk",
-      ],
-      [
-        CredentialType.DigitalVeteranCard,
-        "veteran-card-document-details-form.njk",
-      ],
-      [CredentialType.MobileDrivingLicence, "mdl-document-details-form.njk"],
+    const validCredentialType = [
+      CredentialType.SocialSecurityCredential,
+      CredentialType.BasicDisclosureCredential,
+      CredentialType.DigitalVeteranCard,
+      CredentialType.MobileDrivingLicence,
     ];
 
-    it.each(cases)(
-      "should render the correct template for %s when the refreshChoice is Yes",
-      async (credentialType, expectedTemplate) => {
+    it.each(validCredentialType)(
+      "should redirects to /select-app/? %s when the refreshChoice is Yes",
+      async (credentialType) => {
         const req = getMockReq({
           params: { credentialType },
           body: { refreshChoice: "Yes" },
-          cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
 
         await refreshPostController(req, res);
-        expect(res.render).toHaveBeenCalledWith(expectedTemplate, {
-          authenticated: true,
-          credentialType,
-        });
+        expect(res.redirect).toHaveBeenCalledWith(`/select-app/?credentialType=${credentialType}`);
       },
     );
 
     it("should render the error page if an error happens trying to process refresh credential", async () => {
       const req = getMockReq({
-        params: { credentialType: "Unknown" },
+        params: { credentialType: "Unknown Type" },
         body: { refreshChoice: "Yes" },
-        cookies: { id_token: "id_token" },
       });
       const { res } = getMockRes();
-      (res.render as jest.Mock).mockImplementationOnce(() => {
-        throw new Error("error");
-      });
       await refreshPostController(req, res);
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
