@@ -1,6 +1,4 @@
 import { Request, Response } from "express";
-import { CredentialType } from "../types/CredentialType";
-import { logger } from "../middleware/logger";
 
 export function refreshGetController(req: Request, res: Response): void {
   const { credentialType } = req.params;
@@ -10,11 +8,18 @@ export function refreshGetController(req: Request, res: Response): void {
 }
 
 export function refreshPostController(req: Request, res: Response): void {
+  const { credentialType } = req.params;
   const refreshChoice = req.body.refreshChoice;
+  if (!refreshChoice) {
+    return res.render("refresh-form.njk", {
+      isInvalid: true,
+      credentialType,
+    });
+  }
+
   if (refreshChoice === "No") {
     return res.redirect("/no-update");
   }
 
-  const { credentialType } = req.params;
   res.redirect(`/select-app?credentialType=${credentialType}`);
 }
