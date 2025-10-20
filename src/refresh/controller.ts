@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { CredentialType } from "../types/CredentialType";
+import { logger } from "../middleware/logger";
 
 export function refreshGetController(req: Request, res: Response): void {
   const { credentialType } = req.params;
@@ -18,7 +19,8 @@ export function refreshPostController(req: Request, res: Response): void {
   if (
     !Object.values(CredentialType).includes(credentialType as CredentialType)
   ) {
-    throw new Error(`Unknown credential type: ${credentialType}`);
+    logger.warn({ credentialType }, "Invalid credential type provided");
+    return res.render("500.njk");
   }
 
   res.redirect(`/select-app/?credentialType=${credentialType}`);
