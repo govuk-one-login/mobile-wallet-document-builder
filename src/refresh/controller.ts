@@ -16,12 +16,5 @@ export function refreshPostController(req: Request, res: Response): void {
   }
 
   const { credentialType } = req.params;
-  if (
-    !Object.values(CredentialType).includes(credentialType as CredentialType)
-  ) {
-    logger.warn({ credentialType }, "Invalid credential type provided");
-    return res.render("500.njk");
-  }
-
-  res.redirect(`/select-app/?credentialType=${credentialType}`);
+  res.redirect(`/select-app?credentialType=${credentialType}`);
 }
