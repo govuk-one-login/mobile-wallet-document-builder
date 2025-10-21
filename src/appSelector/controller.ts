@@ -6,8 +6,8 @@ import {
   apps,
   getEnvironment,
   getCookieExpiryInMilliseconds,
+  App,
 } from "../config/appConfig";
-import { nonStagingApps, stagingApps } from "./views/apps";
 
 export interface AppSelectorConfig {
   environment?: string;
@@ -71,3 +71,13 @@ export function appSelectorPostController({
     }
   };
 }
+
+const stagingApps = (apps: App[]) => {
+  const filteredApps = apps.filter((app) => app.environment === "staging");
+  return filteredApps.map((app) => ({ text: app.text, value: app.value }));
+};
+
+const nonStagingApps = (apps: App[]) => {
+  const filteredApps = apps.filter((app) => app.environment !== "staging");
+  return filteredApps.map((app) => ({ text: app.text, value: app.value }));
+};
