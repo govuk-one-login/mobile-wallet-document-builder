@@ -41,9 +41,11 @@ export function appSelectorPostController({
   return function (req: Request, res: Response): void {
     try {
       const selectedApp = req.body["select-app-choice"];
+      const credentialType = req.body["credentialType"];
 
       if (!selectedApp) {
         return res.render("select-app-form.njk", {
+          credentialType,
           isInvalid: true,
           apps:
             environment === "staging"
@@ -57,8 +59,6 @@ export function appSelectorPostController({
         httpOnly: true,
         maxAge: cookieExpiry,
       });
-
-      const credentialType = req.body["credentialType"];
 
       const redirectUrl = credentialType
         ? `/select-document?credentialType=${credentialType}`
