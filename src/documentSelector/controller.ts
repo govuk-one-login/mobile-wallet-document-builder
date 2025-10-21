@@ -1,35 +1,42 @@
 import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
+import { CredentialType } from "../types/CredentialType";
+
+const DOCUMENT_OPTIONS = [
+  { value: CredentialType.SocialSecurityCredential, text: "NINO" },
+  { value: CredentialType.BasicDisclosureCredential, text: "DBS" },
+  { value: CredentialType.DigitalVeteranCard, text: "Veteran Card" },
+  { value: CredentialType.MobileDrivingLicence, text: "Driving Licence" },
+];
+
+const DOCUMENT_ROUTES: Record<string, string> = {
+  [CredentialType.SocialSecurityCredential]: "/build-nino-document",
+  [CredentialType.BasicDisclosureCredential]: "/build-dbs-document",
+  [CredentialType.DigitalVeteranCard]: "/build-veteran-card-document",
+  [CredentialType.MobileDrivingLicence]: "/build-mdl-document",
+};
 
 export function documentSelectorGetController(
   req: Request,
   res: Response,
 ): void {
   try {
-    const credentialType = req.query["credentialType"];
-    if (!credentialType) {
-      return res.render("select-document-form.njk", {
-        authenticated: isAuthenticated(req),
-      });
+    const credentialType = req.query["credentialType"] as string;
+    const route = DOCUMENT_ROUTES[credentialType];
+
+    if (route) {
+      return res.redirect(route);
     }
-    if (credentialType === "SocialSecurityCredential") {
-      return res.redirect(`/build-nino-document`);
-    } else if (credentialType === "BasicDisclosureCredential") {
-      return res.redirect(`/build-dbs-document`);
-    } else if (credentialType === "DigitalVeteranCard") {
-      return res.redirect(`/build-veteran-card-document`);
-    } else if (credentialType === "org.iso.18013.5.1.mDL") {
-      return res.redirect(`/build-mdl-document`);
-    } else {
-      return res.render("select-document-form.njk", {
-        isInvalid: credentialType === undefined,
-        authenticated: isAuthenticated(req),
-      });
-    }
+
+    return res.render("select-document-form.njk", {
+      isInvalid: false,
+      authenticated: isAuthenticated(req),
+      documentOptions: DOCUMENT_OPTIONS,
+    });
   } catch (error) {
     logger.error(error, "An error happened rendering document selection page");
-    res.render("500.njk");
+    return res.render("500.njk");
   }
 }
 
@@ -40,25 +47,29 @@ export function documentSelectorPostController(
   try {
     const selectedDocument = req.body["select-document-choice"];
 
-    if (selectedDocument && selectedDocument === "nino") {
-      res.redirect(`/build-nino-document`);
-    } else if (selectedDocument && selectedDocument === "dbs") {
-      res.redirect(`/build-dbs-document`);
-    } else if (selectedDocument && selectedDocument === "vet") {
-      res.redirect(`/build-veteran-card-document`);
-    } else if (selectedDocument && selectedDocument === "mdl") {
-      res.redirect(`/build-mdl-document`);
-    } else {
-      res.render("select-document-form.njk", {
-        isInvalid: selectedDocument === undefined,
+    if (!selectedDocument) {
+      return res.render("select-document-form.njk", {
+        isInvalid: true,
         authenticated: isAuthenticated(req),
+        documentOptions: DOCUMENT_OPTIONS,
       });
     }
+
+    const route = DOCUMENT_ROUTES[selectedDocument];
+    if (route) {
+      return res.redirect(route);
+    }
+
+    return res.render("select-document-form.njk", {
+      isInvalid: true,
+      authenticated: isAuthenticated(req),
+      documentOptions: DOCUMENT_OPTIONS,
+    });
   } catch (error) {
     logger.error(
       error,
       "An error happened processing request to select document",
     );
-    res.render("500.njk");
+    return res.render("500.njk");
   }
 }

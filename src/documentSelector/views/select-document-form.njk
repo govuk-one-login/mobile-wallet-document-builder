@@ -7,38 +7,20 @@
     <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
     <form action="/select-document" method="post">
         {{ govukRadios({
-                "id": "select-document-choice",
-                "name": "select-document-choice",
-                fieldset: {
-                legend: {
-                text: "Please select a document:",
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--m"
-                }
-                },
-                items: [
-                {
-                value: "nino",
-                text: "NINO"
-                },
-                {
-                value: "dbs",
-                text: "DBS"
-                },
-                {
-                value: "vet",
-                text: "Veteran Card"
-                },
-                {
-                value: "mdl",
-                text: "Driving Licence"
-
-                }
-                ],
-                errorMessage: {
-                text: "You must choose an option"
-                } if showError
-                }) }}
+          "id": "select-document-choice",
+          "name": "select-document-choice",
+          fieldset: {
+            legend: {
+              text: "Please select a document:",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: documentOptions,
+          errorMessage: {
+            text: "You must choose an option"
+          } if showError
+        }) }}
         {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
     </form>
 {% endblock %}
