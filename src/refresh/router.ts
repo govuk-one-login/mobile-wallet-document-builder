@@ -1,17 +1,17 @@
 import express from "express";
 import { refreshGetController, refreshPostController } from "./controller";
-import { validateCredentialType } from "../middleware/validateCredentialType";
+import { validateCredentialTypePath } from "../middleware/validateCredentialTypePath";
 
 const router = express.Router();
 
 router.get(
   "/refresh/:credentialType",
-  validateCredentialType,
+  validateCredentialTypePath,
   refreshGetController,
 );
 router.post(
   "/refresh/:credentialType",
-  validateCredentialType,
+  validateCredentialTypePath,
   refreshPostController,
 );
 

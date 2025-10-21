@@ -1,20 +1,25 @@
 import { NextFunction, Request, Response } from "express";
-import { CredentialType } from "../types/CredentialType";
 import { logger } from "./logger";
+import { CredentialType } from "../types/CredentialType";
 
-const VALID_TYPES = Object.values(CredentialType);
-
-export function validateCredentialType(
+export function validateCredentialTypePath(
   req: Request,
   res: Response,
   next: NextFunction,
 ): void {
   const { credentialType } = req.params;
-  if (!VALID_TYPES.includes(credentialType as CredentialType)) {
+  if (!isValidCredentialType(credentialType)) {
     logger.error(
       `Invalid credential type path parameter provided: ${credentialType}`,
     );
     return res.render("500.njk");
   }
   next();
+}
+
+function isValidCredentialType(type: unknown): type is CredentialType {
+  return (
+    typeof type === "string" &&
+    Object.values(CredentialType).includes(type as CredentialType)
+  );
 }
