@@ -19,7 +19,10 @@ export function appSelectorGetController({
 } = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {
+      const credentialType = req.query["credentialType"];
+
       res.render("select-app-form.njk", {
+        credentialType,
         apps:
           environment === "staging" ? stagingApps(apps) : nonStagingApps(apps),
         authenticated: isAuthenticated(req),
@@ -55,9 +58,10 @@ export function appSelectorPostController({
         maxAge: cookieExpiry,
       });
 
-      const credentialType = req.query["credentialType"];
+      const credentialType = req.body["credentialType"];
+
       const redirectUrl = credentialType
-        ? `/select-document/?credentialType=${credentialType}`
+        ? `/select-document?credentialType=${credentialType}`
         : `/select-document`;
 
       res.redirect(redirectUrl);
