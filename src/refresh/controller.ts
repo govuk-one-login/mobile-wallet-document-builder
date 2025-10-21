@@ -2,14 +2,16 @@ import { Request, Response } from "express";
 
 export function refreshGetController(req: Request, res: Response): void {
   const { credentialType } = req.params;
+
   res.render("refresh-form.njk", {
     credentialType,
   });
 }
 
 export function refreshPostController(req: Request, res: Response): void {
-  const { credentialType } = req.params;
   const { refreshCredential } = req.body;
+  const { credentialType } = req.params;
+
   if (!refreshCredential) {
     return res.render("refresh-form.njk", {
       error: true,
