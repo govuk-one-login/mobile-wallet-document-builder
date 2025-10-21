@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { isAuthenticated } from "../utils/isAuthenticated";
 
 export function refreshGetController(req: Request, res: Response): void {
   const { credentialType } = req.params;
@@ -16,6 +17,7 @@ export function refreshPostController(req: Request, res: Response): void {
     return res.render("refresh-form.njk", {
       error: true,
       credentialType,
+      authenticated: isAuthenticated(req),
     });
   }
 
@@ -34,5 +36,6 @@ export function refreshNoUpdateGetController(
 
   return res.render("no-update.njk", {
     credentialType,
+    authenticated: isAuthenticated(req),
   });
 }
