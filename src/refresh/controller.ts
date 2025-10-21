@@ -20,8 +20,19 @@ export function refreshPostController(req: Request, res: Response): void {
   }
 
   if (refreshCredential === "No") {
-    return res.redirect("/no-update");
+    return res.redirect(`/refresh/${credentialType}/no-update`);
   }
 
-  res.redirect(`/select-app?credentialType=${credentialType}`);
+  return res.redirect(`/select-app?credentialType=${credentialType}`);
+}
+
+export function refreshNoUpdateGetController(
+  req: Request,
+  res: Response,
+): void {
+  const { credentialType } = req.params;
+
+  return res.render("no-update.njk", {
+    credentialType,
+  });
 }

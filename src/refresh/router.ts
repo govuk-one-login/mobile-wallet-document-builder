@@ -1,5 +1,9 @@
 import express from "express";
-import { refreshGetController, refreshPostController } from "./controller";
+import {
+  refreshGetController,
+  refreshNoUpdateGetController,
+  refreshPostController,
+} from "./controller";
 import { validateCredentialTypePath } from "../middleware/validateCredentialTypePath";
 
 const router = express.Router();
@@ -13,6 +17,11 @@ router.post(
   "/refresh/:credentialType",
   validateCredentialTypePath,
   refreshPostController,
+);
+router.get(
+  "/refresh/:credentialType/no-update",
+  validateCredentialTypePath,
+  refreshNoUpdateGetController,
 );
 
 export { router as refreshRouter };
