@@ -24,7 +24,6 @@ export function documentSelectorGetController(
   try {
     const credentialType = req.query["credentialType"] as string;
     const route = DOCUMENT_ROUTES[credentialType];
-
     if (route) {
       return res.redirect(route);
     }
@@ -45,7 +44,6 @@ export function documentSelectorPostController(
 ): void {
   try {
     const selectedDocument = req.body["select-document-choice"];
-
     if (!selectedDocument) {
       return res.render("select-document-form.njk", {
         error: true,
