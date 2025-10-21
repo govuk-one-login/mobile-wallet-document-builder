@@ -30,9 +30,8 @@ export function documentSelectorGetController(
     }
 
     return res.render("select-document-form.njk", {
-      isInvalid: false,
-      authenticated: isAuthenticated(req),
       documentOptions: DOCUMENT_OPTIONS,
+      authenticated: isAuthenticated(req),
     });
   } catch (error) {
     logger.error(error, "An error happened rendering document selection page");
@@ -49,9 +48,9 @@ export function documentSelectorPostController(
 
     if (!selectedDocument) {
       return res.render("select-document-form.njk", {
-        isInvalid: true,
-        authenticated: isAuthenticated(req),
+        error: true,
         documentOptions: DOCUMENT_OPTIONS,
+        authenticated: isAuthenticated(req),
       });
     }
 
@@ -61,9 +60,9 @@ export function documentSelectorPostController(
     }
 
     return res.render("select-document-form.njk", {
-      isInvalid: true,
-      authenticated: isAuthenticated(req),
+      error: true,
       documentOptions: DOCUMENT_OPTIONS,
+      authenticated: isAuthenticated(req),
     });
   } catch (error) {
     logger.error(

@@ -22,10 +22,10 @@ export function appSelectorGetController({
       const credentialType = req.query["credentialType"];
 
       res.render("select-app-form.njk", {
-        credentialType,
         apps:
           environment === "staging" ? stagingApps(apps) : nonStagingApps(apps),
         authenticated: isAuthenticated(req),
+        credentialType,
       });
     } catch (error) {
       logger.error(error, "An error happened rendering app selection page");
@@ -45,13 +45,13 @@ export function appSelectorPostController({
 
       if (!selectedApp) {
         return res.render("select-app-form.njk", {
-          credentialType,
-          isInvalid: true,
+          error: true,
           apps:
             environment === "staging"
               ? stagingApps(apps)
               : nonStagingApps(apps),
           authenticated: isAuthenticated(req),
+          credentialType,
         });
       }
 
