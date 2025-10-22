@@ -43,13 +43,14 @@ export function appSelectorPostController({
       const selectedApp = req.body["select-app-choice"];
       const credentialType = req.body["credentialType"];
 
-      if (!selectedApp) {
+      const allowedApps =
+        environment === "staging" ? stagingApps(apps) : nonStagingApps(apps);
+      const allowedAppValues = allowedApps.map((app) => app.value);
+
+      if (!selectedApp || !allowedAppValues.includes(selectedApp)) {
         return res.render("select-app-form.njk", {
           error: true,
-          apps:
-            environment === "staging"
-              ? stagingApps(apps)
-              : nonStagingApps(apps),
+          apps: allowedApps,
           authenticated: isAuthenticated(req),
           credentialType,
         });

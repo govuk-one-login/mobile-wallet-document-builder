@@ -103,6 +103,39 @@ describe("App selector controller", () => {
       expect(res.cookie).not.toHaveBeenCalled();
     });
 
+    it("should re-render select-app form with a validation error when app selected is invalid", () => {
+      const req = getMockReq({
+        body: {
+          "select-app-choice": "not-a-valid-app-option",
+        },
+      });
+      const { res } = getMockRes();
+
+      appSelectorPostController(config)(req, res);
+
+      expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
+        error: true,
+        apps: [
+          {
+            text: "GOV.UK App (Build)",
+            value: "govuk-build",
+          },
+          {
+            text: "Wallet Test App (Dev)",
+            value: "wallet-test-dev",
+          },
+          {
+            text: "Wallet Test App (Build)",
+            value: "wallet-test-build",
+          },
+        ],
+        authenticated: false,
+        credentialType: undefined,
+      });
+      expect(res.redirect).not.toHaveBeenCalled();
+      expect(res.cookie).not.toHaveBeenCalled();
+    });
+
     it("should set the app cookie to the selected value with the configured expiry", () => {
       const req = getMockReq({
         body: {
