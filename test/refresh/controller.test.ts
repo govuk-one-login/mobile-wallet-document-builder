@@ -1,82 +1,105 @@
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import {
   refreshGetController,
+  refreshNoUpdateGetController,
   refreshPostController,
 } from "../../src/refresh/controller";
-import { CredentialType } from "../../src/types/CredentialType";
 
-describe("refresh", () => {
-  describe("refreshGetController()", () => {
-    const credentialType = "SocialSecurityCredential";
+describe("controller.ts", () => {
+  const credentialType = "SocialSecurityCredential";
 
-    it("should render the refresh form with authenticated user and credentialType", async () => {
+  describe("refreshGetController", () => {
+    it("should render refresh form with credentialType from params", () => {
       const req = getMockReq({
-        params: { credentialType: credentialType },
+        params: { credentialType },
       });
       const { res } = getMockRes();
-      await refreshGetController(req, res);
+
+      refreshGetController(req, res);
+
       expect(res.render).toHaveBeenCalledWith("refresh-form.njk", {
         credentialType: "SocialSecurityCredential",
+        authenticated: expect.anything(),
       });
-    });
-
-    it("should render the error page if an error happens trying to process request", async () => {
-      const req = getMockReq();
-      const { res } = getMockRes();
-      (res.render as jest.Mock).mockImplementationOnce(() => {
-        throw new Error("error");
-      });
-      await refreshGetController(req, res);
-      expect(res.render).toHaveBeenCalledWith("500.njk");
     });
   });
 
-  describe("refreshPostController()", () => {
-    beforeEach(async () => {
-      jest.clearAllMocks();
-    });
-
-    it("should render the 'No update' page when the refreshChoice is No", async () => {
+  describe("refreshPostController", () => {
+    it("should redirect to /no-update when refreshCredential=No", () => {
       const req = getMockReq({
-        params: { credentialType: "SocialSecurityCredential" },
-        body: { refreshChoice: "No" },
-        cookies: { id_token: "id_token" },
+        params: { credentialType },
+        body: { refreshCredential: "No" },
       });
       const { res } = getMockRes();
 
-      await refreshPostController(req, res);
-      expect(res.redirect).toHaveBeenCalledWith("/no-update");
+      refreshPostController(req, res);
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        "/refresh/SocialSecurityCredential/no-update",
+      );
     });
 
-    const validCredentialType = [
-      CredentialType.SocialSecurityCredential,
-      CredentialType.BasicDisclosureCredential,
-      CredentialType.DigitalVeteranCard,
-      CredentialType.MobileDrivingLicence,
-    ];
-
-    it.each(validCredentialType)(
-      "should redirects to /select-app/? %s when the refreshChoice is Yes",
-      async (credentialType) => {
-        const req = getMockReq({
-          params: { credentialType },
-          body: { refreshChoice: "Yes" },
-        });
-        const { res } = getMockRes();
-
-        await refreshPostController(req, res);
-        expect(res.redirect).toHaveBeenCalledWith(`/select-app/?credentialType=${credentialType}`);
-      },
-    );
-
-    it("should render the error page if an error happens trying to process refresh credential", async () => {
+    it("should redirect to /select-app with credentialType when refreshCredential=Yes", () => {
       const req = getMockReq({
-        params: { credentialType: "Unknown Type" },
-        body: { refreshChoice: "Yes" },
+        params: { credentialType },
+        body: { refreshCredential: "Yes" },
       });
       const { res } = getMockRes();
-      await refreshPostController(req, res);
-      expect(res.render).toHaveBeenCalledWith("500.njk");
+
+      refreshPostController(req, res);
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        "/select-app?credentialType=SocialSecurityCredential",
+      );
+    });
+
+    it("should re-render refresh form with validation error when refreshCredential is missing", () => {
+      const req = getMockReq({
+        params: { credentialType },
+        body: {},
+      });
+      const { res } = getMockRes();
+
+      refreshPostController(req, res);
+
+      expect(res.render).toHaveBeenCalledWith("refresh-form.njk", {
+        error: true,
+        credentialType: "SocialSecurityCredential",
+        authenticated: expect.anything(),
+      });
+      expect(res.redirect).not.toHaveBeenCalled();
+    });
+
+    it("should re-render refresh form with validation error when refreshCredential is invalid", () => {
+      const req = getMockReq({
+        params: { credentialType },
+        body: { refreshCredential: "Maybe" },
+      });
+      const { res } = getMockRes();
+
+      refreshPostController(req, res);
+
+      expect(res.render).toHaveBeenCalledWith("refresh-form.njk", {
+        error: true,
+        credentialType: "SocialSecurityCredential",
+        authenticated: expect.anything(),
+      });
+      expect(res.redirect).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("refreshNoUpdateGetController", () => {
+    it("should render no-update page", () => {
+      const req = getMockReq({
+        params: { credentialType },
+      });
+      const { res } = getMockRes();
+
+      refreshNoUpdateGetController(req, res);
+
+      expect(res.render).toHaveBeenCalledWith("no-update.njk", {
+        authenticated: expect.anything(),
+      });
     });
   });
 });

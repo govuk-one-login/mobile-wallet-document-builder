@@ -33,10 +33,7 @@ export function refreshNoUpdateGetController(
   req: Request,
   res: Response,
 ): void {
-  const { credentialType } = req.params;
-
   return res.render("no-update.njk", {
-    credentialType,
     authenticated: isAuthenticated(req),
   });
 }
