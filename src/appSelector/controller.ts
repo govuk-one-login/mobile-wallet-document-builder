@@ -3,11 +3,10 @@ import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import {
-  apps,
   getEnvironment,
   getCookieExpiryInMilliseconds,
-  App,
 } from "../config/appConfig";
+import { getAppsByEnvironment } from "./utils/getAppsByEnvironment";
 
 export interface AppSelectorConfig {
   environment?: string;
@@ -16,14 +15,13 @@ export interface AppSelectorConfig {
 
 export function appSelectorGetController({
   environment = getEnvironment(),
-} = {}): ExpressRouteFunction {
+}: AppSelectorConfig = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {
       const credentialType = req.query["credentialType"];
 
       res.render("select-app-form.njk", {
-        apps:
-          environment === "staging" ? stagingApps(apps) : nonStagingApps(apps),
+        apps: getAppsByEnvironment(environment),
         authenticated: isAuthenticated(req),
         credentialType,
       });
@@ -43,8 +41,7 @@ export function appSelectorPostController({
       const selectedApp = req.body["select-app-choice"];
       const credentialType = req.body["credentialType"];
 
-      const allowedApps =
-        environment === "staging" ? stagingApps(apps) : nonStagingApps(apps);
+      const allowedApps = getAppsByEnvironment(environment);
       const allowedAppValues = allowedApps.map((app) => app.value);
 
       if (!selectedApp || !allowedAppValues.includes(selectedApp)) {
@@ -72,13 +69,3 @@ export function appSelectorPostController({
     }
   };
 }
-
-const stagingApps = (apps: App[]) => {
-  const filteredApps = apps.filter((app) => app.environment === "staging");
-  return filteredApps.map((app) => ({ text: app.text, value: app.value }));
-};
-
-const nonStagingApps = (apps: App[]) => {
-  const filteredApps = apps.filter((app) => app.environment !== "staging");
-  return filteredApps.map((app) => ({ text: app.text, value: app.value }));
-};
