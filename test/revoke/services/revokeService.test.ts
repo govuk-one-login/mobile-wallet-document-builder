@@ -7,14 +7,13 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 const CRI_URL = "https://test-cri.example.com";
 const DOCUMENT_ID = "ABC123DEF567";
 
-describe("revokeService", () => {
+describe("revokeService.ts", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("should send POST request to the CRI to revoke credentials", async () => {
-    const expectedRevokeUrl =
-      "https://test-cri.example.com/revoke/ABC123DEF567";
+    const expectedRevokeUrl = "https://test-cri.example.com/revoke/ABC123DEF567";
     const mockCriResponse = {
       status: 202,
     } as AxiosResponse;
