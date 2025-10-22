@@ -7,7 +7,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 const CRI_URL = "https://test-cri.example.com";
 const DOCUMENT_ID = "ABC123DEF567";
 
-describe("revokeService.ts", () => {
+describe("revokeService", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

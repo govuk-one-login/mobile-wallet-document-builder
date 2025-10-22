@@ -10,106 +10,101 @@ jest.mock("../../src/revoke/services/revokeService", () => ({
   revokeCredentials: jest.fn(),
 }));
 
-const CRI_URL = "https://test-cri.example.com";
-const DOCUMENT_ID = "ABC123def567";
+describe("revokeGetController", () => {
+  const req = getMockReq();
+  const { res } = getMockRes();
 
-describe("controller.ts", () => {
+  it("should render the revoke form", () => {
+    revokeGetController()(req, res);
+
+    expect(res.render).toHaveBeenCalledWith("revoke-form.njk");
+  });
+});
+
+describe("revokePostController", () => {
+  const criUrl = "https://test-cri.example.com";
+  const documentId = "ABC123def567";
+
   let config: RevokeConfig;
 
   beforeEach(async () => {
     config = {
-      criUrl: CRI_URL,
+      criUrl: criUrl,
     };
+    jest.clearAllMocks();
   });
 
-  describe("revokeGetController", () => {
-    const req = getMockReq();
-    const { res } = getMockRes();
-
-    it("should render the revoke form", () => {
-      revokeGetController()(req, res);
-
-      expect(res.render).toHaveBeenCalledWith("revoke-form.njk");
-    });
+  const req = getMockReq({
+    body: {
+      documentId: documentId,
+    },
   });
+  const { res } = getMockRes();
 
-  describe("revokePostController", () => {
-    beforeEach(async () => {
-      jest.clearAllMocks();
-    });
+  it.each([
+    "shrt", // 4 characters but minimum is 5
+    "documentIdIsTooLong1234567", // 26 characters but maximum is 25
+    "spaces are not ok",
+    "invalidChars@!",
+  ])(
+    "should render an error when the document ID is invalid ('%s')",
+    async (invalidId) => {
+      const req = getMockReq({
+        body: {
+          documentId: invalidId,
+        },
+      });
 
-    const req = getMockReq({
-      body: {
-        documentId: DOCUMENT_ID,
-      },
-    });
-    const { res } = getMockRes();
+      await revokePostController(config)(req, res);
 
-    it.each([
-      "shrt", // 4 characters but minimum is 5
-      "documentIdIsTooLong1234567", // 26 characters but maximum is 25
-      "spaces are not ok",
-      "invalidChars@!",
-    ])(
-      "should render an error when the document ID is invalid ('%s')",
-      async (invalidId) => {
-        const req = getMockReq({
-          body: {
-            documentId: invalidId,
-          },
-        });
+      expect(revokeCredentials).not.toHaveBeenCalled();
+      expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
+        error:
+          "ID must be 5 to 25 characters long and contain only uppercase or lowercase letters and digits",
+        value: invalidId,
+      });
+    },
+  );
 
-        await revokePostController(config)(req, res);
-
-        expect(revokeCredentials).not.toHaveBeenCalled();
-        expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
-          error:
-            "ID must be 5 to 25 characters long and contain only uppercase or lowercase letters and digits",
-          value: invalidId,
-        });
-      },
+  it("should render 500 error page if an unexpected error occurs", async () => {
+    (revokeCredentials as jest.Mock).mockRejectedValue(
+      new Error("Unexpected error"),
     );
 
-    it("should render 500 error page if an unexpected error occurs", async () => {
-      (revokeCredentials as jest.Mock).mockRejectedValue(
-        new Error("Unexpected error"),
-      );
+    await revokePostController(config)(req, res);
 
-      await revokePostController(config)(req, res);
+    expect(res.render).toHaveBeenCalledWith("500.njk");
+  });
 
-      expect(res.render).toHaveBeenCalledWith("500.njk");
+  it("should render success message when revocation succeeds", async () => {
+    const mockResult = {
+      message: "Credential successfully revoked",
+      messageType: "success" as const,
+    };
+    (revokeCredentials as jest.Mock).mockResolvedValue(mockResult);
+
+    await revokePostController(config)(req, res);
+
+    expect(revokeCredentials).toHaveBeenCalledWith(criUrl, documentId);
+    expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
+      message: "Credential successfully revoked",
+      messageType: "success",
     });
+  });
 
-    it("should render success message when revocation succeeds", async () => {
-      const mockResult = {
-        message: "Credential successfully revoked",
-        messageType: "success" as const,
-      };
-      (revokeCredentials as jest.Mock).mockResolvedValue(mockResult);
+  it("should render error message when revocation fails", async () => {
+    const mockResult = {
+      message: "No credential found for this document identifier",
+      messageType: "error" as const,
+    };
+    (revokeCredentials as jest.Mock).mockResolvedValue(mockResult);
 
-      await revokePostController(config)(req, res);
+    await revokePostController(config)(req, res);
 
-      expect(revokeCredentials).toHaveBeenCalledWith(CRI_URL, DOCUMENT_ID);
-      expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
-        message: "Credential successfully revoked",
-        messageType: "success",
-      });
-    });
-
-    it("should render error message when revocation fails", async () => {
-      const mockResult = {
-        message: "No credential found for this document identifier",
-        messageType: "error" as const,
-      };
-      (revokeCredentials as jest.Mock).mockResolvedValue(mockResult);
-
-      await revokePostController(config)(req, res);
-
-      expect(revokeCredentials).toHaveBeenCalledWith(CRI_URL, DOCUMENT_ID);
-      expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
-        message: "No credential found for this document identifier",
-        messageType: "error",
-      });
+    expect(revokeCredentials).toHaveBeenCalledWith(criUrl, documentId);
+    expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
+      message: "No credential found for this document identifier",
+      messageType: "error",
     });
   });
 });
