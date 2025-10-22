@@ -71,7 +71,8 @@ export async function returnFromAuthGetController(
     res.cookie("id_token", tokenSet.id_token, cookieOptions);
     res.cookie("wallet_subject_id", userInfo.wallet_subject_id, cookieOptions);
 
-    res.redirect(`/select-document`);
+    const redirectUri = req.cookies.current_url || "/select-document";
+    res.redirect(redirectUri);
   } catch (error) {
     const message =
       /* eslint-disable @typescript-eslint/no-explicit-any */

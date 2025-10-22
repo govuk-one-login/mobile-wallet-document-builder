@@ -38,6 +38,10 @@ export function getAuthorizationUrl(req: Request, res: Response) {
     httpOnly: true,
     maxAge: getCookieExpiryInMilliseconds(),
   });
+  res.cookie("current_url", req.url, {
+    httpOnly: true,
+    maxAge: getCookieExpiryInMilliseconds(),
+  });
 
   return req.oidc.authorizationUrl({
     client_id: req.oidc.metadata.client_id,

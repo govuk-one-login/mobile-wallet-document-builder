@@ -9,6 +9,7 @@ const COOKIES_TO_DELETE = [
   "nonce",
   "app",
   "wallet_subject_id",
+  "current_url",
 ];
 
 export function logoutGetController(req: Request, res: Response): void {
