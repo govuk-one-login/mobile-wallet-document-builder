@@ -23,12 +23,12 @@ export async function returnFromAuthGetController(
   res: Response,
 ): Promise<void> {
   try {
-    const queryParams: CallbackParamsType = req.oidc.callbackParams(req);
-    if (queryParams?.error) {
+    const callbackParams: CallbackParamsType = req.oidc.callbackParams(req);
+    if (callbackParams?.error) {
       logger.error(
         {
-          error: queryParams.error,
-          error_description: queryParams.error_description,
+          error: callbackParams.error,
+          error_description: callbackParams.error_description,
         },
         "OAuth authorization failed",
       );
