@@ -5,7 +5,7 @@ import {
 } from "../../src/appSelector/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
-describe("App selector controller", () => {
+describe("controller.ts", () => {
   let config: AppSelectorConfig;
 
   beforeEach(() => {
@@ -15,7 +15,7 @@ describe("App selector controller", () => {
     };
   });
 
-  describe("GET controller", () => {
+  describe("appSelectorGetController", () => {
     it("should render select-app form with staging options when environment=staging", () => {
       const config = {
         environment: "staging",
@@ -73,7 +73,7 @@ describe("App selector controller", () => {
     });
   });
 
-  describe("POST controller", () => {
+  describe("appSelectorPostController", () => {
     it("should re-render select-app form with a validation error when no app is selected", () => {
       const req = getMockReq();
       const { res } = getMockRes();

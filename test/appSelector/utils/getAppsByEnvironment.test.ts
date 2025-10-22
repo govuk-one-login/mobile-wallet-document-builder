@@ -23,29 +23,31 @@ jest.mock("../../../src/config/appConfig", () => ({
 
 import { getAppsByEnvironment } from "../../../src/appSelector/utils/getAppsByEnvironment";
 
-describe("getAppsByEnvironment", () => {
+describe("getAppsByEnvironment.ts", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it("should return only staging apps when environment=staging", () => {
-    const appsInStaging = getAppsByEnvironment("staging");
+  describe("getAppsByEnvironment", () => {
+    it("should return only staging apps when environment=staging", () => {
+      const appsInStaging = getAppsByEnvironment("staging");
 
-    const expected = [{ text: "App A (Staging)", value: "app-a-staging" }];
+      const expected = [{ text: "App A (Staging)", value: "app-a-staging" }];
 
-    expect(appsInStaging).toEqual(expected);
-  });
+      expect(appsInStaging).toEqual(expected);
+    });
 
-  it("should return only non-staging apps when environment≠staging", () => {
-    const appsInBuild = getAppsByEnvironment("build");
-    const appsInDev = getAppsByEnvironment("dev");
+    it("should return only non-staging apps when environment≠staging", () => {
+      const appsInBuild = getAppsByEnvironment("build");
+      const appsInDev = getAppsByEnvironment("dev");
 
-    const expected = [
-      { text: "App B (Build)", value: "app-b-build" },
-      { text: "App C (Dev)", value: "app-c-dev" },
-    ];
+      const expected = [
+        { text: "App B (Build)", value: "app-b-build" },
+        { text: "App C (Dev)", value: "app-c-dev" },
+      ];
 
-    expect(appsInBuild).toEqual(expected);
-    expect(appsInDev).toEqual(expected);
+      expect(appsInBuild).toEqual(expected);
+      expect(appsInDev).toEqual(expected);
+    });
   });
 });

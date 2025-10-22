@@ -13,7 +13,7 @@ jest.mock("../../src/revoke/services/revokeService", () => ({
 const CRI_URL = "https://test-cri.example.com";
 const DOCUMENT_ID = "ABC123def567";
 
-describe("revoke", () => {
+describe("controller.ts", () => {
   let config: RevokeConfig;
 
   beforeEach(async () => {
