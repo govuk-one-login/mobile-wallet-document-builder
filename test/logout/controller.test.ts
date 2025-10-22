@@ -9,14 +9,14 @@ jest.mock("../../src/logout/utils/deleteCookies", () => ({
 
 const deleteCookies = utils.deleteCookies as jest.Mock;
 
-process.env.SELF = "http://localhost:8001";
+describe("Logout controller", () => {
+  const config = { selfUrl: "http://test-stub.com" };
 
-describe("controller.ts", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it("should redirect the user to One Login to log out", async () => {
+  it("should redirect user to One Login to log out", () => {
     const req = getMockReq({
       oidc: { endSessionUrl: jest.fn() },
       cookies: {
@@ -35,7 +35,7 @@ describe("controller.ts", () => {
       },
     });
 
-    await logoutGetController(req, res);
+    logoutGetController(config)(req, res);
 
     expect(res.redirect).toHaveBeenCalled();
     expect(req.oidc.endSessionUrl).toHaveBeenCalled();
@@ -45,6 +45,7 @@ describe("controller.ts", () => {
       "nonce",
       "app",
       "wallet_subject_id",
+      "current_url",
     ]);
   });
 });
