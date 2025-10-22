@@ -6,6 +6,7 @@ export function refreshGetController(req: Request, res: Response): void {
 
   res.render("refresh-form.njk", {
     credentialType,
+    authenticated: isAuthenticated(req),
   });
 }
 
@@ -13,19 +14,19 @@ export function refreshPostController(req: Request, res: Response): void {
   const { refreshCredential } = req.body;
   const { credentialType } = req.params;
 
-  if (!refreshCredential) {
-    return res.render("refresh-form.njk", {
-      error: true,
-      credentialType,
-      authenticated: isAuthenticated(req),
-    });
+  if (refreshCredential === "Yes") {
+    return res.redirect(`/select-app?credentialType=${credentialType}`);
   }
 
   if (refreshCredential === "No") {
     return res.redirect(`/refresh/${credentialType}/no-update`);
   }
 
-  return res.redirect(`/select-app?credentialType=${credentialType}`);
+  return res.render("refresh-form.njk", {
+    error: true,
+    credentialType,
+    authenticated: isAuthenticated(req),
+  });
 }
 
 export function refreshNoUpdateGetController(
