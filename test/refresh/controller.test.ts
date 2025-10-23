@@ -25,7 +25,7 @@ describe("refreshPostController", () => {
   it("should redirect to /no-update when refreshCredential=No", () => {
     const req = getMockReq({
       params: { credentialType: "SocialSecurityCredential" },
-      body: { refreshCredential: "No" },
+      body: { refreshCredential: "false" },
     });
     const { res } = getMockRes();
 
@@ -36,10 +36,10 @@ describe("refreshPostController", () => {
     );
   });
 
-  it("should redirect to /select-app with credentialType when refreshCredential=Yes", () => {
+  it("should redirect to /select-app with credentialType when refreshCredential=true", () => {
     const req = getMockReq({
       params: { credentialType: "SocialSecurityCredential" },
-      body: { refreshCredential: "Yes" },
+      body: { refreshCredential: "true" },
     });
     const { res } = getMockRes();
 
