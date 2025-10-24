@@ -4,6 +4,27 @@ import {
 } from "../../src/documentSelector/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
+const config = {
+  documentsConfig: {
+    SocialSecurityCredential: {
+      route: "/build-nino-document",
+      name: "NINO",
+    },
+    BasicDisclosureCredential: {
+      route: "/build-dbs-document",
+      name: "DBS",
+    },
+    DigitalVeteranCard: {
+      route: "/build-veteran-card-document",
+      name: "Veteran Card",
+    },
+    "org.iso.18013.5.1.mDL": {
+      route: "/build-mdl-document",
+      name: "Driving Licence",
+    },
+  },
+};
+
 describe("documentSelectorGetController", () => {
   it.each([
     ["/build-nino-document", "SocialSecurityCredential"],
@@ -16,7 +37,7 @@ describe("documentSelectorGetController", () => {
       const req = getMockReq({ query: { credentialType } });
       const { res } = getMockRes();
 
-      documentSelectorGetController(req, res);
+      documentSelectorGetController(config)(req, res);
 
       expect(res.redirect).toHaveBeenCalledWith(expectedRoute);
     },
@@ -26,11 +47,11 @@ describe("documentSelectorGetController", () => {
     const req = getMockReq({ query: {} });
     const { res } = getMockRes();
 
-    documentSelectorGetController(req, res);
+    documentSelectorGetController(config)(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
       authenticated: false,
-      documentOptions: [
+      documents: [
         {
           text: "NINO",
           value: "SocialSecurityCredential",
@@ -58,11 +79,11 @@ describe("documentSelectorGetController", () => {
     });
     const { res } = getMockRes();
 
-    documentSelectorGetController(req, res);
+    documentSelectorGetController(config)(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
       authenticated: false,
-      documentOptions: [
+      documents: [
         {
           text: "NINO",
           value: "SocialSecurityCredential",
@@ -99,7 +120,7 @@ describe("documentSelectorPostController", () => {
     });
     const { res } = getMockRes();
 
-    documentSelectorPostController(req, res);
+    documentSelectorPostController(config)(req, res);
 
     expect(res.redirect).toHaveBeenCalledWith(expectedRoute);
   });
@@ -112,12 +133,12 @@ describe("documentSelectorPostController", () => {
     });
     const { res } = getMockRes();
 
-    documentSelectorPostController(req, res);
+    documentSelectorPostController(config)(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
       error: true,
       authenticated: false,
-      documentOptions: [
+      documents: [
         {
           text: "NINO",
           value: "SocialSecurityCredential",
@@ -143,12 +164,12 @@ describe("documentSelectorPostController", () => {
     const req = getMockReq({ body: {} });
     const { res } = getMockRes();
 
-    documentSelectorPostController(req, res);
+    documentSelectorPostController(config)(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
       error: true,
       authenticated: false,
-      documentOptions: [
+      documents: [
         {
           text: "NINO",
           value: "SocialSecurityCredential",
