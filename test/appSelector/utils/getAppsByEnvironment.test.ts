@@ -1,4 +1,4 @@
-import { getAppDisplayOptions } from "../../../src/appSelector/utils/getAppDisplayOptions";
+import { buildTemplateInputForDocuments } from "../../../src/appSelector/utils/buildTemplateInputForDocuments";
 import { WalletAppsConfig } from "../../../src/config/walletAppsConfig";
 
 describe("getAppDisplayOptions", () => {
@@ -19,7 +19,7 @@ describe("getAppDisplayOptions", () => {
 
   it("should map wallet apps to display options correctly", () => {
     const walletApps = ["test-app-1", "test-app-3"];
-    const result = getAppDisplayOptions(walletApps, walletAppsConfig);
+    const result = buildTemplateInputForDocuments(walletApps, walletAppsConfig);
 
     expect(result).toEqual([
       { text: "Test App (1)", value: "test-app-1" },
@@ -29,6 +29,8 @@ describe("getAppDisplayOptions", () => {
 
   it("should throw an error if a wallet app does not exist in config", () => {
     const walletApps = ["unknown", "test-app-1"];
-    expect(() => getAppDisplayOptions(walletApps, walletAppsConfig)).toThrow();
+    expect(() =>
+      buildTemplateInputForDocuments(walletApps, walletAppsConfig),
+    ).toThrow();
   });
 });

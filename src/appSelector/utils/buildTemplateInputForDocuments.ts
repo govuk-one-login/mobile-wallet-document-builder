@@ -1,6 +1,6 @@
 import { WalletAppsConfig } from "../../config/walletAppsConfig";
 
-export function getAppDisplayOptions(
+export function buildTemplateInputForDocuments(
   walletApps: string[],
   walletAppsConfig: WalletAppsConfig,
 ) {

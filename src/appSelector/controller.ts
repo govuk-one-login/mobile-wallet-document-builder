@@ -6,7 +6,7 @@ import {
   getWalletApps,
   getCookieExpiryInMilliseconds,
 } from "../config/appConfig";
-import { getAppDisplayOptions } from "./utils/getAppDisplayOptions";
+import { buildTemplateInputForDocuments } from "./utils/buildTemplateInputForDocuments";
 import {
   walletAppsConfig as config,
   WalletAppsConfig,
@@ -27,7 +27,7 @@ export function appSelectorGetController({
       const credentialType = req.query["credentialType"];
 
       res.render("select-app-form.njk", {
-        apps: getAppDisplayOptions(walletApps, walletAppsConfig),
+        apps: buildTemplateInputForDocuments(walletApps, walletAppsConfig),
         authenticated: isAuthenticated(req),
         credentialType,
       });
@@ -54,7 +54,7 @@ export function appSelectorPostController({
       ) {
         return res.render("select-app-form.njk", {
           error: true,
-          apps: getAppDisplayOptions(walletApps, walletAppsConfig),
+          apps: buildTemplateInputForDocuments(walletApps, walletAppsConfig),
           authenticated: isAuthenticated(req),
           credentialType,
         });

@@ -4,13 +4,14 @@ import {
   appSelectorPostController,
 } from "../../src/appSelector/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
-import { getAppDisplayOptions } from "../../src/appSelector/utils/getAppDisplayOptions";
+import { buildTemplateInputForDocuments } from "../../src/appSelector/utils/buildTemplateInputForDocuments";
 import { WalletAppsConfig } from "../../src/config/walletAppsConfig";
 
-jest.mock("../../src/appSelector/utils/getAppDisplayOptions");
-const mockGetAppDisplayOptions = getAppDisplayOptions as jest.MockedFunction<
-  typeof getAppDisplayOptions
->;
+jest.mock("../../src/appSelector/utils/buildTemplateInputForDocuments");
+const mockGetAppDisplayOptions =
+  buildTemplateInputForDocuments as jest.MockedFunction<
+    typeof buildTemplateInputForDocuments
+  >;
 
 const walletAppsConfig: WalletAppsConfig = {
   "test-app-1": {
