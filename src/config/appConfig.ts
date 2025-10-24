@@ -1,10 +1,3 @@
-export interface App {
-  path: string;
-  environment: string;
-  value: string;
-  text: string;
-}
-
 function getEnvVarValue(variableName: string): string {
   const variableValue = process.env[variableName];
   if (!variableValue) {
@@ -75,7 +68,14 @@ export function getHardcodedWalletSubjectId(): string {
   return "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i";
 }
 
-export const apps: App[] = [
+export interface App {
+  path: string;
+  environment: string;
+  value: string;
+  text: string;
+}
+
+export const APPS: App[] = [
   {
     path: "https://mobile.build.account.gov.uk/wallet/",
     environment: "build",
@@ -90,7 +90,7 @@ export const apps: App[] = [
   },
   {
     path: "https://mobile.dev.account.gov.uk/wallet-test/",
-    environment: "build",
+    environment: "dev",
     value: "wallet-test-dev",
     text: "Wallet Test App (Dev)",
   },

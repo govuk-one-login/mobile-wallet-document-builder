@@ -1,0 +1,34 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% extends "base.njk" %}
+{% set pageTitle = "Would you like to issue an updated version of the revoked credential?" %}
+{% block content %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
+    <form action="/refresh/{{ credentialType }}" method="post">
+        {{ govukRadios({
+                classes: "govuk-radios--medium",
+                name: "refreshCredential",
+                fieldset: {
+                legend: {
+                text: "Would you like to issue an updated version of the revoked credential?",
+                classes: "govuk-fieldset__legend--m",
+                isPageHeading: true
+                }
+                },
+                items: [
+                {
+                value: true,
+                text: "Yes"
+                },
+                {
+                value: false,
+                text: "No"
+                }
+                ],
+                errorMessage: {
+                text: "You must choose an option"
+                } if error
+                }) }}
+        {{ govukButton({"text": "Continue", "preventDoubleClick": true}) }}
+    </form>
+{% endblock %}

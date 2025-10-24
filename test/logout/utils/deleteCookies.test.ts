@@ -1,13 +1,17 @@
 import { Request, Response } from "express";
 import { deleteCookies } from "../../../src/logout/utils/deleteCookies";
 
-describe("controller.ts", () => {
+describe("deleteCookies", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   const req = {
-    cookies: { id_token: "id_token", access_token: "access_token", app: "app" },
+    cookies: {
+      id_token: "id_token",
+      access_token: "access_token",
+      app: "app",
+    },
   } as unknown as Request;
   const res = {
     clearCookie: jest.fn(),

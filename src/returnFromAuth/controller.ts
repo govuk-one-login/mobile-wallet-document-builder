@@ -23,12 +23,12 @@ export async function returnFromAuthGetController(
   res: Response,
 ): Promise<void> {
   try {
-    const queryParams: CallbackParamsType = req.oidc.callbackParams(req);
-    if (queryParams?.error) {
+    const callbackParams: CallbackParamsType = req.oidc.callbackParams(req);
+    if (callbackParams?.error) {
       logger.error(
         {
-          error: queryParams.error,
-          error_description: queryParams.error_description,
+          error: callbackParams.error,
+          error_description: callbackParams.error_description,
         },
         "OAuth authorization failed",
       );
@@ -71,7 +71,8 @@ export async function returnFromAuthGetController(
     res.cookie("id_token", tokenSet.id_token, cookieOptions);
     res.cookie("wallet_subject_id", userInfo.wallet_subject_id, cookieOptions);
 
-    res.redirect(`/select-document`);
+    const redirectUri = req.cookies.current_url || "/select-document";
+    res.redirect(redirectUri);
   } catch (error) {
     const message =
       /* eslint-disable @typescript-eslint/no-explicit-any */

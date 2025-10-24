@@ -4,7 +4,7 @@ import { getCredentialOfferUrl } from "./services/credentialOfferService";
 import { customiseCredentialOfferUrl } from "./helpers/customCredentialOfferUrl";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import { apps, getEnvironment } from "../config/appConfig";
+import { APPS, getEnvironment } from "../config/appConfig";
 
 export async function credentialOfferViewerController(
   req: Request,
@@ -26,7 +26,7 @@ export async function credentialOfferViewerController(
     const customisedCredentialOfferUrl = customiseCredentialOfferUrl(
       credentialOfferUrl,
       selectedApp,
-      apps,
+      APPS,
       errorScenario,
     );
 

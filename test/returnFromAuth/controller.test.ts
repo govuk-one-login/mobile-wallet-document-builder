@@ -16,7 +16,7 @@ jest.mock(
   }),
 );
 
-describe("controller.ts", () => {
+describe("returnFromAuthGetController", () => {
   const buildAssertionJwt = assertionJwt.buildClientAssertion as jest.Mock;
   const loggerErrorSpy = jest
     .spyOn(logger, "error")
@@ -53,7 +53,16 @@ describe("controller.ts", () => {
     buildAssertionJwt.mockResolvedValue("clientAssertionJWT");
   });
 
-  it("should return 500 on OAuth error in query parameters", async () => {
+  it("should call callbackParams with request when processing the callback", async () => {
+    const req = createOidcMockReq();
+    const { res } = getMockRes();
+
+    await returnFromAuthGetController(req, res);
+
+    expect(req.oidc!.callbackParams).toHaveBeenCalledWith(req);
+  });
+
+  it("should render error page when error is present in callback params", async () => {
     const req = getMockReq({
       oidc: {
         callbackParams: jest.fn().mockReturnValue({
@@ -72,28 +81,23 @@ describe("controller.ts", () => {
     );
     expect(res.render).toHaveBeenCalledWith("500.njk");
     expect(res.redirect).not.toHaveBeenCalled();
+    expect(buildAssertionJwt).not.toHaveBeenCalled();
   });
 
-  it("should handle OAuth error without description", async () => {
-    const req = getMockReq({
-      oidc: {
-        callbackParams: jest.fn().mockReturnValue({
-          error: "some_error",
-        }),
-      },
-    });
+  it("should call buildAssertionJwt with the correct params", async () => {
+    const req = createOidcMockReq();
     const { res } = getMockRes();
 
     await returnFromAuthGetController(req, res);
 
-    expect(loggerErrorSpy).toHaveBeenCalledWith(
-      { error: "some_error", error_description: undefined },
-      "OAuth authorization failed",
+    expect(buildAssertionJwt).toHaveBeenCalledWith(
+      "test_client_id",
+      "http://localhost:8000/token",
+      "14122ec4-cdd0-4154-8275-04363c15fbd9",
     );
-    expect(res.render).toHaveBeenCalledWith("500.njk");
   });
 
-  it("should return 500 on client assertion building failure", async () => {
+  it("should render error page on client assertion building failure", async () => {
     const error = new Error("JWT signing failed");
     buildAssertionJwt.mockRejectedValue(error);
     const req = createOidcMockReq();
@@ -105,23 +109,10 @@ describe("controller.ts", () => {
       "OAuth callback failed: JWT signing failed",
     );
     expect(res.render).toHaveBeenCalledWith("500.njk");
+    expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  it("should return 500 on OIDC callback failure", async () => {
-    const errorMessage = "Token exchange failed";
-    const req = createOidcMockReq();
-    req.oidc!.callback = jest.fn().mockRejectedValue({ message: errorMessage });
-    const { res } = getMockRes();
-
-    await returnFromAuthGetController(req, res);
-
-    expect(loggerErrorSpy).toHaveBeenCalledWith(
-      "OAuth callback failed: Token exchange failed",
-    );
-    expect(res.render).toHaveBeenCalledWith("500.njk");
-  });
-
-  it("should handle string errors", async () => {
+  it("should properly log string errors", async () => {
     const error = "String error";
     buildAssertionJwt.mockRejectedValue(error);
     const req = createOidcMockReq();
@@ -135,17 +126,12 @@ describe("controller.ts", () => {
     expect(res.render).toHaveBeenCalledWith("500.njk");
   });
 
-  it("should successfully process OAuth callback and redirect", async () => {
+  it("should call OIDC callback with the correct params", async () => {
     const req = createOidcMockReq();
     const { res } = getMockRes();
 
     await returnFromAuthGetController(req, res);
 
-    expect(buildAssertionJwt).toHaveBeenCalledWith(
-      "test_client_id",
-      "http://localhost:8000/token",
-      "14122ec4-cdd0-4154-8275-04363c15fbd9",
-    );
     expect(req.oidc!.callback).toHaveBeenCalledWith(
       "http://localhost:3000/test",
       { code: "auth_code_123" },
@@ -158,10 +144,56 @@ describe("controller.ts", () => {
         },
       },
     );
+  });
+
+  it("should render error page on OIDC callback failure", async () => {
+    const errorMessage = "Token exchange failed";
+    const req = createOidcMockReq();
+    req.oidc!.callback = jest.fn().mockRejectedValue({ message: errorMessage });
+    const { res } = getMockRes();
+
+    await returnFromAuthGetController(req, res);
+
+    expect(loggerErrorSpy).toHaveBeenCalledWith(
+      "OAuth callback failed: Token exchange failed",
+    );
+    expect(res.render).toHaveBeenCalledWith("500.njk");
+    expect(res.redirect).not.toHaveBeenCalled();
+  });
+
+  it("should call userinfo with the correct params", async () => {
+    const req = createOidcMockReq();
+    const { res } = getMockRes();
+
+    await returnFromAuthGetController(req, res);
+
     expect(req.oidc!.userinfo).toHaveBeenCalledWith("access_token", {
       method: "GET",
       via: "header",
     });
+  });
+
+  it("should render error page on userinfo failure", async () => {
+    const errorMessage = "Failed to get user info";
+    const req = createOidcMockReq();
+    req.oidc!.userinfo = jest.fn().mockRejectedValue({ message: errorMessage });
+    const { res } = getMockRes();
+
+    await returnFromAuthGetController(req, res);
+
+    expect(loggerErrorSpy).toHaveBeenCalledWith(
+      "OAuth callback failed: Failed to get user info",
+    );
+    expect(res.render).toHaveBeenCalledWith("500.njk");
+    expect(res.redirect).not.toHaveBeenCalled();
+  });
+
+  it("should set id_token and wallet_subject_id cookies after successful callback", async () => {
+    const req = createOidcMockReq();
+    const { res } = getMockRes();
+
+    await returnFromAuthGetController(req, res);
+
     expect(res.cookie).toHaveBeenNthCalledWith(1, "id_token", "id_token", {
       httpOnly: true,
       maxAge: 100000,
@@ -172,6 +204,31 @@ describe("controller.ts", () => {
       WALLET_SUBJECT_ID,
       { httpOnly: true, maxAge: 100000 },
     );
+    expect(loggerErrorSpy).not.toHaveBeenCalled();
+  });
+
+  it("should redirect to current_url cookie when present", async () => {
+    const req = createOidcMockReq({
+      cookies: {
+        nonce: "test_nonce",
+        state: "test_state",
+        current_url: "/protected",
+      },
+    });
+    const { res } = getMockRes();
+
+    await returnFromAuthGetController(req, res);
+
+    expect(res.redirect).toHaveBeenCalledWith("/protected");
+    expect(loggerErrorSpy).not.toHaveBeenCalled();
+  });
+
+  it("should redirect to default URL /select-document when current_url not present", async () => {
+    const req = createOidcMockReq();
+    const { res } = getMockRes();
+
+    await returnFromAuthGetController(req, res);
+
     expect(res.redirect).toHaveBeenCalledWith("/select-document");
     expect(loggerErrorSpy).not.toHaveBeenCalled();
   });

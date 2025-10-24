@@ -1,47 +1,72 @@
 import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
+import { buildTemplateInputForDocuments } from "./utils/buildTemplateInputForDocuments";
+import {
+  DocumentsConfig,
+  documentsConfig as config,
+} from "./config/documentsConfig";
+import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 
-export function documentSelectorGetController(
-  req: Request,
-  res: Response,
-): void {
-  try {
-    res.render("select-document-form.njk", {
-      authenticated: isAuthenticated(req),
-    });
-  } catch (error) {
-    logger.error(error, "An error happened rendering document selection page");
-    res.render("500.njk");
-  }
+export interface DocumentSelectorConfig {
+  documentsConfig?: DocumentsConfig;
 }
 
-export function documentSelectorPostController(
-  req: Request,
-  res: Response,
-): void {
-  try {
-    const selectedDocument = req.body["select-document-choice"];
+export function documentSelectorGetController({
+  documentsConfig = config,
+}: DocumentSelectorConfig = {}): ExpressRouteFunction {
+  return function (req: Request, res: Response): void {
+    try {
+      const credentialType = req.query["credentialType"] as string;
+      const { route } = documentsConfig[credentialType] ?? {};
+      if (route) {
+        return res.redirect(route);
+      }
 
-    if (selectedDocument && selectedDocument === "nino") {
-      res.redirect(`/build-nino-document`);
-    } else if (selectedDocument && selectedDocument === "dbs") {
-      res.redirect(`/build-dbs-document`);
-    } else if (selectedDocument && selectedDocument === "vet") {
-      res.redirect(`/build-veteran-card-document`);
-    } else if (selectedDocument && selectedDocument === "mdl") {
-      res.redirect(`/build-mdl-document`);
-    } else {
-      res.render("select-document-form.njk", {
-        isInvalid: selectedDocument === undefined,
+      return res.render("select-document-form.njk", {
+        documents: buildTemplateInputForDocuments(documentsConfig),
         authenticated: isAuthenticated(req),
       });
+    } catch (error) {
+      logger.error(
+        error,
+        "An error happened rendering document selection page",
+      );
+      return res.render("500.njk");
     }
-  } catch (error) {
-    logger.error(
-      error,
-      "An error happened processing request to select document",
-    );
-    res.render("500.njk");
-  }
+  };
+}
+
+export function documentSelectorPostController({
+  documentsConfig = config,
+}: DocumentSelectorConfig = {}): ExpressRouteFunction {
+  return function (req: Request, res: Response): void {
+    try {
+      const selectedDocument = req.body["select-document-choice"];
+      if (!selectedDocument) {
+        return res.render("select-document-form.njk", {
+          error: true,
+          documents: buildTemplateInputForDocuments(documentsConfig),
+          authenticated: isAuthenticated(req),
+        });
+      }
+
+      const { route } = documentsConfig[selectedDocument] ?? {};
+      if (route) {
+        return res.redirect(route);
+      }
+
+      return res.render("select-document-form.njk", {
+        error: true,
+        documents: buildTemplateInputForDocuments(documentsConfig),
+        authenticated: isAuthenticated(req),
+      });
+    } catch (error) {
+      logger.error(
+        error,
+        "An error happened processing request to select document",
+      );
+      return res.render("500.njk");
+    }
+  };
 }
