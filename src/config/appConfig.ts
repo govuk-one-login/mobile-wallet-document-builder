@@ -68,42 +68,7 @@ export function getHardcodedWalletSubjectId(): string {
   return "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i";
 }
 
-export interface App {
-  path: string;
-  environment: string;
-  value: string;
-  text: string;
+export function getWalletApps(): string[] {
+  const walletApps = getEnvVarValue("WALLET_APPS");
+  return walletApps.split(",");
 }
-
-export const APPS: App[] = [
-  {
-    path: "https://mobile.build.account.gov.uk/wallet/",
-    environment: "build",
-    value: "govuk-build",
-    text: "GOV.UK App (Build)",
-  },
-  {
-    path: "https://mobile.staging.account.gov.uk/wallet/",
-    environment: "staging",
-    value: "govuk-staging",
-    text: "GOV.UK App (Staging)",
-  },
-  {
-    path: "https://mobile.dev.account.gov.uk/wallet-test/",
-    environment: "dev",
-    value: "wallet-test-dev",
-    text: "Wallet Test App (Dev)",
-  },
-  {
-    path: "https://mobile.build.account.gov.uk/wallet-test/",
-    environment: "build",
-    value: "wallet-test-build",
-    text: "Wallet Test App (Build)",
-  },
-  {
-    path: "https://mobile.staging.account.gov.uk/wallet-test/",
-    environment: "staging",
-    value: "wallet-test-staging",
-    text: "Wallet Test App (Staging)",
-  },
-];

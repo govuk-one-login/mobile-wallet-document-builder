@@ -11,6 +11,7 @@ import {
   getCookieExpiryInMilliseconds,
   getClientSigningKeyId,
   getHardcodedWalletSubjectId,
+  getWalletApps,
 } from "../../src/config/appConfig";
 
 describe("appConfig.ts", () => {
@@ -138,5 +139,16 @@ describe("appConfig.ts", () => {
     expect(getHardcodedWalletSubjectId()).toEqual(
       "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i",
     );
+  });
+
+  it("should throw an error if WALLET_APPS environment variable is not set", () => {
+    expect(() => getWalletApps()).toThrow(
+      new Error("WALLET_APPS environment variable not set"),
+    );
+  });
+
+  it("should return WALLET_APPS environment variable value as an array of strings if set", () => {
+    process.env.WALLET_APPS = "test-app1,test-app2";
+    expect(getWalletApps()).toEqual(["test-app1", "test-app2"]);
   });
 });

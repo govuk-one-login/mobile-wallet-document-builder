@@ -3,25 +3,31 @@ import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import {
-  getEnvironment,
+  getWalletApps,
   getCookieExpiryInMilliseconds,
 } from "../config/appConfig";
-import { getAppsByEnvironment } from "./utils/getAppsByEnvironment";
+import { getAppDisplayOptions } from "./utils/getAppDisplayOptions";
+import {
+  walletAppsConfig as config,
+  WalletAppsConfig,
+} from "../config/walletAppsConfig";
 
 export interface AppSelectorConfig {
-  environment?: string;
+  walletAppsConfig?: WalletAppsConfig;
+  walletApps?: string[];
   cookieExpiry?: number;
 }
 
 export function appSelectorGetController({
-  environment = getEnvironment(),
+  walletAppsConfig = config,
+  walletApps = getWalletApps(),
 }: AppSelectorConfig = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {
       const credentialType = req.query["credentialType"];
 
       res.render("select-app-form.njk", {
-        apps: getAppsByEnvironment(environment),
+        apps: getAppDisplayOptions(walletApps, walletAppsConfig),
         authenticated: isAuthenticated(req),
         credentialType,
       });
@@ -33,7 +39,8 @@ export function appSelectorGetController({
 }
 
 export function appSelectorPostController({
-  environment = getEnvironment(),
+  walletAppsConfig = config,
+  walletApps = getWalletApps(),
   cookieExpiry = getCookieExpiryInMilliseconds(),
 }: AppSelectorConfig = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
@@ -41,13 +48,13 @@ export function appSelectorPostController({
       const selectedApp = req.body["select-app-choice"];
       const credentialType = req.body["credentialType"];
 
-      const allowedApps = getAppsByEnvironment(environment);
-      const allowedAppValues = allowedApps.map((app) => app.value);
-
-      if (!selectedApp || !allowedAppValues.includes(selectedApp)) {
+      if (
+        !selectedApp ||
+        !Object.keys(walletAppsConfig).includes(selectedApp)
+      ) {
         return res.render("select-app-form.njk", {
           error: true,
-          apps: allowedApps,
+          apps: getAppDisplayOptions(walletApps, walletAppsConfig),
           authenticated: isAuthenticated(req),
           credentialType,
         });

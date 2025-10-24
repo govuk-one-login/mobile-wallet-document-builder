@@ -4,59 +4,64 @@ import {
   appSelectorPostController,
 } from "../../src/appSelector/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
+import { getAppDisplayOptions } from "../../src/appSelector/utils/getAppDisplayOptions";
+import { WalletAppsConfig } from "../../src/config/walletAppsConfig";
+
+jest.mock("../../src/appSelector/utils/getAppDisplayOptions");
+const mockGetAppDisplayOptions = getAppDisplayOptions as jest.MockedFunction<
+  typeof getAppDisplayOptions
+>;
+
+const walletAppsConfig: WalletAppsConfig = {
+  "test-app-1": {
+    url: "https://test-one.com/wallet/",
+    name: "Test App (1)",
+  },
+  "test-app-2": {
+    url: "https://test-two.com/wallet/",
+    name: "Test App (2)",
+  },
+  "test-app-3": {
+    url: "https://test-three.com/wallet/",
+    name: "Test App (3)",
+  },
+};
+
+const config: AppSelectorConfig = {
+  walletAppsConfig: walletAppsConfig,
+  walletApps: ["test-app-1", "test-app-3"],
+  cookieExpiry: 100000,
+};
+
+const expectedApps = [
+  {
+    text: "Test App (1)",
+    value: "test-app-1",
+  },
+  {
+    text: "Test App (3)",
+    value: "test-app-3",
+  },
+];
 
 describe("appSelectorGetController", () => {
-  it("should render select-app form with staging options when environment=staging", () => {
-    const config = {
-      environment: "staging",
-      cookieExpiry: 100000,
-    };
-    const req = getMockReq();
-    const { res } = getMockRes();
-
-    appSelectorGetController(config)(req, res);
-
-    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
-      apps: [
-        {
-          text: "GOV.UK App (Staging)",
-          value: "govuk-staging",
-        },
-        {
-          text: "Wallet Test App (Staging)",
-          value: "wallet-test-staging",
-        },
-      ],
-      authenticated: false,
-      credentialType: undefined,
-    });
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockGetAppDisplayOptions.mockReturnValue(expectedApps);
   });
 
-  it("should render select-app form with non-staging options when environment=build", () => {
-    const config = {
-      environment: "build",
-      cookieExpiry: 100000,
-    };
+  it("should render select-app form with 'test-app-1' and 'test-app-3' options when walletApps=['test-app-1', 'test-app-3']", () => {
     const req = getMockReq();
     const { res } = getMockRes();
 
     appSelectorGetController(config)(req, res);
 
+    expect(mockGetAppDisplayOptions).toHaveBeenCalledWith(
+      ["test-app-1", "test-app-3"],
+      walletAppsConfig,
+    );
     expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
-      apps: [
-        {
-          text: "GOV.UK App (Build)",
-          value: "govuk-build",
-        },
-        {
-          text: "Wallet Test App (Dev)",
-          value: "wallet-test-dev",
-        },
-        {
-          text: "Wallet Test App (Build)",
-          value: "wallet-test-build",
-        },
-      ],
+      apps: expectedApps,
       authenticated: false,
       credentialType: undefined,
     });
@@ -64,13 +69,9 @@ describe("appSelectorGetController", () => {
 });
 
 describe("appSelectorPostController", () => {
-  let config: AppSelectorConfig;
-
   beforeEach(() => {
-    config = {
-      environment: "test",
-      cookieExpiry: 100000,
-    };
+    jest.clearAllMocks();
+    mockGetAppDisplayOptions.mockReturnValue(expectedApps);
   });
 
   it("should re-render select-app form with a validation error when no app is selected", () => {
@@ -79,22 +80,13 @@ describe("appSelectorPostController", () => {
 
     appSelectorPostController(config)(req, res);
 
+    expect(mockGetAppDisplayOptions).toHaveBeenCalledWith(
+      ["test-app-1", "test-app-3"],
+      walletAppsConfig,
+    );
     expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
       error: true,
-      apps: [
-        {
-          text: "GOV.UK App (Build)",
-          value: "govuk-build",
-        },
-        {
-          text: "Wallet Test App (Dev)",
-          value: "wallet-test-dev",
-        },
-        {
-          text: "Wallet Test App (Build)",
-          value: "wallet-test-build",
-        },
-      ],
+      apps: expectedApps,
       authenticated: false,
       credentialType: undefined,
     });
@@ -112,22 +104,13 @@ describe("appSelectorPostController", () => {
 
     appSelectorPostController(config)(req, res);
 
+    expect(mockGetAppDisplayOptions).toHaveBeenCalledWith(
+      ["test-app-1", "test-app-3"],
+      walletAppsConfig,
+    );
     expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
       error: true,
-      apps: [
-        {
-          text: "GOV.UK App (Build)",
-          value: "govuk-build",
-        },
-        {
-          text: "Wallet Test App (Dev)",
-          value: "wallet-test-dev",
-        },
-        {
-          text: "Wallet Test App (Build)",
-          value: "wallet-test-build",
-        },
-      ],
+      apps: expectedApps,
       authenticated: false,
       credentialType: undefined,
     });
@@ -138,14 +121,14 @@ describe("appSelectorPostController", () => {
   it("should set the app cookie to the selected value with the configured expiry", () => {
     const req = getMockReq({
       body: {
-        "select-app-choice": "govuk-build",
+        "select-app-choice": "test-app-1",
       },
     });
     const { res } = getMockRes();
 
     appSelectorPostController(config)(req, res);
 
-    expect(res.cookie).toHaveBeenCalledWith("app", "govuk-build", {
+    expect(res.cookie).toHaveBeenCalledWith("app", "test-app-1", {
       httpOnly: true,
       maxAge: 100000,
     });
@@ -154,7 +137,7 @@ describe("appSelectorPostController", () => {
   it("should redirect to /select-document with credentialType when provided", () => {
     const req = getMockReq({
       body: {
-        "select-app-choice": "govuk-build",
+        "select-app-choice": "test-app-1",
         credentialType: "SocialSecurityCredential",
       },
     });
@@ -170,7 +153,7 @@ describe("appSelectorPostController", () => {
   it("should redirect to /select-document without credentialType when not provided", () => {
     const req = getMockReq({
       body: {
-        "select-app-choice": "govuk-build",
+        "select-app-choice": "test-app-1",
       },
     });
     const { res } = getMockRes();
