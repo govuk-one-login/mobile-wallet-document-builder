@@ -1,5 +1,5 @@
 import { CredentialOffer } from "../types/CredentialOfferResponse";
-import { App } from "../../config/appConfig";
+import { WalletAppsConfig } from "../../config/walletAppsConfig";
 
 const WALLET_URL_PATH_SPLITTER = "account.gov.uk/wallet/";
 const CREDENTIAL_OFFER_SPLITTER = "credential_offer=";
@@ -47,15 +47,18 @@ function replacePreAuthorizedCodeWithError(
 export function customiseCredentialOfferUrl(
   credentialOfferUrl: string,
   selectedApp: string,
-  allApps: App[],
+  walletAppsConfig: WalletAppsConfig,
+  walletApps: string[],
   errorScenario: string | undefined,
 ) {
-  const app = allApps.find((app) => app.value === selectedApp);
-  if (app === undefined) {
+  if (!walletApps.includes(selectedApp)) {
     throw new Error("Unknown app selected");
   }
 
-  const newCredentialOfferUrl = replacePath(credentialOfferUrl, app.path);
+  const newCredentialOfferUrl = replacePath(
+    credentialOfferUrl,
+    walletAppsConfig[selectedApp].url,
+  );
 
   if (errorScenario) {
     return replacePreAuthorizedCodeWithError(
