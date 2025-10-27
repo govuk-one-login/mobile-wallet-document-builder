@@ -3,11 +3,10 @@ import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import {
-  apps,
   getEnvironment,
   getCookieExpiryInMilliseconds,
 } from "../config/appConfig";
-import { nonStagingApps, stagingApps } from "./views/apps";
+import { getAppsByEnvironment } from "./utils/getAppsByEnvironment";
 
 export interface AppSelectorConfig {
   environment?: string;
@@ -16,13 +15,15 @@ export interface AppSelectorConfig {
 
 export function appSelectorGetController({
   environment = getEnvironment(),
-} = {}): ExpressRouteFunction {
+}: AppSelectorConfig = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {
+      const credentialType = req.query["credentialType"];
+
       res.render("select-app-form.njk", {
-        apps:
-          environment === "staging" ? stagingApps(apps) : nonStagingApps(apps),
+        apps: getAppsByEnvironment(environment),
         authenticated: isAuthenticated(req),
+        credentialType,
       });
     } catch (error) {
       logger.error(error, "An error happened rendering app selection page");
@@ -38,23 +39,30 @@ export function appSelectorPostController({
   return function (req: Request, res: Response): void {
     try {
       const selectedApp = req.body["select-app-choice"];
+      const credentialType = req.body["credentialType"];
 
-      if (selectedApp) {
-        res.cookie("app", selectedApp, {
-          httpOnly: true,
-          maxAge: cookieExpiry,
-        });
-        res.redirect(`/select-document`);
-      } else {
-        res.render("select-app-form.njk", {
-          isInvalid: selectedApp === undefined,
-          apps:
-            environment === "staging"
-              ? stagingApps(apps)
-              : nonStagingApps(apps),
+      const allowedApps = getAppsByEnvironment(environment);
+      const allowedAppValues = allowedApps.map((app) => app.value);
+
+      if (!selectedApp || !allowedAppValues.includes(selectedApp)) {
+        return res.render("select-app-form.njk", {
+          error: true,
+          apps: allowedApps,
           authenticated: isAuthenticated(req),
+          credentialType,
         });
       }
+
+      res.cookie("app", selectedApp, {
+        httpOnly: true,
+        maxAge: cookieExpiry,
+      });
+
+      const redirectUrl = credentialType
+        ? `/select-document?credentialType=${credentialType}`
+        : `/select-document`;
+
+      res.redirect(redirectUrl);
     } catch (error) {
       logger.error(error, "An error happened selecting app");
       res.render("500.njk");
