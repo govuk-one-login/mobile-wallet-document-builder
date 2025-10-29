@@ -4,130 +4,163 @@ import {
   appSelectorPostController,
 } from "../../src/appSelector/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
+import { buildTemplateInputForApps } from "../../src/appSelector/utils/buildTemplateInputForApps";
+import { WalletAppsConfig } from "../../src/config/walletAppsConfig";
 
-describe("controller.ts", () => {
-  let config: AppSelectorConfig;
+jest.mock("../../src/appSelector/utils/buildTemplateInputForApps");
+const mockBuildTemplateInputForApps =
+  buildTemplateInputForApps as jest.MockedFunction<
+    typeof buildTemplateInputForApps
+  >;
 
-  beforeEach(async () => {
-    config = {
-      environment: "test",
-      cookieExpiry: 100000,
-    };
-  });
+const walletAppsConfig: WalletAppsConfig = {
+  "test-app-1": {
+    url: "https://test-one.com/wallet/",
+    name: "Test App (1)",
+  },
+  "test-app-2": {
+    url: "https://test-two.com/wallet/",
+    name: "Test App (2)",
+  },
+  "test-app-3": {
+    url: "https://test-three.com/wallet/",
+    name: "Test App (3)",
+  },
+};
 
-  afterEach(() => {
+const config: AppSelectorConfig = {
+  walletAppsConfig: walletAppsConfig,
+  walletApps: ["test-app-1", "test-app-3"],
+  cookieExpiry: 100000,
+};
+
+const mockApps = [
+  {
+    text: "Test App (1)",
+    value: "test-app-1",
+  },
+  {
+    text: "Test App (3)",
+    value: "test-app-3",
+  },
+];
+
+describe("appSelectorGetController", () => {
+  beforeEach(() => {
     jest.clearAllMocks();
+    mockBuildTemplateInputForApps.mockReturnValue(mockApps);
   });
 
-  it("should render the form for selecting an app when user is not authenticated (no id_token in cookies)", async () => {
-    const req = getMockReq({ cookies: {} });
-    const { res } = getMockRes();
-
-    await appSelectorGetController(config)(req, res);
-
-    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
-      authenticated: false,
-      apps: expect.any(Array),
-    });
-  });
-
-  it("should render the form for selecting an app when user is authenticated", async () => {
-    const req = getMockReq({
-      cookies: {
-        id_token: "id_token",
-      },
-    });
-    const { res } = getMockRes();
-
-    await appSelectorGetController(config)(req, res);
-
-    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
-      authenticated: true,
-      apps: expect.any(Array),
-    });
-  });
-
-  it("should redirect to the page for selecting a document", async () => {
-    const req = getMockReq({
-      body: {
-        "select-app-choice": "govuk-build",
-      },
-    });
-    const { res } = getMockRes();
-
-    await appSelectorPostController(config)(req, res);
-
-    expect(res.cookie).toHaveBeenCalledWith("app", "govuk-build", {
-      httpOnly: true,
-      maxAge: 100000,
-    });
-    expect(res.redirect).toHaveBeenCalledWith("/select-document");
-  });
-
-  it("should re-render the form for selecting an app when no choice was selected", async () => {
+  it("should render select-app form with 'test-app-1' and 'test-app-3' options when walletApps=['test-app-1','test-app-3']", () => {
     const req = getMockReq();
     const { res } = getMockRes();
 
-    await appSelectorPostController(config)(req, res);
+    appSelectorGetController(config)(req, res);
 
+    expect(mockBuildTemplateInputForApps).toHaveBeenCalledWith(
+      ["test-app-1", "test-app-3"],
+      walletAppsConfig,
+    );
     expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
-      isInvalid: true,
+      apps: mockApps,
       authenticated: false,
-      apps: expect.any(Array),
+      credentialType: undefined,
+    });
+  });
+});
+
+describe("appSelectorPostController", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockBuildTemplateInputForApps.mockReturnValue(mockApps);
+  });
+
+  it("should re-render select-app form with a validation error when no app is selected", () => {
+    const req = getMockReq();
+    const { res } = getMockRes();
+
+    appSelectorPostController(config)(req, res);
+
+    expect(mockBuildTemplateInputForApps).toHaveBeenCalledWith(
+      ["test-app-1", "test-app-3"],
+      walletAppsConfig,
+    );
+    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
+      error: true,
+      apps: mockApps,
+      authenticated: false,
+      credentialType: undefined,
     });
     expect(res.redirect).not.toHaveBeenCalled();
     expect(res.cookie).not.toHaveBeenCalled();
   });
 
-  it("should call render function with staging apps only when environment is staging", async () => {
-    const req = getMockReq({ cookies: {} });
+  it("should re-render select-app form with a validation error when app selected is invalid", () => {
+    const req = getMockReq({
+      body: {
+        "select-app-choice": "not-a-valid-app-option",
+      },
+    });
     const { res } = getMockRes();
-    const config: AppSelectorConfig = {
-      environment: "build",
-    };
 
-    await appSelectorGetController(config)(req, res);
+    appSelectorPostController(config)(req, res);
 
+    expect(mockBuildTemplateInputForApps).toHaveBeenCalledWith(
+      ["test-app-1", "test-app-3"],
+      walletAppsConfig,
+    );
     expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
+      error: true,
+      apps: mockApps,
       authenticated: false,
-      apps: [
-        {
-          text: "GOV.UK App (Build)",
-          value: "govuk-build",
-        },
-        {
-          text: "Wallet Test App (Dev)",
-          value: "wallet-test-dev",
-        },
-        {
-          text: "Wallet Test App (Build)",
-          value: "wallet-test-build",
-        },
-      ],
+      credentialType: undefined,
+    });
+    expect(res.redirect).not.toHaveBeenCalled();
+    expect(res.cookie).not.toHaveBeenCalled();
+  });
+
+  it("should set the app cookie to the selected value with the configured expiry", () => {
+    const req = getMockReq({
+      body: {
+        "select-app-choice": "test-app-1",
+      },
+    });
+    const { res } = getMockRes();
+
+    appSelectorPostController(config)(req, res);
+
+    expect(res.cookie).toHaveBeenCalledWith("app", "test-app-1", {
+      httpOnly: true,
+      maxAge: 100000,
     });
   });
 
-  it("should call render function with non-staging apps only when environment is NOT staging", async () => {
-    const req = getMockReq({ cookies: {} });
-    const { res } = getMockRes();
-    const config: AppSelectorConfig = {
-      environment: "staging",
-    };
-
-    await appSelectorGetController(config)(req, res);
-
-    expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
-      authenticated: false,
-      apps: [
-        {
-          text: "GOV.UK App (Staging)",
-          value: "govuk-staging",
-        },
-        {
-          text: "Wallet Test App (Staging)",
-          value: "wallet-test-staging",
-        },
-      ],
+  it("should redirect to /select-document with credentialType when provided", () => {
+    const req = getMockReq({
+      body: {
+        "select-app-choice": "test-app-1",
+        credentialType: "SocialSecurityCredential",
+      },
     });
+    const { res } = getMockRes();
+
+    appSelectorPostController(config)(req, res);
+
+    expect(res.redirect).toHaveBeenCalledWith(
+      "/select-document?credentialType=SocialSecurityCredential",
+    );
+  });
+
+  it("should redirect to /select-document without credentialType when not provided", () => {
+    const req = getMockReq({
+      body: {
+        "select-app-choice": "test-app-1",
+      },
+    });
+    const { res } = getMockRes();
+
+    appSelectorPostController(config)(req, res);
+
+    expect(res.redirect).toHaveBeenCalledWith("/select-document");
   });
 });

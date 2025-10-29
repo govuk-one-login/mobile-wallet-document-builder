@@ -13,7 +13,8 @@ describe("revokeService.ts", () => {
   });
 
   it("should send POST request to the CRI to revoke credentials", async () => {
-    const expectedRevokeUrl = "https://test-cri.example.com/revoke/ABC123DEF567";
+    const expectedRevokeUrl =
+      "https://test-cri.example.com/revoke/ABC123DEF567";
     const mockCriResponse = {
       status: 202,
     } as AxiosResponse;

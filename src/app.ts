@@ -22,6 +22,7 @@ import { credentialViewerRouter } from "./credentialViewer/router";
 import { veteranCardDocumentBuilderRouter } from "./veteranCardDocumentBuilder/router";
 import { mdlDocumentBuilderRouter } from "./mdlDocumentBuilder/router";
 import { revokeRouter } from "./revoke/router";
+import { refreshRouter } from "./refresh/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/appSelector/views"),
@@ -32,6 +33,7 @@ const APP_VIEWS = [
   path.join(__dirname, "../src/loggedOut/views"),
   path.join(__dirname, "../src/mdlDocumentBuilder/views"),
   path.join(__dirname, "../src/ninoDocumentBuilder/views"),
+  path.join(__dirname, "../src/refresh/views"),
   path.join(__dirname, "../src/revoke/views"),
   path.join(__dirname, "../src/veteranCardDocumentBuilder/views"),
   path.join(__dirname, "../src/views"),
@@ -68,6 +70,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(documentRouter);
   app.use(loggedOutRouter);
   app.use(proofJwtRouter);
+  app.use(refreshRouter);
   app.use(revokeRouter);
   app.use(stsStubAccessTokenRouter);
   app.use(stsStubJwksRouter);
