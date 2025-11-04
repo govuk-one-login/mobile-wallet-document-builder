@@ -25,37 +25,27 @@ import { revokeRouter } from "./revoke/router";
 import { refreshRouter } from "./refresh/router";
 
 const APP_VIEWS = [
-  path.join(__dirname, "../src/views"),
-  path.join(__dirname, "../src/credentialOfferViewer/views"),
-  path.join(__dirname, "../src/dbsDocumentBuilder/views"),
-  path.join(__dirname, "../src/ninoDocumentBuilder/views"),
   path.join(__dirname, "../src/appSelector/views"),
-  path.join(__dirname, "../src/dataModelSelector/views"),
-  path.join(__dirname, "../src/documentSelector/views"),
-  path.join(__dirname, "../src/loggedOut/views"),
+  path.join(__dirname, "../src/credentialOfferViewer/views"),
   path.join(__dirname, "../src/credentialViewer/views"),
-  path.join(__dirname, "../src/veteranCardDocumentBuilder/views"),
+  path.join(__dirname, "../src/documentSelector/views"),
+  path.join(__dirname, "../src/dbsDocumentBuilder/views"),
+  path.join(__dirname, "../src/loggedOut/views"),
   path.join(__dirname, "../src/mdlDocumentBuilder/views"),
-  path.join(__dirname, "../src/revoke/views"),
+  path.join(__dirname, "../src/ninoDocumentBuilder/views"),
   path.join(__dirname, "../src/refresh/views"),
+  path.join(__dirname, "../src/revoke/views"),
+  path.join(__dirname, "../src/veteranCardDocumentBuilder/views"),
+  path.join(__dirname, "../src/views"),
   path.resolve("node_modules/govuk-frontend/dist"),
 ];
 
 export async function createApp(): Promise<express.Application> {
   const app: express.Application = express();
+
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
-  app.use(loggerMiddleware);
-  app.use((req, res, next) => {
-    req.log = req.log.child({
-      trace: res.locals.trace,
-    });
-    next();
-  });
-  app.use(express.static(path.join(__dirname, "public")));
-  app.use("/public", express.static(path.join(__dirname, "public")));
-  app.use(express.static(path.join(__dirname, "assets")));
-  app.use("/assets", express.static(path.join(__dirname, "assets")));
+
   app.set(
     "view engine",
     nunjucks.configure(APP_VIEWS, {
@@ -63,24 +53,39 @@ export async function createApp(): Promise<express.Application> {
       noCache: true,
     }),
   );
+
+  app.use("/public", express.static(path.join(__dirname, "public")));
+  app.use("/assets", express.static(path.join(__dirname, "assets")));
+
+  app.use(loggerMiddleware);
+  app.use((req, res, next) => {
+    req.log = req.log.child({
+      trace: res.locals.trace,
+    });
+    next();
+  });
   app.use(noCacheMiddleware);
-  app.use(revokeRouter);
-  app.use(refreshRouter);
-  app.use(auth(getOIDCConfig()));
-  app.use(returnFromAuthRouter);
+
   app.use(appSelectorRouter);
-  app.use(documentSelectorRouter);
-  app.use(dbsDocumentBuilderRouter);
-  app.use(ninoDocumentBuilderRouter);
-  app.use(credentialOfferViewerRouter);
   app.use(documentRouter);
-  app.use(stsStubAccessTokenRouter);
-  app.use(stsStubJwksRouter);
-  app.use(logoutRouter);
   app.use(loggedOutRouter);
   app.use(proofJwtRouter);
+  app.use(refreshRouter);
+  app.use(revokeRouter);
+  app.use(stsStubAccessTokenRouter);
+  app.use(stsStubJwksRouter);
+
+  app.use(auth(getOIDCConfig()));
+
+  app.use(credentialOfferViewerRouter);
   app.use(credentialViewerRouter);
-  app.use(veteranCardDocumentBuilderRouter);
+  app.use(dbsDocumentBuilderRouter);
+  app.use(documentSelectorRouter);
+  app.use(logoutRouter);
   app.use(mdlDocumentBuilderRouter);
+  app.use(ninoDocumentBuilderRouter);
+  app.use(returnFromAuthRouter);
+  app.use(veteranCardDocumentBuilderRouter);
+
   return app;
 }
