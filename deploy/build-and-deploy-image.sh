@@ -2,7 +2,7 @@
 
 set -eu
 
-if [ $# -ge 2 ]
+if [[ $# -ge 2 ]]
 then
     TAG="$1"
     AWS_PROFILE="$2"
