@@ -17,7 +17,7 @@
     "format": "prettier --ignore-path .gitignore --write \"*/**/*.{ts,json}\"",
     "localstack:up": "docker compose -f docker-compose.yml up --build -d --wait",
     "localstack:down": "docker compose -f docker-compose.yml down",
-    "configure-stub": "npm run localstack:down && npm run localstack:up && ./configure_auth_stub.sh"
+    "configure-stub": "npm run localstack:down && npm run localstack:up && ./configure_auth_stub.sh \"$@\""
   },
   "author": "",
   "license": "MIT",
