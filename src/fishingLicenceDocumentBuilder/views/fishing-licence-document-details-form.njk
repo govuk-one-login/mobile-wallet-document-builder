@@ -41,6 +41,18 @@
                 "spellcheck": false,
                 "value": "John"
             }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Last name",
+                    "classes": "govuk-label--s"
+                },
+                "classes": "govuk-!-width-one-third",
+                "id": "last_name",
+                "name": "last_name",
+                "autocomplete": "family-name",
+                "spellcheck": false,
+                "value": "Fisher"
+            }) }}
             {{ govukSelect({
                 "id": "portrait",
                 "name": "portrait",
@@ -120,18 +132,6 @@
                     }
                 ]
             }) }}
-            {{ govukInput({
-                "label": {
-                    "text": "Last name",
-                    "classes": "govuk-label--s"
-                },
-                "classes": "govuk-!-width-one-third",
-                "id": "last_name",
-                "name": "last_name",
-                "autocomplete": "family-name",
-                "spellcheck": false,
-                "value": "Fisher"
-            }) }}
             {% if errors['birth_date'] %}
                 {% set dobError = { text: errors['birth_date'] } %}
             {% endif %}
@@ -163,12 +163,12 @@
                 }
                 ]
             }) }}
-            {% if errors['issuance_date'] %}
-                {% set issuanceError = { text: errors['issuance_date'] } %}
+            {% if errors['issue_date'] %}
+                {% set issuanceError = { text: errors['issue_date'] } %}
             {% endif %}
             {{ govukDateInput({
                 id: "issuance_date",
-                namePrefix: "issuance",
+                namePrefix: "issue",
                 fieldset: {
                 legend: {
                 text: "Issuance date",
@@ -177,9 +177,9 @@
                 },
                 "errorMessage": issuanceError,
                 items: [
-                { classes: "govuk-input--width-2", name: "day", value: defaultIssuanceDate.day },
-                { classes: "govuk-input--width-2", name: "month", value: defaultIssuanceDate.month },
-                { classes: "govuk-input--width-3", name: "year", value: defaultIssuanceDate.year}
+                { classes: "govuk-input--width-2", name: "day", value: defaultIssueDate.day },
+                { classes: "govuk-input--width-2", name: "month", value: defaultIssueDate.month },
+                { classes: "govuk-input--width-3", name: "year", value: defaultIssueDate.year}
                 ]
             }) }}
             {{ govukInput({

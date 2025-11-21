@@ -94,7 +94,7 @@ export async function mdlDocumentBuilderPostController(
   } catch (error) {
     logger.error(
       error,
-      "An error happened processing Fishing Licence document request",
+      "An error happened processing Driving Licence document request",
     );
     res.render("500.njk");
   }
