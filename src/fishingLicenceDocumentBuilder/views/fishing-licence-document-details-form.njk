@@ -163,12 +163,12 @@
                 }
                 ]
             }) }}
-            {% if errors['issuance_date'] %}
-                {% set issuanceError = { text: errors['issuance_date'] } %}
+            {% if errors['issue_date'] %}
+                {% set issuanceError = { text: errors['issue_date'] } %}
             {% endif %}
             {{ govukDateInput({
                 id: "issuance_date",
-                namePrefix: "issuance",
+                namePrefix: "issue",
                 fieldset: {
                 legend: {
                 text: "Issuance date",
@@ -177,9 +177,9 @@
                 },
                 "errorMessage": issuanceError,
                 items: [
-                { classes: "govuk-input--width-2", name: "day", value: defaultIssuanceDate.day },
-                { classes: "govuk-input--width-2", name: "month", value: defaultIssuanceDate.month },
-                { classes: "govuk-input--width-3", name: "year", value: defaultIssuanceDate.year}
+                { classes: "govuk-input--width-2", name: "day", value: defaultIssueDate.day },
+                { classes: "govuk-input--width-2", name: "month", value: defaultIssueDate.month },
+                { classes: "govuk-input--width-3", name: "year", value: defaultIssueDate.year}
                 ]
             }) }}
             {{ govukInput({
