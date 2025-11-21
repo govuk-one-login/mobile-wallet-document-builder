@@ -21,6 +21,7 @@ import { proofJwtRouter } from "./proofJwt/router";
 import { credentialViewerRouter } from "./credentialViewer/router";
 import { veteranCardDocumentBuilderRouter } from "./veteranCardDocumentBuilder/router";
 import { mdlDocumentBuilderRouter } from "./mdlDocumentBuilder/router";
+import { fishingLicenceDocumentBuilderRouter } from "./fishingLicenceDocumentBuilder/router";
 import { revokeRouter } from "./revoke/router";
 import { refreshRouter } from "./refresh/router";
 
@@ -32,6 +33,7 @@ const APP_VIEWS = [
   path.join(__dirname, "../src/dbsDocumentBuilder/views"),
   path.join(__dirname, "../src/loggedOut/views"),
   path.join(__dirname, "../src/mdlDocumentBuilder/views"),
+  path.join(__dirname, "../src/fishingLicenceDocumentBuilder/views"),
   path.join(__dirname, "../src/ninoDocumentBuilder/views"),
   path.join(__dirname, "../src/refresh/views"),
   path.join(__dirname, "../src/revoke/views"),
@@ -83,6 +85,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(documentSelectorRouter);
   app.use(logoutRouter);
   app.use(mdlDocumentBuilderRouter);
+  app.use(fishingLicenceDocumentBuilderRouter);
   app.use(ninoDocumentBuilderRouter);
   app.use(returnFromAuthRouter);
   app.use(veteranCardDocumentBuilderRouter);

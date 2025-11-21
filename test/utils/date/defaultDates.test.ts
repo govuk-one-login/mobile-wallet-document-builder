@@ -1,7 +1,7 @@
 import {
   getDateParts,
   getDefaultDates,
-} from "../../../src/mdlDocumentBuilder/helpers/defaultDates";
+} from "../../../src/utils/date/defaultDates";
 
 describe("getDateParts", () => {
   it("should return zero-padded day and month, and four-digit year", () => {

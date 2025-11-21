@@ -1,6 +1,6 @@
 import { MdlRequestBody } from "../types/MdlRequestBody";
 import { DrivingPrivilege } from "../types/DrivingPrivilege";
-import { formatDate } from "./dateFormatter";
+import { formatDate } from "../../utils/date";
 
 interface BuildDrivingPrivilegesParams {
   vehicleCategoryCodes: string[];

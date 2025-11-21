@@ -1,4 +1,5 @@
-import { MdlRequestBody } from "../types/MdlRequestBody";
+import { MdlRequestBody } from "../../mdlDocumentBuilder/types/MdlRequestBody";
+import { FishingLicenceRequestBody } from "../../fishingLicenceDocumentBuilder/types/FishingLicenceRequestBody";
 
 /**
  * Validates the date fields in a request body and returns error messages for any invalid dates.
@@ -21,7 +22,7 @@ import { MdlRequestBody } from "../types/MdlRequestBody";
  * validateDateFields(body); // { birth_date: "Enter a valid birth date" }
  */
 export function validateDateFields(
-  body: MdlRequestBody,
+  body: MdlRequestBody | FishingLicenceRequestBody,
 ): Record<string, string> {
   const errors: Record<string, string> = {};
 
