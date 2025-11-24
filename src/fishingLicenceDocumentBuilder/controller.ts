@@ -77,7 +77,7 @@ export async function fishingLicenceDocumentBuilderPostController(
     const { photoBuffer, mimeType } = getPhoto(body.portrait);
     await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
     const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
-    const data = buildMdocDataFromRequestBody(body, s3Uri);
+    const data = buildFishingLicenceDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
       itemId,
       documentId: data.document_number,
@@ -101,7 +101,7 @@ export async function fishingLicenceDocumentBuilderPostController(
   }
 }
 
-function buildMdocDataFromRequestBody(
+function buildFishingLicenceDataFromRequestBody(
   body: FishingLicenceRequestBody,
   s3Uri: string,
 ): FishingLicenceData {
