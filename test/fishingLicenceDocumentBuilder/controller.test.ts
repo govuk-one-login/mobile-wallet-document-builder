@@ -64,7 +64,7 @@ describe("controller.ts", () => {
             year: "2035",
           },
           errorChoices: ERROR_CHOICES,
-          fishingLicenceNumber: "EDWAR550000SE5RO",
+          fishingLicenceNumber: "FLN550000",
         },
       );
     });
@@ -90,7 +90,7 @@ describe("controller.ts", () => {
             year: "2035",
           },
           errorChoices: ERROR_CHOICES,
-          fishingLicenceNumber: "EDWAR550000SE5RO",
+          fishingLicenceNumber: "FLN550000",
         },
       );
     });
@@ -178,7 +178,7 @@ describe("controller.ts", () => {
 
         expect(saveDocument).toHaveBeenCalledWith("testTable", {
           itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-          documentId: "EDWAR550000SE5RO",
+          documentId: "FLN550000",
           vcType: "uk.gov.account.mobile.example-cri.fishinglicence.1",
           timeToLive: 1748736000,
           data: {
@@ -189,7 +189,7 @@ describe("controller.ts", () => {
             issue_date: "01-04-2024",
             expiry_date: "01-04-2029",
             issuing_country: "GB",
-            document_number: "EDWAR550000SE5RO",
+            document_number: "FLN550000",
             type_of_fish: "Trout",
             number_of_fishing_rods: "2",
             credentialTtlMinutes: 43200,
@@ -278,7 +278,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            fishingLicenceNumber: "EDWAR550000SE5RO",
+            fishingLicenceNumber: "FLN550000",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -314,7 +314,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            fishingLicenceNumber: "EDWAR550000SE5RO",
+            fishingLicenceNumber: "FLN550000",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -350,7 +350,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            fishingLicenceNumber: "EDWAR550000SE5RO",
+            fishingLicenceNumber: "FLN550000",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -386,7 +386,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            fishingLicenceNumber: "EDWAR550000SE5RO",
+            fishingLicenceNumber: "FLN550000",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -422,7 +422,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            fishingLicenceNumber: "EDWAR550000SE5RO",
+            fishingLicenceNumber: "FLN550000",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -458,7 +458,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            fishingLicenceNumber: "EDWAR550000SE5RO",
+            fishingLicenceNumber: "FLN550000",
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -484,7 +484,7 @@ export function buildFishingLicenceRequestBody(
     "expiry-month": "04",
     "expiry-year": "2029",
     issuing_country: "GB",
-    document_number: "EDWAR550000SE5RO",
+    document_number: "FLN550000",
     type_of_fish: "Trout",
     fishing_rods: "2",
     credentialTtl: "43200",

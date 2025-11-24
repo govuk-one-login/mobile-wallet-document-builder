@@ -34,7 +34,7 @@ export async function fishingLicenceDocumentBuilderGetController(
 ): Promise<void> {
   try {
     const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-    fishingLicenceNumber = "EDWAR" + getRandomIntInclusive() + "SE5RO";
+    fishingLicenceNumber = "FLN" + getRandomIntInclusive();
     res.render("fishing-licence-document-details-form.njk", {
       defaultIssueDate,
       defaultExpiryDate,
