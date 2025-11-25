@@ -120,7 +120,7 @@ function buildFishingLicenceDataFromRequestBody(
     issuing_country: body.issuing_country,
     document_number: body.document_number,
     type_of_fish: body.type_of_fish,
-    number_of_fishing_rods: body.fishing_rods,
+    number_of_fishing_rods: body.number_of_fishing_rods,
     credentialTtlMinutes: Number(body.credentialTtl),
   };
 }

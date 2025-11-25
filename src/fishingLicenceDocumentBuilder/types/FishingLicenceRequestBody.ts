@@ -14,7 +14,7 @@ export interface FishingLicenceRequestBody {
   issuing_country: string;
   document_number: string;
   type_of_fish: string;
-  fishing_rods: string;
+  number_of_fishing_rods: string;
   credentialTtl: string;
   throwError: string;
 }

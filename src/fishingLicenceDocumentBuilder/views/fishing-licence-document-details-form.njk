@@ -18,37 +18,37 @@
             }
             }) %}
             {{ govukInput({
-                "label": {
-                    "text": "Document number",
-                    "classes": "govuk-label--s"
-                },
-                "classes": "govuk-!-width-one-third",
-                "id": "document_number",
-                "name": "document_number",
-                "autocomplete": "document_number",
-                "spellcheck": false,
-                "value": fishingLicenceNumber
-            }) }}
+                        "label": {
+                        "text": "Document number",
+                        "classes": "govuk-label--s"
+                        },
+                        "classes": "govuk-!-width-one-third",
+                        "id": "document_number",
+                        "name": "document_number",
+                        "autocomplete": "document_number",
+                        "spellcheck": false,
+                        "value": fishingLicenceNumber
+                        }) }}
             {{ govukInput({
                 "label": {
-                    "text": "First name",
+                    "text": "Given name",
                     "classes": "govuk-label--s"
                 },
                 "classes": "govuk-!-width-one-third",
-                "id": "first_name",
-                "name": "first_name",
+                "id": "given_name",
+                "name": "given_name",
                 "autocomplete": "given-name",
                 "spellcheck": false,
                 "value": "John"
             }) }}
             {{ govukInput({
                 "label": {
-                    "text": "Last name",
+                    "text": "Family name",
                     "classes": "govuk-label--s"
                 },
                 "classes": "govuk-!-width-one-third",
-                "id": "last_name",
-                "name": "last_name",
+                "id": "family_name",
+                "name": "family_name",
                 "autocomplete": "family-name",
                 "spellcheck": false,
                 "value": "Fisher"
@@ -136,60 +136,60 @@
                 {% set dobError = { text: errors['birth_date'] } %}
             {% endif %}
             {{ govukDateInput({
-                "id": "birth_date",
-                "namePrefix": "birth",
-                "fieldset": {
-                "legend": {
-                "text": "Date of birth",
-                "classes": "govuk-fieldset__legend--s"
-                }
-                },
-                "errorMessage": dobError,
-                "items": [
-                {
-                "classes": "govuk-input--width-2",
-                "name": "day",
-                "value": "15"
-                },
-                {
-                "classes": "govuk-input--width-2",
-                "name": "month",
-                "value": "08"
-                },
-                {
-                "classes": "govuk-input--width-3",
-                "name": "year",
-                "value": "1980"
-                }
-                ]
-            }) }}
+                        "id": "birth_date",
+                        "namePrefix": "birth",
+                        "fieldset": {
+                        "legend": {
+                        "text": "Date of birth",
+                        "classes": "govuk-fieldset__legend--s"
+                        }
+                        },
+                        "errorMessage": dobError,
+                        "items": [
+                        {
+                        "classes": "govuk-input--width-2",
+                        "name": "day",
+                        "value": "15"
+                        },
+                        {
+                        "classes": "govuk-input--width-2",
+                        "name": "month",
+                        "value": "08"
+                        },
+                        {
+                        "classes": "govuk-input--width-3",
+                        "name": "year",
+                        "value": "1980"
+                        }
+                        ]
+                        }) }}
             {% if errors['issue_date'] %}
                 {% set issuanceError = { text: errors['issue_date'] } %}
             {% endif %}
             {{ govukDateInput({
-                id: "issuance_date",
-                namePrefix: "issue",
-                fieldset: {
-                legend: {
-                text: "Issuance date",
-                classes: "govuk-fieldset__legend--s"
-                }
-                },
-                "errorMessage": issuanceError,
-                items: [
-                { classes: "govuk-input--width-2", name: "day", value: defaultIssueDate.day },
-                { classes: "govuk-input--width-2", name: "month", value: defaultIssueDate.month },
-                { classes: "govuk-input--width-3", name: "year", value: defaultIssueDate.year}
-                ]
-            }) }}
+                        id: "issuance_date",
+                        namePrefix: "issue",
+                        fieldset: {
+                        legend: {
+                        text: "Issuance date",
+                        classes: "govuk-fieldset__legend--s"
+                        }
+                        },
+                        "errorMessage": issuanceError,
+                        items: [
+                        { classes: "govuk-input--width-2", name: "day", value: defaultIssueDate.day },
+                        { classes: "govuk-input--width-2", name: "month", value: defaultIssueDate.month },
+                        { classes: "govuk-input--width-3", name: "year", value: defaultIssueDate.year}
+                        ]
+                        }) }}
             {{ govukInput({
                 "label": {
-                    "text": "Issuer's location (country)",
+                    "text": "Issuing country",
                     "classes": "govuk-label--s"
                 },
                 "classes": "govuk-!-width-one-third",
-                "id": "issuer_country",
-                "name": "issuer_country",
+                "id": "issuing_country",
+                "name": "issuing_country",
                 "spellcheck": false,
                 "value": "GB"
             }) }}
@@ -197,23 +197,23 @@
                 {% set expiryError = { text: errors['expiry_date'] } %}
             {% endif %}
             {{ govukDateInput({
-                id: "expiry_date",
-                namePrefix: "expiry",
-                fieldset: {
-                legend: { text: "Expiry date", classes: "govuk-fieldset__legend--s" }
-                },
-                "errorMessage": expiryError,
-                items: [
-                { classes: "govuk-input--width-2", name: "day", value: defaultExpiryDate.day },
-                { classes: "govuk-input--width-2", name: "month", value: defaultExpiryDate.month },
-                { classes: "govuk-input--width-3", name: "year", value: defaultExpiryDate.year }
-                ]
-            }) }}
+                        id: "expiry_date",
+                        namePrefix: "expiry",
+                        fieldset: {
+                        legend: { text: "Expiry date", classes: "govuk-fieldset__legend--s" }
+                        },
+                        "errorMessage": expiryError,
+                        items: [
+                        { classes: "govuk-input--width-2", name: "day", value: defaultExpiryDate.day },
+                        { classes: "govuk-input--width-2", name: "month", value: defaultExpiryDate.month },
+                        { classes: "govuk-input--width-3", name: "year", value: defaultExpiryDate.year }
+                        ]
+                        }) }}
             {{ govukSelect({
-                "id": "fish_type",
-                "name": "fish_type",
+                "id": "type_of_fish",
+                "name": "type_of_fish",
                 "label": {
-                    "text": "Type of Fish allowed to catch",
+                    "text": "Type of fish you can catch",
                     "classes": "govuk-label--s"
                 },
                 "items": [
@@ -241,9 +241,12 @@
                     "text": "Number of fishing rods",
                     "classes": "govuk-label--s"
                 },
+                "hint": {
+                    "text": "Enter how many rods your licence allows."
+                },
                 "classes": "govuk-input--width-5",
-                "id": "fishing_rods",
-                "name": "fishing_rods",
+                "id": "number_of_fishing_rods",
+                "name": "number_of_fishing_rods",
                 "type": "number",
                 "value": "2"
             }) }}

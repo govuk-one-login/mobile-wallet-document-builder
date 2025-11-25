@@ -306,7 +306,7 @@ export function buildFishingLicenceRequestBody(
     issuing_country: "GB",
     document_number: "FLN550000",
     type_of_fish: "Trout",
-    fishing_rods: "2",
+    number_of_fishing_rods: "2",
     credentialTtl: "43200",
     throwError: "",
   };
