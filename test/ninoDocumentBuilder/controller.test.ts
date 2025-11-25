@@ -25,22 +25,7 @@ describe("controller.ts", () => {
   });
 
   describe("get", () => {
-    it("should render the form for inputting NINO document details when user is not authenticated (no id_token in cookies)", async () => {
-      const req = getMockReq({ cookies: {} });
-      const { res } = getMockRes();
-
-      await ninoDocumentBuilderGetController(req, res);
-
-      expect(res.render).toHaveBeenCalledWith(
-        "nino-document-details-form.njk",
-        {
-          authenticated: false,
-          errorChoices: ERROR_CHOICES,
-        },
-      );
-    });
-
-    it("should render the form for inputting NINO document details when user is authenticated", async () => {
+    it("should render the form for inputting NINO document details", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 

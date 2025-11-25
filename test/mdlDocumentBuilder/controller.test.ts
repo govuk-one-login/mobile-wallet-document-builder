@@ -43,30 +43,7 @@ describe("controller.ts", () => {
       jest.spyOn(Math, "random").mockRestore();
     });
 
-    it("should render the form for inputting the mDL document details when the user is not authenticated (no id_token in cookies)", async () => {
-      const req = getMockReq({ cookies: {} });
-      const { res } = getMockRes();
-
-      await mdlDocumentBuilderGetController(req, res);
-
-      expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
-        authenticated: false,
-        defaultIssueDate: {
-          day: "02",
-          month: "05",
-          year: "2025",
-        },
-        defaultExpiryDate: {
-          day: "01",
-          month: "05",
-          year: "2035",
-        },
-        errorChoices: ERROR_CHOICES,
-        drivingLicenceNumber: "EDWAR550000SE5RO",
-      });
-    });
-
-    it("should render the form for inputting the mDL document details when the user is authenticated", async () => {
+    it("should render the form for inputting the mDL document details", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 

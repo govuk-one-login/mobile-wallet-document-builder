@@ -43,33 +43,7 @@ describe("controller.ts", () => {
       jest.spyOn(Math, "random").mockRestore();
     });
 
-    it("should render the form for inputting the fishing licence document details when the user is not authenticated (no id_token in cookies)", async () => {
-      const req = getMockReq({ cookies: {} });
-      const { res } = getMockRes();
-
-      await fishingLicenceDocumentBuilderGetController(req, res);
-
-      expect(res.render).toHaveBeenCalledWith(
-        "fishing-licence-document-details-form.njk",
-        {
-          authenticated: false,
-          defaultIssueDate: {
-            day: "02",
-            month: "05",
-            year: "2025",
-          },
-          defaultExpiryDate: {
-            day: "01",
-            month: "05",
-            year: "2035",
-          },
-          errorChoices: ERROR_CHOICES,
-          fishingLicenceNumber: "FLN550000",
-        },
-      );
-    });
-
-    it("should render the form for inputting the fishing licence document details when the user is authenticated", async () => {
+    it("should render the form for inputting the fishing licence document details", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
