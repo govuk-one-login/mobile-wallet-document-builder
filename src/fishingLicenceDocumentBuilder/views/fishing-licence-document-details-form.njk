@@ -18,18 +18,6 @@
             }
             }) %}
             {{ govukInput({
-                        "label": {
-                        "text": "Document number",
-                        "classes": "govuk-label--s"
-                        },
-                        "classes": "govuk-!-width-one-third",
-                        "id": "document_number",
-                        "name": "document_number",
-                        "autocomplete": "document_number",
-                        "spellcheck": false,
-                        "value": fishingLicenceNumber
-                        }) }}
-            {{ govukInput({
                 "label": {
                     "text": "Given name",
                     "classes": "govuk-label--s"
@@ -53,6 +41,37 @@
                 "spellcheck": false,
                 "value": "Fisher"
             }) }}
+            {% if errors['birth_date'] %}
+                {% set dobError = { text: errors['birth_date'] } %}
+            {% endif %}
+            {{ govukDateInput({
+                        "id": "birth_date",
+                        "namePrefix": "birth",
+                        "fieldset": {
+                        "legend": {
+                        "text": "Date of birth",
+                        "classes": "govuk-fieldset__legend--s"
+                        }
+                        },
+                        "errorMessage": dobError,
+                        "items": [
+                        {
+                        "classes": "govuk-input--width-2",
+                        "name": "day",
+                        "value": "15"
+                        },
+                        {
+                        "classes": "govuk-input--width-2",
+                        "name": "month",
+                        "value": "08"
+                        },
+                        {
+                        "classes": "govuk-input--width-3",
+                        "name": "year",
+                        "value": "1980"
+                        }
+                        ]
+                        }) }}
             {{ govukSelect({
                 "id": "portrait",
                 "name": "portrait",
@@ -132,46 +151,27 @@
                     }
                 ]
             }) }}
-            {% if errors['birth_date'] %}
-                {% set dobError = { text: errors['birth_date'] } %}
-            {% endif %}
-            {{ govukDateInput({
-                        "id": "birth_date",
-                        "namePrefix": "birth",
-                        "fieldset": {
-                        "legend": {
-                        "text": "Date of birth",
-                        "classes": "govuk-fieldset__legend--s"
-                        }
+            {{ govukInput({
+                        "label": {
+                        "text": "Document number",
+                        "classes": "govuk-label--s"
                         },
-                        "errorMessage": dobError,
-                        "items": [
-                        {
-                        "classes": "govuk-input--width-2",
-                        "name": "day",
-                        "value": "15"
-                        },
-                        {
-                        "classes": "govuk-input--width-2",
-                        "name": "month",
-                        "value": "08"
-                        },
-                        {
-                        "classes": "govuk-input--width-3",
-                        "name": "year",
-                        "value": "1980"
-                        }
-                        ]
+                        "classes": "govuk-!-width-one-third",
+                        "id": "document_number",
+                        "name": "document_number",
+                        "autocomplete": "document_number",
+                        "spellcheck": false,
+                        "value": fishingLicenceNumber
                         }) }}
             {% if errors['issue_date'] %}
                 {% set issuanceError = { text: errors['issue_date'] } %}
             {% endif %}
             {{ govukDateInput({
-                        id: "issuance_date",
+                        id: "issue_date",
                         namePrefix: "issue",
                         fieldset: {
                         legend: {
-                        text: "Issuance date",
+                        text: "Issue date",
                         classes: "govuk-fieldset__legend--s"
                         }
                         },
@@ -182,17 +182,6 @@
                         { classes: "govuk-input--width-3", name: "year", value: defaultIssueDate.year}
                         ]
                         }) }}
-            {{ govukInput({
-                "label": {
-                    "text": "Issuing country",
-                    "classes": "govuk-label--s"
-                },
-                "classes": "govuk-!-width-one-third",
-                "id": "issuing_country",
-                "name": "issuing_country",
-                "spellcheck": false,
-                "value": "GB"
-            }) }}
             {% if errors['expiry_date'] %}
                 {% set expiryError = { text: errors['expiry_date'] } %}
             {% endif %}
@@ -209,6 +198,17 @@
                         { classes: "govuk-input--width-3", name: "year", value: defaultExpiryDate.year }
                         ]
                         }) }}
+            {{ govukInput({
+                "label": {
+                    "text": "Issuing country",
+                    "classes": "govuk-label--s"
+                },
+                "classes": "govuk-!-width-one-third",
+                "id": "issuing_country",
+                "name": "issuing_country",
+                "spellcheck": false,
+                "value": "GB"
+            }) }}
             {% if errors['type_of_fish'] %}
                 {% set typeOfFishError = { text: errors['type_of_fish'] } %}
             {% endif %}
