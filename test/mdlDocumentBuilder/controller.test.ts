@@ -23,6 +23,9 @@ jest.mock("../../src/services/s3Service", () => ({
   uploadPhoto: jest.fn(),
 }));
 jest.mock("fs");
+jest.mock("../../src/utils/getRandomIntInclusive", () => ({
+  getRandomIntInclusive: jest.fn().mockReturnValue(550000),
+}));
 
 describe("controller.ts", () => {
   beforeAll(() => {
@@ -35,14 +38,6 @@ describe("controller.ts", () => {
   });
 
   describe("get", () => {
-    beforeEach(() => {
-      jest.spyOn(Math, "random").mockReturnValue(0.5);
-    });
-
-    afterEach(() => {
-      jest.spyOn(Math, "random").mockRestore();
-    });
-
     it("should render the form for inputting the mDL document details", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
@@ -85,7 +80,7 @@ describe("controller.ts", () => {
 
     const photoBuffer = Buffer.from("mock photo data");
     const mockReadFileSync = readFileSync as jest.Mock;
-    mockReadFileSync.mockReturnValue(Buffer.from("mock photo data"));
+    mockReadFileSync.mockReturnValue(photoBuffer);
 
     const saveDocument = databaseService.saveDocument as jest.Mock;
     const uploadPhoto = s3Service.uploadPhoto as jest.Mock;
@@ -111,7 +106,7 @@ describe("controller.ts", () => {
     ])(
       "given a file of type %s is to be uploaded",
       (fileType, fileName, mimeType) => {
-        it(`should call the upload function with the correct arguments`, async () => {
+        it(`should call the function to upload the photo with the correct arguments`, async () => {
           const req = getMockReq({
             body: {
               ...requestBody,
