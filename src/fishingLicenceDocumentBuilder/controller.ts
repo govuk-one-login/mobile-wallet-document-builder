@@ -16,17 +16,12 @@ import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { FishingLicenceData } from "./types/FishingLicenceData";
 import { isErrorCode } from "../utils/isErrorCode";
+import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 
 const CREDENTIAL_TYPE = CredentialType.FishingLicence;
 const TTL_MINUTES = 43200;
 
 let fishingLicenceNumber: string;
-
-function getRandomIntInclusive() {
-  const minCeiled = Math.ceil(100000);
-  const maxFloored = Math.floor(999999);
-  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
-}
 
 export async function fishingLicenceDocumentBuilderGetController(
   req: Request,
