@@ -209,33 +209,19 @@
                         { classes: "govuk-input--width-3", name: "year", value: defaultExpiryDate.year }
                         ]
                         }) }}
+            {% if errors['type_of_fish'] %}
+                {% set typeOfFishError = { text: errors['type_of_fish'] } %}
+            {% endif %}
             {{ govukSelect({
-                "id": "type_of_fish",
-                "name": "type_of_fish",
-                "label": {
-                    "text": "Type of fish you can catch",
-                    "classes": "govuk-label--s"
-                },
-                "items": [
-                    {
-                        "value": "coarse",
-                        "text": "Coarse fish",
-                        "selected": true
-                    },
-                    {
-                        "value": "salmon",
-                        "text": "Salmon and trout"
-                    },
-                    {
-                        "value": "sea",
-                        "text": "Sea fishing"
-                    },
-                    {
-                        "value": "all",
-                        "text": "All freshwater fish"
-                    }
-                ]
-            }) }}
+                        "id": "type_of_fish",
+                        "name": "type_of_fish",
+                        "label": {
+                        "text": "Type of fish you can catch",
+                        "classes": "govuk-label--s"
+                        },
+                        "items": fishTypeOptions,
+                        "errorMessage": typeOfFishError
+                        }) }}
             {{ govukInput({
                 "label": {
                     "text": "Number of fishing rods",

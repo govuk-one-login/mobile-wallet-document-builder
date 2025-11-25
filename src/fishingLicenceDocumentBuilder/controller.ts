@@ -20,6 +20,17 @@ import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 
 const CREDENTIAL_TYPE = CredentialType.FishingLicence;
 const TTL_MINUTES = 43200;
+const FISH_TYPES = [
+  "Coarse fish",
+  "Salmon and trout",
+  "Sea fishing",
+  "All freshwater fish",
+];
+const fishTypeOptions = FISH_TYPES.map((type, index) => ({
+  value: type,
+  text: type,
+  selected: index === 0,
+}));
 
 let fishingLicenceNumber: string;
 
@@ -34,6 +45,7 @@ export async function fishingLicenceDocumentBuilderGetController(
       defaultIssueDate,
       defaultExpiryDate,
       fishingLicenceNumber,
+      fishTypeOptions,
       authenticated: isAuthenticated(req),
       errorChoices: ERROR_CHOICES,
     });
@@ -53,12 +65,16 @@ export async function fishingLicenceDocumentBuilderPostController(
   try {
     const body: FishingLicenceRequestBody = req.body;
     const errors = validateDateFields(body);
+    if (!FISH_TYPES.includes(body.type_of_fish)) {
+      errors.type_of_fish = "Select a valid type of fish";
+    }
     if (Object.keys(errors).length > 0) {
       const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
       return res.render("fishing-licence-document-details-form.njk", {
         defaultIssueDate,
         defaultExpiryDate,
         fishingLicenceNumber,
+        fishTypeOptions,
         authenticated: isAuthenticated(req),
         errorChoices: ERROR_CHOICES,
         errors,

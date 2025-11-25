@@ -52,7 +52,6 @@ describe("controller.ts", () => {
       expect(res.render).toHaveBeenCalledWith(
         "fishing-licence-document-details-form.njk",
         {
-          authenticated: true,
           defaultIssueDate: {
             day: "02",
             month: "05",
@@ -63,8 +62,31 @@ describe("controller.ts", () => {
             month: "05",
             year: "2035",
           },
-          errorChoices: ERROR_CHOICES,
           fishingLicenceNumber: "FLN550000",
+          fishTypeOptions: [
+            {
+              selected: true,
+              text: "Coarse fish",
+              value: "Coarse fish",
+            },
+            {
+              selected: false,
+              text: "Salmon and trout",
+              value: "Salmon and trout",
+            },
+            {
+              selected: false,
+              text: "Sea fishing",
+              value: "Sea fishing",
+            },
+            {
+              selected: false,
+              text: "All freshwater fish",
+              value: "All freshwater fish",
+            },
+          ],
+          errorChoices: ERROR_CHOICES,
+          authenticated: true,
         },
       );
     });
@@ -164,7 +186,7 @@ describe("controller.ts", () => {
             expiry_date: "01-04-2029",
             issuing_country: "GB",
             document_number: "FLN550000",
-            type_of_fish: "Trout",
+            type_of_fish: "Sea fishing",
             number_of_fishing_rods: "2",
             credentialTtlMinutes: 43200,
           },
@@ -240,7 +262,6 @@ describe("controller.ts", () => {
             errors: expect.objectContaining({
               birth_date: "Enter a valid birth date",
             }),
-            authenticated: true,
             defaultIssueDate: {
               day: "02",
               month: "05",
@@ -253,6 +274,87 @@ describe("controller.ts", () => {
             },
             errorChoices: ERROR_CHOICES,
             fishingLicenceNumber: "FLN550000",
+            fishTypeOptions: [
+              {
+                selected: true,
+                text: "Coarse fish",
+                value: "Coarse fish",
+              },
+              {
+                selected: false,
+                text: "Salmon and trout",
+                value: "Salmon and trout",
+              },
+              {
+                selected: false,
+                text: "Sea fishing",
+                value: "Sea fishing",
+              },
+              {
+                selected: false,
+                text: "All freshwater fish",
+                value: "All freshwater fish",
+              },
+            ],
+            authenticated: true,
+          },
+        );
+        expect(res.redirect).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("given an invalid type of fish", () => {
+      it("should render an error when the type of fish selected is unknown", async () => {
+        const body = buildFishingLicenceRequestBody({
+          type_of_fish: "Unknwon fish type",
+        });
+        const req = getMockReq({
+          body,
+          cookies: { id_token: "id_token" },
+        });
+        const { res } = getMockRes();
+        await fishingLicenceDocumentBuilderPostController(req, res);
+        expect(res.render).toHaveBeenCalledWith(
+          "fishing-licence-document-details-form.njk",
+          {
+            errors: expect.objectContaining({
+              type_of_fish: "Select a valid type of fish",
+            }),
+            defaultIssueDate: {
+              day: "02",
+              month: "05",
+              year: "2025",
+            },
+            defaultExpiryDate: {
+              day: "01",
+              month: "05",
+              year: "2035",
+            },
+            errorChoices: ERROR_CHOICES,
+            fishingLicenceNumber: "FLN550000",
+            fishTypeOptions: [
+              {
+                selected: true,
+                text: "Coarse fish",
+                value: "Coarse fish",
+              },
+              {
+                selected: false,
+                text: "Salmon and trout",
+                value: "Salmon and trout",
+              },
+              {
+                selected: false,
+                text: "Sea fishing",
+                value: "Sea fishing",
+              },
+              {
+                selected: false,
+                text: "All freshwater fish",
+                value: "All freshwater fish",
+              },
+            ],
+            authenticated: true,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
@@ -279,7 +381,7 @@ export function buildFishingLicenceRequestBody(
     "expiry-year": "2029",
     issuing_country: "GB",
     document_number: "FLN550000",
-    type_of_fish: "Trout",
+    type_of_fish: "Sea fishing",
     number_of_fishing_rods: "2",
     credentialTtl: "43200",
     throwError: "",
