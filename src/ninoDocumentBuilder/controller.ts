@@ -43,6 +43,7 @@ export async function ninoDocumentBuilderPostController(
       documentId: data.nino,
       data,
       vcType: CREDENTIAL_TYPE,
+      credentialTtlMinutes: Number(body.credentialTtl),
       timeToLive,
     });
 

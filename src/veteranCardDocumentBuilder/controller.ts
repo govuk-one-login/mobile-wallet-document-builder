@@ -58,6 +58,7 @@ export async function veteranCardDocumentBuilderPostController(
       documentId: data.serviceNumber,
       data,
       vcType: CREDENTIAL_TYPE,
+      credentialTtlMinutes: Number(body.credentialTtl),
       timeToLive,
     });
 
