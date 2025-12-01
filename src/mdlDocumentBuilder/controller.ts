@@ -147,6 +147,5 @@ function buildMdlDataFromRequestBody(
       provisional_driving_privileges: provisionalDrivingPrivileges,
     }),
     un_distinguishing_sign: "UK",
-    credentialTtlMinutes: Number(body.credentialTtl),
   };
 }

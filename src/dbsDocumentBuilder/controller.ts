@@ -69,7 +69,6 @@ function buildDbsDataFromRequestBody(body: DbsRequestBody) {
     certificateType: "basic",
     outcome: "Result clear",
     policeRecordsCheck: "Clear",
-    credentialTtlMinutes: Number(body.credentialTtl),
     ...newObject,
   };
   return data;
