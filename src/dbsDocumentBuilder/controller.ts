@@ -43,7 +43,7 @@ export async function dbsDocumentBuilderPostController(
       documentId: data.certificateNumber,
       data,
       vcType: CREDENTIAL_TYPE,
-      credentialTtl: Number(body.credentialTtl),
+      credentialTtlMinutes: Number(body.credentialTtl),
       timeToLive,
     });
 
@@ -62,12 +62,14 @@ export async function dbsDocumentBuilderPostController(
 function buildDbsDataFromRequestBody(body: DbsRequestBody) {
   const {
     throwError: _throwError,
+    credentialTtl: _credentialTtl,
     ...newObject
   } = body;
   const data: DbsData = {
     certificateType: "basic",
     outcome: "Result clear",
     policeRecordsCheck: "Clear",
+    credentialTtlMinutes: Number(body.credentialTtl),
     ...newObject,
   };
   return data;

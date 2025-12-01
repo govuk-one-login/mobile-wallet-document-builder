@@ -43,7 +43,7 @@ export async function ninoDocumentBuilderPostController(
       documentId: data.nino,
       data,
       vcType: CREDENTIAL_TYPE,
-      credentialTtl: Number(body.credentialTtl),
+      credentialTtlMinutes: Number(body.credentialTtl),
       timeToLive,
     });
 
@@ -60,9 +60,14 @@ export async function ninoDocumentBuilderPostController(
 }
 
 function buildNinoDataFromRequestBody(body: NinoRequestBody) {
-  const { throwError: _throwError, ...newObject } = body;
+  const {
+    throwError: _throwError,
+    credentialTtl: _credentialTtl,
+    ...newObject
+  } = body;
   const data: NinoData = {
     ...newObject,
+    credentialTtlMinutes: Number(body.credentialTtl),
   };
   return data;
 }

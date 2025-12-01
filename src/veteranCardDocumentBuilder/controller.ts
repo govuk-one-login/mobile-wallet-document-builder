@@ -58,7 +58,7 @@ export async function veteranCardDocumentBuilderPostController(
       documentId: data.serviceNumber,
       data,
       vcType: CREDENTIAL_TYPE,
-      credentialTtl: Number(body.credentialTtl),
+      credentialTtlMinutes: Number(body.credentialTtl),
       timeToLive,
     });
 
@@ -81,10 +81,15 @@ function buildVeteranCardDataFromRequestBody(
   body: VeteranCardRequestBody,
   s3Uri: string,
 ) {
-  const { throwError: _throwError, ...newObject } = body;
+  const {
+    throwError: _throwError,
+    credentialTtl: _credentialTtl,
+    ...newObject
+  } = body;
 
   const data: VeteranCardData = {
     ...newObject,
+    credentialTtlMinutes: Number(body.credentialTtl),
     photo: s3Uri,
   };
 

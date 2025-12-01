@@ -84,7 +84,7 @@ export async function mdlDocumentBuilderPostController(
       documentId: data.document_number,
       data,
       vcType: CREDENTIAL_TYPE,
-      credentialTtl: Number(body.credentialTtl),
+      credentialTtlMinutes: Number(body.credentialTtl),
       timeToLive,
     });
 
@@ -147,5 +147,6 @@ function buildMdlDataFromRequestBody(
       provisional_driving_privileges: provisionalDrivingPrivileges,
     }),
     un_distinguishing_sign: "UK",
+    credentialTtlMinutes: Number(body.credentialTtl),
   };
 }
