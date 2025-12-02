@@ -9,5 +9,4 @@ export interface FishingLicenceData {
   document_number: string;
   type_of_fish: string;
   number_of_fishing_rods: string;
-  credentialTtlMinutes: number;
 }

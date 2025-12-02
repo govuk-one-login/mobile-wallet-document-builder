@@ -94,6 +94,7 @@ export async function fishingLicenceDocumentBuilderPostController(
       documentId: data.document_number,
       data,
       vcType: CREDENTIAL_TYPE,
+      credentialTtlMinutes: Number(body.credentialTtl),
       timeToLive,
     });
     const selectedError = body["throwError"];
@@ -137,6 +138,5 @@ function buildFishingLicenceDataFromRequestBody(
     document_number: body.document_number,
     type_of_fish: body.type_of_fish,
     number_of_fishing_rods: body.number_of_fishing_rods,
-    credentialTtlMinutes: Number(body.credentialTtl),
   };
 }

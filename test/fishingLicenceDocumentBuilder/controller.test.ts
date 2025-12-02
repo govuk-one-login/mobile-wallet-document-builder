@@ -172,6 +172,7 @@ describe("controller.ts", () => {
           documentId: "FLN550000",
           vcType: "uk.gov.account.mobile.example-cri.fishinglicence.1",
           timeToLive: 1748736000,
+          credentialTtlMinutes: 43200,
           data: {
             family_name: "Smith",
             given_name: "John",
@@ -183,7 +184,6 @@ describe("controller.ts", () => {
             document_number: "FLN550000",
             type_of_fish: "Sea fishing",
             number_of_fishing_rods: "2",
-            credentialTtlMinutes: 43200,
           },
         });
       });
