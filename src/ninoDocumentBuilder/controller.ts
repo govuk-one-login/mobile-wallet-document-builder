@@ -67,7 +67,6 @@ function buildNinoDataFromRequestBody(body: NinoRequestBody) {
   } = body;
   const data: NinoData = {
     ...newObject,
-    credentialTtlMinutes: Number(body.credentialTtl),
   };
   return data;
 }

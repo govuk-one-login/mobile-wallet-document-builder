@@ -209,7 +209,6 @@ describe("controller.ts", () => {
               resident_postal_code: "NW3 3RX",
               resident_city: "London",
               un_distinguishing_sign: "UK",
-              credentialTtlMinutes: 43200,
             },
           });
         });
@@ -270,7 +269,6 @@ describe("controller.ts", () => {
               resident_postal_code: "NW3 3RX",
               resident_city: "London",
               un_distinguishing_sign: "UK",
-              credentialTtlMinutes: 43200,
             },
           });
         });

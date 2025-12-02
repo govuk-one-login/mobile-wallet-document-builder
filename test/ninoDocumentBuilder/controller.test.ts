@@ -100,7 +100,6 @@ describe("controller.ts", () => {
             givenName: "Irene",
             familyName: "Adler",
             nino: "QQ123456A",
-            credentialTtlMinutes: 43200,
           },
           vcType: "SocialSecurityCredential",
           timeToLive: 1760174135,

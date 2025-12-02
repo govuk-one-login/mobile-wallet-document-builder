@@ -89,7 +89,6 @@ function buildVeteranCardDataFromRequestBody(
 
   const data: VeteranCardData = {
     ...newObject,
-    credentialTtlMinutes: Number(body.credentialTtl),
     photo: s3Uri,
   };
 
