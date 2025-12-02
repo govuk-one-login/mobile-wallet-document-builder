@@ -170,7 +170,8 @@ describe("controller.ts", () => {
         expect(saveDocument).toHaveBeenCalledWith("testTable", {
           itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           documentId: "FLN550000",
-          vcType: "uk.gov.account.mobile.example-cri.fishinglicence.1",
+          vcType:
+            "uk.gov.account.mobile.example-credential-issuer.fishinglicence.1",
           timeToLive: 1748736000,
           credentialTtlMinutes: 43200,
           data: {
@@ -200,7 +201,7 @@ describe("controller.ts", () => {
           await fishingLicenceDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=uk.gov.account.mobile.example-cri.fishinglicence.1",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=uk.gov.account.mobile.example-credential-issuer.fishinglicence.1",
           );
         });
       });
@@ -215,7 +216,7 @@ describe("controller.ts", () => {
           await fishingLicenceDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=uk.gov.account.mobile.example-cri.fishinglicence.1",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=uk.gov.account.mobile.example-credential-issuer.fishinglicence.1",
           );
         });
       });
@@ -231,7 +232,7 @@ describe("controller.ts", () => {
             await fishingLicenceDocumentBuilderPostController(req, res);
 
             expect(res.redirect).toHaveBeenCalledWith(
-              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=uk.gov.account.mobile.example-cri.fishinglicence.1&error=${selectedError}`,
+              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=uk.gov.account.mobile.example-credential-issuer.fishinglicence.1&error=${selectedError}`,
             );
           },
         );
