@@ -84,6 +84,7 @@ export async function mdlDocumentBuilderPostController(
       documentId: data.document_number,
       data,
       vcType: CREDENTIAL_TYPE,
+      credentialTtlMinutes: Number(body.credentialTtl),
       timeToLive,
     });
 

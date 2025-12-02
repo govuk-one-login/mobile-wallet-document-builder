@@ -10,5 +10,6 @@ export interface TableItem {
   documentId: string;
   data: NinoData | DbsData | VeteranCardData | MdlData;
   vcType: CredentialType;
+  credentialTtlMinutes: number;
   timeToLive: number;
 }

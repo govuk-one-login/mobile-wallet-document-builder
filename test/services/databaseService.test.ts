@@ -23,6 +23,7 @@ describe("databaseService.ts", () => {
     },
     vcType: "SocialSecurityCredential" as CredentialType,
     timeToLive: 1760174135,
+    credentialTtlMinutes: 43200,
   };
 
   it("should save a document to the database table", async () => {
