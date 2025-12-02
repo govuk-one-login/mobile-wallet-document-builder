@@ -1,69 +1,80 @@
 import { Request, Response } from "express";
+import { formatDate, getDefaultDates, validateDateFields } from "../utils/date";
+import { isAuthenticated } from "../utils/isAuthenticated";
+import { ERROR_CHOICES } from "../utils/errorChoices";
+import { logger } from "../middleware/logger";
+import { randomUUID } from "node:crypto";
 import {
   getDocumentsTableName,
   getPhotosBucketName,
 } from "../config/appConfig";
-import { CredentialType } from "../types/CredentialType";
-import { isAuthenticated } from "../utils/isAuthenticated";
-import { logger } from "../middleware/logger";
-import { randomUUID } from "node:crypto";
-import { uploadPhoto } from "../services/s3Service";
-import { MdlData } from "./types/MdlData";
-import { MdlRequestBody } from "./types/MdlRequestBody";
-import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
-import { validateDateFields, getDefaultDates, formatDate } from "../utils/date";
-import {
-  getFullDrivingPrivileges,
-  getProvisionalDrivingPrivileges,
-} from "./helpers/drivingPrivilegeBuilder";
-import { isErrorCode } from "../utils/isErrorCode";
-import { ERROR_CHOICES } from "../utils/errorChoices";
+import { uploadPhoto } from "../services/s3Service";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
+import { FishingLicenceRequestBody } from "./types/FishingLicenceRequestBody";
+import { saveDocument } from "../services/databaseService";
+import { CredentialType } from "../types/CredentialType";
+import { FishingLicenceData } from "./types/FishingLicenceData";
+import { isErrorCode } from "../utils/isErrorCode";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 
-const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
+const CREDENTIAL_TYPE = CredentialType.FishingLicence;
 const TTL_MINUTES = 43200;
+const FISH_TYPES = [
+  "Coarse fish",
+  "Salmon and trout",
+  "Sea fishing",
+  "All freshwater fish",
+];
+const fishTypeOptions = FISH_TYPES.map((type, index) => ({
+  value: type,
+  text: type,
+  selected: index === 0,
+}));
 
-let drivingLicenceNumber: string;
+let fishingLicenceNumber: string;
 
-export async function mdlDocumentBuilderGetController(
+export async function fishingLicenceDocumentBuilderGetController(
   req: Request,
   res: Response,
 ): Promise<void> {
   try {
     const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-    drivingLicenceNumber = "EDWAR" + getRandomIntInclusive() + "SE5RO";
-    res.render("mdl-document-details-form.njk", {
+    fishingLicenceNumber = "FLN" + getRandomIntInclusive();
+    res.render("fishing-licence-document-details-form.njk", {
       defaultIssueDate,
       defaultExpiryDate,
-      drivingLicenceNumber,
+      fishingLicenceNumber,
+      fishTypeOptions,
       authenticated: isAuthenticated(req),
       errorChoices: ERROR_CHOICES,
     });
   } catch (error) {
     logger.error(
       error,
-      "An error happened rendering Driving Licence document page",
+      "An error happened rendering Fishing Licence document page",
     );
     res.render("500.njk");
   }
 }
 
-export async function mdlDocumentBuilderPostController(
+export async function fishingLicenceDocumentBuilderPostController(
   req: Request,
   res: Response,
 ): Promise<void> {
   try {
-    const body: MdlRequestBody = req.body;
-
+    const body: FishingLicenceRequestBody = req.body;
     const errors = validateDateFields(body);
+    if (!FISH_TYPES.includes(body.type_of_fish)) {
+      errors.type_of_fish = "Select a valid type of fish";
+    }
     if (Object.keys(errors).length > 0) {
       const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-      return res.render("mdl-document-details-form.njk", {
+      return res.render("fishing-licence-document-details-form.njk", {
         defaultIssueDate,
         defaultExpiryDate,
-        drivingLicenceNumber,
+        fishingLicenceNumber,
+        fishTypeOptions,
         authenticated: isAuthenticated(req),
         errorChoices: ERROR_CHOICES,
         errors,
@@ -77,7 +88,7 @@ export async function mdlDocumentBuilderPostController(
     const { photoBuffer, mimeType } = getPhoto(body.portrait);
     await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
     const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
-    const data = buildMdlDataFromRequestBody(body, s3Uri);
+    const data = buildFishingLicenceDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
       itemId,
       documentId: data.document_number,
@@ -86,9 +97,9 @@ export async function mdlDocumentBuilderPostController(
       credentialTtlMinutes: Number(body.credentialTtl),
       timeToLive,
     });
-
     const selectedError = body["throwError"];
     let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
+
     if (isErrorCode(selectedError)) {
       redirectUrl += `&error=${selectedError}`;
     }
@@ -96,16 +107,16 @@ export async function mdlDocumentBuilderPostController(
   } catch (error) {
     logger.error(
       error,
-      "An error happened processing Driving Licence document request",
+      "An error happened processing Fishing Licence document request",
     );
     res.render("500.njk");
   }
 }
 
-function buildMdlDataFromRequestBody(
-  body: MdlRequestBody,
+function buildFishingLicenceDataFromRequestBody(
+  body: FishingLicenceRequestBody,
   s3Uri: string,
-): MdlData {
+): FishingLicenceData {
   const birthDay = body["birth-day"];
   const birthMonth = body["birth-month"];
   const birthYear = body["birth-year"];
@@ -116,29 +127,16 @@ function buildMdlDataFromRequestBody(
   const expiryMonth = body["expiry-month"];
   const expiryYear = body["expiry-year"];
 
-  const fullDrivingPrivileges = getFullDrivingPrivileges(body);
-  const provisionalDrivingPrivileges = getProvisionalDrivingPrivileges(body);
-
   return {
     family_name: body.family_name,
     given_name: body.given_name,
-    title: body.title,
-    welsh_licence: body.welsh_licence === "true",
     portrait: s3Uri,
     birth_date: formatDate(birthDay, birthMonth, birthYear),
-    birth_place: body.birth_place,
     issue_date: formatDate(issueDay, issueMonth, issueYear),
     expiry_date: formatDate(expiryDay, expiryMonth, expiryYear),
-    issuing_authority: body.issuing_authority,
     issuing_country: body.issuing_country,
     document_number: body.document_number,
-    resident_address: body.resident_address,
-    resident_postal_code: body.resident_postal_code,
-    resident_city: body.resident_city,
-    driving_privileges: fullDrivingPrivileges,
-    ...(provisionalDrivingPrivileges.length !== 0 && {
-      provisional_driving_privileges: provisionalDrivingPrivileges,
-    }),
-    un_distinguishing_sign: "UK",
+    type_of_fish: body.type_of_fish,
+    number_of_fishing_rods: body.number_of_fishing_rods,
   };
 }

@@ -1,7 +1,7 @@
 import {
   isValidDate,
   validateDateFields,
-} from "../../../src/mdlDocumentBuilder/helpers/dateValidator";
+} from "../../../src/utils/date/dateValidator";
 import { MdlRequestBody } from "../../../src/mdlDocumentBuilder/types/MdlRequestBody";
 
 describe("validateDateFields", () => {
