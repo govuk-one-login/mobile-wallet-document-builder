@@ -114,10 +114,10 @@ describe("controller.ts", () => {
             certificateType: "basic",
             outcome: "Result clear",
             policeRecordsCheck: "Clear",
-            credentialTtlMinutes: 43200,
           },
           vcType: "BasicDisclosureCredential",
           timeToLive: 1760174135,
+          credentialTtlMinutes: 43200,
         });
       });
     });

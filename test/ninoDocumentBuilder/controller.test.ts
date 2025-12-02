@@ -79,12 +79,12 @@ describe("controller.ts", () => {
         expect(saveDocument).toHaveBeenCalledWith("testTable", {
           itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           documentId: "QQ123456A",
+          credentialTtlMinutes: 43200,
           data: {
             title: "Ms",
             givenName: "Irene",
             familyName: "Adler",
             nino: "QQ123456A",
-            credentialTtlMinutes: 43200,
           },
           vcType: "SocialSecurityCredential",
           timeToLive: 1760174135,

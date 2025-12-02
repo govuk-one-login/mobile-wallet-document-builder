@@ -148,6 +148,7 @@ describe("controller.ts", () => {
             documentId: "EDWAR550000SE5RO",
             vcType: "org.iso.18013.5.1.mDL",
             timeToLive: 1748736000,
+            credentialTtlMinutes: 43200,
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
@@ -180,7 +181,6 @@ describe("controller.ts", () => {
               resident_postal_code: "NW3 3RX",
               resident_city: "London",
               un_distinguishing_sign: "UK",
-              credentialTtlMinutes: 43200,
             },
           });
         });
@@ -200,6 +200,7 @@ describe("controller.ts", () => {
             documentId: "EDWAR550000SE5RO",
             vcType: "org.iso.18013.5.1.mDL",
             timeToLive: 1748736000,
+            credentialTtlMinutes: 43200,
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
@@ -240,7 +241,6 @@ describe("controller.ts", () => {
               resident_postal_code: "NW3 3RX",
               resident_city: "London",
               un_distinguishing_sign: "UK",
-              credentialTtlMinutes: 43200,
             },
           });
         });
