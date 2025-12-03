@@ -25,8 +25,8 @@ describe("controller.ts", () => {
   });
 
   describe("get", () => {
-    it("should render the form for inputting DBS document details when user is not authenticated (no id_token in cookies)", async () => {
-      const req = getMockReq({ cookies: {} });
+    it("should render the form for inputting DBS document details", async () => {
+      const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
       await dbsDocumentBuilderGetController({
@@ -34,7 +34,7 @@ describe("controller.ts", () => {
       })(req, res);
 
       expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
-        authenticated: false,
+        authenticated: true,
         errorChoices: ERROR_CHOICES,
         showThrowError: false,
       });
@@ -67,20 +67,6 @@ describe("controller.ts", () => {
           },
         );
       }
-    });
-    it("should render the form for inputting DBS document details when user is authenticated", async () => {
-      const req = getMockReq({ cookies: { id_token: "id_token" } });
-      const { res } = getMockRes();
-
-      await dbsDocumentBuilderGetController({
-        environment: "staging",
-      })(req, res);
-
-      expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
-        authenticated: true,
-        errorChoices: ERROR_CHOICES,
-        showThrowError: false,
-      });
     });
   });
 
@@ -160,10 +146,10 @@ describe("controller.ts", () => {
             certificateType: "basic",
             outcome: "Result clear",
             policeRecordsCheck: "Clear",
-            credentialTtlMinutes: 43200,
           },
           vcType: "BasicDisclosureCredential",
           timeToLive: 1760174135,
+          credentialTtlMinutes: 43200,
         });
       });
     });

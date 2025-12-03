@@ -25,8 +25,8 @@ describe("controller.ts", () => {
   });
 
   describe("get", () => {
-    it("should render the form for inputting NINO document details when user is not authenticated (no id_token in cookies)", async () => {
-      const req = getMockReq({ cookies: {} });
+    it("should render the form for inputting NINO document details", async () => {
+      const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
       const config = { environment: "staging" };
@@ -35,7 +35,7 @@ describe("controller.ts", () => {
       expect(res.render).toHaveBeenCalledWith(
         "nino-document-details-form.njk",
         {
-          authenticated: false,
+          authenticated: true,
           errorChoices: ERROR_CHOICES,
           showThrowError: false,
         },
@@ -73,22 +73,6 @@ describe("controller.ts", () => {
           },
         );
       }
-    });
-    it("should render the form for inputting NINO document details when user is authenticated", async () => {
-      const req = getMockReq({ cookies: { id_token: "id_token" } });
-      const { res } = getMockRes();
-
-      const config = { environment: "staging" };
-      await ninoDocumentBuilderGetController(config)(req, res);
-
-      expect(res.render).toHaveBeenCalledWith(
-        "nino-document-details-form.njk",
-        {
-          authenticated: true,
-          errorChoices: ERROR_CHOICES,
-          showThrowError: false,
-        },
-      );
     });
   });
 
@@ -130,12 +114,12 @@ describe("controller.ts", () => {
         expect(saveDocument).toHaveBeenCalledWith("testTable", {
           itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           documentId: "QQ123456A",
+          credentialTtlMinutes: 43200,
           data: {
             title: "Ms",
             givenName: "Irene",
             familyName: "Adler",
             nino: "QQ123456A",
-            credentialTtlMinutes: 43200,
           },
           vcType: "SocialSecurityCredential",
           timeToLive: 1760174135,

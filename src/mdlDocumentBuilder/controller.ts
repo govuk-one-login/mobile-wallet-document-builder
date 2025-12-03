@@ -13,28 +13,21 @@ import { MdlData } from "./types/MdlData";
 import { MdlRequestBody } from "./types/MdlRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
-import { validateDateFields } from "./helpers/dateValidator";
+import { validateDateFields, getDefaultDates, formatDate } from "../utils/date";
 import {
   getFullDrivingPrivileges,
   getProvisionalDrivingPrivileges,
 } from "./helpers/drivingPrivilegeBuilder";
-import { getDefaultDates } from "./helpers/defaultDates";
-import { formatDate } from "./helpers/dateFormatter";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
+import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
 const TTL_MINUTES = 43200;
 
 let drivingLicenceNumber: string;
-
-function getRandomIntInclusive() {
-  const minCeiled = Math.ceil(100000);
-  const maxFloored = Math.floor(999999);
-  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
-}
 
 export interface MdlDocumentBuilderControllerConfig {
   environment?: string;
@@ -99,6 +92,7 @@ export function mdlDocumentBuilderPostController({
         documentId: data.document_number,
         data,
         vcType: CREDENTIAL_TYPE,
+        credentialTtlMinutes: Number(body.credentialTtl),
         timeToLive,
       });
 
@@ -155,7 +149,6 @@ export function mdlDocumentBuilderPostController({
         provisional_driving_privileges: provisionalDrivingPrivileges,
       }),
       un_distinguishing_sign: "UK",
-      credentialTtlMinutes: Number(body.credentialTtl),
     };
   }
 }

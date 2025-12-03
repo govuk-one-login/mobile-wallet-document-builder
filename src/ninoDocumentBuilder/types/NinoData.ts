@@ -3,5 +3,4 @@ export interface NinoData {
   givenName: string;
   familyName: string;
   nino: string;
-  credentialTtlMinutes: number;
 }

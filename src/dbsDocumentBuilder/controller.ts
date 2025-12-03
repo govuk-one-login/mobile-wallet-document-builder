@@ -50,6 +50,7 @@ export async function dbsDocumentBuilderPostController(
       documentId: data.certificateNumber,
       data,
       vcType: CREDENTIAL_TYPE,
+      credentialTtlMinutes: Number(body.credentialTtl),
       timeToLive,
     });
 
@@ -75,7 +76,6 @@ function buildDbsDataFromRequestBody(body: DbsRequestBody) {
     certificateType: "basic",
     outcome: "Result clear",
     policeRecordsCheck: "Clear",
-    credentialTtlMinutes: Number(body.credentialTtl),
     ...newObject,
   };
   return data;

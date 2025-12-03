@@ -34,7 +34,7 @@ describe("controller.ts", () => {
   });
 
   describe("get", () => {
-    it("should render the form for inputting the Veteran Card document details when the user is not authenticated (no id_token in cookies)", async () => {
+    it("should render the form for inputting the Veteran Card document details", async () => {
       const req = getMockReq({ cookies: {} });
       const { res } = getMockRes();
 
@@ -182,6 +182,7 @@ describe("controller.ts", () => {
         expect(saveDocument).toHaveBeenCalledWith("testTable", {
           itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           documentId: "25057386",
+          credentialTtlMinutes: 43200,
           data: {
             givenName: "Sarah Elizabeth",
             familyName: "Edwards-Smith",
@@ -193,7 +194,6 @@ describe("controller.ts", () => {
             "cardExpiryDate-year": "2029",
             serviceNumber: "25057386",
             serviceBranch: "HM Naval Service",
-            credentialTtlMinutes: 43200,
             photo: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           },
           vcType: "DigitalVeteranCard",

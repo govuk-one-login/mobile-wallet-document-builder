@@ -67,6 +67,7 @@ export async function veteranCardDocumentBuilderPostController(
       documentId: data.serviceNumber,
       data,
       vcType: CREDENTIAL_TYPE,
+      credentialTtlMinutes: Number(body.credentialTtl),
       timeToLive,
     });
 
@@ -97,7 +98,6 @@ function buildVeteranCardDataFromRequestBody(
 
   const data: VeteranCardData = {
     ...newObject,
-    credentialTtlMinutes: Number(body.credentialTtl),
     photo: s3Uri,
   };
 
