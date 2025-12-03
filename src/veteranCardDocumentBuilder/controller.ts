@@ -17,7 +17,6 @@ import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
-import { ninoDocumentBuilderControllerConfig } from "../ninoDocumentBuilder/controller";
 
 const CREDENTIAL_TYPE = CredentialType.DigitalVeteranCard;
 const TTL_MINUTES = 43200;
