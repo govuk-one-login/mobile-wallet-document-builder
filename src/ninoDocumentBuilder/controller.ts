@@ -4,31 +4,37 @@ import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import { getDocumentsTableName } from "../config/appConfig";
+import {getDocumentsTableName, getEnvironment} from "../config/appConfig";
 import { NinoRequestBody } from "./types/NinoRequestBody";
 import { NinoData } from "./types/NinoData";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
+import {ExpressRouteFunction} from "../types/ExpressRouteFunction";
 
 const CREDENTIAL_TYPE = CredentialType.SocialSecurityCredential;
 const TTL_MINUTES = 43200;
 
-export async function ninoDocumentBuilderGetController(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  try {
-    res.render("nino-document-details-form.njk", {
-      authenticated: isAuthenticated(req),
-      errorChoices: ERROR_CHOICES,
-    });
-  } catch (error) {
-    logger.error(error, "An error happened rendering NINO document page");
-    res.render("500.njk");
-  }
+export interface ninoDocumentBuilderControllerConfig {
+    environment?: string;
 }
-
+export function ninoDocumentBuilderGetController({
+    environment = getEnvironment(),
+}: ninoDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
+    return async function (req: Request, res: Response): Promise<void> {
+        try {
+            const showThrowError = environment !== "staging";
+            res.render("nino-document-details-form.njk", {
+                authenticated: isAuthenticated(req),
+                errorChoices: ERROR_CHOICES,
+                showThrowError,
+            });
+        } catch (error) {
+            logger.error(error, "An error happened rendering NINO document page");
+            res.render("500.njk");
+        }
+    }
+}
 export async function ninoDocumentBuilderPostController(
   req: Request,
   res: Response,

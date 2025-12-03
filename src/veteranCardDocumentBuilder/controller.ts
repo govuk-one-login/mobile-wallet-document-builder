@@ -6,8 +6,8 @@ import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { uploadPhoto } from "../services/s3Service";
 import {
-  getDocumentsTableName,
-  getPhotosBucketName,
+    getDocumentsTableName, getEnvironment,
+    getPhotosBucketName,
 } from "../config/appConfig";
 import { VeteranCardData } from "./types/VeteranCardData";
 import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
@@ -15,28 +15,36 @@ import { getPhoto } from "../utils/photoUtils";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
+import {ExpressRouteFunction} from "../types/ExpressRouteFunction";
+import {ninoDocumentBuilderControllerConfig} from "../ninoDocumentBuilder/controller";
 
 const CREDENTIAL_TYPE = CredentialType.DigitalVeteranCard;
 const TTL_MINUTES = 43200;
 
-export async function veteranCardDocumentBuilderGetController(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  try {
-    res.render("veteran-card-document-details-form.njk", {
-      authenticated: isAuthenticated(req),
-      errorChoices: ERROR_CHOICES,
-    });
-  } catch (error) {
-    logger.error(
-      error,
-      "An error happened rendering Veteran Card document page",
-    );
-    res.render("500.njk");
-  }
+export interface veteranCardDocumentBuilderControllerConfig {
+    environment?: string;
 }
 
+export function veteranCardDocumentBuilderGetController({
+                                                     environment = getEnvironment(),
+                                                 }: veteranCardDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
+    return async function (req: Request, res: Response): Promise<void> {
+        try {
+            const showThrowError = environment !== 'staging';
+            res.render("veteran-card-document-details-form.njk", {
+                authenticated: isAuthenticated(req),
+                errorChoices: ERROR_CHOICES,
+                showThrowError,
+            });
+        } catch (error) {
+            logger.error(
+                error,
+                "An error happened rendering Veteran Card document page",
+            );
+            res.render("500.njk");
+        }
+    }
+}
 export async function veteranCardDocumentBuilderPostController(
   req: Request,
   res: Response,

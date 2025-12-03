@@ -29,23 +29,55 @@ describe("controller.ts", () => {
       const req = getMockReq({ cookies: {} });
       const { res } = getMockRes();
 
-      await dbsDocumentBuilderGetController(req, res);
+      await dbsDocumentBuilderGetController({
+        environment: "staging",
+      })(req, res);
 
       expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
         authenticated: false,
         errorChoices: ERROR_CHOICES,
+        showThrowError: false,
       });
     });
+      it("should set showThrowError to false in staging", async () => {
+          const req = getMockReq({ cookies: {} });
+          const { res } = getMockRes();
+          const config = {environment: 'staging'}
+          await dbsDocumentBuilderGetController(config)(req, res);
 
+          expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
+              authenticated: false,
+              errorChoices: ERROR_CHOICES,
+              showThrowError: false,
+          });
+      });
+    it("should set showThrowError to true when environment is NOT staging", async () => {
+      const notStagingenvs = ['dev', 'build', 'test',];
+      for (const env of notStagingenvs) {
+          const req = getMockReq({cookies: {}});
+          const {res} = getMockRes();
+          const config = {environment: env}
+          await dbsDocumentBuilderGetController(config)(req, res);
+          expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
+                  authenticated: false,
+                  errorChoices: ERROR_CHOICES,
+                  showThrowError: true,
+              }
+          );
+      }
+    });
     it("should render the form for inputting DBS document details when user is authenticated", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
-      await dbsDocumentBuilderGetController(req, res);
+      await dbsDocumentBuilderGetController({
+        environment: "staging",
+      })(req, res);
 
       expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
         authenticated: true,
         errorChoices: ERROR_CHOICES,
+        showThrowError: false,
       });
     });
   });
