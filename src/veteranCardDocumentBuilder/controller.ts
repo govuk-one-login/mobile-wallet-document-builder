@@ -21,13 +21,13 @@ import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 const CREDENTIAL_TYPE = CredentialType.DigitalVeteranCard;
 const TTL_MINUTES = 43200;
 
-export interface veteranCardDocumentBuilderControllerConfig {
+export interface VeteranCardDocumentBuilderControllerConfig {
   environment?: string;
 }
 
 export function veteranCardDocumentBuilderGetController({
   environment = getEnvironment(),
-}: veteranCardDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
+}: VeteranCardDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
   return async function (req: Request, res: Response): Promise<void> {
     try {
       const showThrowError = environment !== "staging";

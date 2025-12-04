@@ -15,12 +15,12 @@ import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 const CREDENTIAL_TYPE = CredentialType.SocialSecurityCredential;
 const TTL_MINUTES = 43200;
 
-export interface ninoDocumentBuilderControllerConfig {
+export interface NinoDocumentBuilderControllerConfig {
   environment?: string;
 }
 export function ninoDocumentBuilderGetController({
   environment = getEnvironment(),
-}: ninoDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
+}: NinoDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
   return async function (req: Request, res: Response): Promise<void> {
     try {
       const showThrowError = environment !== "staging";

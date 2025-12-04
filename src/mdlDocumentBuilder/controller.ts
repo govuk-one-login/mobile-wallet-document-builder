@@ -110,45 +110,44 @@ export function mdlDocumentBuilderPostController({
       res.render("500.njk");
     }
   };
+}
+function buildMdlDataFromRequestBody(
+  body: MdlRequestBody,
+  s3Uri: string,
+): MdlData {
+  const birthDay = body["birth-day"];
+  const birthMonth = body["birth-month"];
+  const birthYear = body["birth-year"];
+  const issueDay = body["issue-day"];
+  const issueMonth = body["issue-month"];
+  const issueYear = body["issue-year"];
+  const expiryDay = body["expiry-day"];
+  const expiryMonth = body["expiry-month"];
+  const expiryYear = body["expiry-year"];
 
-  function buildMdlDataFromRequestBody(
-    body: MdlRequestBody,
-    s3Uri: string,
-  ): MdlData {
-    const birthDay = body["birth-day"];
-    const birthMonth = body["birth-month"];
-    const birthYear = body["birth-year"];
-    const issueDay = body["issue-day"];
-    const issueMonth = body["issue-month"];
-    const issueYear = body["issue-year"];
-    const expiryDay = body["expiry-day"];
-    const expiryMonth = body["expiry-month"];
-    const expiryYear = body["expiry-year"];
+  const fullDrivingPrivileges = getFullDrivingPrivileges(body);
+  const provisionalDrivingPrivileges = getProvisionalDrivingPrivileges(body);
 
-    const fullDrivingPrivileges = getFullDrivingPrivileges(body);
-    const provisionalDrivingPrivileges = getProvisionalDrivingPrivileges(body);
-
-    return {
-      family_name: body.family_name,
-      given_name: body.given_name,
-      title: body.title,
-      welsh_licence: body.welsh_licence === "true",
-      portrait: s3Uri,
-      birth_date: formatDate(birthDay, birthMonth, birthYear),
-      birth_place: body.birth_place,
-      issue_date: formatDate(issueDay, issueMonth, issueYear),
-      expiry_date: formatDate(expiryDay, expiryMonth, expiryYear),
-      issuing_authority: body.issuing_authority,
-      issuing_country: body.issuing_country,
-      document_number: body.document_number,
-      resident_address: body.resident_address,
-      resident_postal_code: body.resident_postal_code,
-      resident_city: body.resident_city,
-      driving_privileges: fullDrivingPrivileges,
-      ...(provisionalDrivingPrivileges.length !== 0 && {
-        provisional_driving_privileges: provisionalDrivingPrivileges,
-      }),
-      un_distinguishing_sign: "UK",
-    };
-  }
+  return {
+    family_name: body.family_name,
+    given_name: body.given_name,
+    title: body.title,
+    welsh_licence: body.welsh_licence === "true",
+    portrait: s3Uri,
+    birth_date: formatDate(birthDay, birthMonth, birthYear),
+    birth_place: body.birth_place,
+    issue_date: formatDate(issueDay, issueMonth, issueYear),
+    expiry_date: formatDate(expiryDay, expiryMonth, expiryYear),
+    issuing_authority: body.issuing_authority,
+    issuing_country: body.issuing_country,
+    document_number: body.document_number,
+    resident_address: body.resident_address,
+    resident_postal_code: body.resident_postal_code,
+    resident_city: body.resident_city,
+    driving_privileges: fullDrivingPrivileges,
+    ...(provisionalDrivingPrivileges.length !== 0 && {
+      provisional_driving_privileges: provisionalDrivingPrivileges,
+    }),
+    un_distinguishing_sign: "UK",
+  };
 }
