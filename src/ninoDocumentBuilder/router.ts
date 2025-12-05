@@ -10,7 +10,7 @@ const router = express.Router();
 router.get(
   "/build-nino-document",
   requiresAuth,
-  ninoDocumentBuilderGetController,
+  ninoDocumentBuilderGetController(),
 );
 router.post(
   "/build-nino-document",
