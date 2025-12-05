@@ -36,6 +36,7 @@ export function dbsDocumentBuilderGetController({
     }
   };
 }
+
 export async function dbsDocumentBuilderPostController(
   req: Request,
   res: Response,

@@ -27,6 +27,8 @@ jest.mock("../../src/utils/getRandomIntInclusive", () => ({
   getRandomIntInclusive: jest.fn().mockReturnValue(550000),
 }));
 
+const config = { environment: "staging" };
+
 describe("controller.ts", () => {
   beforeAll(() => {
     jest.useFakeTimers();
@@ -42,31 +44,6 @@ describe("controller.ts", () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
-      await mdlDocumentBuilderGetController({
-        environment: "staging",
-      })(req, res);
-
-      expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
-        authenticated: true,
-        defaultIssueDate: {
-          day: "02",
-          month: "05",
-          year: "2025",
-        },
-        defaultExpiryDate: {
-          day: "01",
-          month: "05",
-          year: "2035",
-        },
-        errorChoices: ERROR_CHOICES,
-        drivingLicenceNumber: "EDWAR550000SE5RO",
-        showThrowError: false,
-      });
-    });
-    it("should set showThrowError to false in staging", async () => {
-      const req = getMockReq({ cookies: { id_token: "id_token" } });
-      const { res } = getMockRes();
-      const config = { environment: "staging" };
       await mdlDocumentBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
@@ -86,13 +63,17 @@ describe("controller.ts", () => {
         showThrowError: false,
       });
     });
-    it("should set showThrowError to true when environment is NOT staging", async () => {
-      const notStagingenvs = ["dev", "build", "test"];
-      for (const env of notStagingenvs) {
+
+    test.each([
+      ["staging", false],
+      ["test", true],
+    ])(
+      "should set showThrowError correctly when environment is %s",
+      async (environment, expectedShowThrowError) => {
         const req = getMockReq({ cookies: { id_token: "id_token" } });
         const { res } = getMockRes();
-        const config = { environment: env };
-        await mdlDocumentBuilderGetController(config)(req, res);
+
+        await mdlDocumentBuilderGetController({ environment })(req, res);
 
         expect(res.render).toHaveBeenCalledWith(
           "mdl-document-details-form.njk",
@@ -110,11 +91,12 @@ describe("controller.ts", () => {
             },
             errorChoices: ERROR_CHOICES,
             drivingLicenceNumber: "EDWAR550000SE5RO",
-            showThrowError: true,
+            showThrowError: expectedShowThrowError,
           },
         );
-      }
-    });
+      },
+    );
+
     it("should render the 500 error page if an error is thrown", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
@@ -123,9 +105,7 @@ describe("controller.ts", () => {
         throw new Error("Rendering error");
       });
 
-      await mdlDocumentBuilderGetController({
-        environment: "staging",
-      })(req, res);
+      await mdlDocumentBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
@@ -149,7 +129,6 @@ describe("controller.ts", () => {
         });
         const { res } = getMockRes();
 
-        const config = { environment: "staging" };
         await mdlDocumentBuilderPostController(config)(req, res);
 
         expect(res.render).toHaveBeenCalledWith("500.njk");
@@ -172,7 +151,6 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          const config = { environment: "staging" };
           await mdlDocumentBuilderPostController(config)(req, res);
 
           const expectedPath = path.resolve(
@@ -199,7 +177,6 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          const config = { environment: "staging" };
           await mdlDocumentBuilderPostController(config)(req, res);
 
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
@@ -252,7 +229,6 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          const config = { environment: "staging" };
           await mdlDocumentBuilderPostController(config)(req, res);
 
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
@@ -315,7 +291,6 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          const config = { environment: "staging" };
           await mdlDocumentBuilderPostController(config)(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
@@ -331,7 +306,6 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          const config = { environment: "staging" };
           await mdlDocumentBuilderPostController(config)(req, res);
           expect(res.redirect).toHaveBeenCalledWith(
             "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL",
@@ -347,7 +321,7 @@ describe("controller.ts", () => {
               body: { ...requestBody, ...{ throwError: selectedError } },
             });
             const { res } = getMockRes();
-            const config = { environment: "staging" };
+
             await mdlDocumentBuilderPostController(config)(req, res);
 
             expect(res.redirect).toHaveBeenCalledWith(
@@ -370,7 +344,7 @@ describe("controller.ts", () => {
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
-        const config = { environment: "staging" };
+
         await mdlDocumentBuilderPostController(config)(req, res);
         expect(res.render).toHaveBeenCalledWith(
           "mdl-document-details-form.njk",

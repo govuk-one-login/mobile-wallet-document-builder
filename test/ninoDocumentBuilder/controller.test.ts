@@ -14,6 +14,8 @@ jest.mock("../../src/services/databaseService", () => ({
   saveDocument: jest.fn(),
 }));
 
+const config = { environment: "staging" };
+
 describe("controller.ts", () => {
   const nowMilliSec = 1757582135042;
   beforeEach(() => {
@@ -29,7 +31,6 @@ describe("controller.ts", () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
-      const config = { environment: "staging" };
       await ninoDocumentBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith(
@@ -41,39 +42,28 @@ describe("controller.ts", () => {
         },
       );
     });
-    it("should set showThrowError to false in staging", async () => {
-      const req = getMockReq({ cookies: {} });
-      const { res } = getMockRes();
-      const config = { environment: "staging" };
-      await ninoDocumentBuilderGetController(config)(req, res);
 
-      expect(res.render).toHaveBeenCalledWith(
-        "nino-document-details-form.njk",
-        {
-          authenticated: false,
-          errorChoices: ERROR_CHOICES,
-          showThrowError: false,
-        },
-      );
-    });
-    it("should set showThrowError to true when environment is NOT staging", async () => {
-      const notStagingenvs = ["dev", "build", "test"];
-      for (const env of notStagingenvs) {
+    test.each([
+      ["staging", false],
+      ["test", true],
+    ])(
+      "should set showThrowError correctly when environment is %s",
+      async (environment, expectedShowThrowError) => {
         const req = getMockReq({ cookies: {} });
         const { res } = getMockRes();
-        const config = { environment: env };
-        await ninoDocumentBuilderGetController(config)(req, res);
+
+        await ninoDocumentBuilderGetController({ environment })(req, res);
 
         expect(res.render).toHaveBeenCalledWith(
           "nino-document-details-form.njk",
           {
             authenticated: false,
             errorChoices: ERROR_CHOICES,
-            showThrowError: true,
+            showThrowError: expectedShowThrowError,
           },
         );
-      }
-    });
+      },
+    );
   });
 
   describe("post", () => {

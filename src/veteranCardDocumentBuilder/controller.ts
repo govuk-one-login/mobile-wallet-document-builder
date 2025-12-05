@@ -45,6 +45,7 @@ export function veteranCardDocumentBuilderGetController({
     }
   };
 }
+
 export async function veteranCardDocumentBuilderPostController(
   req: Request,
   res: Response,

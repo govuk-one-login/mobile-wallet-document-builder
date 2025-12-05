@@ -18,6 +18,7 @@ const TTL_MINUTES = 43200;
 export interface NinoDocumentBuilderControllerConfig {
   environment?: string;
 }
+
 export function ninoDocumentBuilderGetController({
   environment = getEnvironment(),
 }: NinoDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
@@ -35,6 +36,7 @@ export function ninoDocumentBuilderGetController({
     }
   };
 }
+
 export async function ninoDocumentBuilderPostController(
   req: Request,
   res: Response,
