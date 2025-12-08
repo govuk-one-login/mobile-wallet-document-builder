@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   getDocumentsTableName,
+  getEnvironment,
   getPhotosBucketName,
 } from "../config/appConfig";
 import { CredentialType } from "../types/CredentialType";
@@ -21,85 +22,95 @@ import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
+import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
 const TTL_MINUTES = 43200;
 
 let drivingLicenceNumber: string;
 
-export async function mdlDocumentBuilderGetController(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  try {
-    const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-    drivingLicenceNumber = "EDWAR" + getRandomIntInclusive() + "SE5RO";
-    res.render("mdl-document-details-form.njk", {
-      defaultIssueDate,
-      defaultExpiryDate,
-      drivingLicenceNumber,
-      authenticated: isAuthenticated(req),
-      errorChoices: ERROR_CHOICES,
-    });
-  } catch (error) {
-    logger.error(
-      error,
-      "An error happened rendering Driving Licence document page",
-    );
-    res.render("500.njk");
-  }
+export interface MdlDocumentBuilderControllerConfig {
+  environment?: string;
 }
 
-export async function mdlDocumentBuilderPostController(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  try {
-    const body: MdlRequestBody = req.body;
-
-    const errors = validateDateFields(body);
-    if (Object.keys(errors).length > 0) {
+export function mdlDocumentBuilderGetController({
+  environment = getEnvironment(),
+}: MdlDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
+  return async function (req: Request, res: Response): Promise<void> {
+    try {
+      const showThrowError = environment !== "staging";
       const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-      return res.render("mdl-document-details-form.njk", {
+      drivingLicenceNumber = "EDWAR" + getRandomIntInclusive() + "SE5RO";
+      res.render("mdl-document-details-form.njk", {
         defaultIssueDate,
         defaultExpiryDate,
         drivingLicenceNumber,
         authenticated: isAuthenticated(req),
         errorChoices: ERROR_CHOICES,
-        errors,
+        showThrowError,
       });
+    } catch (error) {
+      logger.error(
+        error,
+        "An error happened rendering Driving Licence document page",
+      );
+      res.render("500.njk");
     }
+  };
+}
 
-    const itemId = randomUUID();
-    const bucketName = getPhotosBucketName();
-    const s3Uri = `s3://${bucketName}/${itemId}`;
+export function mdlDocumentBuilderPostController({
+  environment = getEnvironment(),
+}: MdlDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
+  return async function (req: Request, res: Response): Promise<void> {
+    try {
+      const showThrowError = environment !== "staging";
+      const body: MdlRequestBody = req.body;
+      const errors = validateDateFields(body);
+      if (Object.keys(errors).length > 0) {
+        const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
+        return res.render("mdl-document-details-form.njk", {
+          defaultIssueDate,
+          defaultExpiryDate,
+          drivingLicenceNumber,
+          authenticated: isAuthenticated(req),
+          errorChoices: ERROR_CHOICES,
+          errors,
+          showThrowError,
+        });
+      }
 
-    const { photoBuffer, mimeType } = getPhoto(body.portrait);
-    await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
-    const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
-    const data = buildMdlDataFromRequestBody(body, s3Uri);
-    await saveDocument(getDocumentsTableName(), {
-      itemId,
-      documentId: data.document_number,
-      data,
-      vcType: CREDENTIAL_TYPE,
-      credentialTtlMinutes: Number(body.credentialTtl),
-      timeToLive,
-    });
+      const itemId = randomUUID();
+      const bucketName = getPhotosBucketName();
+      const s3Uri = `s3://${bucketName}/${itemId}`;
 
-    const selectedError = body["throwError"];
-    let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
-    if (isErrorCode(selectedError)) {
-      redirectUrl += `&error=${selectedError}`;
+      const { photoBuffer, mimeType } = getPhoto(body.portrait);
+      await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
+      const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
+      const data = buildMdlDataFromRequestBody(body, s3Uri);
+      await saveDocument(getDocumentsTableName(), {
+        itemId,
+        documentId: data.document_number,
+        data,
+        vcType: CREDENTIAL_TYPE,
+        credentialTtlMinutes: Number(body.credentialTtl),
+        timeToLive,
+      });
+
+      const selectedError = body["throwError"];
+      let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
+      if (isErrorCode(selectedError)) {
+        redirectUrl += `&error=${selectedError}`;
+      }
+      res.redirect(redirectUrl);
+    } catch (error) {
+      logger.error(
+        error,
+        "An error happened processing Driving Licence document request",
+      );
+      res.render("500.njk");
     }
-    res.redirect(redirectUrl);
-  } catch (error) {
-    logger.error(
-      error,
-      "An error happened processing Driving Licence document request",
-    );
-    res.render("500.njk");
-  }
+  };
 }
 
 function buildMdlDataFromRequestBody(
