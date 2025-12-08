@@ -7,6 +7,7 @@ import { isAuthenticated } from "../utils/isAuthenticated";
 import { uploadPhoto } from "../services/s3Service";
 import {
   getDocumentsTableName,
+  getEnvironment,
   getPhotosBucketName,
 } from "../config/appConfig";
 import { VeteranCardData } from "./types/VeteranCardData";
@@ -15,26 +16,34 @@ import { getPhoto } from "../utils/photoUtils";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
+import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 
 const CREDENTIAL_TYPE = CredentialType.DigitalVeteranCard;
 const TTL_MINUTES = 43200;
 
-export async function veteranCardDocumentBuilderGetController(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  try {
-    res.render("veteran-card-document-details-form.njk", {
-      authenticated: isAuthenticated(req),
-      errorChoices: ERROR_CHOICES,
-    });
-  } catch (error) {
-    logger.error(
-      error,
-      "An error happened rendering Veteran Card document page",
-    );
-    res.render("500.njk");
-  }
+export interface VeteranCardDocumentBuilderControllerConfig {
+  environment?: string;
+}
+
+export function veteranCardDocumentBuilderGetController({
+  environment = getEnvironment(),
+}: VeteranCardDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
+  return async function (req: Request, res: Response): Promise<void> {
+    try {
+      const showThrowError = environment !== "staging";
+      res.render("veteran-card-document-details-form.njk", {
+        authenticated: isAuthenticated(req),
+        errorChoices: ERROR_CHOICES,
+        showThrowError,
+      });
+    } catch (error) {
+      logger.error(
+        error,
+        "An error happened rendering Veteran Card document page",
+      );
+      res.render("500.njk");
+    }
+  };
 }
 
 export async function veteranCardDocumentBuilderPostController(

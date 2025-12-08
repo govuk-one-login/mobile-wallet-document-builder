@@ -23,6 +23,8 @@ jest.mock("../../src/services/s3Service", () => ({
 }));
 jest.mock("fs");
 
+const config = { environment: "staging" };
+
 describe("controller.ts", () => {
   const nowMilliSec = 1757582135042;
   beforeEach(() => {
@@ -35,19 +37,44 @@ describe("controller.ts", () => {
 
   describe("get", () => {
     it("should render the form for inputting the Veteran Card document details", async () => {
-      const req = getMockReq({ cookies: { id_token: "id_token" } });
+      const req = getMockReq({ cookies: {} });
       const { res } = getMockRes();
 
-      await veteranCardDocumentBuilderGetController(req, res);
-
+      await veteranCardDocumentBuilderGetController(config)(req, res);
       expect(res.render).toHaveBeenCalledWith(
         "veteran-card-document-details-form.njk",
         {
-          authenticated: true,
+          authenticated: false,
           errorChoices: ERROR_CHOICES,
+          showThrowError: false,
         },
       );
     });
+
+    test.each([
+      ["staging", false],
+      ["test", true],
+    ])(
+      "should set showThrowError correctly when environment is %s",
+      async (environment, expectedShowThrowError) => {
+        const req = getMockReq({ cookies: {} });
+        const { res } = getMockRes();
+
+        await veteranCardDocumentBuilderGetController({ environment })(
+          req,
+          res,
+        );
+
+        expect(res.render).toHaveBeenCalledWith(
+          "veteran-card-document-details-form.njk",
+          {
+            authenticated: false,
+            errorChoices: ERROR_CHOICES,
+            showThrowError: expectedShowThrowError,
+          },
+        );
+      },
+    );
   });
 
   describe("post", () => {

@@ -273,6 +273,7 @@
                     }
                 ]
             }) }}
+            {% if showThrowError %}
             {{ govukSelect({
                 "id": "throw-error",
                 "name": "throwError",
@@ -282,6 +283,7 @@
                 },
                 "items": errorChoices
             }) }}
+        {% endif %}
         {% endcall %}
         {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
     </form>

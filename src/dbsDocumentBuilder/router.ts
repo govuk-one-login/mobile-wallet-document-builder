@@ -10,7 +10,7 @@ const router = express.Router();
 router.get(
   "/build-dbs-document",
   requiresAuth,
-  dbsDocumentBuilderGetController,
+  dbsDocumentBuilderGetController(),
 );
 router.post(
   "/build-dbs-document",

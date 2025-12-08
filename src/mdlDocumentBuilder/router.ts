@@ -10,12 +10,12 @@ const router = express.Router();
 router.get(
   "/build-mdl-document",
   requiresAuth,
-  mdlDocumentBuilderGetController,
+  mdlDocumentBuilderGetController(),
 );
 router.post(
   "/build-mdl-document",
   requiresAuth,
-  mdlDocumentBuilderPostController,
+  mdlDocumentBuilderPostController(),
 );
 
 export { router as mdlDocumentBuilderRouter };

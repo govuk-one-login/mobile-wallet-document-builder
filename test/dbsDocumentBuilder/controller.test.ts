@@ -14,6 +14,8 @@ jest.mock("../../src/services/databaseService", () => ({
   saveDocument: jest.fn(),
 }));
 
+const config = { environment: "staging" };
+
 describe("controller.ts", () => {
   const nowMilliSec = 1757582135042;
   beforeEach(() => {
@@ -29,13 +31,36 @@ describe("controller.ts", () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
-      await dbsDocumentBuilderGetController(req, res);
+      await dbsDocumentBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
         authenticated: true,
         errorChoices: ERROR_CHOICES,
+        showThrowError: false,
       });
     });
+
+    test.each([
+      ["staging", false],
+      ["test", true],
+    ])(
+      "should set showThrowError correctly when environment is %s",
+      async (environment, expectedShowThrowError) => {
+        const req = getMockReq({ cookies: {} });
+        const { res } = getMockRes();
+
+        await dbsDocumentBuilderGetController({ environment })(req, res);
+
+        expect(res.render).toHaveBeenCalledWith(
+          "dbs-document-details-form.njk",
+          {
+            authenticated: false,
+            errorChoices: ERROR_CHOICES,
+            showThrowError: expectedShowThrowError,
+          },
+        );
+      },
+    );
   });
 
   describe("post", () => {

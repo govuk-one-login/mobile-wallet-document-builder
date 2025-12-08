@@ -27,6 +27,8 @@ jest.mock("../../src/utils/getRandomIntInclusive", () => ({
   getRandomIntInclusive: jest.fn().mockReturnValue(550000),
 }));
 
+const config = { environment: "staging" };
+
 describe("controller.ts", () => {
   beforeAll(() => {
     jest.useFakeTimers();
@@ -42,7 +44,7 @@ describe("controller.ts", () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
-      await mdlDocumentBuilderGetController(req, res);
+      await mdlDocumentBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
         authenticated: true,
@@ -58,8 +60,42 @@ describe("controller.ts", () => {
         },
         errorChoices: ERROR_CHOICES,
         drivingLicenceNumber: "EDWAR550000SE5RO",
+        showThrowError: false,
       });
     });
+
+    test.each([
+      ["staging", false],
+      ["test", true],
+    ])(
+      "should set showThrowError correctly when environment is %s",
+      async (environment, expectedShowThrowError) => {
+        const req = getMockReq({ cookies: { id_token: "id_token" } });
+        const { res } = getMockRes();
+
+        await mdlDocumentBuilderGetController({ environment })(req, res);
+
+        expect(res.render).toHaveBeenCalledWith(
+          "mdl-document-details-form.njk",
+          {
+            authenticated: true,
+            defaultIssueDate: {
+              day: "02",
+              month: "05",
+              year: "2025",
+            },
+            defaultExpiryDate: {
+              day: "01",
+              month: "05",
+              year: "2035",
+            },
+            errorChoices: ERROR_CHOICES,
+            drivingLicenceNumber: "EDWAR550000SE5RO",
+            showThrowError: expectedShowThrowError,
+          },
+        );
+      },
+    );
 
     it("should render the 500 error page if an error is thrown", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
@@ -69,7 +105,7 @@ describe("controller.ts", () => {
         throw new Error("Rendering error");
       });
 
-      await mdlDocumentBuilderGetController(req, res);
+      await mdlDocumentBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
@@ -93,7 +129,7 @@ describe("controller.ts", () => {
         });
         const { res } = getMockRes();
 
-        await mdlDocumentBuilderPostController(req, res);
+        await mdlDocumentBuilderPostController(config)(req, res);
 
         expect(res.render).toHaveBeenCalledWith("500.njk");
       });
@@ -115,7 +151,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(req, res);
+          await mdlDocumentBuilderPostController(config)(req, res);
 
           const expectedPath = path.resolve(
             __dirname,
@@ -141,7 +177,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(req, res);
+          await mdlDocumentBuilderPostController(config)(req, res);
 
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
             itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
@@ -193,7 +229,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(req, res);
+          await mdlDocumentBuilderPostController(config)(req, res);
 
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
             itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
@@ -255,7 +291,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(req, res);
+          await mdlDocumentBuilderPostController(config)(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
             "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL",
@@ -270,8 +306,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(req, res);
-
+          await mdlDocumentBuilderPostController(config)(req, res);
           expect(res.redirect).toHaveBeenCalledWith(
             "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL",
           );
@@ -286,7 +321,8 @@ describe("controller.ts", () => {
               body: { ...requestBody, ...{ throwError: selectedError } },
             });
             const { res } = getMockRes();
-            await mdlDocumentBuilderPostController(req, res);
+
+            await mdlDocumentBuilderPostController(config)(req, res);
 
             expect(res.redirect).toHaveBeenCalledWith(
               `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL&error=${selectedError}`,
@@ -308,7 +344,8 @@ describe("controller.ts", () => {
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
-        await mdlDocumentBuilderPostController(req, res);
+
+        await mdlDocumentBuilderPostController(config)(req, res);
         expect(res.render).toHaveBeenCalledWith(
           "mdl-document-details-form.njk",
           {
@@ -328,6 +365,7 @@ describe("controller.ts", () => {
             },
             errorChoices: ERROR_CHOICES,
             drivingLicenceNumber: "EDWAR550000SE5RO",
+            showThrowError: false,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();
