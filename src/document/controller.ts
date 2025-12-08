@@ -6,7 +6,7 @@ import { CredentialType } from "../types/CredentialType";
 import { getDocumentsTableName } from "../config/appConfig";
 import { VeteranCardData } from "../veteranCardDocumentBuilder/types/VeteranCardData";
 import { MdlData } from "../mdlDocumentBuilder/types/MdlData";
-import { FishingLicenceData } from "../fishingLicenceDocumentBuilder/types/FishingLicenceData";
+import { ExampleDocumentData } from "../exampleDocumentBuilder/types/ExampleDocumentData";
 
 export async function documentController(
   req: Request,
@@ -53,8 +53,8 @@ export async function documentController(
       (data as MdlData).portrait = photo;
     }
 
-    if (tableItem.vcType === CredentialType.FishingLicence) {
-      const s3Uri = (data as FishingLicenceData).portrait;
+    if (tableItem.vcType === CredentialType.ExampleDocument) {
+      const s3Uri = (data as ExampleDocumentData).portrait;
 
       const { bucketName, fileName } = getBucketAndFileName(s3Uri);
 
@@ -64,7 +64,7 @@ export async function documentController(
         res.status(404).send();
         return;
       }
-      (data as FishingLicenceData).portrait = photo;
+      (data as ExampleDocumentData).portrait = photo;
     }
 
     res.status(200).json(tableItem);
