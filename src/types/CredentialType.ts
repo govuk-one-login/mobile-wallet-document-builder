@@ -3,5 +3,5 @@ export enum CredentialType {
   BasicDisclosureCredential = "BasicDisclosureCredential",
   DigitalVeteranCard = "DigitalVeteranCard",
   MobileDrivingLicence = "org.iso.18013.5.1.mDL",
-  FishingLicence = "uk.gov.account.mobile.example-cri.fishinglicence.1",
+  SimpleDocument = "uk.gov.account.mobile.example-credential-issuer.simplemdoc.1",
 }

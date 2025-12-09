@@ -1,4 +1,4 @@
-export interface FishingLicenceData {
+export interface SimpleDocumentData {
   family_name: string;
   given_name: string;
   portrait: string;

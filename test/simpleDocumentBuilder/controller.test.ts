@@ -1,13 +1,13 @@
 import {
-  fishingLicenceDocumentBuilderGetController,
-  fishingLicenceDocumentBuilderPostController,
-} from "../../src/fishingLicenceDocumentBuilder/controller";
+  simpleDocumentBuilderGetController,
+  simpleDocumentBuilderPostController,
+} from "../../src/simpleDocumentBuilder/controller";
 import { readFileSync } from "fs";
 import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
-import { FishingLicenceRequestBody } from "../../src/fishingLicenceDocumentBuilder/types/FishingLicenceRequestBody";
+import { SimpleDocumentRequestBody } from "../../src/simpleDocumentBuilder/types/SimpleDocumentRequestBody";
 import { ERROR_CHOICES } from "../../src/utils/errorChoices";
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
@@ -38,14 +38,14 @@ describe("controller.ts", () => {
   });
 
   describe("get", () => {
-    it("should render the form for inputting the fishing licence document details", async () => {
+    it("should render the form for inputting the simple document details", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
-      await fishingLicenceDocumentBuilderGetController(req, res);
+      await simpleDocumentBuilderGetController(req, res);
 
       expect(res.render).toHaveBeenCalledWith(
-        "fishing-licence-document-details-form.njk",
+        "simple-document-details-form.njk",
         {
           defaultIssueDate: {
             day: "02",
@@ -57,7 +57,7 @@ describe("controller.ts", () => {
             month: "05",
             year: "2035",
           },
-          fishingLicenceNumber: "FLN550000",
+          documentNumber: "FLN550000",
           fishTypeOptions: [
             {
               selected: true,
@@ -94,14 +94,14 @@ describe("controller.ts", () => {
         throw new Error("Rendering error");
       });
 
-      await fishingLicenceDocumentBuilderGetController(req, res);
+      await simpleDocumentBuilderGetController(req, res);
 
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
   });
 
   describe("post", () => {
-    const requestBody = buildFishingLicenceRequestBody();
+    const requestBody = buildSimpleDocumentRequestBody();
 
     const photoBuffer = Buffer.from("mock photo data");
     const mockReadFileSync = readFileSync as jest.Mock;
@@ -118,7 +118,7 @@ describe("controller.ts", () => {
         });
         const { res } = getMockRes();
 
-        await fishingLicenceDocumentBuilderPostController(req, res);
+        await simpleDocumentBuilderPostController(req, res);
 
         expect(res.render).toHaveBeenCalledWith("500.njk");
       });
@@ -140,7 +140,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await fishingLicenceDocumentBuilderPostController(req, res);
+          await simpleDocumentBuilderPostController(req, res);
 
           const expectedPath = path.resolve(
             __dirname,
@@ -165,12 +165,13 @@ describe("controller.ts", () => {
         });
         const { res } = getMockRes();
 
-        await fishingLicenceDocumentBuilderPostController(req, res);
+        await simpleDocumentBuilderPostController(req, res);
 
         expect(saveDocument).toHaveBeenCalledWith("testTable", {
           itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           documentId: "FLN550000",
-          vcType: "uk.gov.account.mobile.example-cri.fishinglicence.1",
+          vcType:
+            "uk.gov.account.mobile.example-credential-issuer.simplemdoc.1",
           timeToLive: 1748736000,
           credentialTtlMinutes: 43200,
           data: {
@@ -191,31 +192,31 @@ describe("controller.ts", () => {
 
     describe("given the document and photo have been stored successfully", () => {
       describe("when an unknown error code has been received in the request body", () => {
-        it("should redirect to the credential offer page with only the fishing licence type in the query params", async () => {
+        it("should redirect to the credential offer page with only the simple document credential type in the query params", async () => {
           const req = getMockReq({
             body: requestBody,
           });
           const { res } = getMockRes();
 
-          await fishingLicenceDocumentBuilderPostController(req, res);
+          await simpleDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=uk.gov.account.mobile.example-cri.fishinglicence.1",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=uk.gov.account.mobile.example-credential-issuer.simplemdoc.1",
           );
         });
       });
 
       describe("when an error scenario has not been selected", () => {
-        it("should redirect to the credential offer page with only the fishing licence type in the query params", async () => {
+        it("should redirect to the credential offer page with only the simple document credential type in the query params", async () => {
           const req = getMockReq({
             body: requestBody,
           });
           const { res } = getMockRes();
 
-          await fishingLicenceDocumentBuilderPostController(req, res);
+          await simpleDocumentBuilderPostController(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
-            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=uk.gov.account.mobile.example-cri.fishinglicence.1",
+            "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=uk.gov.account.mobile.example-credential-issuer.simplemdoc.1",
           );
         });
       });
@@ -228,10 +229,10 @@ describe("controller.ts", () => {
               body: { ...requestBody, ...{ throwError: selectedError } },
             });
             const { res } = getMockRes();
-            await fishingLicenceDocumentBuilderPostController(req, res);
+            await simpleDocumentBuilderPostController(req, res);
 
             expect(res.redirect).toHaveBeenCalledWith(
-              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=uk.gov.account.mobile.example-cri.fishinglicence.1&error=${selectedError}`,
+              `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=uk.gov.account.mobile.example-credential-issuer.simplemdoc.1&error=${selectedError}`,
             );
           },
         );
@@ -240,7 +241,7 @@ describe("controller.ts", () => {
 
     describe("given invalid date fields", () => {
       it("should render an error when the birthdate has empty fields", async () => {
-        const body = buildFishingLicenceRequestBody({
+        const body = buildSimpleDocumentRequestBody({
           "birth-day": "",
           "birth-month": "08",
           "birth-year": "",
@@ -250,9 +251,9 @@ describe("controller.ts", () => {
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
-        await fishingLicenceDocumentBuilderPostController(req, res);
+        await simpleDocumentBuilderPostController(req, res);
         expect(res.render).toHaveBeenCalledWith(
-          "fishing-licence-document-details-form.njk",
+          "simple-document-details-form.njk",
           {
             errors: expect.objectContaining({
               birth_date: "Enter a valid birth date",
@@ -268,7 +269,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            fishingLicenceNumber: "FLN550000",
+            documentNumber: "FLN550000",
             fishTypeOptions: [
               {
                 selected: true,
@@ -300,7 +301,7 @@ describe("controller.ts", () => {
 
     describe("given an invalid type of fish", () => {
       it("should render an error when the type of fish selected is unknown", async () => {
-        const body = buildFishingLicenceRequestBody({
+        const body = buildSimpleDocumentRequestBody({
           type_of_fish: "Unknwon fish type",
         });
         const req = getMockReq({
@@ -308,9 +309,9 @@ describe("controller.ts", () => {
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
-        await fishingLicenceDocumentBuilderPostController(req, res);
+        await simpleDocumentBuilderPostController(req, res);
         expect(res.render).toHaveBeenCalledWith(
-          "fishing-licence-document-details-form.njk",
+          "simple-document-details-form.njk",
           {
             errors: expect.objectContaining({
               type_of_fish: "Select a valid type of fish",
@@ -326,7 +327,7 @@ describe("controller.ts", () => {
               year: "2035",
             },
             errorChoices: ERROR_CHOICES,
-            fishingLicenceNumber: "FLN550000",
+            documentNumber: "FLN550000",
             fishTypeOptions: [
               {
                 selected: true,
@@ -358,10 +359,10 @@ describe("controller.ts", () => {
   });
 });
 
-export function buildFishingLicenceRequestBody(
-  overrides: Partial<FishingLicenceRequestBody> = {},
-): FishingLicenceRequestBody {
-  const defaults: FishingLicenceRequestBody = {
+export function buildSimpleDocumentRequestBody(
+  overrides: Partial<SimpleDocumentRequestBody> = {},
+): SimpleDocumentRequestBody {
+  const defaults: SimpleDocumentRequestBody = {
     family_name: "Smith",
     given_name: "John",
     portrait: "420x525.jpg",

@@ -11,14 +11,14 @@ import {
 import { getPhoto } from "../utils/photoUtils";
 import { uploadPhoto } from "../services/s3Service";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
-import { FishingLicenceRequestBody } from "./types/FishingLicenceRequestBody";
+import { SimpleDocumentRequestBody } from "./types/SimpleDocumentRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
-import { FishingLicenceData } from "./types/FishingLicenceData";
+import { SimpleDocumentData } from "./types/SimpleDocumentData";
 import { isErrorCode } from "../utils/isErrorCode";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 
-const CREDENTIAL_TYPE = CredentialType.FishingLicence;
+const CREDENTIAL_TYPE = CredentialType.SimpleDocument;
 const TTL_MINUTES = 43200;
 const FISH_TYPES = [
   "Coarse fish",
@@ -32,48 +32,45 @@ const fishTypeOptions = FISH_TYPES.map((type, index) => ({
   selected: index === 0,
 }));
 
-let fishingLicenceNumber: string;
+let documentNumber: string;
 
-export async function fishingLicenceDocumentBuilderGetController(
+export async function simpleDocumentBuilderGetController(
   req: Request,
   res: Response,
 ): Promise<void> {
   try {
     const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-    fishingLicenceNumber = "FLN" + getRandomIntInclusive();
-    res.render("fishing-licence-document-details-form.njk", {
+    documentNumber = "FLN" + getRandomIntInclusive();
+    res.render("simple-document-details-form.njk", {
       defaultIssueDate,
       defaultExpiryDate,
-      fishingLicenceNumber,
+      documentNumber,
       fishTypeOptions,
       authenticated: isAuthenticated(req),
       errorChoices: ERROR_CHOICES,
     });
   } catch (error) {
-    logger.error(
-      error,
-      "An error happened rendering Fishing Licence document page",
-    );
+    logger.error(error, "An error happened rendering the Simple Document page");
     res.render("500.njk");
   }
 }
 
-export async function fishingLicenceDocumentBuilderPostController(
+export async function simpleDocumentBuilderPostController(
   req: Request,
   res: Response,
 ): Promise<void> {
   try {
-    const body: FishingLicenceRequestBody = req.body;
+    const body: SimpleDocumentRequestBody = req.body;
     const errors = validateDateFields(body);
     if (!FISH_TYPES.includes(body.type_of_fish)) {
       errors.type_of_fish = "Select a valid type of fish";
     }
     if (Object.keys(errors).length > 0) {
       const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-      return res.render("fishing-licence-document-details-form.njk", {
+      return res.render("simple-document-details-form.njk", {
         defaultIssueDate,
         defaultExpiryDate,
-        fishingLicenceNumber,
+        documentNumber,
         fishTypeOptions,
         authenticated: isAuthenticated(req),
         errorChoices: ERROR_CHOICES,
@@ -88,7 +85,7 @@ export async function fishingLicenceDocumentBuilderPostController(
     const { photoBuffer, mimeType } = getPhoto(body.portrait);
     await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
     const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
-    const data = buildFishingLicenceDataFromRequestBody(body, s3Uri);
+    const data = buildSimpleDocumentDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
       itemId,
       documentId: data.document_number,
@@ -107,16 +104,16 @@ export async function fishingLicenceDocumentBuilderPostController(
   } catch (error) {
     logger.error(
       error,
-      "An error happened processing Fishing Licence document request",
+      "An error happened processing the Simple Document request",
     );
     res.render("500.njk");
   }
 }
 
-function buildFishingLicenceDataFromRequestBody(
-  body: FishingLicenceRequestBody,
+function buildSimpleDocumentDataFromRequestBody(
+  body: SimpleDocumentRequestBody,
   s3Uri: string,
-): FishingLicenceData {
+): SimpleDocumentData {
   const birthDay = body["birth-day"];
   const birthMonth = body["birth-month"];
   const birthYear = body["birth-year"];

@@ -1,4 +1,4 @@
-export interface FishingLicenceRequestBody {
+export interface SimpleDocumentRequestBody {
   family_name: string;
   given_name: string;
   portrait: string;
