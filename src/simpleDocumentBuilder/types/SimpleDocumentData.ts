@@ -1,4 +1,4 @@
-export interface ExampleDocumentData {
+export interface SimpleDocumentData {
   family_name: string;
   given_name: string;
   portrait: string;

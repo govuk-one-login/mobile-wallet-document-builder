@@ -6,7 +6,7 @@ import { CredentialType } from "../types/CredentialType";
 import { getDocumentsTableName } from "../config/appConfig";
 import { VeteranCardData } from "../veteranCardDocumentBuilder/types/VeteranCardData";
 import { MdlData } from "../mdlDocumentBuilder/types/MdlData";
-import { ExampleDocumentData } from "../exampleDocumentBuilder/types/ExampleDocumentData";
+import { SimpleDocumentData } from "../simpleDocumentBuilder/types/SimpleDocumentData";
 
 export async function documentController(
   req: Request,
@@ -53,8 +53,8 @@ export async function documentController(
       (data as MdlData).portrait = photo;
     }
 
-    if (tableItem.vcType === CredentialType.ExampleDocument) {
-      const s3Uri = (data as ExampleDocumentData).portrait;
+    if (tableItem.vcType === CredentialType.SimpleDocument) {
+      const s3Uri = (data as SimpleDocumentData).portrait;
 
       const { bucketName, fileName } = getBucketAndFileName(s3Uri);
 
@@ -64,7 +64,7 @@ export async function documentController(
         res.status(404).send();
         return;
       }
-      (data as ExampleDocumentData).portrait = photo;
+      (data as SimpleDocumentData).portrait = photo;
     }
 
     res.status(200).json(tableItem);

@@ -6,31 +6,26 @@ import { getMockReq, getMockRes } from "@jest-mock/express";
 
 const config = {
   documentsConfig: {
-    SocialSecurityCredential: {
-      route: "/build-nino-document",
-      name: "NINO",
+    TestCredential1: {
+      route: "/build-test-document-1",
+      name: "Test Document 1",
     },
-    BasicDisclosureCredential: {
-      route: "/build-dbs-document",
-      name: "DBS",
+    TestCredential2: {
+      route: "/build-test-document-2",
+      name: "Test Document 2",
     },
-    DigitalVeteranCard: {
-      route: "/build-veteran-card-document",
-      name: "Veteran Card",
-    },
-    "org.iso.18013.5.1.mDL": {
-      route: "/build-mdl-document",
-      name: "Driving Licence",
+    TestCredential3: {
+      route: "/build-test-document-3",
+      name: "Test Document 3",
     },
   },
 };
 
 describe("documentSelectorGetController", () => {
   it.each([
-    ["/build-nino-document", "SocialSecurityCredential"],
-    ["/build-dbs-document", "BasicDisclosureCredential"],
-    ["/build-veteran-card-document", "DigitalVeteranCard"],
-    ["/build-mdl-document", "org.iso.18013.5.1.mDL"],
+    ["/build-test-document-1", "TestCredential1"],
+    ["/build-test-document-2", "TestCredential2"],
+    ["/build-test-document-3", "TestCredential3"],
   ])(
     "redirects to %s when credentialType=%s",
     (expectedRoute, credentialType) => {
@@ -53,20 +48,16 @@ describe("documentSelectorGetController", () => {
       authenticated: false,
       documents: [
         {
-          text: "NINO",
-          value: "SocialSecurityCredential",
+          text: "Test Document 1",
+          value: "TestCredential1",
         },
         {
-          text: "DBS",
-          value: "BasicDisclosureCredential",
+          text: "Test Document 2",
+          value: "TestCredential2",
         },
         {
-          text: "Veteran Card",
-          value: "DigitalVeteranCard",
-        },
-        {
-          text: "Driving Licence",
-          value: "org.iso.18013.5.1.mDL",
+          text: "Test Document 3",
+          value: "TestCredential3",
         },
       ],
     });
@@ -85,20 +76,16 @@ describe("documentSelectorGetController", () => {
       authenticated: false,
       documents: [
         {
-          text: "NINO",
-          value: "SocialSecurityCredential",
+          text: "Test Document 1",
+          value: "TestCredential1",
         },
         {
-          text: "DBS",
-          value: "BasicDisclosureCredential",
+          text: "Test Document 2",
+          value: "TestCredential2",
         },
         {
-          text: "Veteran Card",
-          value: "DigitalVeteranCard",
-        },
-        {
-          text: "Driving Licence",
-          value: "org.iso.18013.5.1.mDL",
+          text: "Test Document 3",
+          value: "TestCredential3",
         },
       ],
     });
@@ -108,10 +95,9 @@ describe("documentSelectorGetController", () => {
 
 describe("documentSelectorPostController", () => {
   it.each([
-    ["/build-nino-document", "SocialSecurityCredential"],
-    ["/build-dbs-document", "BasicDisclosureCredential"],
-    ["/build-veteran-card-document", "DigitalVeteranCard"],
-    ["/build-mdl-document", "org.iso.18013.5.1.mDL"],
+    ["/build-test-document-1", "TestCredential1"],
+    ["/build-test-document-2", "TestCredential2"],
+    ["/build-test-document-3", "TestCredential3"],
   ])("should redirect to %s when selection=%s", (expectedRoute, selection) => {
     const req = getMockReq({
       body: {
@@ -140,20 +126,16 @@ describe("documentSelectorPostController", () => {
       authenticated: false,
       documents: [
         {
-          text: "NINO",
-          value: "SocialSecurityCredential",
+          text: "Test Document 1",
+          value: "TestCredential1",
         },
         {
-          text: "DBS",
-          value: "BasicDisclosureCredential",
+          text: "Test Document 2",
+          value: "TestCredential2",
         },
         {
-          text: "Veteran Card",
-          value: "DigitalVeteranCard",
-        },
-        {
-          text: "Driving Licence",
-          value: "org.iso.18013.5.1.mDL",
+          text: "Test Document 3",
+          value: "TestCredential3",
         },
       ],
     });
@@ -171,20 +153,16 @@ describe("documentSelectorPostController", () => {
       authenticated: false,
       documents: [
         {
-          text: "NINO",
-          value: "SocialSecurityCredential",
+          text: "Test Document 1",
+          value: "TestCredential1",
         },
         {
-          text: "DBS",
-          value: "BasicDisclosureCredential",
+          text: "Test Document 2",
+          value: "TestCredential2",
         },
         {
-          text: "Veteran Card",
-          value: "DigitalVeteranCard",
-        },
-        {
-          text: "Driving Licence",
-          value: "org.iso.18013.5.1.mDL",
+          text: "Test Document 3",
+          value: "TestCredential3",
         },
       ],
     });

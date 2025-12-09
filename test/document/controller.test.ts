@@ -54,7 +54,7 @@ const mdlData = {
   resident_city: "London",
 };
 
-const exampleDocumentData = {
+const simpleDocumentData = {
   family_name: "Smith",
   given_name: "John",
   portrait: "s3://photosBucket/" + itemId,
@@ -137,15 +137,15 @@ describe("controller.ts", () => {
     expect(res.status).toHaveBeenCalledWith(404);
   });
 
-  it("should return 404 if the example document photo was not found", async () => {
+  it("should return 404 if the simple document photo was not found", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
       params: { itemId },
     });
     getDocument.mockReturnValueOnce({
       itemId,
-      data: exampleDocumentData,
-      vcType: CredentialType.ExampleDocument,
+      data: simpleDocumentData,
+      vcType: CredentialType.SimpleDocument,
     });
     getPhoto.mockReturnValueOnce(undefined);
 
@@ -220,23 +220,23 @@ describe("controller.ts", () => {
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
-  it("should return 200 and the example document record as JSON", async () => {
+  it("should return 200 and the simple document record as JSON", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
       params: { itemId },
     });
     getDocument.mockReturnValueOnce({
       itemId,
-      data: exampleDocumentData,
-      vcType: CredentialType.ExampleDocument,
+      data: simpleDocumentData,
+      vcType: CredentialType.SimpleDocument,
     });
     const mockedPhoto = "mockBase64EncodedPhoto";
     getPhoto.mockReturnValueOnce(mockedPhoto);
 
     await documentController(req, res);
 
-    const exampleDocumentWithPhoto = { ...exampleDocumentData };
-    exampleDocumentWithPhoto.portrait = mockedPhoto;
+    const simpleDocumentWithPhoto = { ...simpleDocumentData };
+    simpleDocumentWithPhoto.portrait = mockedPhoto;
 
     expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
     expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);

@@ -11,14 +11,14 @@ import {
 import { getPhoto } from "../utils/photoUtils";
 import { uploadPhoto } from "../services/s3Service";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
-import { ExampleDocumentRequestBody } from "./types/ExampleDocumentRequestBody";
+import { SimpleDocumentRequestBody } from "./types/SimpleDocumentRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
-import { ExampleDocumentData } from "./types/ExampleDocumentData";
+import { SimpleDocumentData } from "./types/SimpleDocumentData";
 import { isErrorCode } from "../utils/isErrorCode";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 
-const CREDENTIAL_TYPE = CredentialType.ExampleDocument;
+const CREDENTIAL_TYPE = CredentialType.SimpleDocument;
 const TTL_MINUTES = 43200;
 const FISH_TYPES = [
   "Coarse fish",
@@ -32,48 +32,45 @@ const fishTypeOptions = FISH_TYPES.map((type, index) => ({
   selected: index === 0,
 }));
 
-let exampleDocumentNumber: string;
+let documentNumber: string;
 
-export async function exampleDocumentBuilderGetController(
+export async function simpleDocumentBuilderGetController(
   req: Request,
   res: Response,
 ): Promise<void> {
   try {
     const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-    exampleDocumentNumber = "FLN" + getRandomIntInclusive();
-    res.render("example-document-details-form.njk", {
+    documentNumber = "FLN" + getRandomIntInclusive();
+    res.render("simple-document-details-form.njk", {
       defaultIssueDate,
       defaultExpiryDate,
-      exampleDocumentNumber,
+      documentNumber,
       fishTypeOptions,
       authenticated: isAuthenticated(req),
       errorChoices: ERROR_CHOICES,
     });
   } catch (error) {
-    logger.error(
-      error,
-      "An error happened rendering the Example Document page",
-    );
+    logger.error(error, "An error happened rendering the Simple Document page");
     res.render("500.njk");
   }
 }
 
-export async function exampleDocumentBuilderPostController(
+export async function simpleDocumentBuilderPostController(
   req: Request,
   res: Response,
 ): Promise<void> {
   try {
-    const body: ExampleDocumentRequestBody = req.body;
+    const body: SimpleDocumentRequestBody = req.body;
     const errors = validateDateFields(body);
     if (!FISH_TYPES.includes(body.type_of_fish)) {
       errors.type_of_fish = "Select a valid type of fish";
     }
     if (Object.keys(errors).length > 0) {
       const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-      return res.render("example-document-details-form.njk", {
+      return res.render("simple-document-details-form.njk", {
         defaultIssueDate,
         defaultExpiryDate,
-        exampleDocumentNumber,
+        documentNumber,
         fishTypeOptions,
         authenticated: isAuthenticated(req),
         errorChoices: ERROR_CHOICES,
@@ -88,7 +85,7 @@ export async function exampleDocumentBuilderPostController(
     const { photoBuffer, mimeType } = getPhoto(body.portrait);
     await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
     const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
-    const data = buildExampleDocumentDataFromRequestBody(body, s3Uri);
+    const data = buildSimpleDocumentDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
       itemId,
       documentId: data.document_number,
@@ -107,16 +104,16 @@ export async function exampleDocumentBuilderPostController(
   } catch (error) {
     logger.error(
       error,
-      "An error happened processing the Example Document request",
+      "An error happened processing the Simple Document request",
     );
     res.render("500.njk");
   }
 }
 
-function buildExampleDocumentDataFromRequestBody(
-  body: ExampleDocumentRequestBody,
+function buildSimpleDocumentDataFromRequestBody(
+  body: SimpleDocumentRequestBody,
   s3Uri: string,
-): ExampleDocumentData {
+): SimpleDocumentData {
   const birthDay = body["birth-day"];
   const birthMonth = body["birth-month"];
   const birthYear = body["birth-year"];
