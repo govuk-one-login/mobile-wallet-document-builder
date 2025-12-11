@@ -2,7 +2,7 @@ import {
   isValidDate,
   validateDateFields,
 } from "../../../src/utils/date/dateValidator";
-import { MdlRequestBody } from "../../../src/mdlDocumentBuilder/types/MdlRequestBody";
+import { DrivingLicenceRequestBody } from "../../../src/drivingLicenceBuilder/types/DrivingLicenceRequestBody";
 
 describe("validateDateFields", () => {
   it("should return no errors if all dates are valid", () => {
@@ -16,7 +16,7 @@ describe("validateDateFields", () => {
       "expiry-day": "16",
       "expiry-month": "06",
       "expiry-year": "2025",
-    } as MdlRequestBody;
+    } as DrivingLicenceRequestBody;
 
     expect(validateDateFields(body)).toEqual({});
   });
@@ -32,7 +32,7 @@ describe("validateDateFields", () => {
       "expiry-day": "16",
       "expiry-month": "06",
       "expiry-year": "2025",
-    } as MdlRequestBody;
+    } as DrivingLicenceRequestBody;
 
     expect(validateDateFields(body)).toEqual({
       birth_date: "Enter a valid birth date",
@@ -50,7 +50,7 @@ describe("validateDateFields", () => {
       "expiry-day": "16",
       "expiry-month": "06",
       "expiry-year": "2025",
-    } as MdlRequestBody;
+    } as DrivingLicenceRequestBody;
 
     expect(validateDateFields(body)).toEqual({
       issue_date: "Enter a valid issue date",
@@ -68,7 +68,7 @@ describe("validateDateFields", () => {
       "expiry-day": "00", // 00 is not a valid day
       "expiry-month": "06",
       "expiry-year": "2025",
-    } as MdlRequestBody;
+    } as DrivingLicenceRequestBody;
 
     expect(validateDateFields(body)).toEqual({
       expiry_date: "Enter a valid expiry date",
@@ -86,7 +86,7 @@ describe("validateDateFields", () => {
       "expiry-day": "$$", // $$ is not a valid day
       "expiry-month": "06",
       "expiry-year": "2025",
-    } as MdlRequestBody;
+    } as DrivingLicenceRequestBody;
 
     expect(validateDateFields(body)).toEqual({
       birth_date: "Enter a valid birth date",

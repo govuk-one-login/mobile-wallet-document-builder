@@ -1,4 +1,4 @@
-export interface MdlRequestBody {
+export interface DrivingLicenceRequestBody {
   family_name: string;
   given_name: string;
   title: string;
