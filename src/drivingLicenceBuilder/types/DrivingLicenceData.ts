@@ -1,6 +1,6 @@
 import { DrivingPrivilege } from "./DrivingPrivilege";
 
-export interface MdlData {
+export interface DrivingLicenceData {
   family_name: string;
   given_name: string;
   title: string;
