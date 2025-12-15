@@ -50,10 +50,12 @@ export async function createApp(): Promise<express.Application> {
 
   app.set(
     "view engine",
-    nunjucks.configure(APP_VIEWS, {
-      express: app,
-      noCache: true,
-    }),
+    nunjucks
+      .configure(APP_VIEWS, {
+        express: app,
+        noCache: true,
+      })
+      .addGlobal("govukRebrand", true),
   );
 
   app.use("/public", express.static(path.join(__dirname, "public")));
