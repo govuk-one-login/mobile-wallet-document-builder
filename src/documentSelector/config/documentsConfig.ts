@@ -24,4 +24,8 @@ export const documentsConfig: DocumentsConfig = {
     route: "/build-mdl-document",
     name: "Driving Licence",
   },
+  [CredentialType.SimpleDocument]: {
+    route: "/build-simple-document",
+    name: "Simple Document",
+  },
 };

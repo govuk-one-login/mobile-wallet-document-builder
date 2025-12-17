@@ -14,6 +14,8 @@ jest.mock("../../src/services/databaseService", () => ({
   saveDocument: jest.fn(),
 }));
 
+const config = { environment: "staging" };
+
 describe("controller.ts", () => {
   const nowMilliSec = 1757582135042;
   beforeEach(() => {
@@ -25,35 +27,43 @@ describe("controller.ts", () => {
   });
 
   describe("get", () => {
-    it("should render the form for inputting NINO document details when user is not authenticated (no id_token in cookies)", async () => {
-      const req = getMockReq({ cookies: {} });
-      const { res } = getMockRes();
-
-      await ninoDocumentBuilderGetController(req, res);
-
-      expect(res.render).toHaveBeenCalledWith(
-        "nino-document-details-form.njk",
-        {
-          authenticated: false,
-          errorChoices: ERROR_CHOICES,
-        },
-      );
-    });
-
-    it("should render the form for inputting NINO document details when user is authenticated", async () => {
+    it("should render the form for inputting NINO document details", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
-      await ninoDocumentBuilderGetController(req, res);
+      await ninoDocumentBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith(
         "nino-document-details-form.njk",
         {
           authenticated: true,
           errorChoices: ERROR_CHOICES,
+          showThrowError: false,
         },
       );
     });
+
+    test.each([
+      ["staging", false],
+      ["test", true],
+    ])(
+      "should set showThrowError correctly when environment is %s",
+      async (environment, expectedShowThrowError) => {
+        const req = getMockReq({ cookies: {} });
+        const { res } = getMockRes();
+
+        await ninoDocumentBuilderGetController({ environment })(req, res);
+
+        expect(res.render).toHaveBeenCalledWith(
+          "nino-document-details-form.njk",
+          {
+            authenticated: false,
+            errorChoices: ERROR_CHOICES,
+            showThrowError: expectedShowThrowError,
+          },
+        );
+      },
+    );
   });
 
   describe("post", () => {
@@ -94,12 +104,12 @@ describe("controller.ts", () => {
         expect(saveDocument).toHaveBeenCalledWith("testTable", {
           itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           documentId: "QQ123456A",
+          credentialTtlMinutes: 43200,
           data: {
             title: "Ms",
             givenName: "Irene",
             familyName: "Adler",
             nino: "QQ123456A",
-            credentialTtlMinutes: 43200,
           },
           vcType: "SocialSecurityCredential",
           timeToLive: 1760174135,

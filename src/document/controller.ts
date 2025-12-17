@@ -6,6 +6,7 @@ import { CredentialType } from "../types/CredentialType";
 import { getDocumentsTableName } from "../config/appConfig";
 import { VeteranCardData } from "../veteranCardDocumentBuilder/types/VeteranCardData";
 import { MdlData } from "../mdlDocumentBuilder/types/MdlData";
+import { SimpleDocumentData } from "../simpleDocumentBuilder/types/SimpleDocumentData";
 
 export async function documentController(
   req: Request,
@@ -50,6 +51,20 @@ export async function documentController(
         return;
       }
       (data as MdlData).portrait = photo;
+    }
+
+    if (tableItem.vcType === CredentialType.SimpleDocument) {
+      const s3Uri = (data as SimpleDocumentData).portrait;
+
+      const { bucketName, fileName } = getBucketAndFileName(s3Uri);
+
+      const photo = await getPhoto(fileName, bucketName);
+      if (!photo) {
+        logger.error(`Photo for document with ID ${itemId} not found`);
+        res.status(404).send();
+        return;
+      }
+      (data as SimpleDocumentData).portrait = photo;
     }
 
     res.status(200).json(tableItem);

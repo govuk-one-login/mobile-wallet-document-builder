@@ -1,4 +1,5 @@
-import { MdlRequestBody } from "../types/MdlRequestBody";
+import { MdlRequestBody } from "../../mdlDocumentBuilder/types/MdlRequestBody";
+import { SimpleDocumentRequestBody } from "../../simpleDocumentBuilder/types/SimpleDocumentRequestBody";
 
 /**
  * Validates the date fields in a request body and returns error messages for any invalid dates.
@@ -8,7 +9,7 @@ import { MdlRequestBody } from "../types/MdlRequestBody";
  * values form a valid calendar date. If a date is invalid, an error message is added to the returned object
  * under a corresponding key.
  *
- * @param {MdlRequestBody} body The request body object containing date fields as strings.
+ * @param {MdlRequestBody | SimpleDocumentRequestBody} body The request body object containing date fields as strings.
  * @returns {Record<string, string>} An object mapping field names to error messages for any invalid dates.
  * If all dates are valid, the returned object will be empty.
  *
@@ -21,7 +22,7 @@ import { MdlRequestBody } from "../types/MdlRequestBody";
  * validateDateFields(body); // { birth_date: "Enter a valid birth date" }
  */
 export function validateDateFields(
-  body: MdlRequestBody,
+  body: MdlRequestBody | SimpleDocumentRequestBody,
 ): Record<string, string> {
   const errors: Record<string, string> = {};
 

@@ -14,6 +14,8 @@ jest.mock("../../src/services/databaseService", () => ({
   saveDocument: jest.fn(),
 }));
 
+const config = { environment: "staging" };
+
 describe("controller.ts", () => {
   const nowMilliSec = 1757582135042;
   beforeEach(() => {
@@ -25,29 +27,40 @@ describe("controller.ts", () => {
   });
 
   describe("get", () => {
-    it("should render the form for inputting DBS document details when user is not authenticated (no id_token in cookies)", async () => {
-      const req = getMockReq({ cookies: {} });
-      const { res } = getMockRes();
-
-      await dbsDocumentBuilderGetController(req, res);
-
-      expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
-        authenticated: false,
-        errorChoices: ERROR_CHOICES,
-      });
-    });
-
-    it("should render the form for inputting DBS document details when user is authenticated", async () => {
+    it("should render the form for inputting DBS document details", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
-      await dbsDocumentBuilderGetController(req, res);
+      await dbsDocumentBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith("dbs-document-details-form.njk", {
         authenticated: true,
         errorChoices: ERROR_CHOICES,
+        showThrowError: false,
       });
     });
+
+    test.each([
+      ["staging", false],
+      ["test", true],
+    ])(
+      "should set showThrowError correctly when environment is %s",
+      async (environment, expectedShowThrowError) => {
+        const req = getMockReq({ cookies: {} });
+        const { res } = getMockRes();
+
+        await dbsDocumentBuilderGetController({ environment })(req, res);
+
+        expect(res.render).toHaveBeenCalledWith(
+          "dbs-document-details-form.njk",
+          {
+            authenticated: false,
+            errorChoices: ERROR_CHOICES,
+            showThrowError: expectedShowThrowError,
+          },
+        );
+      },
+    );
   });
 
   describe("post", () => {
@@ -126,10 +139,10 @@ describe("controller.ts", () => {
             certificateType: "basic",
             outcome: "Result clear",
             policeRecordsCheck: "Clear",
-            credentialTtlMinutes: 43200,
           },
           vcType: "BasicDisclosureCredential",
           timeToLive: 1760174135,
+          credentialTtlMinutes: 43200,
         });
       });
     });

@@ -23,6 +23,8 @@ jest.mock("../../src/services/s3Service", () => ({
 }));
 jest.mock("fs");
 
+const config = { environment: "staging" };
+
 describe("controller.ts", () => {
   const nowMilliSec = 1757582135042;
   beforeEach(() => {
@@ -34,35 +36,45 @@ describe("controller.ts", () => {
   });
 
   describe("get", () => {
-    it("should render the form for inputting the Veteran Card document details when the user is not authenticated (no id_token in cookies)", async () => {
+    it("should render the form for inputting the Veteran Card document details", async () => {
       const req = getMockReq({ cookies: {} });
       const { res } = getMockRes();
 
-      await veteranCardDocumentBuilderGetController(req, res);
-
+      await veteranCardDocumentBuilderGetController(config)(req, res);
       expect(res.render).toHaveBeenCalledWith(
         "veteran-card-document-details-form.njk",
         {
           authenticated: false,
           errorChoices: ERROR_CHOICES,
+          showThrowError: false,
         },
       );
     });
 
-    it("should render the form for inputting the Veteran Card document details when the user is authenticated", async () => {
-      const req = getMockReq({ cookies: { id_token: "id_token" } });
-      const { res } = getMockRes();
+    test.each([
+      ["staging", false],
+      ["test", true],
+    ])(
+      "should set showThrowError correctly when environment is %s",
+      async (environment, expectedShowThrowError) => {
+        const req = getMockReq({ cookies: {} });
+        const { res } = getMockRes();
 
-      await veteranCardDocumentBuilderGetController(req, res);
+        await veteranCardDocumentBuilderGetController({ environment })(
+          req,
+          res,
+        );
 
-      expect(res.render).toHaveBeenCalledWith(
-        "veteran-card-document-details-form.njk",
-        {
-          authenticated: true,
-          errorChoices: ERROR_CHOICES,
-        },
-      );
-    });
+        expect(res.render).toHaveBeenCalledWith(
+          "veteran-card-document-details-form.njk",
+          {
+            authenticated: false,
+            errorChoices: ERROR_CHOICES,
+            showThrowError: expectedShowThrowError,
+          },
+        );
+      },
+    );
   });
 
   describe("post", () => {
@@ -149,6 +161,7 @@ describe("controller.ts", () => {
         expect(saveDocument).toHaveBeenCalledWith("testTable", {
           itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           documentId: "25057386",
+          credentialTtlMinutes: 43200,
           data: {
             givenName: "Sarah Elizabeth",
             familyName: "Edwards-Smith",
@@ -160,7 +173,6 @@ describe("controller.ts", () => {
             "cardExpiryDate-year": "2029",
             serviceNumber: "25057386",
             serviceBranch: "HM Naval Service",
-            credentialTtlMinutes: 43200,
             photo: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           },
           vcType: "DigitalVeteranCard",

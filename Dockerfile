@@ -4,7 +4,7 @@ RUN apk update && apk upgrade busybox
 
 WORKDIR /app
 COPY src/ src/
-COPY package.json tsconfig.json ./
+COPY package.json tsconfig.json .npmrc ./
 ARG PORT
 RUN npm update -g \
 && npm install --ignore-scripts && npm run build \

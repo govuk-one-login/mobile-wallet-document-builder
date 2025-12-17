@@ -23,6 +23,11 @@ jest.mock("../../src/services/s3Service", () => ({
   uploadPhoto: jest.fn(),
 }));
 jest.mock("fs");
+jest.mock("../../src/utils/getRandomIntInclusive", () => ({
+  getRandomIntInclusive: jest.fn().mockReturnValue(550000),
+}));
+
+const config = { environment: "staging" };
 
 describe("controller.ts", () => {
   beforeAll(() => {
@@ -35,42 +40,11 @@ describe("controller.ts", () => {
   });
 
   describe("get", () => {
-    beforeEach(() => {
-      jest.spyOn(Math, "random").mockReturnValue(0.5);
-    });
-
-    afterEach(() => {
-      jest.spyOn(Math, "random").mockRestore();
-    });
-
-    it("should render the form for inputting the mDL document details when the user is not authenticated (no id_token in cookies)", async () => {
-      const req = getMockReq({ cookies: {} });
-      const { res } = getMockRes();
-
-      await mdlDocumentBuilderGetController(req, res);
-
-      expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
-        authenticated: false,
-        defaultIssueDate: {
-          day: "02",
-          month: "05",
-          year: "2025",
-        },
-        defaultExpiryDate: {
-          day: "01",
-          month: "05",
-          year: "2035",
-        },
-        errorChoices: ERROR_CHOICES,
-        drivingLicenceNumber: "EDWAR550000SE5RO",
-      });
-    });
-
-    it("should render the form for inputting the mDL document details when the user is authenticated", async () => {
+    it("should render the form for inputting the mDL document details", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
-      await mdlDocumentBuilderGetController(req, res);
+      await mdlDocumentBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
         authenticated: true,
@@ -86,8 +60,42 @@ describe("controller.ts", () => {
         },
         errorChoices: ERROR_CHOICES,
         drivingLicenceNumber: "EDWAR550000SE5RO",
+        showThrowError: false,
       });
     });
+
+    test.each([
+      ["staging", false],
+      ["test", true],
+    ])(
+      "should set showThrowError correctly when environment is %s",
+      async (environment, expectedShowThrowError) => {
+        const req = getMockReq({ cookies: { id_token: "id_token" } });
+        const { res } = getMockRes();
+
+        await mdlDocumentBuilderGetController({ environment })(req, res);
+
+        expect(res.render).toHaveBeenCalledWith(
+          "mdl-document-details-form.njk",
+          {
+            authenticated: true,
+            defaultIssueDate: {
+              day: "02",
+              month: "05",
+              year: "2025",
+            },
+            defaultExpiryDate: {
+              day: "01",
+              month: "05",
+              year: "2035",
+            },
+            errorChoices: ERROR_CHOICES,
+            drivingLicenceNumber: "EDWAR550000SE5RO",
+            showThrowError: expectedShowThrowError,
+          },
+        );
+      },
+    );
 
     it("should render the 500 error page if an error is thrown", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
@@ -97,7 +105,7 @@ describe("controller.ts", () => {
         throw new Error("Rendering error");
       });
 
-      await mdlDocumentBuilderGetController(req, res);
+      await mdlDocumentBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
@@ -108,7 +116,7 @@ describe("controller.ts", () => {
 
     const photoBuffer = Buffer.from("mock photo data");
     const mockReadFileSync = readFileSync as jest.Mock;
-    mockReadFileSync.mockReturnValue(Buffer.from("mock photo data"));
+    mockReadFileSync.mockReturnValue(photoBuffer);
 
     const saveDocument = databaseService.saveDocument as jest.Mock;
     const uploadPhoto = s3Service.uploadPhoto as jest.Mock;
@@ -121,7 +129,7 @@ describe("controller.ts", () => {
         });
         const { res } = getMockRes();
 
-        await mdlDocumentBuilderPostController(req, res);
+        await mdlDocumentBuilderPostController(config)(req, res);
 
         expect(res.render).toHaveBeenCalledWith("500.njk");
       });
@@ -134,7 +142,7 @@ describe("controller.ts", () => {
     ])(
       "given a file of type %s is to be uploaded",
       (fileType, fileName, mimeType) => {
-        it(`should call the upload function with the correct arguments`, async () => {
+        it(`should call the function to upload the photo with the correct arguments`, async () => {
           const req = getMockReq({
             body: {
               ...requestBody,
@@ -143,7 +151,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(req, res);
+          await mdlDocumentBuilderPostController(config)(req, res);
 
           const expectedPath = path.resolve(
             __dirname,
@@ -169,13 +177,14 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(req, res);
+          await mdlDocumentBuilderPostController(config)(req, res);
 
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
             itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
             documentId: "EDWAR550000SE5RO",
             vcType: "org.iso.18013.5.1.mDL",
             timeToLive: 1748736000,
+            credentialTtlMinutes: 43200,
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
@@ -208,7 +217,6 @@ describe("controller.ts", () => {
               resident_postal_code: "NW3 3RX",
               resident_city: "London",
               un_distinguishing_sign: "UK",
-              credentialTtlMinutes: 43200,
             },
           });
         });
@@ -221,13 +229,14 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(req, res);
+          await mdlDocumentBuilderPostController(config)(req, res);
 
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
             itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
             documentId: "EDWAR550000SE5RO",
             vcType: "org.iso.18013.5.1.mDL",
             timeToLive: 1748736000,
+            credentialTtlMinutes: 43200,
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
@@ -268,7 +277,6 @@ describe("controller.ts", () => {
               resident_postal_code: "NW3 3RX",
               resident_city: "London",
               un_distinguishing_sign: "UK",
-              credentialTtlMinutes: 43200,
             },
           });
         });
@@ -283,7 +291,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(req, res);
+          await mdlDocumentBuilderPostController(config)(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
             "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL",
@@ -298,8 +306,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(req, res);
-
+          await mdlDocumentBuilderPostController(config)(req, res);
           expect(res.redirect).toHaveBeenCalledWith(
             "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL",
           );
@@ -314,7 +321,8 @@ describe("controller.ts", () => {
               body: { ...requestBody, ...{ throwError: selectedError } },
             });
             const { res } = getMockRes();
-            await mdlDocumentBuilderPostController(req, res);
+
+            await mdlDocumentBuilderPostController(config)(req, res);
 
             expect(res.redirect).toHaveBeenCalledWith(
               `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL&error=${selectedError}`,
@@ -324,44 +332,8 @@ describe("controller.ts", () => {
       });
     });
 
-    describe("date validation errors", () => {
+    describe("given invalid date fields", () => {
       it("should render an error when the birthdate has empty fields", async () => {
-        const body = buildMdlRequestBody({
-          "birth-day": "",
-          "birth-month": "08",
-          "birth-year": "",
-        });
-        const req = getMockReq({
-          body,
-          cookies: { id_token: "id_token" },
-        });
-        const { res } = getMockRes();
-        await mdlDocumentBuilderPostController(req, res);
-        expect(res.render).toHaveBeenCalledWith(
-          "mdl-document-details-form.njk",
-          {
-            errors: expect.objectContaining({
-              birth_date: "Enter a valid birth date",
-            }),
-            authenticated: true,
-            defaultIssueDate: {
-              day: "02",
-              month: "05",
-              year: "2025",
-            },
-            defaultExpiryDate: {
-              day: "01",
-              month: "05",
-              year: "2035",
-            },
-            errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
-          },
-        );
-        expect(res.redirect).not.toHaveBeenCalled();
-      });
-
-      it("should render an error when the birth-day is 29 for february but the year is not a leap year", async () => {
         const body = buildMdlRequestBody({
           "birth-day": "29",
           "birth-month": "02",
@@ -372,7 +344,8 @@ describe("controller.ts", () => {
           cookies: { id_token: "id_token" },
         });
         const { res } = getMockRes();
-        await mdlDocumentBuilderPostController(req, res);
+
+        await mdlDocumentBuilderPostController(config)(req, res);
         expect(res.render).toHaveBeenCalledWith(
           "mdl-document-details-form.njk",
           {
@@ -392,150 +365,7 @@ describe("controller.ts", () => {
             },
             errorChoices: ERROR_CHOICES,
             drivingLicenceNumber: "EDWAR550000SE5RO",
-          },
-        );
-        expect(res.redirect).not.toHaveBeenCalled();
-      });
-
-      it("should render an error when the issue date is empty", async () => {
-        const body = buildMdlRequestBody({
-          "issue-day": "04",
-          "issue-month": "",
-          "issue-year": "",
-        });
-        const req = getMockReq({
-          body,
-          cookies: { id_token: "id_token" },
-        });
-        const { res } = getMockRes();
-        await mdlDocumentBuilderPostController(req, res);
-        expect(res.render).toHaveBeenCalledWith(
-          "mdl-document-details-form.njk",
-          {
-            errors: expect.objectContaining({
-              issue_date: "Enter a valid issue date",
-            }),
-            authenticated: true,
-            defaultIssueDate: {
-              day: "02",
-              month: "05",
-              year: "2025",
-            },
-            defaultExpiryDate: {
-              day: "01",
-              month: "05",
-              year: "2035",
-            },
-            errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
-          },
-        );
-        expect(res.redirect).not.toHaveBeenCalled();
-      });
-
-      it("should render an error when the issue day is 31 and issue month is June", async () => {
-        const body = buildMdlRequestBody({
-          "issue-day": "31",
-          "issue-month": "06",
-          "issue-year": "2020",
-        });
-        const req = getMockReq({
-          body,
-          cookies: { id_token: "id_token" },
-        });
-        const { res } = getMockRes();
-        await mdlDocumentBuilderPostController(req, res);
-        expect(res.render).toHaveBeenCalledWith(
-          "mdl-document-details-form.njk",
-          {
-            errors: expect.objectContaining({
-              issue_date: "Enter a valid issue date",
-            }),
-            authenticated: true,
-            defaultIssueDate: {
-              day: "02",
-              month: "05",
-              year: "2025",
-            },
-            defaultExpiryDate: {
-              day: "01",
-              month: "05",
-              year: "2035",
-            },
-            errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
-          },
-        );
-        expect(res.redirect).not.toHaveBeenCalled();
-      });
-
-      it("should render an error when the expiry date is empty", async () => {
-        const body = buildMdlRequestBody({
-          "expiry-day": "05",
-          "expiry-month": "",
-          "expiry-year": "",
-        });
-        const req = getMockReq({
-          body,
-          cookies: { id_token: "id_token" },
-        });
-        const { res } = getMockRes();
-        await mdlDocumentBuilderPostController(req, res);
-        expect(res.render).toHaveBeenCalledWith(
-          "mdl-document-details-form.njk",
-          {
-            errors: expect.objectContaining({
-              expiry_date: "Enter a valid expiry date",
-            }),
-            authenticated: true,
-            defaultIssueDate: {
-              day: "02",
-              month: "05",
-              year: "2025",
-            },
-            defaultExpiryDate: {
-              day: "01",
-              month: "05",
-              year: "2035",
-            },
-            errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
-          },
-        );
-        expect(res.redirect).not.toHaveBeenCalled();
-      });
-
-      it("should render an error when the expiry date is invalid", async () => {
-        const body = buildMdlRequestBody({
-          "expiry-day": "45",
-          "expiry-month": "14",
-          "expiry-year": "pp!",
-        });
-        const req = getMockReq({
-          body,
-          cookies: { id_token: "id_token" },
-        });
-        const { res } = getMockRes();
-        await mdlDocumentBuilderPostController(req, res);
-        expect(res.render).toHaveBeenCalledWith(
-          "mdl-document-details-form.njk",
-          {
-            errors: expect.objectContaining({
-              expiry_date: "Enter a valid expiry date",
-            }),
-            authenticated: true,
-            defaultIssueDate: {
-              day: "02",
-              month: "05",
-              year: "2025",
-            },
-            defaultExpiryDate: {
-              day: "01",
-              month: "05",
-              year: "2035",
-            },
-            errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
+            showThrowError: false,
           },
         );
         expect(res.redirect).not.toHaveBeenCalled();

@@ -2,6 +2,7 @@ import { documentController } from "../../src/document/controller";
 import * as documentStore from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
+import { CredentialType } from "../../src/types/CredentialType";
 process.env.DOCUMENTS_TABLE_NAME = "testTable";
 
 jest.mock("../../src/services/databaseService", () => ({
@@ -41,22 +42,29 @@ const mdlData = {
   family_name: "Edwards-Smith",
   given_name: "Sarah Elizabeth",
   portrait: "s3://photosBucket/" + itemId,
-  "birth-day": "06",
-  "birth-month": "03",
-  "birth-year": "1975",
+  birth_date: "15-06-1985",
   birth_place: "London",
-  "issue-day": "08",
-  "issue-month": "04",
-  "issue-year": "2019",
-  "expiry-day": "08",
-  "expiry-month": "04",
-  "expiry-year": "2029",
+  issue_date: "01-04-2024",
+  expiry_date: "01-04-2029",
   issuing_authority: "DVLA",
-  issuing_country: "United Kingdom (UK)",
+  issuing_country: "GB",
   document_number: "25057386",
   resident_address: "Flat 11, Blashford, Adelaide Road",
   resident_postal_code: "NW3 3RX",
   resident_city: "London",
+};
+
+const simpleDocumentData = {
+  family_name: "Smith",
+  given_name: "John",
+  portrait: "s3://photosBucket/" + itemId,
+  birth_date: "15-06-1985",
+  issue_date: "01-04-2024",
+  expiry_date: "01-04-2029",
+  issuing_country: "GB",
+  document_number: "FLN550000",
+  type_of_fish: "Sea fishing",
+  number_of_fishing_rods: "2",
 };
 
 describe("controller.ts", () => {
@@ -99,7 +107,45 @@ describe("controller.ts", () => {
     getDocument.mockReturnValueOnce({
       itemId,
       data: veteranCardData,
-      vcType: "DigitalVeteranCard",
+      vcType: CredentialType.DigitalVeteranCard,
+    });
+    getPhoto.mockReturnValueOnce(undefined);
+
+    await documentController(req, res);
+
+    expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
+    expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("should return 404 if the Driving Licence photo was not found", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq({
+      params: { itemId },
+    });
+    getDocument.mockReturnValueOnce({
+      itemId,
+      data: mdlData,
+      vcType: CredentialType.MobileDrivingLicence,
+    });
+    getPhoto.mockReturnValueOnce(undefined);
+
+    await documentController(req, res);
+
+    expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
+    expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("should return 404 if the simple document photo was not found", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq({
+      params: { itemId },
+    });
+    getDocument.mockReturnValueOnce({
+      itemId,
+      data: simpleDocumentData,
+      vcType: CredentialType.SimpleDocument,
     });
     getPhoto.mockReturnValueOnce(undefined);
 
@@ -118,7 +164,7 @@ describe("controller.ts", () => {
     getDocument.mockReturnValueOnce({
       itemId,
       data: ninoData,
-      vcType: "SocialSecurityCredential",
+      vcType: CredentialType.SocialSecurityCredential,
     });
 
     await documentController(req, res);
@@ -136,7 +182,7 @@ describe("controller.ts", () => {
     getDocument.mockReturnValueOnce({
       itemId,
       data: veteranCardData,
-      vcType: "DigitalVeteranCard",
+      vcType: CredentialType.DigitalVeteranCard,
     });
     const mockedPhoto = "mockBase64EncodedPhoto";
     getPhoto.mockReturnValueOnce(mockedPhoto);
@@ -159,7 +205,7 @@ describe("controller.ts", () => {
     getDocument.mockReturnValueOnce({
       itemId,
       data: mdlData,
-      vcType: "org.iso.18013.5.1.mDL",
+      vcType: CredentialType.MobileDrivingLicence,
     });
     const mockedPhoto = "mockBase64EncodedPhoto";
     getPhoto.mockReturnValueOnce(mockedPhoto);
@@ -168,6 +214,29 @@ describe("controller.ts", () => {
 
     const mobileDrivingLicenceDocumentWithPhoto = { ...mdlData };
     mobileDrivingLicenceDocumentWithPhoto.portrait = mockedPhoto;
+
+    expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
+    expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
+    expect(res.status).toHaveBeenCalledWith(200);
+  });
+
+  it("should return 200 and the simple document record as JSON", async () => {
+    const { res } = getMockRes();
+    const req = getMockReq({
+      params: { itemId },
+    });
+    getDocument.mockReturnValueOnce({
+      itemId,
+      data: simpleDocumentData,
+      vcType: CredentialType.SimpleDocument,
+    });
+    const mockedPhoto = "mockBase64EncodedPhoto";
+    getPhoto.mockReturnValueOnce(mockedPhoto);
+
+    await documentController(req, res);
+
+    const simpleDocumentWithPhoto = { ...simpleDocumentData };
+    simpleDocumentWithPhoto.portrait = mockedPhoto;
 
     expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
     expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);

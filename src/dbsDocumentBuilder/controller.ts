@@ -4,29 +4,37 @@ import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import { getDocumentsTableName } from "../config/appConfig";
+import { getDocumentsTableName, getEnvironment } from "../config/appConfig";
 import { DbsRequestBody } from "./types/DbsRequestBody";
 import { DbsData } from "./types/DbsData";
 import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
+import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 
 const CREDENTIAL_TYPE = CredentialType.BasicDisclosureCredential;
 const TTL_MINUTES = 43200;
 
-export async function dbsDocumentBuilderGetController(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  try {
-    res.render("dbs-document-details-form.njk", {
-      authenticated: isAuthenticated(req),
-      errorChoices: ERROR_CHOICES,
-    });
-  } catch (error) {
-    logger.error(error, "An error happened rendering DBS document page");
-    res.render("500.njk");
-  }
+export interface DbsDocumentBuilderControllerConfig {
+  environment?: string;
+}
+
+export function dbsDocumentBuilderGetController({
+  environment = getEnvironment(),
+}: DbsDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
+  return async function (req: Request, res: Response): Promise<void> {
+    try {
+      const showThrowError = environment !== "staging";
+      res.render("dbs-document-details-form.njk", {
+        authenticated: isAuthenticated(req),
+        errorChoices: ERROR_CHOICES,
+        showThrowError,
+      });
+    } catch (error) {
+      logger.error(error, "An error happened rendering DBS document page");
+      res.render("500.njk");
+    }
+  };
 }
 
 export async function dbsDocumentBuilderPostController(
@@ -43,6 +51,7 @@ export async function dbsDocumentBuilderPostController(
       documentId: data.certificateNumber,
       data,
       vcType: CREDENTIAL_TYPE,
+      credentialTtlMinutes: Number(body.credentialTtl),
       timeToLive,
     });
 
@@ -68,7 +77,6 @@ function buildDbsDataFromRequestBody(body: DbsRequestBody) {
     certificateType: "basic",
     outcome: "Result clear",
     policeRecordsCheck: "Clear",
-    credentialTtlMinutes: Number(body.credentialTtl),
     ...newObject,
   };
   return data;

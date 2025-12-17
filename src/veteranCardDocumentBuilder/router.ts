@@ -10,7 +10,7 @@ const router = express.Router();
 router.get(
   "/build-veteran-card-document",
   requiresAuth,
-  veteranCardDocumentBuilderGetController,
+  veteranCardDocumentBuilderGetController(),
 );
 router.post(
   "/build-veteran-card-document",
