@@ -27,6 +27,8 @@ jest.mock("../../src/utils/getRandomIntInclusive", () => ({
   getRandomIntInclusive: jest.fn().mockReturnValue(550000),
 }));
 
+const config = { environment: "staging" };
+
 describe("controller.ts", () => {
   beforeAll(() => {
     jest.useFakeTimers();
@@ -42,7 +44,7 @@ describe("controller.ts", () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
-      await simpleDocumentBuilderGetController(req, res);
+      await simpleDocumentBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith(
         "simple-document-details-form.njk",
@@ -82,6 +84,7 @@ describe("controller.ts", () => {
           ],
           errorChoices: ERROR_CHOICES,
           authenticated: true,
+          showThrowError: false,
         },
       );
     });
@@ -94,11 +97,66 @@ describe("controller.ts", () => {
         throw new Error("Rendering error");
       });
 
-      await simpleDocumentBuilderGetController(req, res);
+      await simpleDocumentBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
   });
+
+  test.each([
+    ["staging", false],
+    ["test", true],
+  ])(
+    "should set showThrowError correctly when environment is %s",
+    async (environment, expectedShowThrowError) => {
+      const req = getMockReq({ cookies: {} });
+      const { res } = getMockRes();
+
+      await simpleDocumentBuilderGetController({ environment })(req, res);
+
+      expect(res.render).toHaveBeenCalledWith(
+        "simple-document-details-form.njk",
+        {
+          defaultIssueDate: {
+            day: "02",
+            month: "05",
+            year: "2025",
+          },
+          defaultExpiryDate: {
+            day: "01",
+            month: "05",
+            year: "2035",
+          },
+          documentNumber: "FLN550000",
+          fishTypeOptions: [
+            {
+              selected: true,
+              text: "Coarse fish",
+              value: "Coarse fish",
+            },
+            {
+              selected: false,
+              text: "Salmon and trout",
+              value: "Salmon and trout",
+            },
+            {
+              selected: false,
+              text: "Sea fishing",
+              value: "Sea fishing",
+            },
+            {
+              selected: false,
+              text: "All freshwater fish",
+              value: "All freshwater fish",
+            },
+          ],
+          errorChoices: ERROR_CHOICES,
+          authenticated: false,
+          showThrowError: expectedShowThrowError,
+        },
+      );
+    },
+  );
 
   describe("post", () => {
     const requestBody = buildSimpleDocumentRequestBody();

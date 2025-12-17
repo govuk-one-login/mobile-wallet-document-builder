@@ -10,7 +10,7 @@ const router = express.Router();
 router.get(
   "/build-simple-document",
   requiresAuth,
-  simpleDocumentBuilderGetController,
+  simpleDocumentBuilderGetController(),
 );
 router.post(
   "/build-simple-document",

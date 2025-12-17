@@ -6,6 +6,7 @@ import { logger } from "../middleware/logger";
 import { randomUUID } from "node:crypto";
 import {
   getDocumentsTableName,
+  getEnvironment,
   getPhotosBucketName,
 } from "../config/appConfig";
 import { getPhoto } from "../utils/photoUtils";
@@ -17,6 +18,7 @@ import { CredentialType } from "../types/CredentialType";
 import { SimpleDocumentData } from "./types/SimpleDocumentData";
 import { isErrorCode } from "../utils/isErrorCode";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
+import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 
 const CREDENTIAL_TYPE = CredentialType.SimpleDocument;
 const TTL_MINUTES = 43200;
@@ -32,27 +34,37 @@ const fishTypeOptions = FISH_TYPES.map((type, index) => ({
   selected: index === 0,
 }));
 
+export interface SimpleDocumentBuilderControllerConfig {
+  environment?: string;
+}
+
 let documentNumber: string;
 
-export async function simpleDocumentBuilderGetController(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  try {
-    const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-    documentNumber = "FLN" + getRandomIntInclusive();
-    res.render("simple-document-details-form.njk", {
-      defaultIssueDate,
-      defaultExpiryDate,
-      documentNumber,
-      fishTypeOptions,
-      authenticated: isAuthenticated(req),
-      errorChoices: ERROR_CHOICES,
-    });
-  } catch (error) {
-    logger.error(error, "An error happened rendering the Simple Document page");
-    res.render("500.njk");
-  }
+export function simpleDocumentBuilderGetController({
+  environment = getEnvironment(),
+}: SimpleDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
+  return async function (req: Request, res: Response): Promise<void> {
+    try {
+      const showThrowError = environment !== "staging";
+      const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
+      documentNumber = "FLN" + getRandomIntInclusive();
+      res.render("simple-document-details-form.njk", {
+        defaultIssueDate,
+        defaultExpiryDate,
+        documentNumber,
+        fishTypeOptions,
+        authenticated: isAuthenticated(req),
+        errorChoices: ERROR_CHOICES,
+        showThrowError,
+      });
+    } catch (error) {
+      logger.error(
+        error,
+        "An error happened rendering the Simple Document page",
+      );
+      res.render("500.njk");
+    }
+  };
 }
 
 export async function simpleDocumentBuilderPostController(
