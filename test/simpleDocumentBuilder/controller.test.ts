@@ -2,11 +2,10 @@ import {
   simpleDocumentBuilderGetController,
   simpleDocumentBuilderPostController,
 } from "../../src/simpleDocumentBuilder/controller";
-import { readFileSync } from "node:fs";
 import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
+import * as photoUtils from "../../src/utils/photoUtils";
 import { getMockReq, getMockRes } from "@jest-mock/express";
-import * as path from "path";
 import { SimpleDocumentRequestBody } from "../../src/simpleDocumentBuilder/types/SimpleDocumentRequestBody";
 import { ERROR_CHOICES } from "../../src/utils/errorChoices";
 
@@ -19,7 +18,9 @@ jest.mock("../../src/services/databaseService", () => ({
 jest.mock("../../src/services/s3Service", () => ({
   uploadPhoto: jest.fn(),
 }));
-jest.mock("node:fs");
+jest.mock("../../src/utils/photoUtils", () => ({
+  getPhoto: jest.fn(),
+}));
 jest.mock("../../src/utils/getRandomIntInclusive", () => ({
   getRandomIntInclusive: jest.fn().mockReturnValue(550000),
 }));
@@ -163,8 +164,8 @@ describe("controller.ts", () => {
     const requestBody = buildSimpleDocumentRequestBody();
 
     const photoBuffer = Buffer.from("mock photo data");
-    const mockReadFileSync = readFileSync as jest.Mock;
-    mockReadFileSync.mockReturnValue(photoBuffer);
+    const mockGetPhoto = photoUtils.getPhoto as jest.Mock;
+    mockGetPhoto.mockReturnValue({ photoBuffer, mimeType: "image/jpeg" });
 
     const saveDocument = databaseService.saveDocument as jest.Mock;
     const uploadPhoto = s3Service.uploadPhoto as jest.Mock;
@@ -317,14 +318,11 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
+          mockGetPhoto.mockReturnValue({ photoBuffer, mimeType });
+
           await simpleDocumentBuilderPostController(config)(req, res);
 
-          const expectedPath = path.resolve(
-            __dirname,
-            "../../src/resources",
-            fileName,
-          );
-          expect(mockReadFileSync).toHaveBeenCalledWith(expectedPath);
+          expect(mockGetPhoto).toHaveBeenCalledWith(fileName);
           expect(uploadPhoto).toHaveBeenCalledWith(
             photoBuffer,
             "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
