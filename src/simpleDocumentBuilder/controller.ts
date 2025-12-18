@@ -70,6 +70,7 @@ export function simpleDocumentBuilderGetController({
 }
 
 export function simpleDocumentBuilderPostController({
+  environment = getEnvironment(),
   tableName = getDocumentsTableName(),
   bucketName = getPhotosBucketName(),
 }: SimpleDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
@@ -81,6 +82,7 @@ export function simpleDocumentBuilderPostController({
         errors.type_of_fish = "Select a valid type of fish";
       }
       if (Object.keys(errors).length > 0) {
+        const showThrowError = environment !== "staging";
         const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
         return res.render("simple-document-details-form.njk", {
           defaultIssueDate,
@@ -89,6 +91,7 @@ export function simpleDocumentBuilderPostController({
           fishTypeOptions,
           authenticated: isAuthenticated(req),
           errorChoices: ERROR_CHOICES,
+          showThrowError,
           errors,
         });
       }
