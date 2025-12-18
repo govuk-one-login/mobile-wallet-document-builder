@@ -40,16 +40,14 @@ export interface SimpleDocumentBuilderControllerConfig {
   bucketName?: string;
 }
 
-let documentNumber: string;
-
 export function simpleDocumentBuilderGetController({
   environment = getEnvironment(),
 }: SimpleDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
   return async function (req: Request, res: Response): Promise<void> {
     try {
-      const showThrowError = environment !== "staging";
       const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-      documentNumber = "FLN" + getRandomIntInclusive();
+      const documentNumber = "FLN" + getRandomIntInclusive();
+      const showThrowError = environment !== "staging";
       res.render("simple-document-details-form.njk", {
         defaultIssueDate,
         defaultExpiryDate,
@@ -77,6 +75,7 @@ export function simpleDocumentBuilderPostController({
   return async function (req: Request, res: Response): Promise<void> {
     try {
       const body: SimpleDocumentRequestBody = req.body;
+      const documentNumber = body.document_number;
       const errors = validateDateFields(body);
       if (!FISH_TYPES.includes(body.type_of_fish)) {
         errors.type_of_fish = "Select a valid type of fish";
