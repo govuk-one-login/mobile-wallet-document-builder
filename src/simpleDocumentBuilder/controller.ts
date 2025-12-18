@@ -35,7 +35,9 @@ const fishTypeOptions = FISH_TYPES.map((type, index) => ({
 }));
 
 export interface SimpleDocumentBuilderControllerConfig {
+  tableName?: string;
   environment?: string;
+  bucketName?: string;
 }
 
 let documentNumber: string;
@@ -67,59 +69,60 @@ export function simpleDocumentBuilderGetController({
   };
 }
 
-export async function simpleDocumentBuilderPostController(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  try {
-    const body: SimpleDocumentRequestBody = req.body;
-    const errors = validateDateFields(body);
-    if (!FISH_TYPES.includes(body.type_of_fish)) {
-      errors.type_of_fish = "Select a valid type of fish";
-    }
-    if (Object.keys(errors).length > 0) {
-      const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-      return res.render("simple-document-details-form.njk", {
-        defaultIssueDate,
-        defaultExpiryDate,
-        documentNumber,
-        fishTypeOptions,
-        authenticated: isAuthenticated(req),
-        errorChoices: ERROR_CHOICES,
-        errors,
+export function simpleDocumentBuilderPostController({
+  tableName = getDocumentsTableName(),
+  bucketName = getPhotosBucketName(),
+}: SimpleDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
+  return async function (req: Request, res: Response): Promise<void> {
+    try {
+      const body: SimpleDocumentRequestBody = req.body;
+      const errors = validateDateFields(body);
+      if (!FISH_TYPES.includes(body.type_of_fish)) {
+        errors.type_of_fish = "Select a valid type of fish";
+      }
+      if (Object.keys(errors).length > 0) {
+        const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
+        return res.render("simple-document-details-form.njk", {
+          defaultIssueDate,
+          defaultExpiryDate,
+          documentNumber,
+          fishTypeOptions,
+          authenticated: isAuthenticated(req),
+          errorChoices: ERROR_CHOICES,
+          errors,
+        });
+      }
+
+      const itemId = randomUUID();
+      const s3Uri = `s3://${bucketName}/${itemId}`;
+
+      const { photoBuffer, mimeType } = getPhoto(body.portrait);
+      await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
+      const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
+      const data = buildSimpleDocumentDataFromRequestBody(body, s3Uri);
+      await saveDocument(tableName, {
+        itemId,
+        documentId: data.document_number,
+        data,
+        vcType: CREDENTIAL_TYPE,
+        credentialTtlMinutes: Number(body.credentialTtl),
+        timeToLive,
       });
+      const selectedError = body["throwError"];
+      let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
+
+      if (isErrorCode(selectedError)) {
+        redirectUrl += `&error=${selectedError}`;
+      }
+      res.redirect(redirectUrl);
+    } catch (error) {
+      logger.error(
+        error,
+        "An error happened processing the Simple Document request",
+      );
+      res.render("500.njk");
     }
-
-    const itemId = randomUUID();
-    const bucketName = getPhotosBucketName();
-    const s3Uri = `s3://${bucketName}/${itemId}`;
-
-    const { photoBuffer, mimeType } = getPhoto(body.portrait);
-    await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
-    const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
-    const data = buildSimpleDocumentDataFromRequestBody(body, s3Uri);
-    await saveDocument(getDocumentsTableName(), {
-      itemId,
-      documentId: data.document_number,
-      data,
-      vcType: CREDENTIAL_TYPE,
-      credentialTtlMinutes: Number(body.credentialTtl),
-      timeToLive,
-    });
-    const selectedError = body["throwError"];
-    let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
-
-    if (isErrorCode(selectedError)) {
-      redirectUrl += `&error=${selectedError}`;
-    }
-    res.redirect(redirectUrl);
-  } catch (error) {
-    logger.error(
-      error,
-      "An error happened processing the Simple Document request",
-    );
-    res.render("500.njk");
-  }
+  };
 }
 
 function buildSimpleDocumentDataFromRequestBody(
