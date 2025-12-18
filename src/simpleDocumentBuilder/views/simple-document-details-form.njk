@@ -258,7 +258,6 @@
                 ]
             }) }}
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-            {% if showThrowError %}
             {{ govukSelect({
                         "id": "throw-error",
                         "name": "throwError",
@@ -268,7 +267,6 @@
                         },
                         "items": errorChoices
                         }) }}
-        {% endif %}
         {% endcall %}
         {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
     </form>
