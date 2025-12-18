@@ -10,12 +10,12 @@ const router = express.Router();
 router.get(
   "/build-simple-document",
   requiresAuth,
-  simpleDocumentBuilderGetController,
+  simpleDocumentBuilderGetController(),
 );
 router.post(
   "/build-simple-document",
   requiresAuth,
-  simpleDocumentBuilderPostController,
+  simpleDocumentBuilderPostController(),
 );
 
 export { router as simpleDocumentBuilderRouter };
