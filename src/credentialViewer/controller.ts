@@ -8,6 +8,7 @@ import { logger } from "../middleware/logger";
 import {decode, getEncoded, Tag} from "cbor2";
 import { base64UrlDecoder } from "../utils/base64Encoder";
 import {Sign1} from "@auth0/cose";
+import { replaceMapsWithObjects } from "../utils/replaceMapsWithObjects";
 
 // utility to automatically/recursively decode bstr values tagged 24 which are themselves encoded CBOR
 Tag.registerDecoder(24, ({contents}) => {
@@ -74,44 +75,11 @@ export async function credentialViewerController(
       accessTokenClaims: JSON.stringify(accessTokenClaims),
       proofJwt,
       credential,
-      credentialClaims: {
-        data: credentialClaims,
-        showAllAsClosed: true,
-        sortPropertyNames: false,
-        fileDroppingEnabled: false,
-        // allowEditing: {
-        //   booleanValues: false,
-        //   decimalValues: false,
-        //   numberValues: false,
-        //
-        // }
-      },
-      credentialSignature: {
-        data: credentialSignature,
-        showAllAsClosed: true,
-        sortPropertyNames: false,
-        fileDroppingEnabled: false,
-        // allowEditing: {
-        //   booleanValues: false,
-        //   decimalValues: false,
-        //   numberValues: false,
-        //
-        // }
-      },
-      credentialSignaturePayload: {
-        data: credentialSignaturePayload,
-        showAllAsClosed: true,
-        sortPropertyNames: false,
-        fileDroppingEnabled: false,
-        // allowEditing: {
-        //   booleanValues: false,
-        //   decimalValues: false,
-        //   numberValues: false,
-        //
-        // }
-      },
-
+      credentialClaims: JSON.stringify(credentialClaims, replaceMapsWithObjects),
+      credentialSignature: JSON.stringify(credentialSignature, replaceMapsWithObjects),
+      credentialSignaturePayload: JSON.stringify(credentialSignaturePayload, replaceMapsWithObjects),
     });
+
   } catch (error) {
     logger.error(error, "An error happened.");
     res.render("500.njk");
