@@ -51,12 +51,10 @@ export async function credentialViewerController(
           })
           // @ts-expect-error credential is known
           const rawMso = credentialClaims.issuerAuth
-          // TODO: document[0] should be replaced by a mechanism which searches for docType: "org.iso.18013.5.1.mDL"
           credentialSignature = Sign1.decode(getEncoded(rawMso)!)
           credentialSignaturePayload = decode(Buffer.from(credentialSignature.payload))
           logger.info({
             credentialClaims,
-            rawMso,
             credentialSignature,
             credentialSignaturePayload,
           }, "CREDENTIAL OUTPUT FROM CBOR DECODING")
@@ -72,7 +70,7 @@ export async function credentialViewerController(
       authenticated: isAuthenticated(req),
       preAuthorizedCode,
       accessToken,
-      accessTokenClaims: JSON.stringify(accessTokenClaims),
+      accessTokenClaims: JSON.stringify(accessTokenClaims, null, 2),
       proofJwt,
       credential,
       credentialClaims: JSON.stringify(credentialClaims, replaceMapsWithObjects),
