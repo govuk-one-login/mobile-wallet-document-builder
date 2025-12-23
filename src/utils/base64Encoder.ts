@@ -4,8 +4,8 @@ export function base64Encoder(object: object) {
 
 export function base64UrlDecoder(base64url: string) {
   const base64 = base64url
-    .replaceAll(/-/g, '+')
-    .replaceAll(/_/g, '/') + '=='.slice(0, (4 - (base64url.length % 4)) % 4)
+    .replaceAll('-', '+')
+    .replaceAll('_', '/') + '=='.slice(0, (4 - (base64url.length % 4)) % 4)
 
   return Buffer.from(base64, 'base64')
 }
