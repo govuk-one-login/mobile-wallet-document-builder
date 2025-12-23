@@ -6,9 +6,15 @@
 export default {
   transform: {
     '^.+\\.tsx?$': [
-      'ts-jest'
+      'ts-jest',
+    ],
+    '\\.jsx?$': [
+      'ts-jest',
     ],
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!(@cto.af|cbor2))',
+  ],
   reporters: [
     'default',
     ['jest-junit', { outputDirectory: 'results', outputName: 'report.xml' }]
