@@ -30,17 +30,21 @@ export async function credentialViewerController(
       accessTokenClaims.aud as string,
     );
 
+    const proofJwtClaims = JSON.stringify(decodeJwt(proofJwt), null, 2);
+
     const credential = await getCredential(accessToken, proofJwt);
     logger.info(`Credential ${credential}`);
-    let credentialClaims = null;
-    let credentialSignature = null;
-    let credentialSignaturePayload = null;
+    let credentialClaims = undefined;
+    let credentialSignature = undefined;
+    let credentialSignaturePayload = undefined;
+    let credentialClaimsTitle = "";
     try {
       const payload = {
         decoded: decodeJwt(credential),
       };
       logger.info(payload, "Decoded JWT credential");
-      credentialClaims = JSON.stringify(payload.decoded);
+      credentialClaims = payload.decoded;
+      credentialClaimsTitle = "VCDM credential"
     } catch (error) {
       logger.error(error, "Could not decode JWT credential - attempting CBOR decode");
       if (error instanceof errors.JWTInvalid) {
@@ -49,6 +53,7 @@ export async function credentialViewerController(
           credentialClaims = decode(base64UrlDecoder(credential), {
             saveOriginal: true,
           })
+          credentialClaimsTitle = "mdoc Credential"
           // @ts-expect-error credential is known
           const rawMso = credentialClaims.issuerAuth
           credentialSignature = Sign1.decode(getEncoded(rawMso)!)
@@ -72,7 +77,9 @@ export async function credentialViewerController(
       accessToken,
       accessTokenClaims: JSON.stringify(accessTokenClaims, null, 2),
       proofJwt,
+      proofJwtClaims,
       credential,
+      credentialClaimsTitle,
       credentialClaims: JSON.stringify(credentialClaims, replaceMapsWithObjects),
       credentialSignature: JSON.stringify(credentialSignature, replaceMapsWithObjects),
       credentialSignaturePayload: JSON.stringify(credentialSignaturePayload, replaceMapsWithObjects),
