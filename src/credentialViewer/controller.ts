@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import { decodeJwt, errors } from "jose";
+import { decodeJwt } from "jose";
 import axios from "axios";
 import { getCriEndpoint, getSelfUrl } from "../config/appConfig";
 import { GrantType } from "../stsStubAccessToken/token/validateTokenRequest";
 import { logger } from "../middleware/logger";
-import {decode, getEncoded, Tag} from "cbor2";
+import {decode as decodeCbor, getEncoded, Tag} from "cbor2";
 import { base64UrlDecoder } from "../utils/base64Encoder";
 import {Sign1} from "@auth0/cose";
 import { replaceMapsWithObjects } from "../utils/replaceMapsWithObjects";
 
 // utility to automatically/recursively decode bstr values tagged 24 which are themselves encoded CBOR
 Tag.registerDecoder(24, ({contents}) => {
-  return decode(contents as Buffer);
+  return decodeCbor(contents as Buffer);
 })
 
 export async function credentialViewerController(
@@ -38,37 +38,39 @@ export async function credentialViewerController(
     let credentialSignature = undefined;
     let credentialSignaturePayload = undefined;
     let credentialClaimsTitle = "";
-    try {
-      const payload = {
-        decoded: decodeJwt(credential),
-      };
-      logger.info(payload, "Decoded JWT credential");
-      credentialClaims = payload.decoded;
-      credentialClaimsTitle = "VCDM credential"
-    } catch (error) {
-      logger.error(error, "Could not decode JWT credential - attempting CBOR decode");
-      if (error instanceof errors.JWTInvalid) {
-        logger.info("Attempting CBOR decode")
-        try {
-          credentialClaims = decode(base64UrlDecoder(credential), {
-            saveOriginal: true,
-          })
-          credentialClaimsTitle = "mdoc Credential"
-          // @ts-expect-error credential is known
-          const rawMso = credentialClaims.issuerAuth
-          credentialSignature = Sign1.decode(getEncoded(rawMso)!)
-          credentialSignaturePayload = decode(Buffer.from(credentialSignature.payload))
-          logger.info({
-            credentialClaims,
-            credentialSignature,
-            credentialSignaturePayload,
-          }, "CREDENTIAL OUTPUT FROM CBOR DECODING")
-        } catch (error) {
-          logger.error(error, "An error occurred with JWT and/or CBOR decoding")
-        }
-      } else {
-        logger.error(error, "An error occurred with JWT decoding")
+
+    // as a crude way to determine whether the credential may be JWT or CBOR:
+    // - if it begins 'eyJ' attempt to decode it as a JWT
+    // - if it does not begin 'eyJ' attempt to decode it as CBOR
+
+    if(credential.match(/^eyJ/) !== null) {
+
+      // attempt to decode as JWT
+      try {
+        credentialClaims = decodeJwt(credential);
+        credentialClaimsTitle = "VCDM credential"
+        logger.info ("Decoded JWT credential")
+      } catch (error) {
+        logger.error(error,"An error occurred whilst decoding a JWT credential")
       }
+
+    } else {
+
+      // attempt to decode as CBOR
+      try {
+        credentialClaims = decodeCbor(base64UrlDecoder(credential), {
+          saveOriginal: true,
+        })
+        credentialClaimsTitle = "mdoc Credential"
+        // @ts-expect-error credential is known
+        const rawMso = credentialClaims.issuerAuth
+        credentialSignature = Sign1.decode(getEncoded(rawMso)!)
+        credentialSignaturePayload = decodeCbor(Buffer.from(credentialSignature.payload))
+        logger.info("Decoded CBOR credential")
+      } catch (error) {
+        logger.error(error, "An error occurred whilst decoding a CBOR credential")
+      }
+
     }
 
     res.render("credential.njk", {
