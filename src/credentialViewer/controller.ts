@@ -22,18 +22,41 @@ export async function credentialViewerController(
   try {
     const preAuthorizedCode = extractPreAuthCode(req.query.offer as string);
 
+    let preAuthorizedCodeClaims = undefined;
+    try {
+      preAuthorizedCodeClaims = decodeJwt(preAuthorizedCode);
+    } catch (error) {
+      logger.error(error, "An error occurred decoding the preAuthorizedCode");
+    }
+
     const accessToken = await getAccessToken(preAuthorizedCode);
-    const accessTokenClaims = decodeJwt(accessToken);
 
-    const proofJwt = await getProofJwt(
-      accessTokenClaims.c_nonce as string,
-      accessTokenClaims.aud as string,
-    );
+    let accessTokenClaims = undefined;
+    try {
+      accessTokenClaims = decodeJwt(accessToken);
+    } catch (error) {
+      logger.error(error, "An error occurred decoding the accessTokenClaims");
+    }
 
-    const proofJwtClaims = JSON.stringify(decodeJwt(proofJwt), null, 2);
+    let proofJwt = "";
+    let proofJwtClaims = undefined;
+    if (accessTokenClaims) {
+      try {
+        proofJwt = await getProofJwt(
+          accessTokenClaims.c_nonce as string,
+          accessTokenClaims.aud as string,
+        );
+      } catch (error) {
+        logger.error(error, "An error occurred getting the proofJwt");
+      }
+      try {
+        proofJwtClaims = decodeJwt(proofJwt);
+      } catch (error) {
+        logger.error(error, "An error occurred decoding the proofJwtClaims");
+      }
+    }
 
     const credential = await getCredential(accessToken, proofJwt);
-    logger.info(`Credential ${credential}`);
     let credentialClaims = undefined;
     let credentialSignature = undefined;
     let credentialSignaturePayload = undefined;
@@ -43,7 +66,7 @@ export async function credentialViewerController(
     // - if it begins 'eyJ' attempt to decode it as a JWT
     // - if it does not begin 'eyJ' attempt to decode it as CBOR
 
-    if (credential.startsWith("eyJ") !== null) {
+    if (credential.startsWith("eyJ")) {
       // attempt to decode as JWT
       try {
         credentialClaims = decodeJwt(credential);
@@ -80,10 +103,11 @@ export async function credentialViewerController(
     res.render("credential.njk", {
       authenticated: isAuthenticated(req),
       preAuthorizedCode,
+      preAuthorizedCodeClaims: JSON.stringify(preAuthorizedCodeClaims, null, 2),
       accessToken,
       accessTokenClaims: JSON.stringify(accessTokenClaims, null, 2),
       proofJwt,
-      proofJwtClaims,
+      proofJwtClaims: JSON.stringify(proofJwtClaims, null, 2),
       credential,
       credentialClaimsTitle,
       credentialClaims: JSON.stringify(
