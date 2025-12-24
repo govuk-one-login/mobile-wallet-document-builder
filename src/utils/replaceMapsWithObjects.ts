@@ -2,9 +2,9 @@
 export function replaceMapsWithObjects(_key: string, value: object) {
   if (value instanceof Map) {
     return {
-      type: 'Map',
+      type: "Map",
       value: [...value],
-    }
+    };
   } else {
     return value;
   }

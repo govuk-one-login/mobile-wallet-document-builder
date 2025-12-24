@@ -5,15 +5,15 @@ import axios from "axios";
 import { getCriEndpoint, getSelfUrl } from "../config/appConfig";
 import { GrantType } from "../stsStubAccessToken/token/validateTokenRequest";
 import { logger } from "../middleware/logger";
-import {decode as decodeCbor, getEncoded, Tag} from "cbor2";
+import { decode as decodeCbor, getEncoded, Tag } from "cbor2";
 import { base64UrlDecoder } from "../utils/base64Encoder";
-import {Sign1} from "@auth0/cose";
+import { Sign1 } from "@auth0/cose";
 import { replaceMapsWithObjects } from "../utils/replaceMapsWithObjects";
 
 // utility to automatically/recursively decode bstr values tagged 24 which are themselves encoded CBOR
-Tag.registerDecoder(24, ({contents}) => {
+Tag.registerDecoder(24, ({ contents }) => {
   return decodeCbor(contents as Buffer);
-})
+});
 
 export async function credentialViewerController(
   req: Request,
@@ -43,34 +43,38 @@ export async function credentialViewerController(
     // - if it begins 'eyJ' attempt to decode it as a JWT
     // - if it does not begin 'eyJ' attempt to decode it as CBOR
 
-    if(credential.match(/^eyJ/) !== null) {
-
+    if (credential.match(/^eyJ/) !== null) {
       // attempt to decode as JWT
       try {
         credentialClaims = decodeJwt(credential);
-        credentialClaimsTitle = "VCDM credential"
-        logger.info ("Decoded JWT credential")
+        credentialClaimsTitle = "VCDM credential";
+        logger.info("Decoded JWT credential");
       } catch (error) {
-        logger.error(error,"An error occurred whilst decoding a JWT credential")
+        logger.error(
+          error,
+          "An error occurred whilst decoding a JWT credential",
+        );
       }
-
     } else {
-
       // attempt to decode as CBOR
       try {
         credentialClaims = decodeCbor(base64UrlDecoder(credential), {
           saveOriginal: true,
-        })
-        credentialClaimsTitle = "mdoc Credential"
+        });
+        credentialClaimsTitle = "mdoc Credential";
         // @ts-expect-error credential is known
-        const rawMso = credentialClaims.issuerAuth
-        credentialSignature = Sign1.decode(getEncoded(rawMso)!)
-        credentialSignaturePayload = decodeCbor(Buffer.from(credentialSignature.payload))
-        logger.info("Decoded CBOR credential")
+        const rawMso = credentialClaims.issuerAuth;
+        credentialSignature = Sign1.decode(getEncoded(rawMso)!);
+        credentialSignaturePayload = decodeCbor(
+          Buffer.from(credentialSignature.payload),
+        );
+        logger.info("Decoded CBOR credential");
       } catch (error) {
-        logger.error(error, "An error occurred whilst decoding a CBOR credential")
+        logger.error(
+          error,
+          "An error occurred whilst decoding a CBOR credential",
+        );
       }
-
     }
 
     res.render("credential.njk", {
@@ -82,11 +86,19 @@ export async function credentialViewerController(
       proofJwtClaims,
       credential,
       credentialClaimsTitle,
-      credentialClaims: JSON.stringify(credentialClaims, replaceMapsWithObjects),
-      credentialSignature: JSON.stringify(credentialSignature, replaceMapsWithObjects),
-      credentialSignaturePayload: JSON.stringify(credentialSignaturePayload, replaceMapsWithObjects),
+      credentialClaims: JSON.stringify(
+        credentialClaims,
+        replaceMapsWithObjects,
+      ),
+      credentialSignature: JSON.stringify(
+        credentialSignature,
+        replaceMapsWithObjects,
+      ),
+      credentialSignaturePayload: JSON.stringify(
+        credentialSignaturePayload,
+        replaceMapsWithObjects,
+      ),
     });
-
   } catch (error) {
     logger.error(error, "An error happened.");
     res.render("500.njk");
