@@ -40,8 +40,6 @@ export interface SimpleDocumentBuilderControllerConfig {
   bucketName?: string;
 }
 
-// Temporary change to trigger deployment
-
 export function simpleDocumentBuilderGetController({
   environment = getEnvironment(),
 }: SimpleDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
