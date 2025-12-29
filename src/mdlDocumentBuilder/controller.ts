@@ -27,8 +27,6 @@ import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
 
-let drivingLicenceNumber: string;
-
 export interface MdlDocumentBuilderControllerConfig {
   environment?: string;
 }
@@ -40,7 +38,7 @@ export function mdlDocumentBuilderGetController({
     try {
       const showThrowError = environment !== "staging";
       const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-      drivingLicenceNumber = "EDWAR" + getRandomIntInclusive() + "SE5RO";
+      const drivingLicenceNumber = "EDWAR" + getRandomIntInclusive() + "SE5RO";
       res.render("mdl-document-details-form.njk", {
         defaultIssueDate,
         defaultExpiryDate,
@@ -66,6 +64,7 @@ export function mdlDocumentBuilderPostController({
     try {
       const showThrowError = environment !== "staging";
       const body: MdlRequestBody = req.body;
+      const drivingLicenceNumber = body.document_number;
       const errors = validateDateFields(body);
       if (Object.keys(errors).length > 0) {
         const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
