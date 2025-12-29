@@ -28,16 +28,14 @@ const FISH_TYPES = [
   "Sea fishing",
   "All freshwater fish",
 ];
-const fishTypeOptions = FISH_TYPES.map((type, index) => ({
+const FISH_TYPE_UI_OPTIONS = FISH_TYPES.map((type, index) => ({
   value: type,
   text: type,
   selected: index === 0,
 }));
 
 export interface SimpleDocumentBuilderControllerConfig {
-  tableName?: string;
   environment?: string;
-  bucketName?: string;
 }
 
 export function simpleDocumentBuilderGetController({
@@ -52,7 +50,7 @@ export function simpleDocumentBuilderGetController({
         defaultIssueDate,
         defaultExpiryDate,
         documentNumber,
-        fishTypeOptions,
+        fishTypeOptions: FISH_TYPE_UI_OPTIONS,
         authenticated: isAuthenticated(req),
         errorChoices: ERROR_CHOICES,
         showThrowError,
@@ -69,8 +67,6 @@ export function simpleDocumentBuilderGetController({
 
 export function simpleDocumentBuilderPostController({
   environment = getEnvironment(),
-  tableName = getDocumentsTableName(),
-  bucketName = getPhotosBucketName(),
 }: SimpleDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
   return async function (req: Request, res: Response): Promise<void> {
     try {
@@ -87,7 +83,7 @@ export function simpleDocumentBuilderPostController({
           defaultIssueDate,
           defaultExpiryDate,
           documentNumber,
-          fishTypeOptions,
+          fishTypeOptions: FISH_TYPE_UI_OPTIONS,
           authenticated: isAuthenticated(req),
           errorChoices: ERROR_CHOICES,
           showThrowError,
@@ -95,13 +91,14 @@ export function simpleDocumentBuilderPostController({
         });
       }
 
+      const bucketName = getPhotosBucketName();
       const itemId = randomUUID();
       const s3Uri = `s3://${bucketName}/${itemId}`;
 
       const { photoBuffer, mimeType } = getPhoto(body.portrait);
       await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
       const data = buildSimpleDocumentDataFromRequestBody(body, s3Uri);
-      await saveDocument(tableName, {
+      await saveDocument(getDocumentsTableName(), {
         itemId,
         documentId: data.document_number,
         data,

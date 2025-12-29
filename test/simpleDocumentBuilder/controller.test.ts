@@ -27,8 +27,6 @@ jest.mock("../../src/utils/getRandomIntInclusive", () => ({
 
 const config = {
   environment: "test",
-  tableName: "documentsTable",
-  bucketName: "photosBucket",
 };
 
 describe("controller.ts", () => {
