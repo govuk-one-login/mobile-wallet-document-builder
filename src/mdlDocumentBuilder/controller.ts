@@ -62,20 +62,21 @@ export function mdlDocumentBuilderPostController({
 }: MdlDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
   return async function (req: Request, res: Response): Promise<void> {
     try {
-      const showThrowError = environment !== "staging";
       const body: MdlRequestBody = req.body;
-      const drivingLicenceNumber = body.document_number;
+
       const errors = validateDateFields(body);
       if (Object.keys(errors).length > 0) {
         const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
+        const drivingLicenceNumber = body.document_number;
+        const showThrowError = environment !== "staging";
         return res.render("mdl-document-details-form.njk", {
           defaultIssueDate,
           defaultExpiryDate,
           drivingLicenceNumber,
           authenticated: isAuthenticated(req),
           errorChoices: ERROR_CHOICES,
-          errors,
           showThrowError,
+          errors,
         });
       }
 
@@ -85,6 +86,7 @@ export function mdlDocumentBuilderPostController({
 
       const { photoBuffer, mimeType } = getPhoto(body.portrait);
       await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
+
       const data = buildMdlDataFromRequestBody(body, s3Uri);
       await saveDocument(getDocumentsTableName(), {
         itemId,
@@ -95,8 +97,8 @@ export function mdlDocumentBuilderPostController({
         timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
       });
 
-      const selectedError = body["throwError"];
       let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
+      const selectedError = body["throwError"];
       if (isErrorCode(selectedError)) {
         redirectUrl += `&error=${selectedError}`;
       }

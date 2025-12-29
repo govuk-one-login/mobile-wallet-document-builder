@@ -20,6 +20,7 @@ import { SimpleDocumentData } from "./types/SimpleDocumentData";
 import { isErrorCode } from "../utils/isErrorCode";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
+import { MdlRequestBody } from "../mdlDocumentBuilder/types/MdlRequestBody";
 
 const CREDENTIAL_TYPE = CredentialType.SimpleDocument;
 const FISH_TYPES = [
@@ -71,14 +72,15 @@ export function simpleDocumentBuilderPostController({
   return async function (req: Request, res: Response): Promise<void> {
     try {
       const body: SimpleDocumentRequestBody = req.body;
-      const documentNumber = body.document_number;
+
       const errors = validateDateFields(body);
       if (!FISH_TYPES.includes(body.type_of_fish)) {
         errors.type_of_fish = "Select a valid type of fish";
       }
       if (Object.keys(errors).length > 0) {
-        const showThrowError = environment !== "staging";
         const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
+        const documentNumber = body.document_number;
+        const showThrowError = environment !== "staging";
         return res.render("simple-document-details-form.njk", {
           defaultIssueDate,
           defaultExpiryDate,
@@ -97,6 +99,7 @@ export function simpleDocumentBuilderPostController({
 
       const { photoBuffer, mimeType } = getPhoto(body.portrait);
       await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
+
       const data = buildSimpleDocumentDataFromRequestBody(body, s3Uri);
       await saveDocument(getDocumentsTableName(), {
         itemId,
@@ -106,9 +109,9 @@ export function simpleDocumentBuilderPostController({
         credentialTtlMinutes: Number(body.credentialTtl),
         timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
       });
-      const selectedError = body["throwError"];
-      let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
 
+      let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
+      const selectedError = body["throwError"];
       if (isErrorCode(selectedError)) {
         redirectUrl += `&error=${selectedError}`;
       }
