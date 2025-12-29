@@ -11,10 +11,10 @@ import {
 } from "../config/appConfig";
 import { DbsRequestBody } from "./types/DbsRequestBody";
 import { DbsData } from "./types/DbsData";
-import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
+import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
 
 const CREDENTIAL_TYPE = CredentialType.BasicDisclosureCredential;
 
@@ -58,11 +58,11 @@ export async function dbsDocumentBuilderPostController(
       timeToLive,
     });
 
-    const selectedError = body["throwError"];
-    let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
-    if (isErrorCode(selectedError)) {
-      redirectUrl += `&error=${selectedError}`;
-    }
+    const redirectUrl = getViewCredentialOfferRedirectUrl(
+      itemId,
+      CREDENTIAL_TYPE,
+      body["throwError"],
+    );
     res.redirect(redirectUrl);
   } catch (error) {
     logger.error(error, "An error happened processing DBS document request");

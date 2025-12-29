@@ -17,10 +17,9 @@ import { SimpleDocumentRequestBody } from "./types/SimpleDocumentRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { SimpleDocumentData } from "./types/SimpleDocumentData";
-import { isErrorCode } from "../utils/isErrorCode";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
-import { MdlRequestBody } from "../mdlDocumentBuilder/types/MdlRequestBody";
+import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
 
 const CREDENTIAL_TYPE = CredentialType.SimpleDocument;
 const FISH_TYPES = [
@@ -110,11 +109,11 @@ export function simpleDocumentBuilderPostController({
         timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
       });
 
-      let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
-      const selectedError = body["throwError"];
-      if (isErrorCode(selectedError)) {
-        redirectUrl += `&error=${selectedError}`;
-      }
+      const redirectUrl = getViewCredentialOfferRedirectUrl(
+        itemId,
+        CREDENTIAL_TYPE,
+        body["throwError"],
+      );
       res.redirect(redirectUrl);
     } catch (error) {
       logger.error(

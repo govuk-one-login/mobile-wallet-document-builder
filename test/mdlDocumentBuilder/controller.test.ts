@@ -187,8 +187,7 @@ describe("controller.ts", () => {
               given_name: "Sarah Elizabeth",
               title: "Miss",
               welsh_licence: false,
-              portrait:
-                "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+              portrait: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
               birth_date: "06-03-1975",
               birth_place: "London",
               issue_date: "08-04-2019",
@@ -239,8 +238,7 @@ describe("controller.ts", () => {
               given_name: "Sarah Elizabeth",
               title: "Miss",
               welsh_licence: false,
-              portrait:
-                "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+              portrait: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
               birth_date: "06-03-1975",
               birth_place: "London",
               issue_date: "08-04-2019",

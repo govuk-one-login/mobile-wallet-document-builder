@@ -19,11 +19,11 @@ import {
   getFullDrivingPrivileges,
   getProvisionalDrivingPrivileges,
 } from "./helpers/drivingPrivilegeBuilder";
-import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
+import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
 
@@ -97,11 +97,11 @@ export function mdlDocumentBuilderPostController({
         timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
       });
 
-      let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
-      const selectedError = body["throwError"];
-      if (isErrorCode(selectedError)) {
-        redirectUrl += `&error=${selectedError}`;
-      }
+      const redirectUrl = getViewCredentialOfferRedirectUrl(
+        itemId,
+        CREDENTIAL_TYPE,
+        body["throwError"],
+      );
       res.redirect(redirectUrl);
     } catch (error) {
       logger.error(
