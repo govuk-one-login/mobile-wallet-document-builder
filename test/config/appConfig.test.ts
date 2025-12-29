@@ -13,6 +13,7 @@ import {
   getHardcodedWalletSubjectId,
   getWalletApps,
   getTableItemTtl,
+  getPhotosBucketName,
 } from "../../src/config/appConfig";
 
 describe("appConfig.ts", () => {
@@ -28,6 +29,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if DOCUMENTS_TABLE_NAME environment variable is not set", () => {
+    process.env.DOCUMENTS_TABLE_NAME = "";
     expect(() => getDocumentsTableName()).toThrow(
       new Error("DOCUMENTS_TABLE_NAME environment variable not set"),
     );
@@ -36,6 +38,18 @@ describe("appConfig.ts", () => {
   it("should return DOCUMENTS_TABLE_NAME environment variable value if set", () => {
     process.env.DOCUMENTS_TABLE_NAME = "testTable";
     expect(getDocumentsTableName()).toEqual("testTable");
+  });
+
+  it("should throw an error if PHOTOS_BUCKET_NAME environment variable is not set", () => {
+    process.env.PHOTOS_BUCKET_NAME = "";
+    expect(() => getPhotosBucketName()).toThrow(
+      new Error("PHOTOS_BUCKET_NAME environment variable not set"),
+    );
+  });
+
+  it("should return PHOTOS_BUCKET_NAME environment variable value if set", () => {
+    process.env.PHOTOS_BUCKET_NAME = "testBucket";
+    expect(getPhotosBucketName()).toEqual("testBucket");
   });
 
   it("should throw an error if ENVIRONMENT environment variable is not set", () => {

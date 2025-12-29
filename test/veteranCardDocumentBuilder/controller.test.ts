@@ -8,9 +8,6 @@ import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
 import { ERROR_CHOICES } from "../../src/utils/errorChoices";
-process.env.PHOTOS_BUCKET_NAME = "photosBucket";
-process.env.ENVIRONMENT = "local";
-process.env.DOCUMENTS_TABLE_NAME = "testTable";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
@@ -142,7 +139,7 @@ describe("controller.ts", () => {
           expect(uploadPhoto).toHaveBeenCalledWith(
             photoBuffer,
             "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-            "photosBucket",
+            "testBucket",
             mimeType,
           );
         });
@@ -173,7 +170,7 @@ describe("controller.ts", () => {
             "cardExpiryDate-year": "2029",
             serviceNumber: "25057386",
             serviceBranch: "HM Naval Service",
-            photo: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            photo: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           },
           vcType: "DigitalVeteranCard",
           timeToLive: 1760174135,
