@@ -5,6 +5,15 @@ import axios from "axios";
 import { getCriEndpoint, getSelfUrl } from "../config/appConfig";
 import { GrantType } from "../stsStubAccessToken/token/validateTokenRequest";
 import { logger } from "../middleware/logger";
+import { decode as decodeCbor, getEncoded, Tag } from "cbor2";
+import { base64UrlDecoder } from "../utils/base64Encoder";
+import { Sign1 } from "@auth0/cose";
+import { replaceMapsWithObjects } from "../utils/replaceMapsWithObjects";
+
+// utility to automatically/recursively decode bstr values tagged 24 which are themselves encoded CBOR
+Tag.registerDecoder(24, ({ contents }) => {
+  return decodeCbor(contents as Buffer);
+});
 
 export async function credentialViewerController(
   req: Request,
@@ -13,31 +22,106 @@ export async function credentialViewerController(
   try {
     const preAuthorizedCode = extractPreAuthCode(req.query.offer as string);
 
-    const accessToken = await getAccessToken(preAuthorizedCode);
-    const accessTokenClaims = decodeJwt(accessToken);
+    let preAuthorizedCodeClaims = undefined;
+    try {
+      preAuthorizedCodeClaims = decodeJwt(preAuthorizedCode);
+    } catch (error) {
+      logger.error(error, "An error occurred decoding the preAuthorizedCode");
+    }
 
-    const proofJwt = await getProofJwt(
-      accessTokenClaims.c_nonce as string,
-      accessTokenClaims.aud as string,
-    );
+    const accessToken = await getAccessToken(preAuthorizedCode);
+
+    let accessTokenClaims = undefined;
+    try {
+      accessTokenClaims = decodeJwt(accessToken);
+    } catch (error) {
+      logger.error(error, "An error occurred decoding the accessTokenClaims");
+    }
+
+    let proofJwt = "";
+    let proofJwtClaims = undefined;
+    if (accessTokenClaims) {
+      try {
+        proofJwt = await getProofJwt(
+          accessTokenClaims.c_nonce as string,
+          accessTokenClaims.aud as string,
+        );
+      } catch (error) {
+        logger.error(error, "An error occurred getting the proofJwt");
+      }
+      try {
+        proofJwtClaims = decodeJwt(proofJwt);
+      } catch (error) {
+        logger.error(error, "An error occurred decoding the proofJwtClaims");
+      }
+    }
 
     const credential = await getCredential(accessToken, proofJwt);
-    let credentialClaims = null;
-    try {
-      const payload = decodeJwt(credential);
-      credentialClaims = JSON.stringify(payload);
-    } catch (error) {
-      logger.info(error, "Could not decode JWT credential");
+    let credentialClaims = undefined;
+    let credentialSignature = undefined;
+    let credentialSignaturePayload = undefined;
+    let credentialClaimsTitle = "";
+
+    // as a crude way to determine whether the credential may be JWT or CBOR:
+    // - if it begins 'eyJ' attempt to decode it as a JWT
+    // - if it does not begin 'eyJ' attempt to decode it as CBOR
+
+    if (credential.startsWith("eyJ")) {
+      // attempt to decode as JWT
+      try {
+        credentialClaims = decodeJwt(credential);
+        credentialClaimsTitle = "VCDM credential";
+        logger.info("Decoded JWT credential");
+      } catch (error) {
+        logger.error(
+          error,
+          "An error occurred whilst decoding a JWT credential",
+        );
+      }
+    } else {
+      // attempt to decode as CBOR
+      try {
+        credentialClaims = decodeCbor(base64UrlDecoder(credential), {
+          saveOriginal: true,
+        });
+        credentialClaimsTitle = "mdoc Credential";
+        // @ts-expect-error credential is known
+        const rawMso = credentialClaims.issuerAuth;
+        credentialSignature = Sign1.decode(getEncoded(rawMso)!);
+        credentialSignaturePayload = decodeCbor(
+          Buffer.from(credentialSignature.payload),
+        );
+        logger.info("Decoded CBOR credential");
+      } catch (error) {
+        logger.error(
+          error,
+          "An error occurred whilst decoding a CBOR credential",
+        );
+      }
     }
 
     res.render("credential.njk", {
       authenticated: isAuthenticated(req),
       preAuthorizedCode,
+      preAuthorizedCodeClaims: JSON.stringify(preAuthorizedCodeClaims, null, 2),
       accessToken,
-      accessTokenClaims: JSON.stringify(accessTokenClaims),
+      accessTokenClaims: JSON.stringify(accessTokenClaims, null, 2),
       proofJwt,
+      proofJwtClaims: JSON.stringify(proofJwtClaims, null, 2),
       credential,
-      credentialClaims: credentialClaims,
+      credentialClaimsTitle,
+      credentialClaims: JSON.stringify(
+        credentialClaims,
+        replaceMapsWithObjects,
+      ),
+      credentialSignature: JSON.stringify(
+        credentialSignature,
+        replaceMapsWithObjects,
+      ),
+      credentialSignaturePayload: JSON.stringify(
+        credentialSignaturePayload,
+        replaceMapsWithObjects,
+      ),
     });
   } catch (error) {
     logger.error(error, "An error happened.");
