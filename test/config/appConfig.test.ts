@@ -12,6 +12,7 @@ import {
   getClientSigningKeyId,
   getHardcodedWalletSubjectId,
   getWalletApps,
+  getTableItemTtl,
 } from "../../src/config/appConfig";
 
 describe("appConfig.ts", () => {
@@ -135,7 +136,7 @@ describe("appConfig.ts", () => {
     expect(getCookieExpiryInMilliseconds()).toEqual(200000);
   });
 
-  it("should return valid wallet subject id", () => {
+  it("should return wallet subject ID", () => {
     expect(getHardcodedWalletSubjectId()).toEqual(
       "urn:fdc:wallet.account.gov.uk:2024:DtPT8x-dp_73tnlY3KNTiCitziN9GEherD16bqxNt9i",
     );
@@ -150,5 +151,9 @@ describe("appConfig.ts", () => {
   it("should return WALLET_APPS environment variable value as an array of strings if set", () => {
     process.env.WALLET_APPS = "test-app1,test-app2";
     expect(getWalletApps()).toEqual(["test-app1", "test-app2"]);
+  });
+
+  it("should return table item TTL", () => {
+    expect(getTableItemTtl()).toEqual(43200);
   });
 });

@@ -3,6 +3,7 @@ import {
   getDocumentsTableName,
   getEnvironment,
   getPhotosBucketName,
+  getTableItemTtl,
 } from "../config/appConfig";
 import { CredentialType } from "../types/CredentialType";
 import { isAuthenticated } from "../utils/isAuthenticated";
@@ -25,7 +26,6 @@ import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
-const TTL_MINUTES = 43200;
 
 let drivingLicenceNumber: string;
 
@@ -86,7 +86,6 @@ export function mdlDocumentBuilderPostController({
 
       const { photoBuffer, mimeType } = getPhoto(body.portrait);
       await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
-      const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
       const data = buildMdlDataFromRequestBody(body, s3Uri);
       await saveDocument(getDocumentsTableName(), {
         itemId,
@@ -94,7 +93,7 @@ export function mdlDocumentBuilderPostController({
         data,
         vcType: CREDENTIAL_TYPE,
         credentialTtlMinutes: Number(body.credentialTtl),
-        timeToLive,
+        timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
       });
 
       const selectedError = body["throwError"];

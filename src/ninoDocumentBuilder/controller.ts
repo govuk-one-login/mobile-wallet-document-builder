@@ -4,7 +4,11 @@ import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import { getDocumentsTableName, getEnvironment } from "../config/appConfig";
+import {
+  getDocumentsTableName,
+  getEnvironment,
+  getTableItemTtl,
+} from "../config/appConfig";
 import { NinoRequestBody } from "./types/NinoRequestBody";
 import { NinoData } from "./types/NinoData";
 import { isErrorCode } from "../utils/isErrorCode";
@@ -13,7 +17,6 @@ import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 
 const CREDENTIAL_TYPE = CredentialType.SocialSecurityCredential;
-const TTL_MINUTES = 43200;
 
 export interface NinoDocumentBuilderControllerConfig {
   environment?: string;
@@ -45,14 +48,13 @@ export async function ninoDocumentBuilderPostController(
     const body: NinoRequestBody = req.body;
     const data = buildNinoDataFromRequestBody(body);
     const itemId = randomUUID();
-    const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
     await saveDocument(getDocumentsTableName(), {
       itemId,
       documentId: data.nino,
       data,
       vcType: CREDENTIAL_TYPE,
       credentialTtlMinutes: Number(body.credentialTtl),
-      timeToLive,
+      timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
     });
 
     const selectedError = body["throwError"];

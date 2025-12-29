@@ -8,6 +8,7 @@ import {
   getDocumentsTableName,
   getEnvironment,
   getPhotosBucketName,
+  getTableItemTtl,
 } from "../config/appConfig";
 import { getPhoto } from "../utils/photoUtils";
 import { uploadPhoto } from "../services/s3Service";
@@ -21,7 +22,6 @@ import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 
 const CREDENTIAL_TYPE = CredentialType.SimpleDocument;
-const TTL_MINUTES = 43200;
 const FISH_TYPES = [
   "Coarse fish",
   "Salmon and trout",
@@ -102,7 +102,6 @@ export function simpleDocumentBuilderPostController({
 
       const { photoBuffer, mimeType } = getPhoto(body.portrait);
       await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
-      const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
       const data = buildSimpleDocumentDataFromRequestBody(body, s3Uri);
       await saveDocument(tableName, {
         itemId,
@@ -110,7 +109,7 @@ export function simpleDocumentBuilderPostController({
         data,
         vcType: CREDENTIAL_TYPE,
         credentialTtlMinutes: Number(body.credentialTtl),
-        timeToLive,
+        timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
       });
       const selectedError = body["throwError"];
       let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;

@@ -4,7 +4,11 @@ import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import { getDocumentsTableName, getEnvironment } from "../config/appConfig";
+import {
+  getDocumentsTableName,
+  getEnvironment,
+  getTableItemTtl,
+} from "../config/appConfig";
 import { DbsRequestBody } from "./types/DbsRequestBody";
 import { DbsData } from "./types/DbsData";
 import { isErrorCode } from "../utils/isErrorCode";
@@ -13,7 +17,6 @@ import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 
 const CREDENTIAL_TYPE = CredentialType.BasicDisclosureCredential;
-const TTL_MINUTES = 43200;
 
 export interface DbsDocumentBuilderControllerConfig {
   environment?: string;
@@ -44,7 +47,7 @@ export async function dbsDocumentBuilderPostController(
   try {
     const body: DbsRequestBody = req.body;
     const data = buildDbsDataFromRequestBody(body);
-    const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
+    const timeToLive = getTimeToLiveEpoch(getTableItemTtl());
     const itemId = randomUUID();
     await saveDocument(getDocumentsTableName(), {
       itemId,
