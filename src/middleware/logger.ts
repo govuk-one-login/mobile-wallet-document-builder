@@ -29,11 +29,9 @@ const loggerMiddleware = PinoHttp({
   logger,
   wrapSerializers: false,
   autoLogging: {
-    ignore: (req) =>
-      [
-        "/",
-      ].includes(req.url!),
-  },  customErrorMessage: function (error, res) {
+    ignore: (req) => ["/"].includes(req.url!),
+  },
+  customErrorMessage: function (error, res) {
     return `Request errored with status code ${res.statusCode}`;
   },
   customSuccessMessage: function (req, res) {
