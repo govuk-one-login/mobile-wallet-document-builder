@@ -72,3 +72,7 @@ export function getWalletApps(): string[] {
   const walletApps = getEnvVarValue("WALLET_APPS");
   return walletApps.split(",");
 }
+
+export function getTableItemTtl(): number {
+  return 43200;
+}

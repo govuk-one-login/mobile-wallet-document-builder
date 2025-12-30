@@ -8,6 +8,7 @@ import {
   getDocumentsTableName,
   getEnvironment,
   getPhotosBucketName,
+  getTableItemTtl,
 } from "../config/appConfig";
 import { getPhoto } from "../utils/photoUtils";
 import { uploadPhoto } from "../services/s3Service";
@@ -16,28 +17,25 @@ import { SimpleDocumentRequestBody } from "./types/SimpleDocumentRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { SimpleDocumentData } from "./types/SimpleDocumentData";
-import { isErrorCode } from "../utils/isErrorCode";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
+import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
 
 const CREDENTIAL_TYPE = CredentialType.SimpleDocument;
-const TTL_MINUTES = 43200;
 const FISH_TYPES = [
   "Coarse fish",
   "Salmon and trout",
   "Sea fishing",
   "All freshwater fish",
 ];
-const fishTypeOptions = FISH_TYPES.map((type, index) => ({
+const FISH_TYPE_UI_OPTIONS = FISH_TYPES.map((type, index) => ({
   value: type,
   text: type,
   selected: index === 0,
 }));
 
 export interface SimpleDocumentBuilderControllerConfig {
-  tableName?: string;
   environment?: string;
-  bucketName?: string;
 }
 
 export function simpleDocumentBuilderGetController({
@@ -52,7 +50,7 @@ export function simpleDocumentBuilderGetController({
         defaultIssueDate,
         defaultExpiryDate,
         documentNumber,
-        fishTypeOptions,
+        fishTypeOptions: FISH_TYPE_UI_OPTIONS,
         authenticated: isAuthenticated(req),
         errorChoices: ERROR_CHOICES,
         showThrowError,
@@ -69,25 +67,24 @@ export function simpleDocumentBuilderGetController({
 
 export function simpleDocumentBuilderPostController({
   environment = getEnvironment(),
-  tableName = getDocumentsTableName(),
-  bucketName = getPhotosBucketName(),
 }: SimpleDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
   return async function (req: Request, res: Response): Promise<void> {
     try {
       const body: SimpleDocumentRequestBody = req.body;
-      const documentNumber = body.document_number;
+
       const errors = validateDateFields(body);
       if (!FISH_TYPES.includes(body.type_of_fish)) {
         errors.type_of_fish = "Select a valid type of fish";
       }
       if (Object.keys(errors).length > 0) {
-        const showThrowError = environment !== "staging";
         const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
+        const documentNumber = body.document_number;
+        const showThrowError = environment !== "staging";
         return res.render("simple-document-details-form.njk", {
           defaultIssueDate,
           defaultExpiryDate,
           documentNumber,
-          fishTypeOptions,
+          fishTypeOptions: FISH_TYPE_UI_OPTIONS,
           authenticated: isAuthenticated(req),
           errorChoices: ERROR_CHOICES,
           showThrowError,
@@ -95,27 +92,28 @@ export function simpleDocumentBuilderPostController({
         });
       }
 
+      const bucketName = getPhotosBucketName();
       const itemId = randomUUID();
       const s3Uri = `s3://${bucketName}/${itemId}`;
 
       const { photoBuffer, mimeType } = getPhoto(body.portrait);
       await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
-      const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
+
       const data = buildSimpleDocumentDataFromRequestBody(body, s3Uri);
-      await saveDocument(tableName, {
+      await saveDocument(getDocumentsTableName(), {
         itemId,
         documentId: data.document_number,
         data,
         vcType: CREDENTIAL_TYPE,
         credentialTtlMinutes: Number(body.credentialTtl),
-        timeToLive,
+        timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
       });
-      const selectedError = body["throwError"];
-      let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
 
-      if (isErrorCode(selectedError)) {
-        redirectUrl += `&error=${selectedError}`;
-      }
+      const redirectUrl = getViewCredentialOfferRedirectUrl(
+        itemId,
+        CREDENTIAL_TYPE,
+        body["throwError"],
+      );
       res.redirect(redirectUrl);
     } catch (error) {
       logger.error(
