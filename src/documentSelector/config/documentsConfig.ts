@@ -21,7 +21,7 @@ export const documentsConfig: DocumentsConfig = {
     name: "Veteran Card",
   },
   [CredentialType.MobileDrivingLicence]: {
-    route: "/build-mdl-document",
+    route: "/build-driving-licence",
     name: "Driving Licence",
   },
   [CredentialType.SimpleDocument]: {

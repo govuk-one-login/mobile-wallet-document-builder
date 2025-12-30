@@ -1,13 +1,13 @@
 import {
-  mdlDocumentBuilderGetController,
-  mdlDocumentBuilderPostController,
-} from "../../src/mdlDocumentBuilder/controller";
+  drivingLicenceBuilderGetController,
+  drivingLicenceBuilderPostController,
+} from "../../src/drivingLicenceBuilder/controller";
 import { readFileSync } from "fs";
 import * as databaseService from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
-import { MdlRequestBody } from "../../src/mdlDocumentBuilder/types/MdlRequestBody";
+import { DrivingLicenceRequestBody } from "../../src/drivingLicenceBuilder/types/DrivingLicenceRequestBody";
 import { ERROR_CHOICES } from "../../src/utils/errorChoices";
 process.env.PHOTOS_BUCKET_NAME = "photosBucket";
 process.env.ENVIRONMENT = "local";
@@ -40,13 +40,13 @@ describe("controller.ts", () => {
   });
 
   describe("get", () => {
-    it("should render the form for inputting the mDL document details", async () => {
+    it("should render the form for inputting the driving licence details", async () => {
       const req = getMockReq({ cookies: { id_token: "id_token" } });
       const { res } = getMockRes();
 
-      await mdlDocumentBuilderGetController(config)(req, res);
+      await drivingLicenceBuilderGetController(config)(req, res);
 
-      expect(res.render).toHaveBeenCalledWith("mdl-document-details-form.njk", {
+      expect(res.render).toHaveBeenCalledWith("driving-licence-form.njk", {
         authenticated: true,
         defaultIssueDate: {
           day: "02",
@@ -73,27 +73,24 @@ describe("controller.ts", () => {
         const req = getMockReq({ cookies: { id_token: "id_token" } });
         const { res } = getMockRes();
 
-        await mdlDocumentBuilderGetController({ environment })(req, res);
+        await drivingLicenceBuilderGetController({ environment })(req, res);
 
-        expect(res.render).toHaveBeenCalledWith(
-          "mdl-document-details-form.njk",
-          {
-            authenticated: true,
-            defaultIssueDate: {
-              day: "02",
-              month: "05",
-              year: "2025",
-            },
-            defaultExpiryDate: {
-              day: "01",
-              month: "05",
-              year: "2035",
-            },
-            errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
-            showThrowError: expectedShowThrowError,
+        expect(res.render).toHaveBeenCalledWith("driving-licence-form.njk", {
+          authenticated: true,
+          defaultIssueDate: {
+            day: "02",
+            month: "05",
+            year: "2025",
           },
-        );
+          defaultExpiryDate: {
+            day: "01",
+            month: "05",
+            year: "2035",
+          },
+          errorChoices: ERROR_CHOICES,
+          drivingLicenceNumber: "EDWAR550000SE5RO",
+          showThrowError: expectedShowThrowError,
+        });
       },
     );
 
@@ -105,14 +102,14 @@ describe("controller.ts", () => {
         throw new Error("Rendering error");
       });
 
-      await mdlDocumentBuilderGetController(config)(req, res);
+      await drivingLicenceBuilderGetController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
   });
 
   describe("post", () => {
-    const requestBody = buildMdlRequestBody();
+    const requestBody = buildDrivingLicenceRequestBody();
 
     const photoBuffer = Buffer.from("mock photo data");
     const mockReadFileSync = readFileSync as jest.Mock;
@@ -129,7 +126,7 @@ describe("controller.ts", () => {
         });
         const { res } = getMockRes();
 
-        await mdlDocumentBuilderPostController(config)(req, res);
+        await drivingLicenceBuilderPostController(config)(req, res);
 
         expect(res.render).toHaveBeenCalledWith("500.njk");
       });
@@ -151,7 +148,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(config)(req, res);
+          await drivingLicenceBuilderPostController(config)(req, res);
 
           const expectedPath = path.resolve(
             __dirname,
@@ -173,11 +170,13 @@ describe("controller.ts", () => {
       describe("when there are no provisional driving privileges", () => {
         it("should call the function to save the document with the correct arguments (without provisional_driving_privileges)", async () => {
           const req = getMockReq({
-            body: buildMdlRequestBody({ provisionalVehicleCategoryCode: "" }),
+            body: buildDrivingLicenceRequestBody({
+              provisionalVehicleCategoryCode: "",
+            }),
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(config)(req, res);
+          await drivingLicenceBuilderPostController(config)(req, res);
 
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
             itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
@@ -229,7 +228,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(config)(req, res);
+          await drivingLicenceBuilderPostController(config)(req, res);
 
           expect(saveDocument).toHaveBeenCalledWith("testTable", {
             itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
@@ -291,7 +290,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(config)(req, res);
+          await drivingLicenceBuilderPostController(config)(req, res);
 
           expect(res.redirect).toHaveBeenCalledWith(
             "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL",
@@ -306,7 +305,7 @@ describe("controller.ts", () => {
           });
           const { res } = getMockRes();
 
-          await mdlDocumentBuilderPostController(config)(req, res);
+          await drivingLicenceBuilderPostController(config)(req, res);
           expect(res.redirect).toHaveBeenCalledWith(
             "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL",
           );
@@ -322,7 +321,7 @@ describe("controller.ts", () => {
             });
             const { res } = getMockRes();
 
-            await mdlDocumentBuilderPostController(config)(req, res);
+            await drivingLicenceBuilderPostController(config)(req, res);
 
             expect(res.redirect).toHaveBeenCalledWith(
               `/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL&error=${selectedError}`,
@@ -334,7 +333,7 @@ describe("controller.ts", () => {
 
     describe("given invalid date fields", () => {
       it("should render an error when the birthdate has empty fields", async () => {
-        const body = buildMdlRequestBody({
+        const body = buildDrivingLicenceRequestBody({
           "birth-day": "29",
           "birth-month": "02",
           "birth-year": "2019",
@@ -345,39 +344,36 @@ describe("controller.ts", () => {
         });
         const { res } = getMockRes();
 
-        await mdlDocumentBuilderPostController(config)(req, res);
-        expect(res.render).toHaveBeenCalledWith(
-          "mdl-document-details-form.njk",
-          {
-            errors: expect.objectContaining({
-              birth_date: "Enter a valid birth date",
-            }),
-            authenticated: true,
-            defaultIssueDate: {
-              day: "02",
-              month: "05",
-              year: "2025",
-            },
-            defaultExpiryDate: {
-              day: "01",
-              month: "05",
-              year: "2035",
-            },
-            errorChoices: ERROR_CHOICES,
-            drivingLicenceNumber: "EDWAR550000SE5RO",
-            showThrowError: false,
+        await drivingLicenceBuilderPostController(config)(req, res);
+        expect(res.render).toHaveBeenCalledWith("driving-licence-form.njk", {
+          errors: expect.objectContaining({
+            birth_date: "Enter a valid birth date",
+          }),
+          authenticated: true,
+          defaultIssueDate: {
+            day: "02",
+            month: "05",
+            year: "2025",
           },
-        );
+          defaultExpiryDate: {
+            day: "01",
+            month: "05",
+            year: "2035",
+          },
+          errorChoices: ERROR_CHOICES,
+          drivingLicenceNumber: "EDWAR550000SE5RO",
+          showThrowError: false,
+        });
         expect(res.redirect).not.toHaveBeenCalled();
       });
     });
   });
 });
 
-export function buildMdlRequestBody(
-  overrides: Partial<MdlRequestBody> = {},
-): MdlRequestBody {
-  const defaults: MdlRequestBody = {
+export function buildDrivingLicenceRequestBody(
+  overrides: Partial<DrivingLicenceRequestBody> = {},
+): DrivingLicenceRequestBody {
+  const defaults: DrivingLicenceRequestBody = {
     family_name: "Edwards-Smith",
     given_name: "Sarah Elizabeth",
     title: "Miss",

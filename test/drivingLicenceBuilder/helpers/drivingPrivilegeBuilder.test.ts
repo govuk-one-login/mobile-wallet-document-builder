@@ -3,8 +3,8 @@ import {
   getFullDrivingPrivileges,
   getProvisionalDrivingPrivileges,
   stringToArray,
-} from "../../../src/mdlDocumentBuilder/helpers/drivingPrivilegeBuilder";
-import { MdlRequestBody } from "../../../src/mdlDocumentBuilder/types/MdlRequestBody";
+} from "../../../src/drivingLicenceBuilder/helpers/drivingPrivilegeBuilder";
+import { DrivingLicenceRequestBody } from "../../../src/drivingLicenceBuilder/types/DrivingLicenceRequestBody";
 
 describe("drivingPrivilegeBuilder", () => {
   describe("stringToArray", () => {
@@ -168,7 +168,7 @@ describe("drivingPrivilegeBuilder", () => {
         "fullPrivilegeExpiry-year": "2030",
         fullVehicleCategoryCode: "B",
         fullRestrictionCodes: "02",
-      } as MdlRequestBody;
+      } as DrivingLicenceRequestBody;
 
       const result = getFullDrivingPrivileges(body);
 
@@ -192,7 +192,7 @@ describe("drivingPrivilegeBuilder", () => {
         "fullPrivilegeExpiry-year": ["2030", "2035"],
         fullVehicleCategoryCode: ["B", "A"],
         fullRestrictionCodes: ["02", ""],
-      } as MdlRequestBody;
+      } as DrivingLicenceRequestBody;
 
       const result = getFullDrivingPrivileges(body);
 
@@ -215,7 +215,7 @@ describe("drivingPrivilegeBuilder", () => {
 
   describe("getProvisionalDrivingPrivileges", () => {
     it("should return an empty array when there are is no vehicle category code", () => {
-      const body = {} as MdlRequestBody;
+      const body = {} as DrivingLicenceRequestBody;
 
       expect(getProvisionalDrivingPrivileges(body)).toEqual([]);
     });
@@ -229,7 +229,7 @@ describe("drivingPrivilegeBuilder", () => {
         "provisionalPrivilegeExpiry-day": "4",
         "provisionalPrivilegeExpiry-month": "6",
         "provisionalPrivilegeExpiry-year": "2032",
-      } as MdlRequestBody;
+      } as DrivingLicenceRequestBody;
 
       const result = getProvisionalDrivingPrivileges(body);
 
@@ -252,7 +252,7 @@ describe("drivingPrivilegeBuilder", () => {
         "provisionalPrivilegeExpiry-day": ["1", "2"],
         "provisionalPrivilegeExpiry-month": ["3", "4"],
         "provisionalPrivilegeExpiry-year": ["2030", "2035"],
-      } as MdlRequestBody;
+      } as DrivingLicenceRequestBody;
 
       const result = getProvisionalDrivingPrivileges(body);
 

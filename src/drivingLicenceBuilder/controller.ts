@@ -9,8 +9,8 @@ import { isAuthenticated } from "../utils/isAuthenticated";
 import { logger } from "../middleware/logger";
 import { randomUUID } from "node:crypto";
 import { uploadPhoto } from "../services/s3Service";
-import { MdlData } from "./types/MdlData";
-import { MdlRequestBody } from "./types/MdlRequestBody";
+import { DrivingLicenceData } from "./types/DrivingLicenceData";
+import { DrivingLicenceRequestBody } from "./types/DrivingLicenceRequestBody";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
 import { validateDateFields, getDefaultDates, formatDate } from "../utils/date";
@@ -29,19 +29,19 @@ const TTL_MINUTES = 43200;
 
 let drivingLicenceNumber: string;
 
-export interface MdlDocumentBuilderControllerConfig {
+export interface DrivingLicenceBuilderControllerConfig {
   environment?: string;
 }
 
-export function mdlDocumentBuilderGetController({
+export function drivingLicenceBuilderGetController({
   environment = getEnvironment(),
-}: MdlDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
+}: DrivingLicenceBuilderControllerConfig = {}): ExpressRouteFunction {
   return async function (req: Request, res: Response): Promise<void> {
     try {
       const showThrowError = environment !== "staging";
       const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
       drivingLicenceNumber = "EDWAR" + getRandomIntInclusive() + "SE5RO";
-      res.render("mdl-document-details-form.njk", {
+      res.render("driving-licence-form.njk", {
         defaultIssueDate,
         defaultExpiryDate,
         drivingLicenceNumber,
@@ -59,17 +59,17 @@ export function mdlDocumentBuilderGetController({
   };
 }
 
-export function mdlDocumentBuilderPostController({
+export function drivingLicenceBuilderPostController({
   environment = getEnvironment(),
-}: MdlDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
+}: DrivingLicenceBuilderControllerConfig = {}): ExpressRouteFunction {
   return async function (req: Request, res: Response): Promise<void> {
     try {
       const showThrowError = environment !== "staging";
-      const body: MdlRequestBody = req.body;
+      const body: DrivingLicenceRequestBody = req.body;
       const errors = validateDateFields(body);
       if (Object.keys(errors).length > 0) {
         const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-        return res.render("mdl-document-details-form.njk", {
+        return res.render("driving-licence-form.njk", {
           defaultIssueDate,
           defaultExpiryDate,
           drivingLicenceNumber,
@@ -87,7 +87,7 @@ export function mdlDocumentBuilderPostController({
       const { photoBuffer, mimeType } = getPhoto(body.portrait);
       await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
       const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
-      const data = buildMdlDataFromRequestBody(body, s3Uri);
+      const data = buildDataFromRequestBody(body, s3Uri);
       await saveDocument(getDocumentsTableName(), {
         itemId,
         documentId: data.document_number,
@@ -113,10 +113,10 @@ export function mdlDocumentBuilderPostController({
   };
 }
 
-function buildMdlDataFromRequestBody(
-  body: MdlRequestBody,
+function buildDataFromRequestBody(
+  body: DrivingLicenceRequestBody,
   s3Uri: string,
-): MdlData {
+): DrivingLicenceData {
   const birthDay = body["birth-day"];
   const birthMonth = body["birth-month"];
   const birthYear = body["birth-year"];
