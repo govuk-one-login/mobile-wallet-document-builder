@@ -17,11 +17,11 @@ export function documentSelectorGetController({
 }: DocumentSelectorConfig = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {
-      console.log("LOGS_LEVEL" + process.env.LOGS_LEVEL)
-      logger.info("test info log")
-      logger.debug("test debug log")
-      logger.warn("test warn log")
-      logger.error("test error log")
+      console.log("LOGS_LEVEL" + process.env.LOGS_LEVEL);
+      logger.info("test info log");
+      logger.debug("test debug log");
+      logger.warn("test warn log");
+      logger.error("test error log");
 
       const credentialType = req.query["credentialType"] as string;
       const { route } = documentsConfig[credentialType] ?? {};
