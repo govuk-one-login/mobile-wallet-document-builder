@@ -5,7 +5,6 @@ import {
 import * as databaseService from "../../src/services/databaseService";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import { ERROR_CHOICES } from "../../src/utils/errorChoices";
-process.env.DOCUMENTS_TABLE_NAME = "testTable";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),

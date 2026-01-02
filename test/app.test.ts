@@ -6,8 +6,6 @@ process.env.SELF = "redirect-uri";
 process.env.COOKIE_TTL_IN_MILLISECONDS = "100";
 process.env.CREDENTIAL_ISSUER_URL = "https://test-cri.example.com";
 process.env.WALLET_APPS = "test-app-1,test-app-2";
-process.env.DOCUMENTS_TABLE_NAME = "documents-table-name";
-process.env.PHOTOS_BUCKET_NAME = "photos-bucket-name";
 
 import { createApp } from "../src/app";
 import { expect } from "@jest/globals";
