@@ -46,7 +46,7 @@ export async function credentialViewerController(
     // - if it begins 'eyJ' attempt to decode it as a JWT
     // - if it does not begin 'eyJ' attempt to decode it as CBOR
 
-    if (credential.startsWith("eyJ") !== null) {
+    if (credential.startsWith("eyJ")) {
       // attempt to decode as JWT
       try {
         credentialClaims = decodeJwt(credential);
