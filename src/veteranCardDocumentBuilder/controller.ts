@@ -9,17 +9,17 @@ import {
   getDocumentsTableName,
   getEnvironment,
   getPhotosBucketName,
+  getTableItemTtl,
 } from "../config/appConfig";
 import { VeteranCardData } from "./types/VeteranCardData";
 import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
 import { getPhoto } from "../utils/photoUtils";
-import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
+import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
 
 const CREDENTIAL_TYPE = CredentialType.DigitalVeteranCard;
-const TTL_MINUTES = 43200;
 
 export interface VeteranCardDocumentBuilderControllerConfig {
   environment?: string;
@@ -60,22 +60,20 @@ export async function veteranCardDocumentBuilderPostController(
 
     const s3Uri = `s3://${bucketName}/${itemId}`;
     const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
-    const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
-
     await saveDocument(getDocumentsTableName(), {
       itemId,
       documentId: data.serviceNumber,
       data,
       vcType: CREDENTIAL_TYPE,
       credentialTtlMinutes: Number(body.credentialTtl),
-      timeToLive,
+      timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
     });
 
-    const selectedError = body["throwError"];
-    let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
-    if (isErrorCode(selectedError)) {
-      redirectUrl += `&error=${selectedError}`;
-    }
+    const redirectUrl = getViewCredentialOfferRedirectUrl(
+      itemId,
+      CREDENTIAL_TYPE,
+      body["throwError"],
+    );
     res.redirect(redirectUrl);
   } catch (error) {
     logger.error(

@@ -9,6 +9,7 @@ import { decode as decodeCbor, getEncoded, Tag } from "cbor2";
 import { base64UrlDecoder } from "../utils/base64Encoder";
 import { Sign1 } from "@auth0/cose";
 import { replaceMapsWithObjects } from "../utils/replaceMapsWithObjects";
+import { X509Certificate } from "node:crypto";
 
 // utility to automatically/recursively decode bstr values tagged 24 which are themselves encoded CBOR
 Tag.registerDecoder(24, ({ contents }) => {
@@ -61,6 +62,8 @@ export async function credentialViewerController(
     let credentialSignature = undefined;
     let credentialSignaturePayload = undefined;
     let credentialClaimsTitle = "";
+    let x5chain = ""
+    let x5chainHex = ""
 
     // as a crude way to determine whether the credential may be JWT or CBOR:
     // - if it begins 'eyJ' attempt to decode it as a JWT
@@ -91,6 +94,27 @@ export async function credentialViewerController(
         credentialSignaturePayload = decodeCbor(
           Buffer.from(credentialSignature.payload),
         );
+
+        // Element 33 in the UnprotectedHeaders map is the x5chain.
+        // There must be at least one certificate. If there is more then this is an array of certificates
+        try {
+          const x5chainBuffer = credentialSignature.unprotectedHeaders.get(33)
+          x5chainHex = (x5chainBuffer as Buffer).toString('hex')
+          let x5chainCerts: Buffer[];
+          if (!Array.isArray(x5chainBuffer)) {
+            x5chainCerts = [x5chainBuffer as Buffer];
+          } else {
+            x5chainCerts = x5chainBuffer;
+          }
+          x5chainCerts.forEach((certificate) => {
+            const x5cert = new X509Certificate(certificate);
+            x5chain = x5cert.toString() + "\n";
+          })
+        } catch (error){
+          x5chain = "An error occurred decoding the x5chain element in the MSO"
+          logger.info(error, "An error occurred decoding the x5chain element in the MSO")
+        }
+
         logger.info("Decoded CBOR credential");
       } catch (error) {
         logger.error(
@@ -122,6 +146,8 @@ export async function credentialViewerController(
         credentialSignaturePayload,
         replaceMapsWithObjects,
       ),
+      x5chain,
+      x5chainHex,
     });
   } catch (error) {
     logger.error(error, "An error happened.");

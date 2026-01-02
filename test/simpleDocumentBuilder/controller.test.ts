@@ -27,8 +27,6 @@ jest.mock("../../src/utils/getRandomIntInclusive", () => ({
 
 const config = {
   environment: "test",
-  tableName: "documentsTable",
-  bucketName: "photosBucket",
 };
 
 describe("controller.ts", () => {
@@ -326,7 +324,7 @@ describe("controller.ts", () => {
           expect(uploadPhoto).toHaveBeenCalledWith(
             photoBuffer,
             "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-            "photosBucket",
+            "testBucket",
             mimeType,
           );
         });
@@ -342,7 +340,7 @@ describe("controller.ts", () => {
 
         await simpleDocumentBuilderPostController(config)(req, res);
 
-        expect(saveDocument).toHaveBeenCalledWith("documentsTable", {
+        expect(saveDocument).toHaveBeenCalledWith("testTable", {
           itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           documentId: "FLN550000",
           vcType:
@@ -352,7 +350,7 @@ describe("controller.ts", () => {
           data: {
             family_name: "Smith",
             given_name: "John",
-            portrait: "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            portrait: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
             birth_date: "15-06-1985",
             issue_date: "01-04-2024",
             expiry_date: "01-04-2029",

@@ -3,6 +3,7 @@ import {
   getDocumentsTableName,
   getEnvironment,
   getPhotosBucketName,
+  getTableItemTtl,
 } from "../config/appConfig";
 import { CredentialType } from "../types/CredentialType";
 import { isAuthenticated } from "../utils/isAuthenticated";
@@ -18,16 +19,13 @@ import {
   getFullDrivingPrivileges,
   getProvisionalDrivingPrivileges,
 } from "./helpers/drivingPrivilegeBuilder";
-import { isErrorCode } from "../utils/isErrorCode";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
+import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
-const TTL_MINUTES = 43200;
-
-let drivingLicenceNumber: string;
 
 export interface MdlDocumentBuilderControllerConfig {
   environment?: string;
@@ -40,7 +38,7 @@ export function mdlDocumentBuilderGetController({
     try {
       const showThrowError = environment !== "staging";
       const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
-      drivingLicenceNumber = "EDWAR" + getRandomIntInclusive() + "SE5RO";
+      const drivingLicenceNumber = "EDWAR" + getRandomIntInclusive() + "SE5RO";
       res.render("mdl-document-details-form.njk", {
         defaultIssueDate,
         defaultExpiryDate,
@@ -64,19 +62,21 @@ export function mdlDocumentBuilderPostController({
 }: MdlDocumentBuilderControllerConfig = {}): ExpressRouteFunction {
   return async function (req: Request, res: Response): Promise<void> {
     try {
-      const showThrowError = environment !== "staging";
       const body: MdlRequestBody = req.body;
+
       const errors = validateDateFields(body);
       if (Object.keys(errors).length > 0) {
         const { defaultIssueDate, defaultExpiryDate } = getDefaultDates();
+        const drivingLicenceNumber = body.document_number;
+        const showThrowError = environment !== "staging";
         return res.render("mdl-document-details-form.njk", {
           defaultIssueDate,
           defaultExpiryDate,
           drivingLicenceNumber,
           authenticated: isAuthenticated(req),
           errorChoices: ERROR_CHOICES,
-          errors,
           showThrowError,
+          errors,
         });
       }
 
@@ -86,7 +86,7 @@ export function mdlDocumentBuilderPostController({
 
       const { photoBuffer, mimeType } = getPhoto(body.portrait);
       await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
-      const timeToLive = getTimeToLiveEpoch(TTL_MINUTES);
+
       const data = buildMdlDataFromRequestBody(body, s3Uri);
       await saveDocument(getDocumentsTableName(), {
         itemId,
@@ -94,14 +94,14 @@ export function mdlDocumentBuilderPostController({
         data,
         vcType: CREDENTIAL_TYPE,
         credentialTtlMinutes: Number(body.credentialTtl),
-        timeToLive,
+        timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
       });
 
-      const selectedError = body["throwError"];
-      let redirectUrl = `/view-credential-offer/${itemId}?type=${CREDENTIAL_TYPE}`;
-      if (isErrorCode(selectedError)) {
-        redirectUrl += `&error=${selectedError}`;
-      }
+      const redirectUrl = getViewCredentialOfferRedirectUrl(
+        itemId,
+        CREDENTIAL_TYPE,
+        body["throwError"],
+      );
       res.redirect(redirectUrl);
     } catch (error) {
       logger.error(
