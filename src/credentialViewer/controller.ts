@@ -59,7 +59,7 @@ export async function credentialViewerController(
 
     const credential = await getCredential(accessToken, proofJwt);
     let credentialClaims = undefined;
-    let credentialSignature = undefined;
+    let credentialSignature: Sign1 | undefined = undefined;
     let credentialSignaturePayload = undefined;
     let credentialClaimsTitle = "";
     let x5chain = ""
@@ -95,21 +95,8 @@ export async function credentialViewerController(
           Buffer.from(credentialSignature.payload),
         );
 
-        // Element 33 in the UnprotectedHeaders map is the x5chain.
-        // There must be at least one certificate. If there is more then this is an array of certificates
         try {
-          const x5chainBuffer = credentialSignature.unprotectedHeaders.get(33)
-          x5chainHex = (x5chainBuffer as Buffer).toString('hex')
-          let x5chainCerts: Buffer[];
-          if (!Array.isArray(x5chainBuffer)) {
-            x5chainCerts = [x5chainBuffer as Buffer];
-          } else {
-            x5chainCerts = x5chainBuffer;
-          }
-          x5chainCerts.forEach((certificate) => {
-            const x5cert = new X509Certificate(certificate);
-            x5chain = x5cert.toString() + "\n";
-          })
+          ({ x5chain, x5chainHex } = decodeX5Chain(credentialSignature));
         } catch (error){
           x5chain = "An error occurred decoding the x5chain element in the MSO"
           logger.info(error, "An error occurred decoding the x5chain element in the MSO")
@@ -152,6 +139,30 @@ export async function credentialViewerController(
   } catch (error) {
     logger.error(error, "An error happened.");
     res.render("500.njk");
+  }
+}
+
+function decodeX5Chain(credentialSignature: Sign1) {
+
+  // Element 33 in the UnprotectedHeaders map is the x5chain.
+  // There must be at least one certificate. If there is more then this is an array of certificates
+  const x5chainBuffer = credentialSignature.unprotectedHeaders.get(33)
+
+  const x5chainHex = (x5chainBuffer as Buffer).toString('hex')
+  let x5chain = "";
+  let x5chainCerts: Buffer[];
+  if (Array.isArray(x5chainBuffer)) {
+    x5chainCerts = x5chainBuffer;
+  } else {
+    x5chainCerts = [x5chainBuffer as Buffer];
+  }
+  x5chainCerts.forEach((certificate) => {
+    const x5cert = new X509Certificate(certificate);
+    x5chain = x5cert.toString() + "\n";
+  })
+  return {
+    x5chain,
+    x5chainHex,
   }
 }
 
