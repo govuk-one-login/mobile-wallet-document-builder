@@ -65,11 +65,7 @@ export async function credentialViewerController(
     let x5chain = "";
     let x5chainHex = "";
 
-    // as a crude way to determine whether the credential may be JWT or CBOR:
-    // - if it begins 'eyJ' attempt to decode it as a JWT
-    // - if it does not begin 'eyJ' attempt to decode it as CBOR
-
-    if (credential.startsWith("eyJ")) {
+    if (attemptToDecodeAsJwt(credential)) {
       // attempt to decode as JWT
       try {
         credentialClaims = decodeJwt(credential);
@@ -84,16 +80,9 @@ export async function credentialViewerController(
     } else {
       // attempt to decode as CBOR
       try {
-        credentialClaims = decodeCbor(base64UrlDecoder(credential), {
-          saveOriginal: true,
-        });
         credentialClaimsTitle = "mdoc Credential";
-        // @ts-expect-error credential is known
-        const rawMso = credentialClaims.issuerAuth;
-        credentialSignature = Sign1.decode(getEncoded(rawMso)!);
-        credentialSignaturePayload = decodeCbor(
-          Buffer.from(credentialSignature.payload),
-        );
+        ({ credentialClaims, credentialSignature, credentialSignaturePayload } =
+          decodeMDocCredential(credential));
 
         try {
           ({ x5chain, x5chainHex } = decodeX5Chain(credentialSignature));
@@ -143,6 +132,32 @@ export async function credentialViewerController(
     logger.error(error, "An error happened.");
     res.render("500.njk");
   }
+}
+
+// as a crude way to determine whether the credential may be JWT or CBOR:
+// - if it begins 'eyJ' attempt to decode it as a JWT
+// - if it does not begin 'eyJ' attempt to decode it as CBOR
+// this function could be improved
+function attemptToDecodeAsJwt(jwt: string) {
+  return jwt.startsWith("eyJ");
+}
+
+function decodeMDocCredential(credential: string) {
+  const credentialClaims = decodeCbor(base64UrlDecoder(credential), {
+    saveOriginal: true,
+  });
+  // @ts-expect-error credential is known
+  const rawMso = credentialClaims.issuerAuth;
+  const credentialSignature = Sign1.decode(getEncoded(rawMso)!);
+  const credentialSignaturePayload = decodeCbor(
+    Buffer.from(credentialSignature.payload),
+  );
+
+  return {
+    credentialClaims,
+    credentialSignature,
+    credentialSignaturePayload,
+  };
 }
 
 function decodeX5Chain(credentialSignature: Sign1) {
