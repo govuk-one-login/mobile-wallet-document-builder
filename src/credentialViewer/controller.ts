@@ -62,8 +62,8 @@ export async function credentialViewerController(
     let credentialSignature: Sign1 | undefined = undefined;
     let credentialSignaturePayload = undefined;
     let credentialClaimsTitle = "";
-    let x5chain = ""
-    let x5chainHex = ""
+    let x5chain = "";
+    let x5chainHex = "";
 
     // as a crude way to determine whether the credential may be JWT or CBOR:
     // - if it begins 'eyJ' attempt to decode it as a JWT
@@ -97,9 +97,12 @@ export async function credentialViewerController(
 
         try {
           ({ x5chain, x5chainHex } = decodeX5Chain(credentialSignature));
-        } catch (error){
-          x5chain = "An error occurred decoding the x5chain element in the MSO"
-          logger.info(error, "An error occurred decoding the x5chain element in the MSO")
+        } catch (error) {
+          x5chain = "An error occurred decoding the x5chain element in the MSO";
+          logger.info(
+            error,
+            "An error occurred decoding the x5chain element in the MSO",
+          );
         }
 
         logger.info("Decoded CBOR credential");
@@ -143,12 +146,11 @@ export async function credentialViewerController(
 }
 
 function decodeX5Chain(credentialSignature: Sign1) {
-
   // Element 33 in the UnprotectedHeaders map is the x5chain.
   // There must be at least one certificate. If there is more then this is an array of certificates
-  const x5chainBuffer = credentialSignature.unprotectedHeaders.get(33)
+  const x5chainBuffer = credentialSignature.unprotectedHeaders.get(33);
 
-  const x5chainHex = (x5chainBuffer as Buffer).toString('hex')
+  const x5chainHex = (x5chainBuffer as Buffer).toString("hex");
   let x5chain = "";
   let x5chainCerts: Buffer[];
   if (Array.isArray(x5chainBuffer)) {
@@ -159,11 +161,11 @@ function decodeX5Chain(credentialSignature: Sign1) {
   x5chainCerts.forEach((certificate) => {
     const x5cert = new X509Certificate(certificate);
     x5chain = x5cert.toString() + "\n";
-  })
+  });
   return {
     x5chain,
     x5chainHex,
-  }
+  };
 }
 
 function extractPreAuthCode(credentialOfferUri: string) {
