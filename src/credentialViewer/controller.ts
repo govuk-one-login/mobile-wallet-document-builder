@@ -35,7 +35,10 @@ interface ProofData {
   proofJwtClaims: JWTPayload | undefined;
 }
 
-function safeDecodeJwt(token: string, errorMessage: string): JWTPayload | undefined {
+function safeDecodeJwt(
+  token: string,
+  errorMessage: string,
+): JWTPayload | undefined {
   try {
     return decodeJwt(token);
   } catch (error) {
@@ -44,17 +47,22 @@ function safeDecodeJwt(token: string, errorMessage: string): JWTPayload | undefi
   }
 }
 
-async function getProofData(accessTokenClaims: JWTPayload | undefined): Promise<ProofData> {
+async function getProofData(
+  accessTokenClaims: JWTPayload | undefined,
+): Promise<ProofData> {
   if (!accessTokenClaims) return { proofJwt: "", proofJwtClaims: undefined };
-  
+
   const claims = accessTokenClaims as AccessTokenClaims;
   if (!claims.c_nonce || !claims.aud) {
     return { proofJwt: "", proofJwtClaims: undefined };
   }
-  
+
   try {
     const proofJwt = await getProofJwt(claims.c_nonce, claims.aud);
-    const proofJwtClaims = safeDecodeJwt(proofJwt, "An error occurred decoding the proofJwtClaims");
+    const proofJwtClaims = safeDecodeJwt(
+      proofJwt,
+      "An error occurred decoding the proofJwtClaims",
+    );
     return { proofJwt, proofJwtClaims };
   } catch (error) {
     logger.error(error, "An error occurred getting the proofJwt");
@@ -63,30 +71,40 @@ async function getProofData(accessTokenClaims: JWTPayload | undefined): Promise<
 }
 
 function decodeCredentialAsJwt(credential: string): CredentialData {
-  const credentialClaims = safeDecodeJwt(credential, "An error occurred whilst decoding a JWT credential");
+  const credentialClaims = safeDecodeJwt(
+    credential,
+    "An error occurred whilst decoding a JWT credential",
+  );
   if (credentialClaims) logger.info("Decoded JWT credential");
-  
+
   return {
     credentialClaims,
     credentialClaimsTitle: "VCDM credential",
     x5chain: "",
-    x5chainHex: ""
+    x5chainHex: "",
   };
 }
 
 function decodeCredentialAsCbor(credential: string): CredentialData {
   try {
-    const { credentialClaims, credentialSignature, credentialSignaturePayload } = decodeMDocCredential(credential);
-    
+    const {
+      credentialClaims,
+      credentialSignature,
+      credentialSignaturePayload,
+    } = decodeMDocCredential(credential);
+
     let x5chain = "";
     let x5chainHex = "";
     try {
       ({ x5chain, x5chainHex } = decodeX5Chain(credentialSignature));
     } catch (error) {
       x5chain = "An error occurred decoding the x5chain element in the MSO";
-      logger.info(error, "An error occurred decoding the x5chain element in the MSO");
+      logger.info(
+        error,
+        "An error occurred decoding the x5chain element in the MSO",
+      );
     }
-    
+
     logger.info("Decoded CBOR credential");
     return {
       credentialClaims,
@@ -94,7 +112,7 @@ function decodeCredentialAsCbor(credential: string): CredentialData {
       credentialSignaturePayload,
       credentialClaimsTitle: "mdoc Credential",
       x5chain,
-      x5chainHex
+      x5chainHex,
     };
   } catch (error) {
     logger.error(error, "An error occurred whilst decoding a CBOR credential");
@@ -102,13 +120,13 @@ function decodeCredentialAsCbor(credential: string): CredentialData {
       credentialClaims: undefined,
       credentialClaimsTitle: "mdoc Credential",
       x5chain: "",
-      x5chainHex: ""
+      x5chainHex: "",
     };
   }
 }
 
 function processCredential(credential: string): CredentialData {
-  return attemptToDecodeAsJwt(credential) 
+  return attemptToDecodeAsJwt(credential)
     ? decodeCredentialAsJwt(credential)
     : decodeCredentialAsCbor(credential);
 }
@@ -119,13 +137,19 @@ export async function credentialViewerController(
 ): Promise<void> {
   try {
     const preAuthorizedCode = extractPreAuthCode(req.query.offer as string);
-    const preAuthorizedCodeClaims = safeDecodeJwt(preAuthorizedCode, "An error occurred decoding the preAuthorizedCode");
-    
+    const preAuthorizedCodeClaims = safeDecodeJwt(
+      preAuthorizedCode,
+      "An error occurred decoding the preAuthorizedCode",
+    );
+
     const accessToken = await getAccessToken(preAuthorizedCode);
-    const accessTokenClaims = safeDecodeJwt(accessToken, "An error occurred decoding the accessTokenClaims");
-    
+    const accessTokenClaims = safeDecodeJwt(
+      accessToken,
+      "An error occurred decoding the accessTokenClaims",
+    );
+
     const { proofJwt, proofJwtClaims } = await getProofData(accessTokenClaims);
-    
+
     const credential = await getCredential(accessToken, proofJwt);
     const credentialData = processCredential(credential);
 
@@ -139,9 +163,18 @@ export async function credentialViewerController(
       proofJwtClaims: proofJwtClaims,
       credential,
       credentialClaimsTitle: credentialData.credentialClaimsTitle,
-      credentialClaims: JSON.stringify(credentialData.credentialClaims, replaceMapsWithObjects),
-      credentialSignature: JSON.stringify(credentialData.credentialSignature, replaceMapsWithObjects),
-      credentialSignaturePayload: JSON.stringify(credentialData.credentialSignaturePayload, replaceMapsWithObjects),
+      credentialClaims: JSON.stringify(
+        credentialData.credentialClaims,
+        replaceMapsWithObjects,
+      ),
+      credentialSignature: JSON.stringify(
+        credentialData.credentialSignature,
+        replaceMapsWithObjects,
+      ),
+      credentialSignaturePayload: JSON.stringify(
+        credentialData.credentialSignaturePayload,
+        replaceMapsWithObjects,
+      ),
       x5chain: credentialData.x5chain,
       x5chainHex: credentialData.x5chainHex,
     });
