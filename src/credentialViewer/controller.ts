@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import { decodeJwt } from "jose";
+import { decodeJwt, JWTPayload } from "jose";
 import axios from "axios";
 import { getCriEndpoint, getSelfUrl } from "../config/appConfig";
 import { GrantType } from "../stsStubAccessToken/token/validateTokenRequest";
@@ -16,117 +16,134 @@ Tag.registerDecoder(24, ({ contents }) => {
   return decodeCbor(contents as Buffer);
 });
 
+interface AccessTokenClaims extends JWTPayload {
+  c_nonce?: string;
+  aud?: string;
+}
+
+interface CredentialData {
+  credentialClaims: unknown;
+  credentialSignature?: Sign1;
+  credentialSignaturePayload?: unknown;
+  credentialClaimsTitle: string;
+  x5chain: string;
+  x5chainHex: string;
+}
+
+interface ProofData {
+  proofJwt: string;
+  proofJwtClaims: JWTPayload | undefined;
+}
+
+function safeDecodeJwt(token: string, errorMessage: string): JWTPayload | undefined {
+  try {
+    return decodeJwt(token);
+  } catch (error) {
+    logger.error(error, errorMessage);
+    return undefined;
+  }
+}
+
+async function getProofData(accessTokenClaims: JWTPayload | undefined): Promise<ProofData> {
+  if (!accessTokenClaims) return { proofJwt: "", proofJwtClaims: undefined };
+  
+  const claims = accessTokenClaims as AccessTokenClaims;
+  if (!claims.c_nonce || !claims.aud) {
+    return { proofJwt: "", proofJwtClaims: undefined };
+  }
+  
+  try {
+    const proofJwt = await getProofJwt(claims.c_nonce, claims.aud);
+    const proofJwtClaims = safeDecodeJwt(proofJwt, "An error occurred decoding the proofJwtClaims");
+    return { proofJwt, proofJwtClaims };
+  } catch (error) {
+    logger.error(error, "An error occurred getting the proofJwt");
+    return { proofJwt: "", proofJwtClaims: undefined };
+  }
+}
+
+function decodeCredentialAsJwt(credential: string): CredentialData {
+  const credentialClaims = safeDecodeJwt(credential, "An error occurred whilst decoding a JWT credential");
+  if (credentialClaims) logger.info("Decoded JWT credential");
+  
+  return {
+    credentialClaims,
+    credentialClaimsTitle: "VCDM credential",
+    x5chain: "",
+    x5chainHex: ""
+  };
+}
+
+function decodeCredentialAsCbor(credential: string): CredentialData {
+  try {
+    const { credentialClaims, credentialSignature, credentialSignaturePayload } = decodeMDocCredential(credential);
+    
+    let x5chain = "";
+    let x5chainHex = "";
+    try {
+      ({ x5chain, x5chainHex } = decodeX5Chain(credentialSignature));
+    } catch (error) {
+      x5chain = "An error occurred decoding the x5chain element in the MSO";
+      logger.info(error, "An error occurred decoding the x5chain element in the MSO");
+    }
+    
+    logger.info("Decoded CBOR credential");
+    return {
+      credentialClaims,
+      credentialSignature,
+      credentialSignaturePayload,
+      credentialClaimsTitle: "mdoc Credential",
+      x5chain,
+      x5chainHex
+    };
+  } catch (error) {
+    logger.error(error, "An error occurred whilst decoding a CBOR credential");
+    return {
+      credentialClaims: undefined,
+      credentialClaimsTitle: "mdoc Credential",
+      x5chain: "",
+      x5chainHex: ""
+    };
+  }
+}
+
+function processCredential(credential: string): CredentialData {
+  return attemptToDecodeAsJwt(credential) 
+    ? decodeCredentialAsJwt(credential)
+    : decodeCredentialAsCbor(credential);
+}
+
 export async function credentialViewerController(
   req: Request,
   res: Response,
 ): Promise<void> {
   try {
     const preAuthorizedCode = extractPreAuthCode(req.query.offer as string);
-
-    let preAuthorizedCodeClaims = undefined;
-    try {
-      preAuthorizedCodeClaims = decodeJwt(preAuthorizedCode);
-    } catch (error) {
-      logger.error(error, "An error occurred decoding the preAuthorizedCode");
-    }
-
+    const preAuthorizedCodeClaims = safeDecodeJwt(preAuthorizedCode, "An error occurred decoding the preAuthorizedCode");
+    
     const accessToken = await getAccessToken(preAuthorizedCode);
-
-    let accessTokenClaims = undefined;
-    try {
-      accessTokenClaims = decodeJwt(accessToken);
-    } catch (error) {
-      logger.error(error, "An error occurred decoding the accessTokenClaims");
-    }
-
-    let proofJwt = "";
-    let proofJwtClaims = undefined;
-    if (accessTokenClaims) {
-      try {
-        proofJwt = await getProofJwt(
-          accessTokenClaims.c_nonce as string,
-          accessTokenClaims.aud as string,
-        );
-      } catch (error) {
-        logger.error(error, "An error occurred getting the proofJwt");
-      }
-      try {
-        proofJwtClaims = decodeJwt(proofJwt);
-      } catch (error) {
-        logger.error(error, "An error occurred decoding the proofJwtClaims");
-      }
-    }
-
+    const accessTokenClaims = safeDecodeJwt(accessToken, "An error occurred decoding the accessTokenClaims");
+    
+    const { proofJwt, proofJwtClaims } = await getProofData(accessTokenClaims);
+    
     const credential = await getCredential(accessToken, proofJwt);
-    let credentialClaims = undefined;
-    let credentialSignature: Sign1 | undefined = undefined;
-    let credentialSignaturePayload = undefined;
-    let credentialClaimsTitle = "";
-    let x5chain = "";
-    let x5chainHex = "";
-
-    if (attemptToDecodeAsJwt(credential)) {
-      // attempt to decode as JWT
-      try {
-        credentialClaims = decodeJwt(credential);
-        credentialClaimsTitle = "VCDM credential";
-        logger.info("Decoded JWT credential");
-      } catch (error) {
-        logger.error(
-          error,
-          "An error occurred whilst decoding a JWT credential",
-        );
-      }
-    } else {
-      // attempt to decode as CBOR
-      try {
-        credentialClaimsTitle = "mdoc Credential";
-        ({ credentialClaims, credentialSignature, credentialSignaturePayload } =
-          decodeMDocCredential(credential));
-
-        try {
-          ({ x5chain, x5chainHex } = decodeX5Chain(credentialSignature));
-        } catch (error) {
-          x5chain = "An error occurred decoding the x5chain element in the MSO";
-          logger.info(
-            error,
-            "An error occurred decoding the x5chain element in the MSO",
-          );
-        }
-
-        logger.info("Decoded CBOR credential");
-      } catch (error) {
-        logger.error(
-          error,
-          "An error occurred whilst decoding a CBOR credential",
-        );
-      }
-    }
+    const credentialData = processCredential(credential);
 
     res.render("credential.njk", {
       authenticated: isAuthenticated(req),
       preAuthorizedCode,
-      preAuthorizedCodeClaims: JSON.stringify(preAuthorizedCodeClaims, null, 2),
+      preAuthorizedCodeClaims: preAuthorizedCodeClaims,
       accessToken,
-      accessTokenClaims: JSON.stringify(accessTokenClaims, null, 2),
+      accessTokenClaims: accessTokenClaims,
       proofJwt,
-      proofJwtClaims: JSON.stringify(proofJwtClaims, null, 2),
+      proofJwtClaims: proofJwtClaims,
       credential,
-      credentialClaimsTitle,
-      credentialClaims: JSON.stringify(
-        credentialClaims,
-        replaceMapsWithObjects,
-      ),
-      credentialSignature: JSON.stringify(
-        credentialSignature,
-        replaceMapsWithObjects,
-      ),
-      credentialSignaturePayload: JSON.stringify(
-        credentialSignaturePayload,
-        replaceMapsWithObjects,
-      ),
-      x5chain,
-      x5chainHex,
+      credentialClaimsTitle: credentialData.credentialClaimsTitle,
+      credentialClaims: JSON.stringify(credentialData.credentialClaims, replaceMapsWithObjects),
+      credentialSignature: JSON.stringify(credentialData.credentialSignature, replaceMapsWithObjects),
+      credentialSignaturePayload: JSON.stringify(credentialData.credentialSignaturePayload, replaceMapsWithObjects),
+      x5chain: credentialData.x5chain,
+      x5chainHex: credentialData.x5chainHex,
     });
   } catch (error) {
     logger.error(error, "An error happened.");
