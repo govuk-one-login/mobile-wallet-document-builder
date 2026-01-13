@@ -34,7 +34,7 @@ export async function getProofJwt(
   const payload = {
     iss: "urn:fdc:gov:uk:wallet",
     aud: audience,
-    iat: Date.now(),
+    iat: Math.floor(Date.now() / 1000),
     nonce: nonce,
   };
   const encodedPayload = base64Encoder(payload);
