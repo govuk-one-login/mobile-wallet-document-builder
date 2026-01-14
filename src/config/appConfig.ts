@@ -76,3 +76,8 @@ export function getWalletApps(): string[] {
 export function getTableItemTtl(): number {
   return 43200;
 }
+
+export function isAuthBypassed(): boolean {
+  // return process.env.BYPASS_AUTH === "true";
+  return true; // Doing this for now so that I don't have to add this env var to the SAM template
+}

@@ -1,6 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "./logger";
-import { getSelfUrl, getCookieExpiryInMilliseconds } from "../config/appConfig";
+import {
+  getSelfUrl,
+  getCookieExpiryInMilliseconds,
+  isAuthBypassed,
+  getHardcodedWalletSubjectId,
+} from "../config/appConfig";
 import { generators } from "openid-client";
 
 const VECTORS_OF_TRUST = `["Cl"]`;
@@ -10,6 +15,15 @@ export function requiresAuth(
   res: Response,
   next: NextFunction,
 ): void {
+  if (isAuthBypassed()) {
+    res.cookie("wallet_subject_id", getHardcodedWalletSubjectId(), {
+      httpOnly: true,
+      maxAge: getCookieExpiryInMilliseconds(),
+    });
+
+    return next();
+  }
+
   const isAuthenticated = req.cookies["id_token"];
   const selectedApp = req.cookies["app"];
 
