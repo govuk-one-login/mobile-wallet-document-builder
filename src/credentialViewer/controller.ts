@@ -35,6 +35,12 @@ interface ProofData {
   proofJwtClaims: JWTPayload | undefined;
 }
 
+/**
+ * Safely decodes a JWT token with error handling
+ * @param token - The JWT token to decode
+ * @param errorMessage - Error message to log if decoding fails
+ * @returns Decoded JWT payload or undefined if decoding fails
+ */
 function safeDecodeJwt(
   token: string,
   errorMessage: string,
@@ -47,6 +53,11 @@ function safeDecodeJwt(
   }
 }
 
+/**
+ * Generates proof JWT and decodes its claims
+ * @param accessTokenClaims - Access token claims containing nonce and audience
+ * @returns Object containing proof JWT and its decoded claims
+ */
 async function getProofData(
   accessTokenClaims: JWTPayload | undefined,
 ): Promise<ProofData> {
@@ -70,6 +81,11 @@ async function getProofData(
   }
 }
 
+/**
+ * Decodes a credential as a JWT
+ * @param credential - The credential string to decode
+ * @returns Credential data with JWT-specific properties
+ */
 function decodeCredentialAsJwt(credential: string): CredentialData {
   const credentialClaims = safeDecodeJwt(
     credential,
@@ -85,6 +101,11 @@ function decodeCredentialAsJwt(credential: string): CredentialData {
   };
 }
 
+/**
+ * Decodes a credential as CBOR (mdoc format)
+ * @param credential - The credential string to decode
+ * @returns Credential data with CBOR-specific properties
+ */
 function decodeCredentialAsCbor(credential: string): CredentialData {
   try {
     const {
@@ -125,12 +146,23 @@ function decodeCredentialAsCbor(credential: string): CredentialData {
   }
 }
 
+/**
+ * Processes a credential by determining its format and decoding accordingly
+ * @param credential - The credential string to process
+ * @returns Decoded credential data
+ */
 function processCredential(credential: string): CredentialData {
   return attemptToDecodeAsJwt(credential)
     ? decodeCredentialAsJwt(credential)
     : decodeCredentialAsCbor(credential);
 }
 
+/**
+ * Main controller for the credential viewer page
+ * Handles the complete flow from credential offer to display
+ * @param req - Express request object
+ * @param res - Express response object
+ */
 export async function credentialViewerController(
   req: Request,
   res: Response,
@@ -184,14 +216,20 @@ export async function credentialViewerController(
   }
 }
 
-// as a crude way to determine whether the credential may be JWT or CBOR:
-// - if it begins 'eyJ' attempt to decode it as a JWT
-// - if it does not begin 'eyJ' attempt to decode it as CBOR
-// this function could be improved
+/**
+ * Determines if a credential should be decoded as JWT based on its first 3 characters
+ * @param jwt - The credential string to check
+ * @returns True if credential appears to be JWT format
+ */
 function attemptToDecodeAsJwt(jwt: string) {
   return jwt.startsWith("eyJ");
 }
 
+/**
+ * Decodes an mdoc credential from CBOR format
+ * @param credential - Base64URL encoded CBOR credential
+ * @returns Object containing decoded claims, signature, and payload
+ */
 function decodeMDocCredential(credential: string) {
   const credentialClaims = decodeCbor(base64UrlDecoder(credential), {
     saveOriginal: true,
@@ -210,6 +248,11 @@ function decodeMDocCredential(credential: string) {
   };
 }
 
+/**
+ * Extracts and decodes X.509 certificate chain from credential signature
+ * @param credentialSignature - COSE Sign1 signature containing x5chain
+ * @returns Object with certificate chain in PEM format and hex encoding
+ */
 function decodeX5Chain(credentialSignature: Sign1) {
   // Element 33 in the UnprotectedHeaders map is the x5chain.
   // There must be at least one certificate. If there is more then this is an array of certificates
@@ -233,6 +276,11 @@ function decodeX5Chain(credentialSignature: Sign1) {
   };
 }
 
+/**
+ * Extracts pre-authorized code from credential offer URI
+ * @param credentialOfferUri - URI containing the credential offer
+ * @returns Pre-authorized code string
+ */
 function extractPreAuthCode(credentialOfferUri: string) {
   const credentialOfferString = credentialOfferUri.split(
     "add?credential_offer=",
@@ -243,6 +291,11 @@ function extractPreAuthCode(credentialOfferUri: string) {
   ]["pre-authorized_code"];
 }
 
+/**
+ * Exchanges pre-authorized code for access token
+ * @param preAuthorizedCode - Pre-authorized code from credential offer
+ * @returns Access token string
+ */
 export async function getAccessToken(
   preAuthorizedCode: string,
 ): Promise<string> {
@@ -261,6 +314,12 @@ export async function getAccessToken(
   return response.data.access_token;
 }
 
+/**
+ * Generates a proof JWT for credential request
+ * @param c_nonce - Challenge nonce from access token
+ * @param audience - Audience for the proof JWT
+ * @returns Proof JWT string
+ */
 export async function getProofJwt(
   c_nonce: string,
   audience: string,
@@ -271,6 +330,12 @@ export async function getProofJwt(
   return proofJwtResponse.data.proofJwt;
 }
 
+/**
+ * Requests credential from credential issuer
+ * @param accessToken - Access token for authorization
+ * @param proofJwt - Proof JWT for credential request
+ * @returns Credential string
+ */
 export async function getCredential(
   accessToken: string,
   proofJwt: string,
