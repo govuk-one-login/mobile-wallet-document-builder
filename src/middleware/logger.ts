@@ -33,8 +33,6 @@ const ignorePaths = new Set<string>([
   "/assets/fonts/light-94a07e06a1-v2.woff2",
   "/assets/fonts/bold-b542beb274-v2.woff2",
   "/assets/images/favicon.ico",
-  "/healthcheck",
-  "/",
 ]);
 
 const loggerMiddleware = PinoHttp({
