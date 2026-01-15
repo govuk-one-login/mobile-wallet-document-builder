@@ -131,6 +131,13 @@
                             type="button">Add</button>
                 {% endcall %}
             {% endmacro %}
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Select driving privileges
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
             {{ drivingPrivilegesFieldset('full', 'Driving privileges') }}
             {{ drivingPrivilegesFieldset('provisional', 'Provisional driving privileges (optional)') }}
             {% if errors['issue_date'] %}
@@ -265,6 +272,8 @@
                     "value": "London"
                 }) }}
             {% endcall %}
+            </div>
+            </details>
             {{ govukSelect({
                 "id": "portrait",
                 "name": "portrait",
