@@ -1,4 +1,4 @@
-FROM node:24.13.0-alpine3.20@sha256:3bc9a4c4cc25cfde1e8f946341c85f333c36517aafda829b4bb7e785e9b5995c
+FROM node:lts-alpine
 
 RUN apk update && apk upgrade busybox
 
