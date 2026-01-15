@@ -134,12 +134,23 @@
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
-                        Select driving privileges
+                        Driving privileges
                     </span>
                 </summary>
                 <div class="govuk-details__text">
             {{ drivingPrivilegesFieldset('full', 'Driving privileges') }}
+                </div>
+                </details>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Provisional privileges
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
             {{ drivingPrivilegesFieldset('provisional', 'Provisional driving privileges (optional)') }}
+                </div>
+                </details>
             {% if errors['issue_date'] %}
                 {% set issueError = { text: errors['issue_date'] } %}
             {% endif %}
@@ -272,8 +283,6 @@
                     "value": "London"
                 }) }}
             {% endcall %}
-            </div>
-            </details>
             {{ govukSelect({
                 "id": "portrait",
                 "name": "portrait",
