@@ -70,6 +70,9 @@ Create a copy of the example environment variable file:
 ```
 cp .env.example .env
 ```
+#### VPN & Docker
+Login to VPN Cisco Secure Client.
+Have your Docker Desktop running.
 
 #### Set up LocalStack
 
@@ -102,6 +105,30 @@ To start in development mode, run:
 ```
 npm run dev
 ```
+### Open auth-stub
+Make sure you have updated AWS_PROFILE= <your_aws_profile> in the .env file
+```
+aws sso login --<your_aws_profile> 
+```
+Approve the access.
+
+```
+./build-and-start-locally.sh
+```
+
+### Open the example CRI
+```
+./gradlew dockerUp
+```
+```
+./gradlew run
+```
+
+### Open the status-list-mock
+```
+npm run dev
+```
+
 Go to [http://localhost:8001/select-app](http://localhost:8001/select-app).
 
 ## Deploy application to `dev`
