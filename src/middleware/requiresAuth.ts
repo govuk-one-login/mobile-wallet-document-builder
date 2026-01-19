@@ -17,9 +17,7 @@ export function requiresAuth(
     `isAuthenticated = ${isAuthenticated} , selectedApp = ${selectedApp}`,
   );
 
-  if (selectedApp === undefined) {
-    res.redirect(getSelfUrl() + "/select-app");
-  } else if (isAuthenticated === undefined) {
+  if (isAuthenticated === undefined) {
     redirectToLogIn(req, res);
   } else {
     next();

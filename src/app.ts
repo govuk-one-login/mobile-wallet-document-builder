@@ -24,6 +24,8 @@ import { mdlDocumentBuilderRouter } from "./mdlDocumentBuilder/router";
 import { revokeRouter } from "./revoke/router";
 import { refreshRouter } from "./refresh/router";
 import { simpleDocumentBuilderRouter } from "./simpleDocumentBuilder/router";
+import { startPageRouter } from "./start/router";
+import { dvsPageRouter } from "./dvs/router";
 
 const APP_VIEWS = [
   path.join(__dirname, "../src/appSelector/views"),
@@ -39,6 +41,8 @@ const APP_VIEWS = [
   path.join(__dirname, "../src/revoke/views"),
   path.join(__dirname, "../src/veteranCardDocumentBuilder/views"),
   path.join(__dirname, "../src/views"),
+  path.join(__dirname, "../src/start/views"),
+  path.join(__dirname, "../src/dvs/views"),
   path.resolve("node_modules/govuk-frontend/dist"),
 ];
 
@@ -70,7 +74,7 @@ export async function createApp(): Promise<express.Application> {
   });
   app.use(noCacheMiddleware);
 
-  app.use(appSelectorRouter);
+  app.use(startPageRouter);
   app.use(documentRouter);
   app.use(loggedOutRouter);
   app.use(proofJwtRouter);
@@ -81,16 +85,23 @@ export async function createApp(): Promise<express.Application> {
 
   app.use(auth(getOIDCConfig()));
 
+  // DVS routes
+  app.use(dvsPageRouter);
+
+  // Issuer routes
+  app.use(appSelectorRouter);
+  app.use(documentSelectorRouter);
+  app.use(veteranCardDocumentBuilderRouter);
+  app.use(dbsDocumentBuilderRouter);
+  app.use(mdlDocumentBuilderRouter);
+  app.use(ninoDocumentBuilderRouter);
+  app.use(simpleDocumentBuilderRouter);
+
+  // Shared routes
   app.use(credentialOfferViewerRouter);
   app.use(credentialViewerRouter);
-  app.use(dbsDocumentBuilderRouter);
-  app.use(documentSelectorRouter);
   app.use(logoutRouter);
-  app.use(mdlDocumentBuilderRouter);
-  app.use(simpleDocumentBuilderRouter);
-  app.use(ninoDocumentBuilderRouter);
   app.use(returnFromAuthRouter);
-  app.use(veteranCardDocumentBuilderRouter);
 
   return app;
 }

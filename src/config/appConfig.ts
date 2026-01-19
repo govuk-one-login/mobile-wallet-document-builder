@@ -23,7 +23,7 @@ export function getPhotosBucketName(): string {
 }
 
 export function getEnvironment(): string {
-  return getEnvVarValue("ENVIRONMENT");
+  return "SANDBOX"; //getEnvVarValue("ENVIRONMENT");
 }
 
 export function getCriEndpoint(): string {
