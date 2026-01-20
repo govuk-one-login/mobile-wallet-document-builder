@@ -10,7 +10,6 @@ import { getKmsConfig } from "../config/aws";
 import format from "ecdsa-sig-formatter";
 import { createPublicKey, JsonWebKey } from "node:crypto";
 
-// const bs58 = require("bs58");
 import bs58 from "bs58";
 
 const PROOF_TOKEN_SIGNING_ALGORITHM = "ES256";
