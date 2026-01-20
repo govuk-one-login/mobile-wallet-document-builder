@@ -119,7 +119,7 @@ describe("controller.ts", () => {
     ])(
       "given a file of type %s is to be uploaded",
       (fileType, fileName, mimeType) => {
-        it.skip(`should call the upload function with the correct arguments`, async () => {
+        it(`should call the upload function with the correct arguments`, async () => {
           const req = getMockReq({
             body: {
               ...requestBody,
@@ -131,8 +131,8 @@ describe("controller.ts", () => {
           await veteranCardDocumentBuilderPostController(req, res);
 
           const expectedPath = path.resolve(
-            __dirname,
-            "../../src/resources",
+            process.cwd(),
+            "dist/resources",
             fileName,
           );
           expect(mockReadFileSync).toHaveBeenCalledWith(expectedPath);
