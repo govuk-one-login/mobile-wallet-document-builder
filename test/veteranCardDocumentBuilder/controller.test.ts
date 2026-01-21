@@ -131,8 +131,8 @@ describe("controller.ts", () => {
           await veteranCardDocumentBuilderPostController(req, res);
 
           const expectedPath = path.resolve(
-            __dirname,
-            "../../src/resources",
+            process.cwd(),
+            "dist/resources",
             fileName,
           );
           expect(mockReadFileSync).toHaveBeenCalledWith(expectedPath);
