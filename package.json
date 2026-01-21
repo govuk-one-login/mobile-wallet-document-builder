@@ -5,7 +5,7 @@
   "description": "A service for filling in the content of documents, storing them and, through integration with a wallet credential issuer, providing the links needed to load those documents into the GOV.UK Wallet",
   "repository": "https://github.com/govuk-one-login/mobile-wallet-document-builder",
   "scripts": {
-    "build": "tsc --noEmit && npm run build:esbuild && npm run build-sass && npm run copy-assets",
+    "build": "npm run typecheck && npm run build:esbuild && npm run build-sass && npm run copy-assets",
     "build:esbuild": "esbuild src/server.ts --bundle --platform=node --format=esm --outfile=dist/server.js --packages=external --sourcemap",
     "build-sass": "rm -rf dist/public/style.css && sass --no-source-map src/assets/scss/application.scss dist/public/stylesheets/application.css --style compressed",
     "copy-assets": "mkdir -p dist && copyfiles -u 1 'src/**/*.njk' dist/ && cp node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.js dist/public/scripts && rm -rf dist/assets && cp -rf node_modules/govuk-frontend/dist/govuk/assets dist/assets && copyfiles -u 2 'src/resources/*' dist/resources/",
