@@ -44,7 +44,7 @@ const APP_VIEWS = [
 
 export async function createApp(): Promise<express.Application> {
   const app: express.Application = express();
-
+  console.log("test");
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
 
