@@ -151,8 +151,8 @@ describe("controller.ts", () => {
           await mdlDocumentBuilderPostController(config)(req, res);
 
           const expectedPath = path.resolve(
-            __dirname,
-            "../../src/resources",
+            process.cwd(),
+            "dist/resources",
             fileName,
           );
           expect(mockReadFileSync).toHaveBeenCalledWith(expectedPath);

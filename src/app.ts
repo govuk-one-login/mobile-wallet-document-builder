@@ -26,19 +26,19 @@ import { refreshRouter } from "./refresh/router";
 import { simpleDocumentBuilderRouter } from "./simpleDocumentBuilder/router";
 
 const APP_VIEWS = [
-  path.join(__dirname, "../src/appSelector/views"),
-  path.join(__dirname, "../src/credentialOfferViewer/views"),
-  path.join(__dirname, "../src/credentialViewer/views"),
-  path.join(__dirname, "../src/documentSelector/views"),
-  path.join(__dirname, "../src/dbsDocumentBuilder/views"),
-  path.join(__dirname, "../src/loggedOut/views"),
-  path.join(__dirname, "../src/mdlDocumentBuilder/views"),
-  path.join(__dirname, "../src/simpleDocumentBuilder/views"),
-  path.join(__dirname, "../src/ninoDocumentBuilder/views"),
-  path.join(__dirname, "../src/refresh/views"),
-  path.join(__dirname, "../src/revoke/views"),
-  path.join(__dirname, "../src/veteranCardDocumentBuilder/views"),
-  path.join(__dirname, "../src/views"),
+  path.resolve("dist/appSelector/views"),
+  path.resolve("dist/credentialOfferViewer/views"),
+  path.resolve("dist/credentialViewer/views"),
+  path.resolve("dist/documentSelector/views"),
+  path.resolve("dist/dbsDocumentBuilder/views"),
+  path.resolve("dist/loggedOut/views"),
+  path.resolve("dist/mdlDocumentBuilder/views"),
+  path.resolve("dist/simpleDocumentBuilder/views"),
+  path.resolve("dist/ninoDocumentBuilder/views"),
+  path.resolve("dist/refresh/views"),
+  path.resolve("dist/revoke/views"),
+  path.resolve("dist/veteranCardDocumentBuilder/views"),
+  path.resolve("dist/views"),
   path.resolve("node_modules/govuk-frontend/dist"),
 ];
 
@@ -58,8 +58,8 @@ export async function createApp(): Promise<express.Application> {
       .addGlobal("govukRebrand", true),
   );
 
-  app.use("/public", express.static(path.join(__dirname, "public")));
-  app.use("/assets", express.static(path.join(__dirname, "assets")));
+  app.use("/public", express.static(path.resolve("dist/public")));
+  app.use("/assets", express.static(path.resolve("dist/assets")));
 
   app.use(loggerMiddleware);
   app.use((req, res, next) => {

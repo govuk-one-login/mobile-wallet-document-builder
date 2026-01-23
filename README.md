@@ -6,11 +6,12 @@ A service for filling in the content of documents, storing them and, through int
 
 ## Pre-requisites
 
-- [Node.js](https://nodejs.org/en/) (>= 20.11.1)
+- [Node.js LTS](https://nodejs.org/en)
 - [NPM](https://www.npmjs.com/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html)
 - [Homebrew](https://brew.sh)
+- [GDS VPN](https://docs.google.com/document/d/1O1LmLByDLlKU4F1-3chwS8qddd2WjYQgMaaEgTfK5To/edit?pli=1&tab=t.0)
 
 We recommend using [nvm](https://github.com/nvm-sh/nvm) to install and manage Node.js versions.
 
@@ -29,6 +30,8 @@ nvm use
 ```
 
 ## Quickstart
+
+Make sure Docker is running, and you’re connected to the GDS VPN before starting the services.
 
 ### Install
 

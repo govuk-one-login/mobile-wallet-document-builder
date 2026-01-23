@@ -10,7 +10,7 @@ import { getKmsConfig } from "../config/aws";
 import format from "ecdsa-sig-formatter";
 import { createPublicKey, JsonWebKey } from "node:crypto";
 
-const bs58 = require("bs58");
+import bs58 from "bs58";
 
 const PROOF_TOKEN_SIGNING_ALGORITHM = "ES256";
 const PROOF_TOKEN_JWT_TYPE = "openid4vci-proof+jwt";
@@ -91,7 +91,7 @@ export function createDidKey(publicKeyJwk: JsonWebKey): string {
   bytes[1] = 0x24;
   bytes.set(compressedPublicKey, 2);
 
-  const base58EncodedKey = bs58.default.encode(bytes);
+  const base58EncodedKey = bs58.encode(bytes);
   return `did:key:z${base58EncodedKey}`;
 }
 

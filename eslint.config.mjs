@@ -6,7 +6,8 @@ export default [
   {
     ignores: [
       "dist",
-      "coverage"
+      "coverage",
+      "jest.setup.js"
     ],
   },
   {
