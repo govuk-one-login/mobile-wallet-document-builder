@@ -25,11 +25,11 @@
   "dependencies": {
     "@auth0/cose": "^1.0.2",
     "@auth0/mdl": "^3.0.1",
-    "@aws-sdk/client-dynamodb": "^3.971.0",
-    "@aws-sdk/client-kms": "^3.971.0",
-    "@aws-sdk/client-s3": "^3.971.0",
-    "@aws-sdk/lib-dynamodb": "^3.971.0",
-    "axios": "^1.13.2",
+    "@aws-sdk/client-dynamodb": "^3.975.0",
+    "@aws-sdk/client-kms": "^3.975.0",
+    "@aws-sdk/client-s3": "^3.975.0",
+    "@aws-sdk/lib-dynamodb": "^3.975.0",
+    "axios": "^1.13.3",
     "bs58": "^6.0.0",
     "cbor2": "^2.0.1",
     "cookie-parser": "^1.4.7",
@@ -41,7 +41,7 @@
     "jose": "^5.10.0",
     "nunjucks": "3.2.4",
     "openid-client": "^5.6.5",
-    "pino": "^10.2.0",
+    "pino": "^10.3.0",
     "pino-http": "^11.0.0",
     "qrcode": "^1.5.3"
   },
@@ -53,8 +53,8 @@
     "@types/node": "^24.10.1",
     "@types/nunjucks": "^3.2.6",
     "@types/qrcode": "^1.5.6",
-    "@typescript-eslint/eslint-plugin": "^8.53.0",
-    "@typescript-eslint/parser": "^8.53.0",
+    "@typescript-eslint/eslint-plugin": "^8.53.1",
+    "@typescript-eslint/parser": "^8.53.1",
     "aws-sdk-client-mock": "^4.1.0",
     "aws-sdk-client-mock-jest": "^4.1.0",
     "dotenv": "^17.2.3",
@@ -65,12 +65,12 @@
     "jest": "^30.2.0",
     "jest-junit": "^16.0.0",
     "nodemon": "3.1.11",
-    "prettier": "^3.8.0",
-    "sass": "^1.97.2",
+    "prettier": "^3.8.1",
+    "sass": "^1.97.3",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.53.0"
+    "typescript-eslint": "^8.53.1"
   },
   "overrides": {
     "brace-expansion": "2.0.2"
