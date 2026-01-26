@@ -1,12 +1,16 @@
+const commonTsConfig = {
+  module: "CommonJS",
+  moduleResolution: "node",
+  esModuleInterop: true,
+  allowSyntheticDefaultImports: true,
+};
+
 export default {
   transform: {
-    "^.+\\.tsx?$": ["ts-jest"],
+    "^.+\\.tsx?$": ["ts-jest", { tsconfig: commonTsConfig }],
+    "^.+\\.m?js$": ["ts-jest", { tsconfig: commonTsConfig }],
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!(@cto.af|cbor2))',
-  ],
-  extensionsToTreatAsEsm: [".ts"],
-  preset: "ts-jest/presets/default-esm",
+  transformIgnorePatterns: ["node_modules/(?!(@cto.af|cbor2)/)"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   reporters: [
     "default",

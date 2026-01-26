@@ -12,7 +12,7 @@
     "dev": "nodemon -e js,ts --watch src --exec \"npm run build:esbuild && npm run start\"",
     "typecheck": "tsc --noEmit",
     "start": "node dist/server.js",
-    "test": "node_modules/.bin/jest",
+    "test": "jest",
     "test:cov": "jest --coverage",
     "lint": "eslint . ",
     "lint:fix": "eslint . --fix",
