@@ -28,12 +28,12 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # pin@v3
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v3
         with:
           ref: ${{ inputs.gitRef }}
 
       - name: Setup SAM CLI
-        uses: aws-actions/setup-sam@c71dd89d980e49367c70391e8ada4353f52f2800 # pin@v2
+        uses: aws-actions/setup-sam@c2a20b1822cc4a6bc594ff7f1dbb658758e383c3 # pin@v2
         with:
           version: 1.90.0
           use-installer: true

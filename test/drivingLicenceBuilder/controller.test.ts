@@ -9,9 +9,6 @@ import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as path from "path";
 import { DrivingLicenceRequestBody } from "../../src/drivingLicenceBuilder/types/DrivingLicenceRequestBody";
 import { ERROR_CHOICES } from "../../src/utils/errorChoices";
-process.env.PHOTOS_BUCKET_NAME = "photosBucket";
-process.env.ENVIRONMENT = "local";
-process.env.DOCUMENTS_TABLE_NAME = "testTable";
 
 jest.mock("node:crypto", () => ({
   randomUUID: jest.fn().mockReturnValue("2e0fac05-4b38-480f-9cbd-b046eabe1e46"),
@@ -151,15 +148,15 @@ describe("controller.ts", () => {
           await drivingLicenceBuilderPostController(config)(req, res);
 
           const expectedPath = path.resolve(
-            __dirname,
-            "../../src/resources",
+            process.cwd(),
+            "dist/resources",
             fileName,
           );
           expect(mockReadFileSync).toHaveBeenCalledWith(expectedPath);
           expect(uploadPhoto).toHaveBeenCalledWith(
             photoBuffer,
             "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
-            "photosBucket",
+            "testBucket",
             mimeType,
           );
         });
@@ -189,8 +186,7 @@ describe("controller.ts", () => {
               given_name: "Sarah Elizabeth",
               title: "Miss",
               welsh_licence: false,
-              portrait:
-                "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+              portrait: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
               birth_date: "06-03-1975",
               birth_place: "London",
               issue_date: "08-04-2019",
@@ -241,8 +237,7 @@ describe("controller.ts", () => {
               given_name: "Sarah Elizabeth",
               title: "Miss",
               welsh_licence: false,
-              portrait:
-                "s3://photosBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+              portrait: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
               birth_date: "06-03-1975",
               birth_place: "London",
               issue_date: "08-04-2019",

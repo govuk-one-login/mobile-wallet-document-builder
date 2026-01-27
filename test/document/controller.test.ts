@@ -3,7 +3,6 @@ import * as documentStore from "../../src/services/databaseService";
 import * as s3Service from "../../src/services/s3Service";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import { CredentialType } from "../../src/types/CredentialType";
-process.env.DOCUMENTS_TABLE_NAME = "testTable";
 
 jest.mock("../../src/services/databaseService", () => ({
   getDocument: jest.fn(),

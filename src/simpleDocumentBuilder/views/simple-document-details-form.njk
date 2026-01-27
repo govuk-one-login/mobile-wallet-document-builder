@@ -82,7 +82,8 @@
                 "items": [
                     {
                         "value": "100x125.jpg",
-                        "text": "JPEG 1 - 100x125"
+                        "text": "JPEG 1 - 100x125",
+                        "selected": true
                     },
                     {
                         "value": "140x175.jpg",
@@ -94,8 +95,7 @@
                     },
                     {
                         "value": "420x525.jpg",
-                        "text": "JPEG 4 - 420x525",
-                        "selected": true
+                        "text": "JPEG 4 - 420x525"
                     },
                     {
                         "value": "600x750.jpg",
@@ -258,6 +258,7 @@
                 ]
             }) }}
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+            {% if showThrowError %}
             {{ govukSelect({
                         "id": "throw-error",
                         "name": "throwError",
@@ -267,6 +268,7 @@
                         },
                         "items": errorChoices
                         }) }}
+        {% endif %}
         {% endcall %}
         {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
     </form>

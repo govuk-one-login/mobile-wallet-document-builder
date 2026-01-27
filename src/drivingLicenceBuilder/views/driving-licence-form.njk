@@ -131,8 +131,26 @@
                             type="button">Add</button>
                 {% endcall %}
             {% endmacro %}
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Driving privileges
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
             {{ drivingPrivilegesFieldset('full', 'Driving privileges') }}
+                </div>
+                </details>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Provisional driving privileges (optional)
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
             {{ drivingPrivilegesFieldset('provisional', 'Provisional driving privileges (optional)') }}
+                </div>
+                </details>
             {% if errors['issue_date'] %}
                 {% set issueError = { text: errors['issue_date'] } %}
             {% endif %}
@@ -275,7 +293,8 @@
                 "items": [
                     {
                         "value": "100x125.jpg",
-                        "text": "JPEG 1 - 100x125"
+                        "text": "JPEG 1 - 100x125",
+                        "selected": true
                     },
                     {
                         "value": "140x175.jpg",
@@ -287,8 +306,7 @@
                     },
                     {
                         "value": "420x525.jpg",
-                        "text": "JPEG 4 - 420x525",
-                        "selected": true
+                        "text": "JPEG 4 - 420x525"
                     },
                     {
                         "value": "600x750.jpg",
