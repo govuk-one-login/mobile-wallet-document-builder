@@ -842,10 +842,10 @@ Resources:
           - StatusCode: 302
             ResponseParameters: # Only static mappings or booleans
               method.response.header.Location: 'true'  # Enables header passthrough
-        MethodResponses:
-          - StatusCode: 302
-            ResponseParameters:
-              Location: 'true'  # Exposes Location header to client
+      MethodResponses:
+        - StatusCode: 302
+          ResponseParameters:
+            Location: 'true'  # Exposes Location header to client
 
   RedirectResource:
     Type: AWS::ApiGateway::Resource
