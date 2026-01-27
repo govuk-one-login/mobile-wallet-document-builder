@@ -834,16 +834,18 @@ Resources:
         Type: MOCK
         RequestTemplates:
           application/json: |
-            #set($context.requestOverride.path.path = "/redirect")  # Internal redirect path
+            #set($ignore = $context.responseOverride.status = 302)
+            #set($location = "https://" + $context.domainName + "/" + $context.stage + "/redirect" + "?redirect_uri=" + $input.params('redirect_uri'))
+            #set($ignore = $context.responseOverride.header.Location = $location)
             {"statusCode": 302}
-        IntegrationResponses:
+        IntegrationResponses: # Optional when using responseOverride
+          - StatusCode: 302
+            ResponseParameters: # Only static mappings or booleans
+              method.response.header.Location: 'true'  # Enables header passthrough
+        MethodResponses:
           - StatusCode: 302
             ResponseParameters:
-              method.response.header.Location: "'https://" + $context.domainName + "/" + $context.stage + "/redirect'"
-      MethodResponses:
-        - StatusCode: 302
-          ResponseParameters:
-            Location: true
+              Location: 'true'  # Exposes Location header to client
 
   RedirectResource:
     Type: AWS::ApiGateway::Resource
