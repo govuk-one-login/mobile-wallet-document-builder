@@ -41,7 +41,7 @@ interface ProofData {
  * @param errorMessage - Error message to log if decoding fails
  * @returns Decoded JWT payload or undefined if decoding fails
  */
-function safeDecodeJwt(
+export function safeDecodeJwt(
   token: string,
   errorMessage: string,
 ): JWTPayload | undefined {
