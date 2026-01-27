@@ -785,6 +785,101 @@ Resources:
           ReturnData: false
           Expression: (error/invocations) * 100
 
+# Mock API Gateway Resources
+  TestMockApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: MockApiWithThreeEndpoints
+
+  ApiGatewayRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: InvokeLambda
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement: []  # No Lambda needed for mocks
+
+  RootResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref TestMockApi
+      ParentId: !GetAtt TestMockApi.RootResourceId
+      PathPart: ""
+
+  AuthorizeResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref TestMockApi
+      ParentId: !Ref RootResource
+      PathPart: authorize
+
+  GetAuthorizeMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref TestMockApi
+      ResourceId: !Ref AuthorizeResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      RequestParameters:
+        method.request.querystring.redirect_uri: true  # Enable param
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: |
+            #set($context.requestOverride.path.path = "/redirect")  # Internal redirect path
+            {"statusCode": 302}
+        IntegrationResponses:
+          - StatusCode: 302
+            ResponseParameters:
+              method.response.header.Location: "'https://" + $context.domainName + "/" + $context.stage + "/redirect'"
+      MethodResponses:
+        - StatusCode: 302
+          ResponseParameters:
+            Location: true
+
+  RedirectResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref TestMockApi
+      ParentId: !Ref RootResource
+      PathPart: redirect
+
+  GetRedirectMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref TestMockApi
+      ResourceId: !Ref RedirectResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: |
+            #set($redirectUri = $input.params('redirect_uri'))
+            #if($redirectUri == "")
+              #set($redirectUri = "https://example.com/callback")
+            #end
+            #set($ignore = $context.responseOverride.status = 302)
+            #set($externalUrl = $redirectUri + "?code=abc123&state=" + $input.params('state'))
+            #set($ignore = $context.responseOverride.header.Location = $externalUrl)
+            {"statusCode": 302}
+        IntegrationResponses:
+          - StatusCode: 302
+            ResponseParameters:
+              method.response.header.Location: true
+      MethodResponses:
+        - StatusCode: 302
+          ResponseParameters:
+            Location: true
+
 Outputs:
   DocBuilderFriendlyUrl:
     Description: Friendly URL for the deployed doc builder service
