@@ -791,22 +791,6 @@ Resources:
     Properties:
       Name: MockApiWithThreeEndpoints
 
-  ApiGatewayRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: apigateway.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: InvokeLambda
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement: []  # No Lambda needed for mocks
-
   RootResource:
     Type: AWS::ApiGateway::Resource
     Properties:
