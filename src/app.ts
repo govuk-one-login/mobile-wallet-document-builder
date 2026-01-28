@@ -24,6 +24,7 @@ import { revokeRouter } from "./revoke/router";
 import { refreshRouter } from "./refresh/router";
 import { simpleDocumentBuilderRouter } from "./simpleDocumentBuilder/router";
 import { drivingLicenceBuilderRouter } from "./drivingLicenceBuilder/router";
+import { dvsStartRouter } from "./dvsStart/router";
 
 const APP_VIEWS = [
   path.resolve("dist/appSelector/views"),
@@ -91,6 +92,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(ninoDocumentBuilderRouter);
   app.use(returnFromAuthRouter);
   app.use(veteranCardDocumentBuilderRouter);
+  app.use(dvsStartRouter);
 
   return app;
 }
