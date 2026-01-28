@@ -806,15 +806,16 @@ Resources:
       HttpMethod: GET
       AuthorizationType: NONE
       RequestParameters:
-        method.request.querystring.redirect_uri: true
+        method.request.querystring.redirect_uri: false
       Integration:
         Type: MOCK
         RequestTemplates:
           application/json: |
-            #set($ignore = $context.responseOverride.status = 302)
-            #set($location = "https://" + $context.domainName + "/" + $context.stage + "/redirect" + "?redirect_uri=" + $input.params('redirect_uri'))
-            #set($ignore = $context.responseOverride.header.Location = $location)
-            {"statusCode": 302}
+            #set($context.responseOverride.status = 302)
+            #set($redirectUri = $input.params('redirect_uri'))
+            #set($location = "https://" + $context.domainName + "/" + $context.stage + "/redirect?redirect_uri=" + $redirectUri)
+            #set($context.responseOverride.header.Location = $location)
+            {}
         IntegrationResponses:
           - StatusCode: 302
       MethodResponses:
@@ -840,14 +841,15 @@ Resources:
         Type: MOCK
         RequestTemplates:
           application/json: |
+            #set($context.responseOverride.status = 302)
             #set($redirectUri = $input.params('redirect_uri'))
             #if($redirectUri == "")
               #set($redirectUri = "https://example.com/callback")
             #end
-            #set($ignore = $context.responseOverride.status = 302)
-            #set($externalUrl = $redirectUri + "?code=abc123&state=" + $input.params('state'))
-            #set($ignore = $context.responseOverride.header.Location = $externalUrl)
-            {"statusCode": 302}
+            #set($state = $input.params('state'))
+            #set($location = $redirectUri + "?code=abc123&state=" + $state)
+            #set($context.responseOverride.header.Location = $location)
+            {}
         IntegrationResponses:
           - StatusCode: 302
       MethodResponses:
@@ -869,6 +871,12 @@ Resources:
       RestApiId: !Ref TestMockApi
       DeploymentId: !Ref TestMockApiDeployment
       StageName: !Ref Environment
+      MethodSettings:
+        - ResourcePath: '/*'
+          HttpMethod: '*'
+          LoggingLevel: INFO
+          DataTraceEnabled: true
+  
 
 Outputs:
   DocBuilderFriendlyUrl:
@@ -879,3 +887,7 @@ Outputs:
       - !Sub
         - "${AWS::StackName}-${SelfUrl}"
         - SelfUrl: !FindInMap [EnvironmentVariables, !Ref Environment, SelfUrl]
+
+  MockApiUrl:
+    Description: Mock API Gateway URL
+    Value: !Sub "https://${TestMockApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}"
