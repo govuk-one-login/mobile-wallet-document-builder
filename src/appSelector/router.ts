@@ -4,10 +4,11 @@ import {
   appSelectorPostController,
 } from "./controller";
 import { canRenderRoute } from "../middleware/canRenderRoute";
+import { ROUTES } from "../config/routes";
 
 const router = express.Router();
 
-router.get("/select-app", canRenderRoute, appSelectorGetController());
-router.post("/select-app", canRenderRoute, appSelectorPostController());
+router.get(ROUTES.SELECT_APP, canRenderRoute, appSelectorGetController());
+router.post(ROUTES.SELECT_APP, canRenderRoute, appSelectorPostController());
 
 export { router as appSelectorRouter };

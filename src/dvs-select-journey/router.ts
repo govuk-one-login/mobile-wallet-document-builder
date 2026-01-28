@@ -4,17 +4,18 @@ import {
   dvsSelectJourneyPostController,
 } from "./controller";
 import { canRenderRoute } from "../middleware/canRenderRoute";
+import { ROUTES } from "../config/routes";
 
 const router = express.Router();
 
 router.get(
-  "/dvs-select-journey",
+  ROUTES.DVS_SELECT_JOURNEY,
   canRenderRoute,
   dvsSelectJourneyGetController(),
 );
 
 router.post(
-  "/dvs-select-journey",
+  ROUTES.DVS_SELECT_JOURNEY,
   canRenderRoute,
   dvsSelectJourneyPostController(),
 );

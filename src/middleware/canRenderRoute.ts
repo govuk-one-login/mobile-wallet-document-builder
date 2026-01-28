@@ -1,12 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { getSelfUrl, getEnvironment } from "../config/appConfig";
-
-const dvsRoutes = ["/dvs-start", "/dvs-select-journey", "/dvs-issue-test-mdl"];
-const issuerRoutes = ["/select-app", "/select-document"];
-const commonRoute = ["/view-credential-offer"];
-
-const dvsEnvs = ["local", "dev", "build", "verifier-integration"];
-const issuerEnvs = ["local", "dev", "build", "stage"];
+import { commonRoutes, dvsRoutes, gdsRoutes } from "../config/routes";
+import { allDvsEnvs, gdsEnvs } from "../config/environments";
 
 export function canRenderRoute(
   req: Request,
@@ -17,11 +12,11 @@ export function canRenderRoute(
   const currentEnvironment = getEnvironment();
 
   const isDvsRoute = dvsRoutes.includes(currentRoute);
-  const isIssuerRoute = issuerRoutes.includes(currentRoute);
-  const isCommonRoute = commonRoute.includes(currentRoute);
+  const isIssuerRoute = gdsRoutes.includes(currentRoute);
+  const isCommonRoute = commonRoutes.includes(currentRoute);
 
-  const isDvsEnvironment = dvsEnvs.includes(currentEnvironment);
-  const isIssuerEnvironment = issuerEnvs.includes(currentEnvironment);
+  const isDvsEnvironment = allDvsEnvs.includes(currentEnvironment);
+  const isIssuerEnvironment = gdsEnvs.includes(currentEnvironment);
 
   if (isCommonRoute) {
     next();

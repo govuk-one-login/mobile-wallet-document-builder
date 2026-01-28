@@ -1,11 +1,12 @@
 import express from "express";
 import { credentialOfferViewerController } from "./controller";
 import { requiresAuth } from "../middleware/requiresAuth";
+import { ROUTES } from "../config/routes";
 
 const router = express.Router();
 
 router.get(
-  "/view-credential-offer/:itemId",
+  ROUTES.CREDENTIAL_OFFER_VIEWER,
   requiresAuth,
   credentialOfferViewerController(),
 );
