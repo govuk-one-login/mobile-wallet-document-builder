@@ -791,18 +791,11 @@ Resources:
     Properties:
       Name: MockApiWithThreeEndpoints
 
-  RootResource:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      RestApiId: !Ref TestMockApi
-      ParentId: !GetAtt TestMockApi.RootResourceId
-      PathPart: ""
-
   AuthorizeResource:
     Type: AWS::ApiGateway::Resource
     Properties:
       RestApiId: !Ref TestMockApi
-      ParentId: !Ref RootResource
+      ParentId: !GetAtt TestMockApi.RootResourceId
       PathPart: authorize
 
   GetAuthorizeMethod:
@@ -813,7 +806,7 @@ Resources:
       HttpMethod: GET
       AuthorizationType: NONE
       RequestParameters:
-        method.request.querystring.redirect_uri: true  # Enable param
+        method.request.querystring.redirect_uri: true
       Integration:
         Type: MOCK
         RequestTemplates:
@@ -822,20 +815,20 @@ Resources:
             #set($location = "https://" + $context.domainName + "/" + $context.stage + "/redirect" + "?redirect_uri=" + $input.params('redirect_uri'))
             #set($ignore = $context.responseOverride.header.Location = $location)
             {"statusCode": 302}
-        IntegrationResponses: # Optional when using responseOverride
+        IntegrationResponses:
           - StatusCode: 302
-            ResponseParameters: # Only static mappings or booleans
-              method.response.header.Location: 'true'  # Enables header passthrough
+            ResponseParameters:
+              method.response.header.Location: true
       MethodResponses:
         - StatusCode: 302
           ResponseParameters:
-            Location: 'true'  # Exposes Location header to client
+            method.response.header.Location: true
 
   RedirectResource:
     Type: AWS::ApiGateway::Resource
     Properties:
       RestApiId: !Ref TestMockApi
-      ParentId: !Ref RootResource
+      ParentId: !GetAtt TestMockApi.RootResourceId
       PathPart: redirect
 
   GetRedirectMethod:
@@ -864,7 +857,22 @@ Resources:
       MethodResponses:
         - StatusCode: 302
           ResponseParameters:
-            Location: true
+            method.response.header.Location: true
+
+  TestMockApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - GetAuthorizeMethod
+      - GetRedirectMethod
+    Properties:
+      RestApiId: !Ref TestMockApi
+
+  TestMockApiStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId: !Ref TestMockApi
+      DeploymentId: !Ref TestMockApiDeployment
+      StageName: !Ref Environment
 
 Outputs:
   DocBuilderFriendlyUrl:
