@@ -817,12 +817,10 @@ Resources:
             {"statusCode": 302}
         IntegrationResponses:
           - StatusCode: 302
-            ResponseParameters:
-              method.response.header.Location: true
       MethodResponses:
         - StatusCode: 302
           ResponseParameters:
-            method.response.header.Location: true
+            method.response.header.Location: false
 
   RedirectResource:
     Type: AWS::ApiGateway::Resource
@@ -852,12 +850,10 @@ Resources:
             {"statusCode": 302}
         IntegrationResponses:
           - StatusCode: 302
-            ResponseParameters:
-              method.response.header.Location: true
       MethodResponses:
         - StatusCode: 302
           ResponseParameters:
-            method.response.header.Location: true
+            method.response.header.Location: false
 
   TestMockApiDeployment:
     Type: AWS::ApiGateway::Deployment
