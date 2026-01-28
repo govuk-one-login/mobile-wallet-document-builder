@@ -7,7 +7,6 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% set pageTitle = "Please enter the Simple Document details:" %}
 {% block content %}
-    <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
     <form action="/build-simple-document" method="post">
         {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
         {% call govukFieldset({
