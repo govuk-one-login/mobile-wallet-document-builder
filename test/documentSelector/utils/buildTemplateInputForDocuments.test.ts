@@ -16,7 +16,7 @@ describe("buildTemplateInputForDocuments", () => {
         name: "Veteran Card",
       },
       MobileDrivingLicence: {
-        route: "/build-mdl-document",
+        route: "/build-driving-licence",
         name: "Driving Licence",
       },
     };

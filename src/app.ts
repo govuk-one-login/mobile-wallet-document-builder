@@ -20,10 +20,10 @@ import { noCacheMiddleware } from "./middleware/noCache";
 import { proofJwtRouter } from "./proofJwt/router";
 import { credentialViewerRouter } from "./credentialViewer/router";
 import { veteranCardDocumentBuilderRouter } from "./veteranCardDocumentBuilder/router";
-import { mdlDocumentBuilderRouter } from "./mdlDocumentBuilder/router";
 import { revokeRouter } from "./revoke/router";
 import { refreshRouter } from "./refresh/router";
 import { simpleDocumentBuilderRouter } from "./simpleDocumentBuilder/router";
+import { drivingLicenceBuilderRouter } from "./drivingLicenceBuilder/router";
 
 const APP_VIEWS = [
   path.resolve("dist/appSelector/views"),
@@ -32,7 +32,7 @@ const APP_VIEWS = [
   path.resolve("dist/documentSelector/views"),
   path.resolve("dist/dbsDocumentBuilder/views"),
   path.resolve("dist/loggedOut/views"),
-  path.resolve("dist/mdlDocumentBuilder/views"),
+  path.resolve("dist/drivingLicenceBuilder/views"),
   path.resolve("dist/simpleDocumentBuilder/views"),
   path.resolve("dist/ninoDocumentBuilder/views"),
   path.resolve("dist/refresh/views"),
@@ -86,7 +86,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(dbsDocumentBuilderRouter);
   app.use(documentSelectorRouter);
   app.use(logoutRouter);
-  app.use(mdlDocumentBuilderRouter);
+  app.use(drivingLicenceBuilderRouter);
   app.use(simpleDocumentBuilderRouter);
   app.use(ninoDocumentBuilderRouter);
   app.use(returnFromAuthRouter);

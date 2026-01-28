@@ -37,7 +37,7 @@ const veteranCardData = {
   photo: "s3://photosBucket/" + itemId,
 };
 
-const mdlData = {
+const drivingLicenceData = {
   family_name: "Edwards-Smith",
   given_name: "Sarah Elizabeth",
   portrait: "s3://photosBucket/" + itemId,
@@ -124,7 +124,7 @@ describe("controller.ts", () => {
     });
     getDocument.mockReturnValueOnce({
       itemId,
-      data: mdlData,
+      data: drivingLicenceData,
       vcType: CredentialType.MobileDrivingLicence,
     });
     getPhoto.mockReturnValueOnce(undefined);
@@ -196,14 +196,14 @@ describe("controller.ts", () => {
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
-  it("should return 200 and the mDL document as JSON", async () => {
+  it("should return 200 and the driving licence record as JSON", async () => {
     const { res } = getMockRes();
     const req = getMockReq({
       params: { itemId },
     });
     getDocument.mockReturnValueOnce({
       itemId,
-      data: mdlData,
+      data: drivingLicenceData,
       vcType: CredentialType.MobileDrivingLicence,
     });
     const mockedPhoto = "mockBase64EncodedPhoto";
@@ -211,7 +211,7 @@ describe("controller.ts", () => {
 
     await documentController(req, res);
 
-    const mobileDrivingLicenceDocumentWithPhoto = { ...mdlData };
+    const mobileDrivingLicenceDocumentWithPhoto = { ...drivingLicenceData };
     mobileDrivingLicenceDocumentWithPhoto.portrait = mockedPhoto;
 
     expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
