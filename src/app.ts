@@ -23,6 +23,8 @@ import { veteranCardDocumentBuilderRouter } from "./veteranCardDocumentBuilder/r
 import { revokeRouter } from "./revoke/router";
 import { refreshRouter } from "./refresh/router";
 import { simpleDocumentBuilderRouter } from "./simpleDocumentBuilder/router";
+import { dvsStartPageRouter } from "./dvs-start/router";
+import { dvsSelectJourneyRouter } from "./dvs-select-journey/router";
 import { drivingLicenceBuilderRouter } from "./drivingLicenceBuilder/router";
 
 const APP_VIEWS = [
@@ -32,13 +34,15 @@ const APP_VIEWS = [
   path.resolve("dist/documentSelector/views"),
   path.resolve("dist/dbsDocumentBuilder/views"),
   path.resolve("dist/loggedOut/views"),
-  path.resolve("dist/drivingLicenceBuilder/views"),
+  path.resolve("dist/mdlDocumentBuilder/views"),
   path.resolve("dist/simpleDocumentBuilder/views"),
   path.resolve("dist/ninoDocumentBuilder/views"),
   path.resolve("dist/refresh/views"),
   path.resolve("dist/revoke/views"),
   path.resolve("dist/veteranCardDocumentBuilder/views"),
   path.resolve("dist/views"),
+  path.resolve("dist/dvs-start/views"),
+  path.resolve("dist/dvs-select-journey/views"),
   path.resolve("node_modules/govuk-frontend/dist"),
 ];
 
@@ -69,6 +73,10 @@ export async function createApp(): Promise<express.Application> {
     next();
   });
   app.use(noCacheMiddleware);
+
+  // dvs routes
+  app.use(dvsStartPageRouter);
+  app.use(dvsSelectJourneyRouter);
 
   app.use(appSelectorRouter);
   app.use(documentRouter);

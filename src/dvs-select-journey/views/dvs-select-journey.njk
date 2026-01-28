@@ -1,0 +1,34 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% extends "base.njk" %}
+{% set pageTitle = "DVS" %}
+{% block content %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-3">This is a DVS page</h1>
+    <form action="/dvs" method="post">
+        {{ govukRadios({
+            "id": "dvs-action",
+            "name": "dvs-action",
+            fieldset: {
+                legend: {
+                    text: "Select an action:",
+                    isPageHeading: false,
+                    classes: "govuk-fieldset__legend--m"
+                }
+            },
+            items: [
+                {
+                    value: "issue",
+                    text: "Issue"
+                },
+                {
+                    value: "revoke",
+                    text: "Revoke"
+                }
+            ],
+            errorMessage: {
+                text: "You must choose an option"
+            } if error
+        }) }}
+        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+    </form>
+{% endblock %}
