@@ -37,3 +37,11 @@ export function dvsSelectJourneyGetController({
     return res.render("dvs-select-journey.njk");
   };
 }
+
+export function dvsSelectJourneyPostController() {
+  return function (req: Request, res: Response): void {
+    const selectedApp = req.body["dvs-action"];
+
+    res.redirect("/select-document");
+  };
+}
