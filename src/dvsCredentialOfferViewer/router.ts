@@ -1,14 +1,14 @@
 import express from "express";
-import { stsStubAccessTokenController } from "./controller";
+import { dvsCredentialOfferViewerController } from "./controller";
 import { ROUTES } from "../config/routes";
 import { guardRouteByEnvironment } from "../middleware/guardRouteByEnvironment";
 
 const router = express.Router();
 
-router.post(
-  ROUTES.TOKEN,
+router.get(
+  ROUTES.DVS_CREDENTIAL_OFFER_VIEWER,
   guardRouteByEnvironment(),
-  stsStubAccessTokenController,
+  dvsCredentialOfferViewerController(),
 );
 
-export { router as stsStubAccessTokenRouter };
+export { router as dvsCredentialOfferViewerRouter };

@@ -4,18 +4,22 @@ import {
   veteranCardDocumentBuilderPostController,
 } from "./controller";
 import { requiresAuth } from "../middleware/requiresAuth";
+import { guardRouteByEnvironment } from "../middleware/guardRouteByEnvironment";
+import { ROUTES } from "../config/routes";
 import { requiresAppSelected } from "../middleware/requiresAppSelected";
 
 const router = express.Router();
 
 router.get(
-  "/build-veteran-card-document",
+  ROUTES.BUILD_VETERAN_CARD_DOCUMENT,
+  guardRouteByEnvironment(),
   requiresAuth,
   requiresAppSelected,
   veteranCardDocumentBuilderGetController(),
 );
 router.post(
-  "/build-veteran-card-document",
+  ROUTES.BUILD_VETERAN_CARD_DOCUMENT,
+  guardRouteByEnvironment(),
   requiresAuth,
   requiresAppSelected,
   veteranCardDocumentBuilderPostController,

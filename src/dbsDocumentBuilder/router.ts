@@ -4,18 +4,22 @@ import {
   dbsDocumentBuilderPostController,
 } from "./controller";
 import { requiresAuth } from "../middleware/requiresAuth";
+import { ROUTES } from "../config/routes";
+import { guardRouteByEnvironment } from "../middleware/guardRouteByEnvironment";
 import { requiresAppSelected } from "../middleware/requiresAppSelected";
 
 const router = express.Router();
 
 router.get(
-  "/build-dbs-document",
+  ROUTES.BUILD_DBS_DOCUMENT,
+  guardRouteByEnvironment(),
   requiresAuth,
   requiresAppSelected,
   dbsDocumentBuilderGetController(),
 );
 router.post(
-  "/build-dbs-document",
+  ROUTES.BUILD_DBS_DOCUMENT,
+  guardRouteByEnvironment(),
   requiresAuth,
   requiresAppSelected,
   dbsDocumentBuilderPostController,

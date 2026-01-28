@@ -5,17 +5,21 @@ import {
   simpleDocumentBuilderGetController,
   simpleDocumentBuilderPostController,
 } from "./controller";
+import { guardRouteByEnvironment } from "../middleware/guardRouteByEnvironment";
+import { ROUTES } from "../config/routes";
 
 const router = express.Router();
 
 router.get(
-  "/build-simple-document",
+  ROUTES.BUILD_SIMPLE_DOCUMENT,
+  guardRouteByEnvironment(),
   requiresAuth,
   requiresAppSelected,
   simpleDocumentBuilderGetController(),
 );
 router.post(
-  "/build-simple-document",
+  ROUTES.BUILD_SIMPLE_DOCUMENT,
+  guardRouteByEnvironment(),
   requiresAuth,
   requiresAppSelected,
   simpleDocumentBuilderPostController(),

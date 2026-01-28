@@ -4,20 +4,24 @@ import {
   documentSelectorPostController,
 } from "./controller";
 import { requiresAuth } from "../middleware/requiresAuth";
+import { guardRouteByEnvironment } from "../middleware/guardRouteByEnvironment";
+import { ROUTES } from "../config/routes";
 import { requiresAppSelected } from "../middleware/requiresAppSelected";
 
 const router = express.Router();
 
 router.get(
-  "/select-document",
-  requiresAppSelected,
+  ROUTES.SELECT_DOCUMENT,
+  guardRouteByEnvironment(),
   requiresAuth,
+  requiresAppSelected,
   documentSelectorGetController(),
 );
 router.post(
-  "/select-document",
-  requiresAppSelected,
+  ROUTES.SELECT_DOCUMENT,
+  guardRouteByEnvironment(),
   requiresAuth,
+  requiresAppSelected,
   documentSelectorPostController(),
 );
 

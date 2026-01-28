@@ -26,4 +26,8 @@ export const walletAppsConfig: WalletAppsConfig = {
     url: "https://mobile.staging.account.gov.uk/wallet-test/",
     name: "Wallet Test App (Staging)",
   },
+  "wallet-test-verifier-integration": {
+    url: "https://mobile.integration.account.gov.uk/wallet-test/",
+    name: "Wallet Test App (Integration)",
+  },
 };

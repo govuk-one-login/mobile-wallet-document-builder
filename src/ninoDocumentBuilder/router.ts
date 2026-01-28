@@ -4,18 +4,22 @@ import {
   ninoDocumentBuilderPostController,
 } from "./controller";
 import { requiresAuth } from "../middleware/requiresAuth";
+import { ROUTES } from "../config/routes";
+import { guardRouteByEnvironment } from "../middleware/guardRouteByEnvironment";
 import { requiresAppSelected } from "../middleware/requiresAppSelected";
 
 const router = express.Router();
 
 router.get(
-  "/build-nino-document",
+  ROUTES.BUILD_NINO_DOCUMENT,
+  guardRouteByEnvironment(),
   requiresAuth,
   requiresAppSelected,
   ninoDocumentBuilderGetController(),
 );
 router.post(
-  "/build-nino-document",
+  ROUTES.BUILD_NINO_DOCUMENT,
+  guardRouteByEnvironment(),
   requiresAuth,
   requiresAppSelected,
   ninoDocumentBuilderPostController,
