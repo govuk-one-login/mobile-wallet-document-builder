@@ -43,6 +43,7 @@ const APP_VIEWS = [
   path.resolve("dist/dvsJourneySelector/views"),
   path.resolve("dist/views"),
   path.resolve("node_modules/govuk-frontend/dist"),
+  path.resolve("dist/dvsStart/views"),
 ];
 
 export async function createApp(): Promise<express.Application> {

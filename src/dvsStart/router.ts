@@ -3,6 +3,6 @@ import { dvsStartGetController } from "./controller";
 
 const router = express.Router();
 
-router.get("/dvs-start", dvsStartGetController());
+router.get("/dvs-start", dvsStartGetController);
 
 export { router as dvsStartRouter };
