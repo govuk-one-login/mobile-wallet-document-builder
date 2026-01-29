@@ -24,6 +24,7 @@ import { revokeRouter } from "./revoke/router";
 import { refreshRouter } from "./refresh/router";
 import { simpleDocumentBuilderRouter } from "./simpleDocumentBuilder/router";
 import { drivingLicenceBuilderRouter } from "./drivingLicenceBuilder/router";
+import { dvsDrivingLicenceBuilderRouter } from "./dvsDrivingLicenceBuilder/router";
 
 const APP_VIEWS = [
   path.resolve("dist/appSelector/views"),
@@ -78,6 +79,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(revokeRouter);
   app.use(stsStubAccessTokenRouter);
   app.use(stsStubJwksRouter);
+  app.use(dvsDrivingLicenceBuilderRouter);
 
   app.use(auth(getOIDCConfig()));
 
