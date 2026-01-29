@@ -1,6 +1,5 @@
 import { DrivingLicenceData } from "../../drivingLicenceBuilder/types/DrivingLicenceData";
 import { formatDate } from "../../utils/date";
-import { getRandomIntInclusive } from "../../utils/getRandomIntInclusive";
 
 /**
  * Builds the default data for the driving licence document for the DVS journey.
@@ -37,7 +36,7 @@ export function buildDefaultDrivingLicenceData(
     expiry_date: dateIn30Days,
     issuing_authority: "GDS",
     issuing_country: "GB",
-    document_number: "TEST9" + getRandomIntInclusive() + "SE5RO",
+    document_number: "TEST" + Date.now(),
     resident_address: "Flat test, Building X, Street test",
     resident_postal_code: "XX1 3XX",
     resident_city: "City test",

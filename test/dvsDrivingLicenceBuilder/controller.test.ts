@@ -35,7 +35,7 @@ describe("controller.ts", () => {
   beforeEach(() => {
     mockGetPhoto.mockReturnValue({ photoBuffer, mimeType: "image/jpeg" });
     mockBuildDefaultDrivingLicenceData.mockReturnValue({
-      document_number: "TEST9550000SE5RO",
+      document_number: "TEST1769688000000",
       family_name: "Test FirstName",
       given_name: "Test-Surname",
     });
@@ -102,13 +102,13 @@ describe("controller.ts", () => {
       await dvsDrivingLicenceBuilderGetController(req, res);
 
       expect(saveDocument).toHaveBeenCalledWith("testTable", {
-        documentId: "TEST9550000SE5RO",
+        documentId: "TEST1769688000000",
         itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         timeToLive: 1748736000,
         vcType: "org.iso.18013.5.1.mDL",
         credentialTtlMinutes: 2880,
         data: {
-          document_number: "TEST9550000SE5RO",
+          document_number: "TEST1769688000000",
           family_name: "Test FirstName",
           given_name: "Test-Surname",
         },
