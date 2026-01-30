@@ -83,6 +83,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(stsStubAccessTokenRouter);
   app.use(stsStubJwksRouter);
   app.use(dvsJourneySelectorRouter);
+  app.use(dvsStartRouter);
 
   app.use(auth(getOIDCConfig()));
 
@@ -96,7 +97,6 @@ export async function createApp(): Promise<express.Application> {
   app.use(ninoDocumentBuilderRouter);
   app.use(returnFromAuthRouter);
   app.use(veteranCardDocumentBuilderRouter);
-  app.use(dvsStartRouter);
 
   return app;
 }
