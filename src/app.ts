@@ -26,6 +26,7 @@ import { simpleDocumentBuilderRouter } from "./simpleDocumentBuilder/router";
 import { drivingLicenceBuilderRouter } from "./drivingLicenceBuilder/router";
 import { dvsStartRouter } from "./dvsStart/router";
 import { dvsJourneySelectorRouter } from "./dvsJourneySelector/router";
+import { issuerStartRouter } from "./issuerStart/router";
 
 const APP_VIEWS = [
   path.resolve("dist/appSelector/views"),
@@ -42,6 +43,7 @@ const APP_VIEWS = [
   path.resolve("dist/veteranCardDocumentBuilder/views"),
   path.resolve("dist/dvsStart/views"),
   path.resolve("dist/dvsJourneySelector/views"),
+  path.resolve("dist/issuerStart/views"),
   path.resolve("dist/views"),
   path.resolve("node_modules/govuk-frontend/dist"),
 ];
@@ -84,6 +86,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(stsStubJwksRouter);
   app.use(dvsStartRouter);
   app.use(dvsJourneySelectorRouter);
+  app.use(issuerStartRouter);
 
   app.use(auth(getOIDCConfig()));
 
