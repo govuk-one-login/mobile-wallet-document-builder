@@ -3,7 +3,6 @@
 {% extends "base.njk" %}
 {% set pageTitle = "Please select an app and environment:" %}
 {% block content %}
-    <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
     <form action="/select-app" method="post">
         <input type="hidden" name="credentialType" value="{{ credentialType }}">
         {{ govukRadios({
