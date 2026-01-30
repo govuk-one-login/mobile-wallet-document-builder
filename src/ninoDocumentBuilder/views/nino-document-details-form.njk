@@ -10,7 +10,7 @@
         {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
         {% call govukFieldset({
             legend: {
-            text: "Please enter the NINO document details:",
+            text: pageTitle,
             classes: "govuk-fieldset__legend--m",
             isPageHeading: true
             } }) %}
