@@ -24,6 +24,7 @@ import { revokeRouter } from "./revoke/router";
 import { refreshRouter } from "./refresh/router";
 import { simpleDocumentBuilderRouter } from "./simpleDocumentBuilder/router";
 import { drivingLicenceBuilderRouter } from "./drivingLicenceBuilder/router";
+import { dvsStartRouter } from "./dvsStart/router";
 import { dvsDrivingLicenceBuilderRouter } from "./dvsDrivingLicenceBuilder/router";
 import { dvsJourneySelectorRouter } from "./dvsJourneySelector/router";
 
@@ -40,6 +41,7 @@ const APP_VIEWS = [
   path.resolve("dist/refresh/views"),
   path.resolve("dist/revoke/views"),
   path.resolve("dist/veteranCardDocumentBuilder/views"),
+  path.resolve("dist/dvsStart/views"),
   path.resolve("dist/dvsJourneySelector/views"),
   path.resolve("dist/views"),
   path.resolve("node_modules/govuk-frontend/dist"),
@@ -81,6 +83,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(revokeRouter);
   app.use(stsStubAccessTokenRouter);
   app.use(stsStubJwksRouter);
+  app.use(dvsStartRouter);
   app.use(dvsJourneySelectorRouter);
   app.use(dvsDrivingLicenceBuilderRouter);
 
