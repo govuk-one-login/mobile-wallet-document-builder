@@ -1,6 +1,6 @@
 import { DrivingLicenceRequestBody } from "../types/DrivingLicenceRequestBody";
-import { DrivingPrivilege } from "../types/DrivingPrivilege";
 import { formatDate } from "../../utils/date";
+import { DrivingPrivilege } from "../../types/DrivingPrivilege";
 
 interface BuildDrivingPrivilegesParams {
   vehicleCategoryCodes: string[];

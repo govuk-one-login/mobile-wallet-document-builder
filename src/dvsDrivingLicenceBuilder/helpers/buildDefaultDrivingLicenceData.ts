@@ -1,5 +1,5 @@
-import { DrivingLicenceData } from "../../drivingLicenceBuilder/types/DrivingLicenceData";
 import { formatDate } from "../../utils/date";
+import { DrivingLicenceData } from "../../types/DrivingLicenceData";
 
 /**
  * Builds the default data for the driving licence document for the DVS journey.
