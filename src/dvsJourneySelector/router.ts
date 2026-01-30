@@ -7,6 +7,6 @@ import {
 const router = express.Router();
 
 router.get("/dvs/select-journey", dvsJourneySelectorGetController);
-router.post("dvs//select-journey", dvsJourneySelectorPostController);
+router.post("/dvs/select-journey", dvsJourneySelectorPostController);
 
 export { router as dvsJourneySelectorRouter };
