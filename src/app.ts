@@ -40,10 +40,10 @@ const APP_VIEWS = [
   path.resolve("dist/refresh/views"),
   path.resolve("dist/revoke/views"),
   path.resolve("dist/veteranCardDocumentBuilder/views"),
+  path.resolve("dist/dvsStart/views"),
   path.resolve("dist/dvsJourneySelector/views"),
   path.resolve("dist/views"),
   path.resolve("node_modules/govuk-frontend/dist"),
-  path.resolve("dist/dvsStart/views"),
 ];
 
 export async function createApp(): Promise<express.Application> {
@@ -82,8 +82,8 @@ export async function createApp(): Promise<express.Application> {
   app.use(revokeRouter);
   app.use(stsStubAccessTokenRouter);
   app.use(stsStubJwksRouter);
-  app.use(dvsJourneySelectorRouter);
   app.use(dvsStartRouter);
+  app.use(dvsJourneySelectorRouter);
 
   app.use(auth(getOIDCConfig()));
 
