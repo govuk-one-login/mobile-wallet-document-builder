@@ -28,7 +28,7 @@ describe("buildDefaultDrivingLicenceData", () => {
       issuing_authority: "GDS",
       issuing_country: "GB",
       document_number: "TEST1769688000000",
-      resident_address: "Flat test, Building X, Street test",
+      resident_address: ["Flat test, Building X, Street test"],
       resident_postal_code: "XX1 3XX",
       resident_city: "City test",
       driving_privileges: [

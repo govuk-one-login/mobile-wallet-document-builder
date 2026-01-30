@@ -37,7 +37,7 @@ export function buildDefaultDrivingLicenceData(
     issuing_authority: "GDS",
     issuing_country: "GB",
     document_number: "TEST" + Date.now(),
-    resident_address: "Flat test, Building X, Street test",
+    resident_address: ["Flat test, Building X, Street test"],
     resident_postal_code: "XX1 3XX",
     resident_city: "City test",
     driving_privileges: getDrivingPrivileges(dateToday),
