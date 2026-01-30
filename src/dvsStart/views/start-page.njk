@@ -1,10 +1,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 {% extends "base.njk" %}
 {% set pageTitle = "Create or revoke a test digital driving licence?" %}
 {% block content %}
-
-<h2 class="govuk-heading-m">Create or revoke a test digital driving licence?</h2>
+<h1 class="govuk-heading-m">Create or revoke a test digital driving licence?</h1>
 <p class="govuk-body">
     This tool is a document builder that allows you to create or revoke a test digital driving licence that you can use to add to a test
     version of the GOV.UK Wallet.</p>
@@ -27,11 +25,9 @@
     <li>received an integration certificate</li>
 </ul>
 
-<form action="/dvs-start" method="get">
-    {{ govukButton({
-      text: "Start now",
-      href: "#",
-      isStartButton: true
-    }) }}
-</form>
+{{ govukButton({
+  text: "Start now",
+  href: "/dvs/select-journey",
+  isStartButton: true
+}) }}
 {% endblock %}
