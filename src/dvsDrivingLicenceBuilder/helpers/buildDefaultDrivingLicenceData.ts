@@ -28,8 +28,8 @@ export function buildDefaultDrivingLicenceData(
   );
 
   return {
-    family_name: "Test FirstName",
-    given_name: "Test-Surname",
+    family_name: "Test-Surname",
+    given_name: "Test FirstName",
     title: "Dr",
     welsh_licence: false,
     portrait: s3Uri,
