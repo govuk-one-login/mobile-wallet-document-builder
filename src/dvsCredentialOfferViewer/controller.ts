@@ -64,7 +64,7 @@ export function dvsCredentialOfferViewerController({
 
       const qrCode = await QRCode.toDataURL(customisedCredentialOfferUrl);
 
-      return res.render("credential-offer.njk", {
+      return res.render("dvs-credential-offer.njk", {
         authenticated: isAuthenticated(req),
         universalLink: customisedCredentialOfferUrl,
         qrCode,

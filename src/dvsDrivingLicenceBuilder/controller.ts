@@ -44,6 +44,7 @@ export async function dvsDrivingLicenceBuilderGetController(
     const redirectUrl = getViewCredentialOfferRedirectUrl({
       itemId,
       credentialType: CREDENTIAL_TYPE,
+      isDvsRoute: true,
     });
     res.redirect(redirectUrl);
   } catch (error) {
