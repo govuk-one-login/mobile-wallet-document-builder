@@ -13,7 +13,7 @@ export async function documentController(
   res: Response,
 ): Promise<void> {
   try {
-    const { itemId } = req.params;
+    const itemId = req.params.itemId as string;
     const tableName = getDocumentsTableName();
     const tableItem = await getDocument(tableName, itemId);
 
