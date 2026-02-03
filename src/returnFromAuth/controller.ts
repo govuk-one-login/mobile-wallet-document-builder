@@ -42,7 +42,7 @@ export async function returnFromAuthGetController(
       req.oidc.issuer.metadata.token_endpoint!,
       getClientSigningKeyId(),
     );
-
+    console.log(`Client assertion: ${clientAssertion}`);
     // Exchange the access code in the url parameters for an access token
     const tokenSet: TokenSet = await req.oidc.callback(
       req.oidc.metadata.redirect_uris![0],
@@ -58,11 +58,12 @@ export async function returnFromAuthGetController(
     );
 
     const accessToken = tokenSet.access_token!;
+    console.log(`Access token: ${accessToken}`);
     const userInfo: UserinfoResponse = await req.oidc.userinfo(accessToken, {
       method: "GET",
       via: "header",
     });
-
+    console.log(`User info: ${JSON.stringify(userInfo)}`);
     const cookieOptions = {
       httpOnly: true,
       maxAge: getCookieExpiryInMilliseconds(),
@@ -71,7 +72,7 @@ export async function returnFromAuthGetController(
     res.cookie("id_token", tokenSet.id_token, cookieOptions);
     res.cookie("wallet_subject_id", userInfo.wallet_subject_id, cookieOptions);
 
-    const redirectUri = req.cookies.current_url || "/select-document";
+    const redirectUri = req.cookies.current_url || "/select-app";
     res.redirect(redirectUri);
   } catch (error) {
     const message =

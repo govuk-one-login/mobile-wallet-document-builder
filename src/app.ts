@@ -76,7 +76,6 @@ export async function createApp(): Promise<express.Application> {
   });
   app.use(noCacheMiddleware);
 
-  app.use(appSelectorRouter);
   app.use(documentRouter);
   app.use(loggedOutRouter);
   app.use(proofJwtRouter);
@@ -89,7 +88,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(issuerStartRouter);
 
   app.use(auth(getOIDCConfig()));
-
+  app.use(appSelectorRouter);
   app.use(credentialOfferViewerRouter);
   app.use(credentialViewerRouter);
   app.use(dbsDocumentBuilderRouter);
