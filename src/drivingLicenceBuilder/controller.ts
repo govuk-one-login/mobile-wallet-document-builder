@@ -10,7 +10,6 @@ import { isAuthenticated } from "../utils/isAuthenticated";
 import { logger } from "../middleware/logger";
 import { randomUUID } from "node:crypto";
 import { uploadPhoto } from "../services/s3Service";
-import { DrivingLicenceData } from "./types/DrivingLicenceData";
 import { saveDocument } from "../services/databaseService";
 import { getPhoto } from "../utils/photoUtils";
 import { validateDateFields, getDefaultDates, formatDate } from "../utils/date";
@@ -24,6 +23,7 @@ import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
 import { DrivingLicenceRequestBody } from "./types/DrivingLicenceRequestBody";
+import { DrivingLicenceData } from "../types/DrivingLicenceData";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
 

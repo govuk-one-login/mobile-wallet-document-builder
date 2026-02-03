@@ -25,6 +25,7 @@ import { refreshRouter } from "./refresh/router";
 import { simpleDocumentBuilderRouter } from "./simpleDocumentBuilder/router";
 import { drivingLicenceBuilderRouter } from "./drivingLicenceBuilder/router";
 import { dvsStartRouter } from "./dvsStart/router";
+import { dvsDrivingLicenceBuilderRouter } from "./dvsDrivingLicenceBuilder/router";
 import { dvsJourneySelectorRouter } from "./dvsJourneySelector/router";
 
 const APP_VIEWS = [
@@ -84,6 +85,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(stsStubJwksRouter);
   app.use(dvsStartRouter);
   app.use(dvsJourneySelectorRouter);
+  app.use(dvsDrivingLicenceBuilderRouter);
 
   app.use(auth(getOIDCConfig()));
 

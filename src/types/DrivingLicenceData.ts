@@ -13,7 +13,7 @@ export interface DrivingLicenceData {
   issuing_authority: string;
   issuing_country: string;
   document_number: string;
-  resident_address: string;
+  resident_address: string[];
   resident_postal_code: string;
   resident_city: string;
   driving_privileges: DrivingPrivilege[];
