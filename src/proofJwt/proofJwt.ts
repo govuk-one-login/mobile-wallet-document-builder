@@ -8,7 +8,7 @@ import {
 } from "@aws-sdk/client-kms";
 import { getKmsConfig } from "../config/aws";
 import format from "ecdsa-sig-formatter";
-import { createPublicKey, JsonWebKey } from "node:crypto";
+import { createPublicKey } from "node:crypto";
 
 import bs58 from "bs58";
 

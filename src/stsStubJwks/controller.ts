@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { getStsSigningKeyId } from "../config/appConfig";
 import { KmsService } from "../services/kmsService";
 import { logger } from "../middleware/logger";
-import { createPublicKey, JsonWebKey } from "node:crypto";
+import { createPublicKey } from "node:crypto";
 
 export async function stsStubJwksController(
   req: Request,
@@ -26,15 +26,21 @@ export async function stsStubJwksController(
   }
 }
 
-function createJwk(publicKeyString: string, keyId: string): JsonWebKey {
+type JwkWithKid = JsonWebKey & {
+  kid: string;
+};
+
+export function createJwk(publicKeyString: string, keyId: string): JwkWithKid {
   const publicKeyPem: string =
     "-----BEGIN PUBLIC KEY-----\n" +
     publicKeyString +
     "\n-----END PUBLIC KEY-----";
 
   const keyObject = createPublicKey(publicKeyPem);
-  const jwk = keyObject.export({ format: "jwk" });
-  jwk.kid = keyId; // add 'kid' to JWK
+  const jwk = keyObject.export({ format: "jwk" }) as JsonWebKey;
 
-  return jwk;
+  return {
+    ...jwk,
+    kid: keyId,
+  };
 }
