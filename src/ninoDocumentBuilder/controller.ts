@@ -57,11 +57,11 @@ export async function ninoDocumentBuilderPostController(
       timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
     });
 
-    const redirectUrl = getViewCredentialOfferRedirectUrl(
+    const redirectUrl = getViewCredentialOfferRedirectUrl({
       itemId,
-      CREDENTIAL_TYPE,
-      body["throwError"],
-    );
+      credentialType: CREDENTIAL_TYPE,
+      selectedError: body["throwError"],
+    });
     res.redirect(redirectUrl);
   } catch (error) {
     logger.error(error, "An error happened processing NINO document request");

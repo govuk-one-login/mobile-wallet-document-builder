@@ -5,7 +5,10 @@ describe("getViewCredentialOfferRedirectUrl", () => {
   const credentialType = "test-type";
 
   it("should return the base redirect URL when no error code is provided", () => {
-    const result = getViewCredentialOfferRedirectUrl(itemId, credentialType);
+    const result = getViewCredentialOfferRedirectUrl({
+      itemId,
+      credentialType,
+    });
     expect(result).toBe(
       `/view-credential-offer/${itemId}?type=${credentialType}`,
     );
@@ -13,11 +16,11 @@ describe("getViewCredentialOfferRedirectUrl", () => {
 
   it("should append a valid error code to the redirect URL", () => {
     const validErrorCode = "ERROR:401";
-    const result = getViewCredentialOfferRedirectUrl(
+    const result = getViewCredentialOfferRedirectUrl({
       itemId,
       credentialType,
-      validErrorCode,
-    );
+      selectedError: validErrorCode,
+    });
     expect(result).toBe(
       `/view-credential-offer/${itemId}?type=${credentialType}&error=${validErrorCode}`,
     );
@@ -25,35 +28,46 @@ describe("getViewCredentialOfferRedirectUrl", () => {
 
   it("should not append an invalid error code to the redirect URL", () => {
     const invalidErrorCode = "INVALID_ERROR";
-    const result = getViewCredentialOfferRedirectUrl(
+    const result = getViewCredentialOfferRedirectUrl({
       itemId,
       credentialType,
-      invalidErrorCode,
-    );
+      selectedError: invalidErrorCode,
+    });
     expect(result).toBe(
       `/view-credential-offer/${itemId}?type=${credentialType}`,
     );
   });
 
   it("should not append an empty string as an error code", () => {
-    const result = getViewCredentialOfferRedirectUrl(
+    const result = getViewCredentialOfferRedirectUrl({
       itemId,
       credentialType,
-      "",
-    );
+      selectedError: "",
+    });
     expect(result).toBe(
       `/view-credential-offer/${itemId}?type=${credentialType}`,
     );
   });
 
   it("should not append undefined as an error code", () => {
-    const result = getViewCredentialOfferRedirectUrl(
+    const result = getViewCredentialOfferRedirectUrl({
       itemId,
       credentialType,
-      undefined,
-    );
+      selectedError: undefined,
+    });
     expect(result).toBe(
       `/view-credential-offer/${itemId}?type=${credentialType}`,
+    );
+  });
+
+  it("should return the dvs url when isDvsRoute true", () => {
+    const result = getViewCredentialOfferRedirectUrl({
+      itemId,
+      credentialType,
+      isDvsRoute: true,
+    });
+    expect(result).toBe(
+      `/dvs/view-credential-offer/${itemId}?type=${credentialType}`,
     );
   });
 });

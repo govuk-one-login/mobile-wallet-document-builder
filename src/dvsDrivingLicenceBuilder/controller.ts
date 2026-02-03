@@ -41,10 +41,10 @@ export async function dvsDrivingLicenceBuilderGetController(
       timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
     });
 
-    const redirectUrl = getViewCredentialOfferRedirectUrl(
+    const redirectUrl = getViewCredentialOfferRedirectUrl({
       itemId,
-      CREDENTIAL_TYPE,
-    );
+      credentialType: CREDENTIAL_TYPE,
+    });
     res.redirect(redirectUrl);
   } catch (error) {
     logger.error(
