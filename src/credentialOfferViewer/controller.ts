@@ -24,7 +24,7 @@ export function credentialOfferViewerController({
 }: CredentialOfferViewerConfig = {}): ExpressRouteFunction {
   return async function (req: Request, res: Response): Promise<void> {
     try {
-      const { itemId } = req.params;
+      const itemId = req.params.itemId as string;
       const selectedApp = req.cookies.app;
       const credentialType = req.query.type as string;
       const errorScenario = req.query.error as string;
