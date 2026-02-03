@@ -9,7 +9,11 @@ import { logger } from "../middleware/logger";
 import { TableItem } from "../types/TableItem";
 
 const dynamoDbClient = new DynamoDBClient(getDatabaseConfig());
-const documentClient = DynamoDBDocumentClient.from(dynamoDbClient);
+const documentClient = DynamoDBDocumentClient.from(dynamoDbClient, {
+  marshallOptions: {
+    removeUndefinedValues: true,
+  },
+});
 
 export async function saveDocument(
   tableName: string,
