@@ -17,6 +17,19 @@ export function requiresAuth(
     `isAuthenticated = ${isAuthenticated} , selectedApp = ${selectedApp}`,
   );
 
+  // PROBLEM: This check redirects to /select-app when no app is selected.
+  // This creates an infinite redirect loop because /select-app now also uses requiresAuth middleware.
+  //
+  // SOLUTION: Move this app selection check to a separate middleware called requiresAppSelected.
+  //
+  // STEPS:
+  // 1. Move the code below (lines 26-28) to the new requiresAppSelected.ts file
+  // 2. Add requiresAppSelected middleware to all routes that currently use requiresAuth
+  // 3. EXCEPT: Do NOT add requiresAppSelected to the /select-app route
+  // 4. Keep requiresAuth on all routes including /select-app
+  //
+  // RESULT: requiresAuth checks authentication, requiresAppSelected checks app selection
+
   if (selectedApp === undefined) {
     res.redirect(getSelfUrl() + "/select-app");
   } else if (isAuthenticated === undefined) {
