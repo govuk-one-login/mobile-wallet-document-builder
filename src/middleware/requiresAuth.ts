@@ -13,8 +13,9 @@ export function requiresAuth(
 
   if (isAuthenticated === undefined) {
     redirectToLogIn(req, res);
+  } else {
+    next();
   }
-  next();
 }
 
 export function getAuthorizationUrl(req: Request, res: Response) {

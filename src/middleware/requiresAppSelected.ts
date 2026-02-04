@@ -10,6 +10,7 @@ export function requiresAppSelected(
 
   if (selectedApp === undefined) {
     res.redirect(getSelfUrl() + "/select-app");
+  } else {
+    next();
   }
-  next();
 }
