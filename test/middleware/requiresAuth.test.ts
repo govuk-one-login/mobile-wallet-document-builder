@@ -6,21 +6,6 @@ process.env.SELF = "http://localhost:3000";
 process.env.COOKIE_TTL_IN_MILLISECONDS = "100";
 
 describe("requiresAuth", () => {
-  it("should redirect to /select-app if app cookie is missing", () => {
-    const req = getMockReq({
-      cookies: {},
-    });
-    const { res } = getMockRes();
-    const nextFunction: NextFunction = jest.fn();
-
-    requiresAuth(req, res, nextFunction);
-
-    expect(res.redirect).toHaveBeenCalledWith(
-      "http://localhost:3000/select-app",
-    );
-    expect(nextFunction).not.toHaveBeenCalled();
-  });
-
   it("should redirect to authorisation URL and set cookies when user is not authenticated", () => {
     const authorizationUrl = "https://auth.test/authorize";
     const req = getMockReq({

@@ -2,6 +2,13 @@ import { NextFunction } from "express";
 import { requiresAppSelected } from "../../src/middleware/requiresAppSelected";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
+beforeAll(() => {
+  process.env.SELF = "http://localhost:3000";
+});
+afterAll(() => {
+  delete process.env.SELF;
+});
+
 describe("requiresAppSelected", () => {
   it("should redirect to /select-app if app cookie is missing", () => {
     const req = getMockReq({

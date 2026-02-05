@@ -229,7 +229,7 @@ describe("returnFromAuthGetController", () => {
 
     await returnFromAuthGetController(req, res);
 
-    expect(res.redirect).toHaveBeenCalledWith("/select-document");
+    expect(res.redirect).toHaveBeenCalledWith("/select-app");
     expect(loggerErrorSpy).not.toHaveBeenCalled();
   });
 });
