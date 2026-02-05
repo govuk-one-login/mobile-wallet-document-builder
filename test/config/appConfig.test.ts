@@ -53,6 +53,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if ENVIRONMENT environment variable is not set", () => {
+    delete process.env.ENVIRONMENT;
     expect(() => getEnvironment()).toThrow(
       new Error("ENVIRONMENT environment variable not set"),
     );
@@ -64,6 +65,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if CREDENTIAL_ISSUER_URL environment variable is not set", () => {
+    delete process.env.CREDENTIAL_ISSUER_URL;
     expect(() => getCriEndpoint()).toThrow(
       new Error("CREDENTIAL_ISSUER_URL environment variable not set"),
     );
@@ -85,6 +87,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if ACCESS_TOKEN_TTL_IN_SECS environment variable is not set", () => {
+    delete process.env.ACCESS_TOKEN_TTL_IN_SECS;
     expect(() => getAccessTokenTtlInSecs()).toThrow(
       new Error("ACCESS_TOKEN_TTL_IN_SECS environment variable not set"),
     );
@@ -96,6 +99,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if SELF environment variable is not set", () => {
+    delete process.env.SELF;
     expect(() => getSelfUrl()).toThrow(
       new Error("SELF environment variable not set"),
     );
@@ -107,6 +111,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if OIDC_CLIENT_ID environment variable is not set", () => {
+    delete process.env.OIDC_CLIENT_ID;
     expect(() => getOIDCClientId()).toThrow(
       new Error("OIDC_CLIENT_ID environment variable not set"),
     );
@@ -118,6 +123,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if CLIENT_SIGNING_KEY_ID environment variable is not set", () => {
+    delete process.env.CLIENT_SIGNING_KEY_ID;
     expect(() => getClientSigningKeyId()).toThrow(
       new Error("CLIENT_SIGNING_KEY_ID environment variable not set"),
     );
@@ -129,6 +135,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable is not set", () => {
+    delete process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT;
     expect(() => getOIDCDiscoveryEndpoint()).toThrow(
       new Error("OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable not set"),
     );
@@ -140,6 +147,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if COOKIE_TTL_IN_MILLISECONDS environment variable is not set", () => {
+    delete process.env.COOKIE_TTL_IN_MILLISECONDS;
     expect(() => getCookieExpiryInMilliseconds()).toThrow(
       new Error("COOKIE_TTL_IN_MILLISECONDS environment variable not set"),
     );
@@ -157,6 +165,7 @@ describe("appConfig.ts", () => {
   });
 
   it("should throw an error if WALLET_APPS environment variable is not set", () => {
+    delete process.env.WALLET_APPS;
     expect(() => getWalletApps()).toThrow(
       new Error("WALLET_APPS environment variable not set"),
     );

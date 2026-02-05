@@ -1,108 +1,105 @@
 import { Request, Response } from "express";
+import { JWTPayload } from "jose";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import { decodeJwt } from "jose";
-import axios from "axios";
-import { getCriEndpoint, getSelfUrl } from "../config/appConfig";
-import { GrantType } from "../stsStubAccessToken/token/validateTokenRequest";
+import { replaceMapsWithObjects } from "../utils/replaceMapsWithObjects";
 import { logger } from "../middleware/logger";
+import { AccessTokenClaims, ProofData } from "./types";
+import {
+  getAccessToken,
+  getProofJwt,
+  getCredential,
+} from "./services/credentialService";
+import { safeDecodeJwt, processCredential } from "./decoders";
+import { extractPreAuthCode } from "./parsers/credentialOfferParser";
 
+/**
+ * Generates proof JWT and decodes its claims
+ * @param accessTokenClaims - Access token claims containing nonce and audience
+ * @returns Object containing proof JWT and its decoded claims
+ */
+async function getProofData(
+  accessTokenClaims: JWTPayload | undefined,
+): Promise<ProofData> {
+  if (!accessTokenClaims) return { proofJwt: "", proofJwtClaims: undefined };
+
+  const claims = accessTokenClaims as AccessTokenClaims;
+  if (!claims.c_nonce || !claims.aud) {
+    return { proofJwt: "", proofJwtClaims: undefined };
+  }
+
+  try {
+    const proofJwt = await getProofJwt(claims.c_nonce, claims.aud);
+    const proofJwtClaims = safeDecodeJwt(
+      proofJwt,
+      "An error occurred decoding the proofJwtClaims",
+    );
+    return { proofJwt, proofJwtClaims };
+  } catch (error) {
+    logger.error(error, "An error occurred getting the proofJwt");
+    return { proofJwt: "", proofJwtClaims: undefined };
+  }
+}
+
+/**
+ * Main controller for the credential viewer page
+ * Handles the complete flow from credential offer to display
+ * @param req - Express request object
+ * @param res - Express response object
+ */
 export async function credentialViewerController(
   req: Request,
   res: Response,
 ): Promise<void> {
   try {
+    // 1. Parse credential offer
     const preAuthorizedCode = extractPreAuthCode(req.query.offer as string);
-
-    const accessToken = await getAccessToken(preAuthorizedCode);
-    const accessTokenClaims = decodeJwt(accessToken);
-
-    const proofJwt = await getProofJwt(
-      accessTokenClaims.c_nonce as string,
-      accessTokenClaims.aud as string,
+    const preAuthorizedCodeClaims = safeDecodeJwt(
+      preAuthorizedCode,
+      "An error occurred decoding the preAuthorizedCode",
     );
 
-    const credential = await getCredential(accessToken, proofJwt);
-    let credentialClaims = null;
-    try {
-      const payload = decodeJwt(credential);
-      credentialClaims = JSON.stringify(payload);
-    } catch (error) {
-      logger.info(error, "Could not decode JWT credential");
-    }
+    // 2. Exchange for access token
+    const accessToken = await getAccessToken(preAuthorizedCode);
+    const accessTokenClaims = safeDecodeJwt(
+      accessToken,
+      "An error occurred decoding the accessTokenClaims",
+    );
 
+    // 3. Generate proof JWT
+    const { proofJwt, proofJwtClaims } = await getProofData(accessTokenClaims);
+
+    // 4. Fetch and decode credential
+    const credential = await getCredential(accessToken, proofJwt);
+    const credentialData = processCredential(credential);
+
+    // 5. Render view
     res.render("credential.njk", {
       authenticated: isAuthenticated(req),
       preAuthorizedCode,
+      preAuthorizedCodeClaims: preAuthorizedCodeClaims,
       accessToken,
-      accessTokenClaims: JSON.stringify(accessTokenClaims),
+      accessTokenClaims: accessTokenClaims,
       proofJwt,
+      proofJwtClaims: proofJwtClaims,
       credential,
-      credentialClaims: credentialClaims,
+      credentialClaimsTitle: credentialData.credentialClaimsTitle,
+      credentialClaims: JSON.stringify(
+        credentialData.credentialClaims,
+        replaceMapsWithObjects,
+      ),
+      credentialSignature: JSON.stringify(
+        credentialData.credentialSignature,
+        replaceMapsWithObjects,
+      ),
+      credentialSignaturePayload: JSON.stringify(
+        credentialData.credentialSignaturePayload,
+        replaceMapsWithObjects,
+      ),
+      x5chain: credentialData.x5chain,
+      x5chainHex: credentialData.x5chainHex,
     });
   } catch (error) {
     logger.error(error, "An error happened.");
     res.render("500.njk");
   }
-}
-
-function extractPreAuthCode(credentialOfferUri: string) {
-  const credentialOfferString = credentialOfferUri.split(
-    "add?credential_offer=",
-  )[1];
-  const credentialOffer = JSON.parse(credentialOfferString);
-  return credentialOffer.grants[
-    "urn:ietf:params:oauth:grant-type:pre-authorized_code"
-  ]["pre-authorized_code"];
-}
-
-export async function getAccessToken(
-  preAuthorizedCode: string,
-): Promise<string> {
-  const response = await axios.post(
-    `${getSelfUrl()}/token`,
-    {
-      grant_type: GrantType.PREAUTHORIZED_CODE,
-      "pre-authorized_code": preAuthorizedCode,
-    },
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    },
-  );
-  return response.data.access_token;
-}
-
-export async function getProofJwt(
-  c_nonce: string,
-  audience: string,
-): Promise<string> {
-  const proofJwtResponse = await axios.get(
-    `${getSelfUrl()}/proof-jwt?nonce=${c_nonce}&audience=${audience}`,
-  );
-  return proofJwtResponse.data.proofJwt;
-}
-
-export async function getCredential(
-  accessToken: string,
-  proofJwt: string,
-): Promise<string> {
-  const criUrl = getCriEndpoint();
-  const credentialUrl = criUrl + "/credential";
-
-  const response = await axios.post(
-    credentialUrl,
-    {
-      proof: {
-        proof_type: "jwt",
-        jwt: proofJwt,
-      },
-    },
-    {
-      headers: {
-        Authorization: `BEARER ${accessToken}`,
-      },
-    },
-  );
-  return response.data.credentials[0].credential;
 }
