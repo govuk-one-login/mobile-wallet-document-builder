@@ -103,6 +103,3 @@ export async function credentialViewerController(
     res.render("500.njk");
   }
 }
-
-// Re-export service functions for backward compatibility with tests
-export { getAccessToken, getProofJwt, getCredential };

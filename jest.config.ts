@@ -18,7 +18,11 @@ export default {
   ],
   collectCoverage: true,
   collectCoverageFrom: ["src/**"],
-  coveragePathIgnorePatterns: ["/types/", "<rootDir>/src/server.ts"],
+  coveragePathIgnorePatterns: [
+    "/types/",
+    "<rootDir>/src/server.ts",
+    "src/credentialViewer/types.ts",
+  ],
   coverageDirectory: "coverage",
   coverageProvider: "v8",
   testMatch: ["**/*.test.ts"],
