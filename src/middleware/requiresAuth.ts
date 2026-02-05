@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { getCookieExpiryInMilliseconds } from "../config/appConfig";
 import { generators } from "openid-client";
+import { logger } from "./logger";
 
 const VECTORS_OF_TRUST = `["Cl"]`;
 
@@ -10,6 +11,8 @@ export function requiresAuth(
   next: NextFunction,
 ): void {
   const isAuthenticated = req.cookies["id_token"];
+
+  logger.info(`isAuthenticated: ${isAuthenticated}`);
 
   if (isAuthenticated === undefined) {
     redirectToLogIn(req, res);
