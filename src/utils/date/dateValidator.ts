@@ -1,4 +1,4 @@
-import { MdlRequestBody } from "../../mdlDocumentBuilder/types/MdlRequestBody";
+import { DrivingLicenceRequestBody } from "../../drivingLicenceBuilder/types/DrivingLicenceRequestBody";
 import { SimpleDocumentRequestBody } from "../../simpleDocumentBuilder/types/SimpleDocumentRequestBody";
 
 /**
@@ -22,7 +22,7 @@ import { SimpleDocumentRequestBody } from "../../simpleDocumentBuilder/types/Sim
  * validateDateFields(body); // { birth_date: "Enter a valid birth date" }
  */
 export function validateDateFields(
-  body: MdlRequestBody | SimpleDocumentRequestBody,
+  body: DrivingLicenceRequestBody | SimpleDocumentRequestBody,
 ): Record<string, string> {
   const errors: Record<string, string> = {};
 

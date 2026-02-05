@@ -1,6 +1,6 @@
-import { MdlRequestBody } from "../types/MdlRequestBody";
-import { DrivingPrivilege } from "../types/DrivingPrivilege";
+import { DrivingLicenceRequestBody } from "../types/DrivingLicenceRequestBody";
 import { formatDate } from "../../utils/date";
+import { DrivingPrivilege } from "../../types/DrivingPrivilege";
 
 interface BuildDrivingPrivilegesParams {
   vehicleCategoryCodes: string[];
@@ -13,7 +13,7 @@ interface BuildDrivingPrivilegesParams {
   restrictionCodes?: string[];
 }
 
-export function getFullDrivingPrivileges(body: MdlRequestBody) {
+export function getFullDrivingPrivileges(body: DrivingLicenceRequestBody) {
   const fullIssueDays = stringToArray(body["fullPrivilegeIssue-day"]);
   const fullIssueMonths = stringToArray(body["fullPrivilegeIssue-month"]);
   const fullIssueYears = stringToArray(body["fullPrivilegeIssue-year"]);
@@ -35,7 +35,9 @@ export function getFullDrivingPrivileges(body: MdlRequestBody) {
   });
 }
 
-export function getProvisionalDrivingPrivileges(body: MdlRequestBody) {
+export function getProvisionalDrivingPrivileges(
+  body: DrivingLicenceRequestBody,
+) {
   if (!body.provisionalVehicleCategoryCode) {
     return [];
   }

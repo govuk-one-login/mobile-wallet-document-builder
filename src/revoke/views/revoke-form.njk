@@ -4,7 +4,6 @@
 {% extends "base.njk" %}
 {% set pageTitle = "Please enter the document identifier associated with the credentials you wish to revoke:" %}
 {% block content %}
-    <h1 class="govuk-heading-l govuk-!-margin-top-3">Example GOV.UK Wallet Credential Issuer</h1>
     {% if message %}
         <div class="govuk-notification-banner {% if messageType == 'success' %}govuk-notification-banner--success{% endif %} {% if messageType == 'error' %}govuk-notification-banner--error{% endif %} {% if messageType == 'info' %}govuk-notification-banner{% endif %}"
              role="alert">
@@ -16,7 +15,7 @@
     <form action="/revoke" method="post">
         {% call govukFieldset({
             "legend": {
-            "text": "Please enter the document identifier associated with the credentials you wish to revoke:",
+            "text": pageTitle,
             "classes": "govuk-fieldset__legend--m",
             "isPageHeading": true
             } }) %}

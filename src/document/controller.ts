@@ -5,15 +5,15 @@ import { getPhoto } from "../services/s3Service";
 import { CredentialType } from "../types/CredentialType";
 import { getDocumentsTableName } from "../config/appConfig";
 import { VeteranCardData } from "../veteranCardDocumentBuilder/types/VeteranCardData";
-import { MdlData } from "../mdlDocumentBuilder/types/MdlData";
 import { SimpleDocumentData } from "../simpleDocumentBuilder/types/SimpleDocumentData";
+import { DrivingLicenceData } from "../types/DrivingLicenceData";
 
 export async function documentController(
   req: Request,
   res: Response,
 ): Promise<void> {
   try {
-    const { itemId } = req.params;
+    const itemId = req.params.itemId as string;
     const tableName = getDocumentsTableName();
     const tableItem = await getDocument(tableName, itemId);
 
@@ -40,7 +40,7 @@ export async function documentController(
     }
 
     if (tableItem.vcType === CredentialType.MobileDrivingLicence) {
-      const s3Uri = (data as MdlData).portrait;
+      const s3Uri = (data as DrivingLicenceData).portrait;
 
       const { bucketName, fileName } = getBucketAndFileName(s3Uri);
 
@@ -50,7 +50,7 @@ export async function documentController(
         res.status(404).send();
         return;
       }
-      (data as MdlData).portrait = photo;
+      (data as DrivingLicenceData).portrait = photo;
     }
 
     if (tableItem.vcType === CredentialType.SimpleDocument) {

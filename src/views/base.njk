@@ -1,5 +1,8 @@
 {% extends "govuk/template.njk" %}
 {% from "govuk/components/header/macro.njk" import govukHeader %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+{% set serviceName = "Example GOV.UK Wallet Document Builder" %}
+{% block pageTitle %}{{ pageTitle + " - " if pageTitle }}{{ serviceName }}{% endblock %}
 {% block head %}<link href="/public/stylesheets/application.css" rel="stylesheet">{% endblock %}
 {% block header %}
     {% if authenticated %}
@@ -18,10 +21,11 @@
         homepageUrl: "/select-app"
         }) }}
     {% endif %}
+    {{ govukServiceNavigation({"serviceName": serviceName}) }}
 {% endblock %}
 {% block main %}
     <div class="govuk-width-container {{ containerClasses }}">
-        <main class="govuk-main-wrapper {{ mainClasses }} govuk-!-padding-top-2"
+        <main class="govuk-main-wrapper {{ mainClasses }}"
               id="main-content"
               role="main">
             <div class="govuk-grid-row">

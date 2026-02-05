@@ -20,10 +20,13 @@ import { noCacheMiddleware } from "./middleware/noCache";
 import { proofJwtRouter } from "./proofJwt/router";
 import { credentialViewerRouter } from "./credentialViewer/router";
 import { veteranCardDocumentBuilderRouter } from "./veteranCardDocumentBuilder/router";
-import { mdlDocumentBuilderRouter } from "./mdlDocumentBuilder/router";
 import { revokeRouter } from "./revoke/router";
 import { refreshRouter } from "./refresh/router";
 import { simpleDocumentBuilderRouter } from "./simpleDocumentBuilder/router";
+import { drivingLicenceBuilderRouter } from "./drivingLicenceBuilder/router";
+import { dvsStartRouter } from "./dvsStart/router";
+import { dvsDrivingLicenceBuilderRouter } from "./dvsDrivingLicenceBuilder/router";
+import { dvsJourneySelectorRouter } from "./dvsJourneySelector/router";
 
 const APP_VIEWS = [
   path.resolve("dist/appSelector/views"),
@@ -32,12 +35,14 @@ const APP_VIEWS = [
   path.resolve("dist/documentSelector/views"),
   path.resolve("dist/dbsDocumentBuilder/views"),
   path.resolve("dist/loggedOut/views"),
-  path.resolve("dist/mdlDocumentBuilder/views"),
+  path.resolve("dist/drivingLicenceBuilder/views"),
   path.resolve("dist/simpleDocumentBuilder/views"),
   path.resolve("dist/ninoDocumentBuilder/views"),
   path.resolve("dist/refresh/views"),
   path.resolve("dist/revoke/views"),
   path.resolve("dist/veteranCardDocumentBuilder/views"),
+  path.resolve("dist/dvsStart/views"),
+  path.resolve("dist/dvsJourneySelector/views"),
   path.resolve("dist/views"),
   path.resolve("node_modules/govuk-frontend/dist"),
 ];
@@ -78,6 +83,9 @@ export async function createApp(): Promise<express.Application> {
   app.use(revokeRouter);
   app.use(stsStubAccessTokenRouter);
   app.use(stsStubJwksRouter);
+  app.use(dvsStartRouter);
+  app.use(dvsJourneySelectorRouter);
+  app.use(dvsDrivingLicenceBuilderRouter);
 
   app.use(auth(getOIDCConfig()));
 
@@ -86,7 +94,7 @@ export async function createApp(): Promise<express.Application> {
   app.use(dbsDocumentBuilderRouter);
   app.use(documentSelectorRouter);
   app.use(logoutRouter);
-  app.use(mdlDocumentBuilderRouter);
+  app.use(drivingLicenceBuilderRouter);
   app.use(simpleDocumentBuilderRouter);
   app.use(ninoDocumentBuilderRouter);
   app.use(returnFromAuthRouter);

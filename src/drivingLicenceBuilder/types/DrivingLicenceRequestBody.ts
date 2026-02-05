@@ -1,4 +1,4 @@
-export interface MdlRequestBody {
+export interface DrivingLicenceRequestBody {
   family_name: string;
   given_name: string;
   title: string;
@@ -17,7 +17,7 @@ export interface MdlRequestBody {
   issuing_authority: string;
   issuing_country: string;
   document_number: string;
-  resident_address: string;
+  resident_address: string[];
   resident_postal_code: string;
   resident_city: string;
   fullVehicleCategoryCode: string | string[];
