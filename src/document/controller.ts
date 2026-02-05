@@ -5,15 +5,15 @@ import { getPhoto } from "../services/s3Service";
 import { CredentialType } from "../types/CredentialType";
 import { getDocumentsTableName } from "../config/appConfig";
 import { VeteranCardData } from "../veteranCardDocumentBuilder/types/VeteranCardData";
-import { DrivingLicenceData } from "../drivingLicenceBuilder/types/DrivingLicenceData";
 import { SimpleDocumentData } from "../simpleDocumentBuilder/types/SimpleDocumentData";
+import { DrivingLicenceData } from "../types/DrivingLicenceData";
 
 export async function documentController(
   req: Request,
   res: Response,
 ): Promise<void> {
   try {
-    const { itemId } = req.params;
+    const itemId = req.params.itemId as string;
     const tableName = getDocumentsTableName();
     const tableItem = await getDocument(tableName, itemId);
 

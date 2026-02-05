@@ -42,6 +42,31 @@ describe("databaseService.ts", () => {
     expect(dynamoDbMock).toHaveReceivedCommandWith(PutCommand, putItemCommand);
   });
 
+  it("should save a document with undefined values in nested objects", async () => {
+    const itemWithUndefined = {
+      ...item,
+      data: {
+        ...item.data,
+        codes: undefined,
+        nested: {
+          value: "test",
+          undefinedField: undefined,
+        },
+      },
+    };
+    const dynamoDbMock = mockClient(DynamoDBDocumentClient);
+    dynamoDbMock.on(PutCommand).resolvesOnce({
+      $metadata: {
+        httpStatusCode: 200,
+      },
+    });
+
+    await expect(
+      saveDocument("testTable", itemWithUndefined),
+    ).resolves.not.toThrow();
+    expect(dynamoDbMock).toHaveReceivedCommand(PutCommand);
+  });
+
   it("should throw the error thrown by the DynamoDB client when trying to save a document", async () => {
     const putItemCommand = {
       TableName: "testTable",

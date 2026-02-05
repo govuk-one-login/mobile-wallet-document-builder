@@ -25,6 +25,7 @@ import { refreshRouter } from "./refresh/router";
 import { simpleDocumentBuilderRouter } from "./simpleDocumentBuilder/router";
 import { drivingLicenceBuilderRouter } from "./drivingLicenceBuilder/router";
 import { dvsStartRouter } from "./dvsStart/router";
+import { dvsDrivingLicenceBuilderRouter } from "./dvsDrivingLicenceBuilder/router";
 import { dvsJourneySelectorRouter } from "./dvsJourneySelector/router";
 import { issuerStartRouter } from "./issuerStart/router";
 
