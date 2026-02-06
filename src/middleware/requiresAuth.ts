@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { logger } from "./logger";
-import { getSelfUrl, getCookieExpiryInMilliseconds } from "../config/appConfig";
+import { getCookieExpiryInMilliseconds } from "../config/appConfig";
 import { generators } from "openid-client";
+import { logger } from "./logger";
 
 const VECTORS_OF_TRUST = `["Cl"]`;
 
@@ -11,15 +11,10 @@ export function requiresAuth(
   next: NextFunction,
 ): void {
   const isAuthenticated = req.cookies["id_token"];
-  const selectedApp = req.cookies["app"];
 
-  logger.info(
-    `isAuthenticated = ${isAuthenticated} , selectedApp = ${selectedApp}`,
-  );
+  logger.info(`isAuthenticated: ${isAuthenticated}`);
 
-  if (selectedApp === undefined) {
-    res.redirect(getSelfUrl() + "/select-app");
-  } else if (isAuthenticated === undefined) {
+  if (isAuthenticated === undefined) {
     redirectToLogIn(req, res);
   } else {
     next();

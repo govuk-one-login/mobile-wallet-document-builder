@@ -1,4 +1,5 @@
 import { requiresAuth } from "../middleware/requiresAuth";
+import { requiresAppSelected } from "../middleware/requiresAppSelected";
 import express from "express";
 import {
   simpleDocumentBuilderGetController,
@@ -10,11 +11,13 @@ const router = express.Router();
 router.get(
   "/build-simple-document",
   requiresAuth,
+  requiresAppSelected,
   simpleDocumentBuilderGetController(),
 );
 router.post(
   "/build-simple-document",
   requiresAuth,
+  requiresAppSelected,
   simpleDocumentBuilderPostController(),
 );
 
