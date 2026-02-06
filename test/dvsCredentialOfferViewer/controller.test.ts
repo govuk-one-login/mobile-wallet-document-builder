@@ -24,7 +24,7 @@ const walletAppsConfig: WalletAppsConfig = {
 const config = {
   walletAppsConfig,
   walletApps: ["wallet-test-build", "wallet-test-verifier-integration"],
-  environment: ENVIRONMENTS.BUILD,
+  environment: ENVIRONMENTS.DEV,
 };
 const mockItemId = "mock-item-id";
 const mockQrCode = "mocked-qrcode";
@@ -70,7 +70,7 @@ describe("dvsCredentialOfferViewerController", () => {
       authenticated: expect.anything(),
       universalLink: "customised-url",
       qrCode: "mocked-qrcode",
-      environment: "build",
+      environment: "dev",
     });
   });
 

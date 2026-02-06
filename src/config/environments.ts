@@ -8,7 +8,7 @@ export const ENVIRONMENTS = {
 
 export const dvsRoutesNonProdEnvs = [
   ENVIRONMENTS.LOCAL,
-  // ENVIRONMENTS.DEV,
+  ENVIRONMENTS.DEV,
   ENVIRONMENTS.BUILD,
 ];
 export const dvsRoutesProdEnvs = [ENVIRONMENTS.INT];
