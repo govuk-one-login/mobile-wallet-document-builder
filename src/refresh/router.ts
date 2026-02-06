@@ -5,21 +5,26 @@ import {
   refreshPostController,
 } from "./controller";
 import { validateCredentialTypePath } from "../middleware/validateCredentialTypePath";
+import { guardRouteByEnvironment } from "../middleware/guardRouteByEnvironment";
+import { ROUTES } from "../config/routes";
 
 const router = express.Router();
 
 router.get(
-  "/refresh/:credentialType",
+  ROUTES.REFRESH,
+  guardRouteByEnvironment(),
   validateCredentialTypePath,
   refreshGetController,
 );
 router.post(
-  "/refresh/:credentialType",
+  ROUTES.REFRESH,
+  guardRouteByEnvironment(),
   validateCredentialTypePath,
   refreshPostController,
 );
 router.get(
-  "/refresh/:credentialType/no-update",
+  ROUTES.REFRESH_NO_UPDATE,
+  guardRouteByEnvironment(),
   validateCredentialTypePath,
   refreshNoUpdateGetController,
 );

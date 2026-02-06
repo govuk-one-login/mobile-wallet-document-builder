@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { JOURNEY_OPTIONS } from "./constants/journeyOptions";
 import { JOURNEY_VALUES } from "./constants/journeyValues";
+import { ROUTES } from "../config/routes";
 
 export function dvsJourneySelectorGetController(
   req: Request,
@@ -18,11 +19,11 @@ export function dvsJourneySelectorPostController(
   const { selectedJourney } = req.body;
 
   if (selectedJourney === JOURNEY_VALUES.ISSUE) {
-    return res.redirect(`/dvs/build-driving-licence`);
+    return res.redirect(ROUTES.DVS_BUILD_TEST_DRIVING_LICENCE);
   }
 
   if (selectedJourney === JOURNEY_VALUES.REVOKE) {
-    return res.redirect(`/revoke`);
+    return res.redirect(ROUTES.REVOKE);
   }
 
   return res.render("select-journey-form.njk", {

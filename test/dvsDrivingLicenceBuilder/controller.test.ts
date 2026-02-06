@@ -122,7 +122,7 @@ describe("controller.ts", () => {
       await dvsDrivingLicenceBuilderGetController(req, res);
 
       expect(res.redirect).toHaveBeenCalledWith(
-        "/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL",
+        "/dvs/view-credential-offer/2e0fac05-4b38-480f-9cbd-b046eabe1e46?type=org.iso.18013.5.1.mDL",
       );
     });
   });

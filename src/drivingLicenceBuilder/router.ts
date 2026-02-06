@@ -4,18 +4,22 @@ import {
   drivingLicenceBuilderPostController,
 } from "./controller";
 import { requiresAuth } from "../middleware/requiresAuth";
+import { ROUTES } from "../config/routes";
+import { guardRouteByEnvironment } from "../middleware/guardRouteByEnvironment";
 import { requiresAppSelected } from "../middleware/requiresAppSelected";
 
 const router = express.Router();
 
 router.get(
-  "/build-driving-licence",
+  ROUTES.BUILD_DRIVING_LICENCE_DOCUMENT,
+  guardRouteByEnvironment(),
   requiresAuth,
   requiresAppSelected,
   drivingLicenceBuilderGetController(),
 );
 router.post(
-  "/build-driving-licence",
+  ROUTES.BUILD_DRIVING_LICENCE_DOCUMENT,
+  guardRouteByEnvironment(),
   requiresAuth,
   requiresAppSelected,
   drivingLicenceBuilderPostController(),

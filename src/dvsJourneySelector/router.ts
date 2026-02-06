@@ -3,10 +3,20 @@ import {
   dvsJourneySelectorGetController,
   dvsJourneySelectorPostController,
 } from "./controller";
+import { guardRouteByEnvironment } from "../middleware/guardRouteByEnvironment";
+import { ROUTES } from "../config/routes";
 
 const router = express.Router();
 
-router.get("/dvs/select-journey", dvsJourneySelectorGetController);
-router.post("/dvs/select-journey", dvsJourneySelectorPostController);
+router.get(
+  ROUTES.DVS_SELECT_JOURNEY,
+  guardRouteByEnvironment(),
+  dvsJourneySelectorGetController,
+);
+router.post(
+  ROUTES.DVS_SELECT_JOURNEY,
+  guardRouteByEnvironment(),
+  dvsJourneySelectorPostController,
+);
 
 export { router as dvsJourneySelectorRouter };

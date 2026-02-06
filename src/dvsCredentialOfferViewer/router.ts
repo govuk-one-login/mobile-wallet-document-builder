@@ -1,14 +1,14 @@
 import express from "express";
-import { dvsDrivingLicenceBuilderGetController } from "./controller";
+import { dvsCredentialOfferViewerController } from "./controller";
 import { ROUTES } from "../config/routes";
 import { guardRouteByEnvironment } from "../middleware/guardRouteByEnvironment";
 
 const router = express.Router();
 
 router.get(
-  ROUTES.DVS_BUILD_TEST_DRIVING_LICENCE,
+  ROUTES.DVS_CREDENTIAL_OFFER_VIEWER,
   guardRouteByEnvironment(),
-  dvsDrivingLicenceBuilderGetController,
+  dvsCredentialOfferViewerController(),
 );
 
-export { router as dvsDrivingLicenceBuilderRouter };
+export { router as dvsCredentialOfferViewerRouter };
