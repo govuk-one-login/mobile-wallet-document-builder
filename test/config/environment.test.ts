@@ -46,7 +46,7 @@ describe("environments", () => {
     it("should contain GDS environments", () => {
       expect(gdsRoutesEnvs).toEqual([
         ENVIRONMENTS.LOCAL,
-        ENVIRONMENTS.DEV,
+        // ENVIRONMENTS.DEV,
         ENVIRONMENTS.BUILD,
         ENVIRONMENTS.STAGE,
       ]);

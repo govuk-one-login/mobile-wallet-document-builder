@@ -16,7 +16,7 @@ export const allDvsRoutesEnvs = [...dvsRoutesNonProdEnvs, ...dvsRoutesProdEnvs];
 
 export const gdsRoutesEnvs = [
   ENVIRONMENTS.LOCAL,
-  ENVIRONMENTS.DEV,
+  // ENVIRONMENTS.DEV,
   ENVIRONMENTS.BUILD,
   ENVIRONMENTS.STAGE,
 ];
