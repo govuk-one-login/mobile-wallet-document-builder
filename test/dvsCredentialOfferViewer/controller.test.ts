@@ -66,7 +66,7 @@ describe("dvsCredentialOfferViewerController", () => {
       "",
     );
     expect(QRCode.toDataURL).toHaveBeenCalledWith(mockCustomisedUrl);
-    expect(res.render).toHaveBeenCalledWith("credential-offer.njk", {
+    expect(res.render).toHaveBeenCalledWith("dvs-credential-offer.njk", {
       authenticated: expect.anything(),
       universalLink: "customised-url",
       qrCode: "mocked-qrcode",
@@ -91,7 +91,7 @@ describe("dvsCredentialOfferViewerController", () => {
       "",
     );
     expect(QRCode.toDataURL).toHaveBeenCalledWith(mockCustomisedUrl);
-    expect(res.render).toHaveBeenCalledWith("credential-offer.njk", {
+    expect(res.render).toHaveBeenCalledWith("dvs-credential-offer.njk", {
       authenticated: expect.anything(),
       universalLink: "customised-url",
       qrCode: "mocked-qrcode",
