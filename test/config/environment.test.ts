@@ -21,7 +21,7 @@ describe("environments", () => {
     it("should contain non-prod DVS environments", () => {
       expect(dvsRoutesNonProdEnvs).toEqual([
         ENVIRONMENTS.LOCAL,
-        ENVIRONMENTS.DEV,
+        // ENVIRONMENTS.DEV,
         ENVIRONMENTS.BUILD,
       ]);
     });
@@ -46,7 +46,7 @@ describe("environments", () => {
     it("should contain GDS environments", () => {
       expect(gdsRoutesEnvs).toEqual([
         ENVIRONMENTS.LOCAL,
-        // ENVIRONMENTS.DEV,
+        ENVIRONMENTS.DEV,
         ENVIRONMENTS.BUILD,
         ENVIRONMENTS.STAGE,
       ]);

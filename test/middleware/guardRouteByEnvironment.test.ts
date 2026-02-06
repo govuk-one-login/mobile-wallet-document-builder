@@ -68,7 +68,7 @@ describe("guardRouteByEnvironment", () => {
     ])("%s", (routeName, testPath) => {
       it.each([
         [ENVIRONMENTS.LOCAL],
-        [ENVIRONMENTS.DEV],
+        // [ENVIRONMENTS.DEV],
         [ENVIRONMENTS.BUILD],
         [ENVIRONMENTS.INT],
       ])("should allow in %s environment", (environment) => {
@@ -136,7 +136,7 @@ describe("guardRouteByEnvironment", () => {
     ])("%s", (routeName, testPath) => {
       it.each([
         [ENVIRONMENTS.LOCAL],
-        // [ENVIRONMENTS.DEV],
+        [ENVIRONMENTS.DEV],
         [ENVIRONMENTS.BUILD],
         [ENVIRONMENTS.STAGE],
       ])("should allow in %s environment", (environment) => {
