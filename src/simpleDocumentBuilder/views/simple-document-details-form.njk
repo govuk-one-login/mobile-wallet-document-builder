@@ -8,7 +8,6 @@
 {% set pageTitle = "Enter the Simple Document details" %}
 {% block content %}
     <form action="/build-simple-document" method="post">
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
         {% call govukFieldset({
             legend: {
             text: pageTitle,
@@ -16,6 +15,7 @@
             isPageHeading: true
             }
             }) %}
+            {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
             {{ govukInput({
                 "label": {
                     "text": "Given name",

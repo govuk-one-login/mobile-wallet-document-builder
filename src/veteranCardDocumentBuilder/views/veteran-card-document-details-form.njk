@@ -10,13 +10,13 @@
 {% set pageTitle = "Enter the Veteran Card document details" %}
 {% block content %}
     <form action="/build-veteran-card-document" method="post">
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
         {% call govukFieldset({
             legend: {
             text: pageTitle,
             classes: "govuk-fieldset__legend--m",
             isPageHeading: true
             } }) %}
+            {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
             {{ govukInput({
                 "label": {
                     "text": "Given name",

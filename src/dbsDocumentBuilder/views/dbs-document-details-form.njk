@@ -8,13 +8,13 @@
 {% set pageTitle = "Enter the Clear Basic DBS Check document details" %}
 {% block content %}
     <form action="/build-dbs-document" method="post">
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
         {% call govukFieldset({
             "legend": {
             "text": pageTitle,
             "classes": "govuk-fieldset__legend--m",
             "isPageHeading": true
             } }) %}
+            {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
             {{ govukDateInput({
                 "id": "issuance-date",
                 "namePrefix": "issuance",
