@@ -1,7 +1,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% extends "base.njk" %}
-{% set pageTitle = "Please select an app and environment:" %}
+{% set pageTitle = "What app do you want to create a document in?" %}
 {% block content %}
     <form action="/select-app" method="post">
         <input type="hidden" name="credentialType" value="{{ credentialType }}">
