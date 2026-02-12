@@ -40,7 +40,7 @@ describe("revokeService.ts", () => {
     const response = await revokeCredentials(CRI_URL, DOCUMENT_ID);
 
     expect(response).toEqual({
-      message: "Credential(s) successfully revoked",
+      message: "Digital driving licence successfully revoked",
       messageType: "success",
     });
   });

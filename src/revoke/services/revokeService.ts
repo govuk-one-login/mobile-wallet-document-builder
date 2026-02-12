@@ -20,7 +20,7 @@ export async function revokeCredentials(
   const statusCode = response.status;
   if (statusCode === 202) {
     return {
-      message: "Credential(s) successfully revoked",
+      message: "Digital driving licence successfully revoked",
       messageType: "success",
     };
   }
