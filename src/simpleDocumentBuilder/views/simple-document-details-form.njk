@@ -5,10 +5,9 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
-{% set pageTitle = "Please enter the Simple Document details:" %}
+{% set pageTitle = "Enter the Simple Document details" %}
 {% block content %}
     <form action="/build-simple-document" method="post">
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
         {% call govukFieldset({
             legend: {
             text: pageTitle,
@@ -16,6 +15,7 @@
             isPageHeading: true
             }
             }) %}
+            {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
             {{ govukInput({
                 "label": {
                     "text": "Given name",

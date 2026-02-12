@@ -4,16 +4,16 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% extends "base.njk" %}
-{% set pageTitle = "Please enter the NINO document details:" %}
+{% set pageTitle = "Enter the NINO document details" %}
 {% block content %}
     <form action="/build-nino-document" method="post">
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
         {% call govukFieldset({
             legend: {
             text: pageTitle,
             classes: "govuk-fieldset__legend--m",
             isPageHeading: true
             } }) %}
+            {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
             {{ govukInput({
                 "label": {
                     "text": "Title",

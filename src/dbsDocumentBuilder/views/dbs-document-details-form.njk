@@ -5,23 +5,22 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% extends "base.njk" %}
-{% set pageTitle = "Please enter the Clear Basic DBS Check document details:" %}
+{% set pageTitle = "Enter the Clear Basic DBS Check document details" %}
 {% block content %}
     <form action="/build-dbs-document" method="post">
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
         {% call govukFieldset({
             "legend": {
             "text": pageTitle,
             "classes": "govuk-fieldset__legend--m",
             "isPageHeading": true
             } }) %}
+            {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
             {{ govukDateInput({
                 "id": "issuance-date",
                 "namePrefix": "issuance",
                 "fieldset": {
                     "legend": {
                         "text": "Issuance date",
-                        "isPageHeading": true,
                         "classes": "govuk-fieldset__legend--s"
                     }
                 },
@@ -49,7 +48,6 @@
                 "fieldset": {
                     "legend": {
                         "text": "Expiration date",
-                        "isPageHeading": true,
                         "classes": "govuk-fieldset__legend--s"
                     }
                 },
@@ -101,7 +99,7 @@
                 "fieldset": {
                     "legend": {
                         "text": "Date of birth",
-                        "classes": "govuk-label--s"
+                        "classes": "govuk-fieldset__legend--s"
                     }
                 },
                 "items": [
@@ -125,8 +123,7 @@
             {% call govukFieldset({
                 "legend": {
                 "text": "Full address",
-                "classes": "govuk-fieldset__legend--s",
-                "isPageHeading": false
+                "classes": "govuk-fieldset__legend--s"
                 }
                 }) %}
                 {{ govukInput({

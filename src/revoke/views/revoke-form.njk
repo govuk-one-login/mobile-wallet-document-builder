@@ -2,7 +2,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% extends "base.njk" %}
-{% set pageTitle = "Please enter the document identifier associated with the credentials you wish to revoke:" %}
+{% set pageTitle = "Which digital driving licence would you like to revoke?" %}
 {% block content %}
 {% if message %}
   {% if messageType == 'success' %}
@@ -35,15 +35,11 @@
             "isPageHeading": true
             } }) %}
             {{ govukInput({
-                        "label": {
-                        "text": "Document ID",
-                        "classes": "govuk-label--s"
-                        },
                         "id": "document-id",
                         "name": "documentId",
                         "classes": "govuk-!-width-one-third",
                         "hint": {
-                        "text": "For a digital driving licence the document identifier is the driving licence number"
+                        "text": "Enter the driving licence number associated with the digital driving licence you want to revoke"
                         },
                         "value": value,
                         "spellcheck": false,

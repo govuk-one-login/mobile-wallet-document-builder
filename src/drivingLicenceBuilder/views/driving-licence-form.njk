@@ -5,10 +5,9 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
-{% set pageTitle = "Please enter the Driving Licence document details:" %}
+{% set pageTitle = "Enter the Driving Licence document details" %}
 {% block content %}
     <form action="/build-driving-licence" method="post">
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
         {% call govukFieldset({
             legend: {
             text: pageTitle,
@@ -16,6 +15,7 @@
             isPageHeading: true
             }
             }) %}
+            {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
             {{ govukInput({
                 "label": {
                     "text": "Given name",
@@ -222,8 +222,7 @@
                 "legend": {
                 "text": "Permanent place of
                 residence",
-                "classes": "govuk-fieldset__legend--s",
-                "isPageHeading": false
+                "classes": "govuk-fieldset__legend--s"
                 }
                 }) %}
                 {{ govukInput({
