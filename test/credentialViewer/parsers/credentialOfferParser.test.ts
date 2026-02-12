@@ -3,7 +3,8 @@ import { extractPreAuthCode } from "../../../src/credentialViewer/parsers/creden
 describe("credentialOfferParser", () => {
   describe("extractPreAuthCode", () => {
     it("should extract pre-authorized code from a valid credential offer URI", () => {
-      const preAuthCode = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature";
+      const preAuthCode =
+        "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature";
       const credentialOfferUri = `https://mobile.dev.account.gov.uk/wallet-test/add?credential_offer={"grants":{"urn:ietf:params:oauth:grant-type:pre-authorized_code":{"pre-authorized_code":"${preAuthCode}"}},"credential_issuer":"http://localhost:8080"}`;
 
       const result = extractPreAuthCode(credentialOfferUri);
