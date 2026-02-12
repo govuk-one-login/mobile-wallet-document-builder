@@ -30,6 +30,7 @@
               role="main">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full {{ rowClasses }}">
+                    {% include "errorSummary.njk" %}
                     {% block content %}{% endblock %}
                 </div>
             </div>
