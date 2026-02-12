@@ -11,6 +11,9 @@ import {
   walletAppsConfig as config,
   WalletAppsConfig,
 } from "../config/walletAppsConfig";
+import { formatValidationError, renderBadRequest } from "../utils/validation";
+
+const SELECT_APP_TEMPLATE = "select-app-form.njk";
 
 export interface AppSelectorConfig {
   walletAppsConfig?: WalletAppsConfig;
@@ -26,7 +29,7 @@ export function appSelectorGetController({
     try {
       const credentialType = req.query["credentialType"];
 
-      res.render("select-app-form.njk", {
+      res.render(SELECT_APP_TEMPLATE, {
         apps: buildTemplateInputForApps(walletApps, walletAppsConfig),
         authenticated: isAuthenticated(req),
         credentialType,
@@ -45,19 +48,27 @@ export function appSelectorPostController({
 }: AppSelectorConfig = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {
-      const selectedApp = req.body["select-app-choice"];
+      const selectedApp = req.body["app"];
       const credentialType = req.body["credentialType"];
 
       if (
         !selectedApp ||
         !Object.keys(walletAppsConfig).includes(selectedApp)
       ) {
-        return res.render("select-app-form.njk", {
-          error: true,
-          apps: buildTemplateInputForApps(walletApps, walletAppsConfig),
-          authenticated: isAuthenticated(req),
-          credentialType,
-        });
+        return renderBadRequest(
+          res,
+          req,
+          SELECT_APP_TEMPLATE,
+          formatValidationError(
+            "app",
+            "Select the app you want to create a document in",
+          ),
+          {
+            apps: buildTemplateInputForApps(walletApps, walletAppsConfig),
+            authenticated: isAuthenticated(req),
+            credentialType,
+          },
+        );
       }
 
       res.cookie("app", selectedApp, {
