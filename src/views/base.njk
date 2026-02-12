@@ -36,3 +36,10 @@
         </main>
     </div>
 {% endblock %}
+{% block bodyEnd %}
+    {% block scripts %}{% endblock %}
+    <script type="module">
+      import { initAll } from '/public/scripts/govuk-frontend.min.js'
+      initAll()
+    </script>
+{% endblock %}
