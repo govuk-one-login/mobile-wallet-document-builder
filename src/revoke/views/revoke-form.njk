@@ -4,14 +4,29 @@
 {% extends "base.njk" %}
 {% set pageTitle = "Which digital driving licence would you like to revoke?" %}
 {% block content %}
-    {% if message %}
-        <div class="govuk-notification-banner {% if messageType == 'success' %}govuk-notification-banner--success{% endif %} {% if messageType == 'error' %}govuk-notification-banner--error{% endif %} {% if messageType == 'info' %}govuk-notification-banner{% endif %}"
-             role="alert">
-            <div class="govuk-notification-banner__content">
-                <p class="govuk-notification-banner__heading">{{ message }}</p>
-            </div>
-        </div>
-    {% endif %}
+{% if message %}
+  {% if messageType == 'success' %}
+    <div class="govuk-notification-banner govuk-notification-banner--success"
+         role="alert" aria-labelledby="govuk-notification-banner-title"
+         data-module="govuk-notification-banner">
+      <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
+      </div>
+      <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">{{ message }}</p>
+      </div>
+    </div>
+  {% else %}
+    <div class="govuk-notification-banner {% if messageType == 'error' %}govuk-notification-banner--error{% endif %}"
+         role="region"
+         {% if messageType == 'error' %}aria-label="Error"{% else %}aria-label="Information"{% endif %}
+         data-module="govuk-notification-banner">
+      <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">{{ message }}</p>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
     <form action="/revoke" method="post">
         {% call govukFieldset({
             "legend": {
