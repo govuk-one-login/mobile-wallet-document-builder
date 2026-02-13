@@ -3,6 +3,9 @@ import { logger } from "../middleware/logger";
 import { revokeCredentials } from "./services/revokeService";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import { getCriEndpoint } from "../config/appConfig";
+import { formatValidationError, renderBadRequest } from "../utils/validation";
+
+const REVOKE_TEMPLATE = "revoke-form.njk";
 
 export interface RevokeConfig {
   criUrl?: string;
@@ -21,18 +24,42 @@ export function revokePostController({
     try {
       const documentId = req.body["documentId"];
       if (!validateDocumentId(documentId)) {
-        return res.render("revoke-form.njk", {
-          error:
+        return renderBadRequest(
+          res,
+          req,
+          REVOKE_TEMPLATE,
+          formatValidationError(
+            "documentId",
             "ID must be 5 to 25 characters long and contain only uppercase or lowercase letters and digits",
-          value: documentId,
-        });
+          ),
+        );
       }
 
       const result = await revokeCredentials(criUrl, documentId);
 
-      res.render("revoke-form.njk", {
-        message: result.message,
-        messageType: result.messageType,
+      if (result === 404) {
+        return renderBadRequest(
+          res,
+          req,
+          REVOKE_TEMPLATE,
+          formatValidationError(
+            "documentId",
+            "No digital driving licence found with this licence number",
+          ),
+        );
+      }
+
+      if (result === 202) {
+        return res.render(REVOKE_TEMPLATE, {
+          message: "Digital driving licence successfully revoked",
+          messageType: "success",
+        });
+      }
+
+      res.render(REVOKE_TEMPLATE, {
+        message:
+          "Something went wrong and the credential(s) may not have been revoked",
+        messageType: "error",
       });
     } catch (error) {
       logger.error(
