@@ -58,7 +58,18 @@ describe("dvsJourneySelectorPostController", () => {
     dvsJourneySelectorPostController(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-journey-form.njk", {
-      error: true,
+      errorList: [
+        {
+          href: "#journey",
+          text: "Select if you want to issue or revoke a test digital driving licence",
+        },
+      ],
+      errors: {
+        journey: {
+          href: "#journey",
+          text: "Select if you want to issue or revoke a test digital driving licence",
+        },
+      },
       journeyOptions: [
         {
           text: "Issue a new test digital driving licence",
@@ -69,6 +80,7 @@ describe("dvsJourneySelectorPostController", () => {
           value: "revoke",
         },
       ],
+      selectedJourney: "unknownValue",
     });
     expect(res.redirect).not.toHaveBeenCalled();
   });
