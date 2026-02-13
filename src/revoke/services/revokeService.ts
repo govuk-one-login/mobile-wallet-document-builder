@@ -2,7 +2,7 @@ import axios from "axios";
 
 const REVOKE_PATH = "/revoke";
 
-export async function revokeCredentials(
+export async function revoke(
   criUrl: string,
   documentId: string,
 ): Promise<number> {

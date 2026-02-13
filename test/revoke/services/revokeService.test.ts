@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { revokeCredentials } from "../../../src/revoke/services/revokeService";
+import { revoke } from "../../../src/revoke/services/revokeService";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -20,7 +20,7 @@ describe("revokeService.ts", () => {
     } as AxiosResponse;
     mockedAxios.post.mockResolvedValue(mockCriResponse);
 
-    await revokeCredentials(CRI_URL, DOCUMENT_ID);
+    await revoke(CRI_URL, DOCUMENT_ID);
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
       expectedRevokeUrl,
@@ -37,7 +37,7 @@ describe("revokeService.ts", () => {
     } as AxiosResponse;
     mockedAxios.post.mockResolvedValue(mockCriResponse);
 
-    const response = await revokeCredentials(CRI_URL, DOCUMENT_ID);
+    const response = await revoke(CRI_URL, DOCUMENT_ID);
 
     expect(response).toEqual(202);
   });
@@ -45,8 +45,6 @@ describe("revokeService.ts", () => {
   it("should propagate error thrown by axios", async () => {
     mockedAxios.post.mockRejectedValue(new Error("Network error"));
 
-    await expect(revokeCredentials(CRI_URL, DOCUMENT_ID)).rejects.toThrow(
-      "Network error",
-    );
+    await expect(revoke(CRI_URL, DOCUMENT_ID)).rejects.toThrow("Network error");
   });
 });

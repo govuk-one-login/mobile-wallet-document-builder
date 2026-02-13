@@ -4,10 +4,10 @@ import {
   revokePostController,
 } from "../../src/revoke/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
-import { revokeCredentials } from "../../src/revoke/services/revokeService";
+import { revoke } from "../../src/revoke/services/revokeService";
 
 jest.mock("../../src/revoke/services/revokeService", () => ({
-  revokeCredentials: jest.fn(),
+  revoke: jest.fn(),
 }));
 
 const CRI_URL = "https://test-cri.example.com";
@@ -61,7 +61,7 @@ describe("revoke", () => {
 
         await revokePostController(config)(req, res);
 
-        expect(revokeCredentials).not.toHaveBeenCalled();
+        expect(revoke).not.toHaveBeenCalled();
         expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
           documentId: invalidId,
           errorList: [
@@ -81,9 +81,7 @@ describe("revoke", () => {
     );
 
     it("should render 500 error page if an unexpected error occurs", async () => {
-      (revokeCredentials as jest.Mock).mockRejectedValue(
-        new Error("Unexpected error"),
-      );
+      (revoke as jest.Mock).mockRejectedValue(new Error("Unexpected error"));
 
       await revokePostController(config)(req, res);
 
@@ -92,11 +90,11 @@ describe("revoke", () => {
 
     it("should render success message when CRI returns 202 (revocation succeeded)", async () => {
       const mockResult = 202;
-      (revokeCredentials as jest.Mock).mockResolvedValue(mockResult);
+      (revoke as jest.Mock).mockResolvedValue(mockResult);
 
       await revokePostController(config)(req, res);
 
-      expect(revokeCredentials).toHaveBeenCalledWith(CRI_URL, DOCUMENT_ID);
+      expect(revoke).toHaveBeenCalledWith(CRI_URL, DOCUMENT_ID);
       expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
         message: "Digital driving licence successfully revoked",
         messageType: "success",
@@ -105,7 +103,7 @@ describe("revoke", () => {
 
     it("should render an error when CRI returns 404 (no credential found for the provided driving licence)", async () => {
       const mockResult = 404;
-      (revokeCredentials as jest.Mock).mockResolvedValue(mockResult);
+      (revoke as jest.Mock).mockResolvedValue(mockResult);
 
       await revokePostController(config)(req, res);
 
@@ -128,11 +126,11 @@ describe("revoke", () => {
 
     it("should render error message when CRI returns any other status code", async () => {
       const mockResult = 500;
-      (revokeCredentials as jest.Mock).mockResolvedValue(mockResult);
+      (revoke as jest.Mock).mockResolvedValue(mockResult);
 
       await revokePostController(config)(req, res);
 
-      expect(revokeCredentials).toHaveBeenCalledWith(CRI_URL, DOCUMENT_ID);
+      expect(revoke).toHaveBeenCalledWith(CRI_URL, DOCUMENT_ID);
       expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
         message:
           "Something went wrong and the credential(s) may not have been revoked",

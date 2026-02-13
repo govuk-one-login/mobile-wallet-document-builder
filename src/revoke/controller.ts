@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
-import { revokeCredentials } from "./services/revokeService";
+import { revoke } from "./services/revokeService";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import { getCriEndpoint } from "../config/appConfig";
 import { formatValidationError, renderBadRequest } from "../utils/validation";
@@ -11,12 +11,23 @@ export interface RevokeConfig {
   criUrl?: string;
 }
 
+/**
+ * Controller to handle GET requests for the revoke document page.
+ *
+ * @returns An Express route function that renders the revoke form.
+ */
 export function revokeGetController(): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     res.render("revoke-form.njk");
   };
 }
 
+/**
+ * Controller to handle POST requests for revoking a document.
+ *
+ * @param config - Configuration object containing the CRI URL.
+ * @returns An Express route function that processes the revocation request.
+ */
 export function revokePostController({
   criUrl = getCriEndpoint(),
 }: RevokeConfig = {}): ExpressRouteFunction {
@@ -35,7 +46,7 @@ export function revokePostController({
         );
       }
 
-      const result = await revokeCredentials(criUrl, documentId);
+      const result = await revoke(criUrl, documentId);
 
       if (result === 404) {
         return renderBadRequest(
