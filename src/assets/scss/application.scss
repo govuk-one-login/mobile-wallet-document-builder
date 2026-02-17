@@ -1,5 +1,4 @@
-@use "node_modules/govuk-frontend/dist/govuk" as *;
-@forward "../../../node_modules/govuk-frontend/dist/govuk/all";
+@import "../../../node_modules/govuk-frontend/dist/govuk/index";
 
 .govuk-header__navigation-list {
   display: flex;
