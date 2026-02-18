@@ -672,7 +672,7 @@ Resources:
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
       LoggingConfiguration:
-        DestinationBucketName: !ImportValue devplatform-s3-access-logs-bucket-S3AccessLogsBucketName
+        DestinationBucketName: !ImportValue s3-access-logs-bucket-S3AccessLogsBucketName
         TargetObjectKeyFormat:
           PartitionedPrefix:
             PartitionDateSource: EventTime
