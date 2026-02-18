@@ -13,7 +13,7 @@ export interface RevokeConfig {
 
 export function revokeGetController(): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
-    res.render("revoke-form.njk");
+    res.render(REVOKE_TEMPLATE);
   };
 }
 
