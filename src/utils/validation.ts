@@ -1,4 +1,4 @@
-import { Response, Request } from "express";
+import { Request, Response } from "express";
 
 export interface Error {
   text: string;
@@ -20,10 +20,7 @@ export function formatValidationError(
 export function generateErrorList(errors: Record<string, Error>) {
   if (!errors) return;
   const errorValues = Object.values(errors);
-  const uniqueErrorList = [
-    ...new Map(errorValues.map((error) => [error.text, error])).values(),
-  ];
-  return uniqueErrorList;
+  return [...new Map(errorValues.map((error) => [error.text, error])).values()];
 }
 
 export function renderBadRequest(
