@@ -36,7 +36,7 @@
     "copyfiles": "2.4.1",
     "ecdsa-sig-formatter": "^1.0.11",
     "express": "^5.2.1",
-    "govuk-frontend": "5.14.0",
+    "govuk-frontend": "^6.0.0",
     "jjsontree.js": "^4.7.1",
     "jose": "^5.10.0",
     "nunjucks": "3.2.4",
