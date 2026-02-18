@@ -22,10 +22,6 @@ describe("formatValidationError", () => {
 });
 
 describe("generateErrorList", () => {
-  it("should return undefined if errors is undefined", () => {
-    expect(generateErrorList(undefined as any)).toBeUndefined();
-  });
-
   it("should return a list of unique error values", () => {
     const errors = {
       field1: { text: "Error message 1", href: "#field1" },

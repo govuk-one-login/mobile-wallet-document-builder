@@ -18,7 +18,6 @@ export function formatValidationError(
 }
 
 export function generateErrorList(errors: Record<string, Error>) {
-  if (!errors) return;
   const errorValues = Object.values(errors);
   return [...new Map(errorValues.map((error) => [error.text, error])).values()];
 }
