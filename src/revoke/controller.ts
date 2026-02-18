@@ -11,23 +11,12 @@ export interface RevokeConfig {
   criUrl?: string;
 }
 
-/**
- * Controller to handle GET requests for the revoke document page.
- *
- * @returns An Express route function that renders the revoke form.
- */
 export function revokeGetController(): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     res.render("revoke-form.njk");
   };
 }
 
-/**
- * Controller to handle POST requests for revoking a document.
- *
- * @param config - Configuration object containing the CRI URL.
- * @returns An Express route function that processes the revocation request.
- */
 export function revokePostController({
   criUrl = getCriEndpoint(),
 }: RevokeConfig = {}): ExpressRouteFunction {
