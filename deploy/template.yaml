@@ -251,7 +251,7 @@ Resources:
       ApiId: !Ref WalletFEApiGwHttpEndpoint
       IntegrationType: HTTP_PROXY
       ConnectionId:
-        Fn::ImportValue: !Sub "${VpcStackName}-VpcLinkId"
+        Fn::ImportValue: !Sub "${VpcStackName}-ApiGatewayVpcLinkId"
       ConnectionType: VPC_LINK
       IntegrationMethod: ANY
       IntegrationUri: !Ref WalletFELoadBalancerListener
