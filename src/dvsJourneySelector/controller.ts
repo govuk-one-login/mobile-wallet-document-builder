@@ -19,13 +19,13 @@ export function dvsJourneySelectorPostController(
   req: Request,
   res: Response,
 ): void {
-  const { selectedJourney } = req.body;
+  const { journey } = req.body;
 
-  if (selectedJourney === JOURNEY_VALUES.ISSUE) {
+  if (journey === JOURNEY_VALUES.ISSUE) {
     return res.redirect(ROUTES.DVS_BUILD_TEST_DRIVING_LICENCE);
   }
 
-  if (selectedJourney === JOURNEY_VALUES.REVOKE) {
+  if (journey === JOURNEY_VALUES.REVOKE) {
     return res.redirect(ROUTES.REVOKE);
   }
 

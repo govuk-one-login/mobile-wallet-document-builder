@@ -29,7 +29,7 @@ describe("dvsJourneySelectorGetController", () => {
 describe("dvsJourneySelectorPostController", () => {
   it("should redirect to /build-dvs-test-document when the selected journey is 'issue'", () => {
     const req = getMockReq({
-      body: { selectedJourney: "issue" },
+      body: { journey: "issue" },
     });
     const { res } = getMockRes();
 
@@ -40,7 +40,7 @@ describe("dvsJourneySelectorPostController", () => {
 
   it("should redirect to /revoke when the selected journey is 'revoke'", () => {
     const req = getMockReq({
-      body: { selectedJourney: "revoke" },
+      body: { journey: "revoke" },
     });
     const { res } = getMockRes();
 
@@ -51,7 +51,7 @@ describe("dvsJourneySelectorPostController", () => {
 
   it("should re-render the journey selector form with a validation error when the selected journey is invalid", () => {
     const req = getMockReq({
-      body: { selectedJourney: "unknownValue" },
+      body: { journey: "unknownValue" },
     });
     const { res } = getMockRes();
 
@@ -80,7 +80,7 @@ describe("dvsJourneySelectorPostController", () => {
           value: "revoke",
         },
       ],
-      selectedJourney: "unknownValue",
+      journey: "unknownValue",
     });
     expect(res.redirect).not.toHaveBeenCalled();
   });
