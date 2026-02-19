@@ -362,16 +362,12 @@ Resources:
         - Key: Environment
           Value: !Sub "${Environment}"
 
-  #  The ECR container for overriding in development, if you want to target a specific version/tag
-  #  for development use, change the value of the 'Image' property value to:
-  #  "671524980203.dkr.ecr.eu-west-2.amazonaws.com/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry:<image_tag>"
-  #  To deploy the latest version of the image, use the git sha from the most recent commit, as the <image tag>, found using ‘git log’
-
   WalletFEECSServiceTaskDefinition:
     Type: 'AWS::ECS::TaskDefinition'
     Properties:
       ContainerDefinitions:
         - Essential: true
+          # Image is replaced by ./build-and-deploy-image.sh (manual dev deployment) or GitHub Actions (pipeline deployments).
           Image: CONTAINER-IMAGE-PLACEHOLDER
           Name: app
           Environment:
