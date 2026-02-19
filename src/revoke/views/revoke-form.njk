@@ -4,50 +4,64 @@
 {% extends "base.njk" %}
 {% set pageTitle = "Which digital driving licence would you like to revoke?" %}
 {% block content %}
-{% if message %}
-  {% if messageType == 'success' %}
-    <div class="govuk-notification-banner govuk-notification-banner--success"
-         role="alert" aria-labelledby="govuk-notification-banner-title"
-         data-module="govuk-notification-banner">
-      <div class="govuk-notification-banner__header">
-        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
+  {% if message %}
+    {% if messageType == 'success' %}
+      <div
+        class="govuk-notification-banner govuk-notification-banner--success"
+        role="alert"
+        aria-labelledby="govuk-notification-banner-title"
+        data-module="govuk-notification-banner"
+      >
+        <div class="govuk-notification-banner__header">
+          <h2
+            class="govuk-notification-banner__title"
+            id="govuk-notification-banner-title"
+          >
+            Success
+          </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">{{ message }}</p>
+        </div>
       </div>
-      <div class="govuk-notification-banner__content">
-        <p class="govuk-notification-banner__heading">{{ message }}</p>
+    {% else %}
+      <div
+        class="govuk-notification-banner {% if messageType == 'error' %}govuk-notification-banner--error{% endif %}"
+        role="region"
+        {% if messageType == 'error' %}aria-label="Error"{% else %}aria-label="Information"{% endif %}
+        data-module="govuk-notification-banner"
+      >
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">{{ message }}</p>
+        </div>
       </div>
-    </div>
-  {% else %}
-    <div class="govuk-notification-banner {% if messageType == 'error' %}govuk-notification-banner--error{% endif %}"
-         role="region"
-         {% if messageType == 'error' %}aria-label="Error"{% else %}aria-label="Information"{% endif %}
-         data-module="govuk-notification-banner">
-      <div class="govuk-notification-banner__content">
-        <p class="govuk-notification-banner__heading">{{ message }}</p>
-      </div>
-    </div>
+    {% endif %}
   {% endif %}
-{% endif %}
-    <form action="/revoke" method="post">
-        {% call govukFieldset({
-            "legend": {
-            "text": pageTitle,
-            "classes": "govuk-fieldset__legend--m",
-            "isPageHeading": true
-            } }) %}
-            {{ govukInput({
-                        "id": "document-id",
-                        "name": "documentId",
-                        "classes": "govuk-!-width-one-third",
-                        "hint": {
-                        "text": "Enter the driving licence number associated with the digital driving licence you want to revoke"
-                        },
-                        "value": value,
-                        "spellcheck": false,
-                        "errorMessage": {
-                        "text": error
-                        } if error
-                        }) }}
-        {% endcall %}
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
-    </form>
+  <form action="/revoke" method="post">
+    {%
+      call govukFieldset({
+      "legend": {
+      "text": pageTitle,
+      "classes": "govuk-fieldset__legend--m",
+      "isPageHeading": true
+      } })
+    %}
+      {{
+        govukInput({
+        "id": "document-id",
+        "name": "documentId",
+        "classes": "govuk-!-width-one-third",
+        "hint": {
+        "text": "Enter the driving licence number associated with the digital driving licence you want to revoke"
+        },
+        "value": value,
+        "spellcheck": false,
+        "errorMessage": {
+        "text": error
+        } if error
+        })
+      }}
+    {% endcall %}
+    {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+  </form>
 {% endblock %}

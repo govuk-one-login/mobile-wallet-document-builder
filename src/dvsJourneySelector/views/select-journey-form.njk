@@ -3,22 +3,24 @@
 {% extends "base.njk" %}
 {% set pageTitle = "What do you want to do with the test digital driving licence?" %}
 {% block content %}
-    <form action="/dvs/select-journey" method="post">
-        {{ govukRadios({
-                classes: "govuk-radios--medium",
-                "name": "selectedJourney",
-                fieldset: {
-                legend: {
-                text: pageTitle,
-                classes: "govuk-fieldset__legend--m",
-                isPageHeading: true
-                }
-                },
-                items: journeyOptions,
-                errorMessage: {
-                text: "You must choose an option"
-                } if error
-                }) }}
-        {{ govukButton({"text": "Continue", "preventDoubleClick": true}) }}
-    </form>
+  <form action="/dvs/select-journey" method="post">
+    {{
+      govukRadios({
+      classes: "govuk-radios--medium",
+      "name": "selectedJourney",
+      fieldset: {
+      legend: {
+      text: pageTitle,
+      classes: "govuk-fieldset__legend--m",
+      isPageHeading: true
+      }
+      },
+      items: journeyOptions,
+      errorMessage: {
+      text: "You must choose an option"
+      } if error
+      })
+    }}
+    {{ govukButton({"text": "Continue", "preventDoubleClick": true}) }}
+  </form>
 {% endblock %}

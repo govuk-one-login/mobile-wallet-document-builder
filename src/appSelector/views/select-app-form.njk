@@ -3,23 +3,25 @@
 {% extends "base.njk" %}
 {% set pageTitle = "What app do you want to create a document in?" %}
 {% block content %}
-    <form action="/select-app" method="post">
-        <input type="hidden" name="credentialType" value="{{ credentialType }}">
-        {{ govukRadios({
-                "id": "select-app-choice",
-                "name": "select-app-choice",
-                fieldset: {
-                legend: {
-                text: pageTitle,
-                classes: "govuk-fieldset__legend--m",
-                isPageHeading: true
-                }
-                },
-                items: apps,
-                errorMessage: {
-                text: "You must choose an option"
-                } if error
-                }) }}
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
-    </form>
+  <form action="/select-app" method="post">
+    <input type="hidden" name="credentialType" value="{{ credentialType }}" />
+    {{
+      govukRadios({
+      "id": "select-app-choice",
+      "name": "select-app-choice",
+      fieldset: {
+      legend: {
+      text: pageTitle,
+      classes: "govuk-fieldset__legend--m",
+      isPageHeading: true
+      }
+      },
+      items: apps,
+      errorMessage: {
+      text: "You must choose an option"
+      } if error
+      })
+    }}
+    {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+  </form>
 {% endblock %}

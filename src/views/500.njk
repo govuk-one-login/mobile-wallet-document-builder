@@ -1,14 +1,14 @@
 {% extends "base.njk" %}
 {% set pageTitle = "Something went wrong" %}
 {% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
-            {% if errorMessage %}
-                <p class="govuk-body">{{ errorMessage }}</p>
-            {% else %}
-                <p class="govuk-body">Please try again later.</p>
-            {% endif %}
-        </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+      {% if errorMessage %}
+        <p class="govuk-body">{{ errorMessage }}</p>
+      {% else %}
+        <p class="govuk-body">Please try again later.</p>
+      {% endif %}
     </div>
+  </div>
 {% endblock %}

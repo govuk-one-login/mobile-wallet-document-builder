@@ -3,22 +3,24 @@
 {% extends "base.njk" %}
 {% set pageTitle = "What document do you want to create?" %}
 {% block content %}
-    <form action="/select-document" method="post">
-        {{ govukRadios({
-                "id": "select-document-choice",
-                "name": "select-document-choice",
-                fieldset: {
-                legend: {
-                text: pageTitle,
-                classes: "govuk-fieldset__legend--m",
-                isPageHeading: true
-                }
-                },
-                items: documents,
-                errorMessage: {
-                text: "You must choose an option"
-                } if error
-                }) }}
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
-    </form>
+  <form action="/select-document" method="post">
+    {{
+      govukRadios({
+      "id": "select-document-choice",
+      "name": "select-document-choice",
+      fieldset: {
+      legend: {
+      text: pageTitle,
+      classes: "govuk-fieldset__legend--m",
+      isPageHeading: true
+      }
+      },
+      items: documents,
+      errorMessage: {
+      text: "You must choose an option"
+      } if error
+      })
+    }}
+    {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+  </form>
 {% endblock %}

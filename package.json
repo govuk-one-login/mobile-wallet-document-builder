@@ -66,6 +66,7 @@
     "jest-junit": "^16.0.0",
     "nodemon": "3.1.11",
     "prettier": "^3.8.1",
+    "prettier-plugin-jinja-template": "^2.1.0",
     "sass": "^1.97.3",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
