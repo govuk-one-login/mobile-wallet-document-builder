@@ -13,11 +13,12 @@ Parameters:
       - "dev"
       - "build"
       - "staging"
+      - "integration"
   VpcStackName:
     Description: >
       The name of the stack that defines the VPC in which this container will run.
     Type: String
-    Default: platform-vpc
+    Default: vpc
   PermissionsBoundary:
     Description: "The ARN of the permissions boundary to apply when creating IAM roles"
     Type: String
@@ -29,11 +30,12 @@ Parameters:
     Default: 8000
 
 Conditions:
-  StackNameIsWalletDocBuilderFE: !Equals [!Ref "AWS::StackName", wallet-doc-builder-fe]
+  StackNameIsWalletDocBuilderFE: !Equals [!Ref "AWS::StackName", wallet-doc-builder]
 
-  IsBuildOrStaging: !Or
+  IsBuildOrStagingOrInt: !Or
     - !Equals [!Ref Environment, build]
     - !Equals [!Ref Environment, staging]
+    - !Equals [!Ref Environment, integration]
 
   UsePermissionsBoundary:
     Fn::Not:
@@ -44,37 +46,32 @@ Conditions:
 Mappings:
   EnvironmentVariables:
     dev:
-      CredentialIssuerUrl: "example-credential-issuer.mobile.dev.account.gov.uk"
-      SelfUrl: "stub-credential-issuer.mobile.dev.account.gov.uk"
-      FrontImageRepository: arn:aws:ecr:eu-west-2:671524980203:repository/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry
+      CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.dev.account.gov.uk"
+      SelfUrl: "stub-credential-issuer.wallet-onboarding.dev.account.gov.uk"
       OidcIssuerEndpoint: "https://auth-stub.mobile.dev.account.gov.uk"
       WalletApps: "govuk-build,wallet-test-dev,wallet-test-build"
     build:
-      CredentialIssuerUrl: "example-credential-issuer.mobile.build.account.gov.uk"
-      SelfUrl: "stub-credential-issuer.mobile.build.account.gov.uk"
-      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
+      CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.build.account.gov.uk"
+      SelfUrl: "stub-credential-issuer.wallet-onboarding.build.account.gov.uk"
       OidcIssuerEndpoint: "https://auth-stub.mobile.build.account.gov.uk"
       WalletApps: "govuk-build,wallet-test-dev,wallet-test-build"
     staging:
-      CredentialIssuerUrl: "example-credential-issuer.mobile.staging.account.gov.uk"
-      SelfUrl: "stub-credential-issuer.mobile.staging.account.gov.uk"
-      FrontImageRepository: arn:aws:ecr:eu-west-2:497065468681:repository/wallet-doc-builder-ecr-containerrepository-zxs2g0lfhfsf
+      CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.staging.account.gov.uk"
+      SelfUrl: "stub-credential-issuer.wallet-onboarding.staging.account.gov.uk"
       OidcIssuerEndpoint: "https://oidc.staging.account.gov.uk"
       WalletApps: "govuk-staging,wallet-test-staging"
-  # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
-  # PlatformConfiguration:
-  #   dev:
-  #     CSLSEGRESS: "This should not ever be set; the dev account is not configured to egress logs."
-  #   build:
-  #     CSLSEGRESS: arn:aws:logs:eu-west-2:885513274347:destination:csls_cw_logs_destination_prodpython
+    integration:
+      CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.integration.account.gov.uk"
+      SelfUrl: "stub-credential-issuer.wallet-onboarding.inrtegration.account.gov.uk"
+      OidcIssuerEndpoint: "" # Not required as the DVS flow doesn't require authentication
+      WalletApps: "wallet-test-integration"
   ElasticLoadBalancerAccountIds:
     eu-west-2:
       AccountId: 652711504416
 
 Resources:
 
-  # SECURITY GROUPS
-
+  # Security groups
   WalletFELoadBalancerSG:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -124,7 +121,6 @@ Resources:
       SourceSecurityGroupId: !GetAtt WalletFELoadBalancerSG.GroupId
 
   # ACCESS LOGS
-
   WalletFEAPIGWAccessLogsGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -179,8 +175,7 @@ Resources:
               Bool:
                 aws:SecureTransport": false
 
-  # LOADBALANCER RESOURCES
-
+  # LOAD BALANCER
   WalletFELoadBalancer:
     Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
     Properties:
@@ -228,8 +223,7 @@ Resources:
       Port: 80
       Protocol: HTTP
 
-  # APIGW RESOURCES
-
+  # API GATEWAY
   WalletFEApiGwHttpEndpoint:
     Type: 'AWS::ApiGatewayV2::Api'
     Properties:
@@ -309,8 +303,7 @@ Resources:
       ApiId: !Ref WalletFEApiGwHttpEndpoint
       Stage: !Ref WalletFEAPIStageDefault
 
-  # ECS RESOURCES
-
+  # ECS
   WalletFECluster:
     Type: 'AWS::ECS::Cluster'
     Properties:
@@ -364,16 +357,12 @@ Resources:
         - Key: Environment
           Value: !Sub "${Environment}"
 
-  #  The ECR container for overriding in development, if you want to target a specific version/tag
-  #  for development use, change the value of the 'Image' property value to:
-  #  "671524980203.dkr.ecr.eu-west-2.amazonaws.com/wallet-doc-builder-ecr-containerrepository-lhfhbk5ayzry:<image_tag>"
-  #  To deploy the latest version of the image, use the git sha from the most recent commit, as the <image tag>, found using ‘git log’
-
   WalletFEECSServiceTaskDefinition:
     Type: 'AWS::ECS::TaskDefinition'
     Properties:
       ContainerDefinitions:
         - Essential: true
+          # Image is replaced by ./build-and-deploy-image.sh (manual dev deployment) or GitHub Actions (pipeline deployments).
           Image: CONTAINER-IMAGE-PLACEHOLDER
           Name: app
           Environment:
@@ -449,17 +438,10 @@ Resources:
               Service: ecs-tasks.amazonaws.com
         Version: 2012-10-17
       Policies:
-        - PolicyName: PullWalletFrontImage
+        - PolicyName: ECSTaskExecutionPermissions
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
-              - Effect: Allow
-                Action:
-                  - "ecr:BatchGetImage"
-                  - "ecr:GetDownloadUrlForLayer"
-                  - "ecr:BatchCheckLayerAvailability"
-                Resource:
-                  - !FindInMap [EnvironmentVariables, !Ref Environment, FrontImageRepository]
               - Effect: Allow
                 Action:
                   - "ecr:GetAuthorizationToken"
@@ -523,7 +505,7 @@ Resources:
         - !Ref PermissionsBoundary
         - !Ref AWS::NoValue
 
-  # KMS RESOURCES
+  # KMS
   StsStubSigningKey:
     Type: AWS::KMS::Key
     Properties:
@@ -613,8 +595,7 @@ Resources:
       AliasName: !Sub "alias/${AWS::StackName}/${Environment}/DocumentDatabaseKmsKey"
       TargetKeyId: !Ref DocumentDatabaseKmsKey
 
-  # DYNAMODB RESOURCES
-
+  # DYNAMODB
   DocumentDatabase:
     Type: AWS::DynamoDB::Table
     DeletionPolicy: Delete
@@ -647,7 +628,7 @@ Resources:
         - Key: Environment
           Value: !Ref "Environment"
 
-  # S3 RESOURCES
+  # S3
   PhotosBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -664,7 +645,7 @@ Resources:
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
       LoggingConfiguration:
-        DestinationBucketName: !ImportValue devplatform-s3-access-logs-bucket-S3AccessLogsBucketName
+        DestinationBucketName: !ImportValue s3-access-logs-bucket-S3AccessLogsBucketName
         TargetObjectKeyFormat:
           PartitionedPrefix:
             PartitionDateSource: EventTime
@@ -698,9 +679,8 @@ Resources:
                 "aws:SecureTransport": false
 
   # ALARMS
-
   DocBuilderLowContainerTaskCountAlarm:
-    Condition: IsBuildOrStaging
+    Condition: IsBuildOrStagingOrInt
     DependsOn:
       - WalletFECluster
       - WalletFEECSService
@@ -709,10 +689,6 @@ Resources:
       AlarmName: !Sub "${AWS::StackName}-DocBuilderLowContainerTaskCountAlarm"
       AlarmDescription: Trigger a warning if the running container task count drops below 1
       ActionsEnabled: false
-      # OKActions: - commented until we create sns topics for wallet alarms
-      #   - !ImportValue platform-alarm-topic-critical-alert
-      # AlarmActions:
-      #   - !ImportValue platform-alarm-topic-critical-alert
       InsufficientDataActions: []
       Dimensions: []
       EvaluationPeriods: 1
@@ -736,16 +712,12 @@ Resources:
             Stat: Minimum
 
   BE5XXErrorAlarm:
-    Condition: IsBuildOrStaging
+    Condition: IsBuildOrStagingOrInt
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmName: !Sub "${AWS::StackName}-BE5XXErrorAlarm"
       AlarmDescription: Trigger the alarm if errorThreshold exceeds 50% with a minimum of 5 invocations in the last 30 minutes
       ActionsEnabled: false
-      # OKActions:
-      #   - !ImportValue platform-alarm-topic-slack-warning-alert
-      # AlarmActions:
-      #   - !ImportValue platform-alarm-topic-slack-warning-alert
       InsufficientDataActions: []
       Dimensions: []
       EvaluationPeriods: 1

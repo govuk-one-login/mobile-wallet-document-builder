@@ -109,7 +109,7 @@ Go to [http://localhost:8001/select-app](http://localhost:8001/select-app).
 
 ## Deploy application to `dev`
 
-> You must be logged into the Mobile Platform `dev` AWS account.
+> You must be logged into the Onboarding Products `dev` AWS account.
 
 You can deploy the application to the `dev` AWS account by following these steps:
 
@@ -125,10 +125,10 @@ The usual non-production deployment client ID is `TEST_CLIENT_ID`.
 ### Build and push the docker image
 
 Run the script to build and push the Document Builder docker image, specifying an image tag and the name of your AWS profile
-for the Mobile Platform `dev` AWS account (which can be found in your `~/.aws/credentials` file):
+for the Onboarding Products `dev` AWS account (which can be found in your `~/.aws/credentials` file):
 
 ```shell
-./build-and-deploy-image.sh <your-chosen-tag> <your-mobile-platform-dev-profile> 
+./build-and-deploy-image.sh <your-chosen-tag> <your-onboarding-products-dev-profile> 
 ```
 
 This will build the docker image, log into ECR, push the image to ECR, and update the `template.yaml` to specify this
@@ -143,8 +143,8 @@ and [Auth Stub](https://github.com/govuk-one-login/mobile-platform-back/tree/mai
  Mappings:
    EnvironmentVariables:
      dev:
-       CredentialIssuerUrl: "<your-cri-stack-name->example-credential-issuer.mobile.dev.account.gov.uk"
-       OidcIssuerEndpoint: "https://<your-auth-stub-stack-name->.mobile.dev.account.gov.uk"
+       CredentialIssuerUrl: "<your-cri-stack-name->example-credential-issuer.wallet-onboarding.dev.account.gov.uk"
+       OidcIssuerEndpoint: "https://<your-auth-stub-stack-name->.wallet-onboarding.dev.account.gov.uk"
  ```
 
 ### Build and deploy the stack
