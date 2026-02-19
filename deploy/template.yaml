@@ -71,8 +71,7 @@ Mappings:
 
 Resources:
 
-  # SECURITY GROUPS
-
+  # Security groups
   WalletFELoadBalancerSG:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -122,7 +121,6 @@ Resources:
       SourceSecurityGroupId: !GetAtt WalletFELoadBalancerSG.GroupId
 
   # ACCESS LOGS
-
   WalletFEAPIGWAccessLogsGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -177,8 +175,7 @@ Resources:
               Bool:
                 aws:SecureTransport": false
 
-  # LOADBALANCER RESOURCES
-
+  # LOAD BALANCER
   WalletFELoadBalancer:
     Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
     Properties:
@@ -226,8 +223,7 @@ Resources:
       Port: 80
       Protocol: HTTP
 
-  # APIGW RESOURCES
-
+  # API GATEWAY
   WalletFEApiGwHttpEndpoint:
     Type: 'AWS::ApiGatewayV2::Api'
     Properties:
@@ -307,8 +303,7 @@ Resources:
       ApiId: !Ref WalletFEApiGwHttpEndpoint
       Stage: !Ref WalletFEAPIStageDefault
 
-  # ECS RESOURCES
-
+  # ECS
   WalletFECluster:
     Type: 'AWS::ECS::Cluster'
     Properties:
@@ -510,7 +505,7 @@ Resources:
         - !Ref PermissionsBoundary
         - !Ref AWS::NoValue
 
-  # KMS RESOURCES
+  # KMS
   StsStubSigningKey:
     Type: AWS::KMS::Key
     Properties:
@@ -600,8 +595,7 @@ Resources:
       AliasName: !Sub "alias/${AWS::StackName}/${Environment}/DocumentDatabaseKmsKey"
       TargetKeyId: !Ref DocumentDatabaseKmsKey
 
-  # DYNAMODB RESOURCES
-
+  # DYNAMODB
   DocumentDatabase:
     Type: AWS::DynamoDB::Table
     DeletionPolicy: Delete
@@ -634,7 +628,7 @@ Resources:
         - Key: Environment
           Value: !Ref "Environment"
 
-  # S3 RESOURCES
+  # S3
   PhotosBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -685,7 +679,6 @@ Resources:
                 "aws:SecureTransport": false
 
   # ALARMS
-
   DocBuilderLowContainerTaskCountAlarm:
     Condition: IsBuildOrStagingOrInt
     DependsOn:
