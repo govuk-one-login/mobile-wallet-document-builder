@@ -64,7 +64,7 @@ Mappings:
       CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.integration.account.gov.uk"
       SelfUrl: "stub-credential-issuer.wallet-onboarding.inrtegration.account.gov.uk"
       OidcIssuerEndpoint: "https://oidc.integration.account.gov.uk"
-      WalletApps: "govuk-staging,wallet-test-staging"
+      WalletApps: "wallet-test-integration"
   # see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
   # PlatformConfiguration:
   #   dev:
