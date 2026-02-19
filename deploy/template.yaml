@@ -48,21 +48,25 @@ Mappings:
     dev:
       CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.dev.account.gov.uk"
       SelfUrl: "stub-credential-issuer.wallet-onboarding.dev.account.gov.uk"
+      DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:219494607463:repository/doc-builder-image-repo-containerrepository-lc2jfleeqwvq
       OidcIssuerEndpoint: "https://auth-stub.mobile.dev.account.gov.uk"
       WalletApps: "govuk-build,wallet-test-dev,wallet-test-build"
     build:
       CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.build.account.gov.uk"
       SelfUrl: "stub-credential-issuer.wallet-onboarding.build.account.gov.uk"
+      DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:899032468188:repository/doc-builder-image-repo-containerrepository-edrvcvwivlcg
       OidcIssuerEndpoint: "https://auth-stub.mobile.build.account.gov.uk"
       WalletApps: "govuk-build,wallet-test-dev,wallet-test-build"
     staging:
       CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.staging.account.gov.uk"
       SelfUrl: "stub-credential-issuer.wallet-onboarding.staging.account.gov.uk"
+      DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:899032468188:repository/doc-builder-image-repo-containerrepository-edrvcvwivlcg
       OidcIssuerEndpoint: "https://oidc.staging.account.gov.uk"
       WalletApps: "govuk-staging,wallet-test-staging"
     integration:
       CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.integration.account.gov.uk"
       SelfUrl: "stub-credential-issuer.wallet-onboarding.inrtegration.account.gov.uk"
+      DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:899032468188:repository/doc-builder-image-repo-containerrepository-edrvcvwivlcg
       OidcIssuerEndpoint: "" # Not required as the DVS flow doesn't require authentication
       WalletApps: "wallet-test-integration"
   ElasticLoadBalancerAccountIds:
@@ -442,6 +446,13 @@ Resources:
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
+              - Effect: Allow
+                Action:
+                  - "ecr:BatchGetImage"
+                  - "ecr:GetDownloadUrlForLayer"
+                  - "ecr:BatchCheckLayerAvailability"
+                Resource:
+                  - !FindInMap [EnvironmentVariables, !Ref Environment, DocumentBuilderImageRepository]
               - Effect: Allow
                 Action:
                   - "ecr:GetAuthorizationToken"
