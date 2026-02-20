@@ -4,10 +4,10 @@ import {
   revokePostController,
 } from "../../src/revoke/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
-import { revokeCredentials } from "../../src/revoke/services/revokeService";
+import { revoke } from "../../src/revoke/services/revokeService";
 
 jest.mock("../../src/revoke/services/revokeService", () => ({
-  revokeCredentials: jest.fn(),
+  revoke: jest.fn(),
 }));
 
 const CRI_URL = "https://test-cri.example.com";
@@ -46,8 +46,8 @@ describe("revoke", () => {
     const { res } = getMockRes();
 
     it.each([
-      "shrt", // 4 characters but minimum is 5
-      "documentIdIsTooLong1234567", // 26 characters but maximum is 25
+      "shrt", // 4 characters but the minimum is 5
+      "documentIdIsTooLong1234567", // 26 characters but the maximum is 25
       "spaces are not ok",
       "invalidChars@!",
     ])(
@@ -61,53 +61,79 @@ describe("revoke", () => {
 
         await revokePostController(config)(req, res);
 
-        expect(revokeCredentials).not.toHaveBeenCalled();
+        expect(revoke).not.toHaveBeenCalled();
         expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
-          error:
-            "ID must be 5 to 25 characters long and contain only uppercase or lowercase letters and digits",
-          value: invalidId,
+          documentId: invalidId,
+          errorList: [
+            {
+              href: "#documentId",
+              text: "ID must be 5 to 25 characters long and contain only uppercase or lowercase letters and digits",
+            },
+          ],
+          errors: {
+            documentId: {
+              href: "#documentId",
+              text: "ID must be 5 to 25 characters long and contain only uppercase or lowercase letters and digits",
+            },
+          },
         });
       },
     );
 
     it("should render 500 error page if an unexpected error occurs", async () => {
-      (revokeCredentials as jest.Mock).mockRejectedValue(
-        new Error("Unexpected error"),
-      );
+      (revoke as jest.Mock).mockRejectedValue(new Error("Unexpected error"));
 
       await revokePostController(config)(req, res);
 
       expect(res.render).toHaveBeenCalledWith("500.njk");
     });
 
-    it("should render success message when revocation succeeds", async () => {
-      const mockResult = {
-        message: "Credential successfully revoked",
-        messageType: "success" as const,
-      };
-      (revokeCredentials as jest.Mock).mockResolvedValue(mockResult);
+    it("should render success message when CRI returns 202 (revocation succeeded)", async () => {
+      const mockResult = 202;
+      (revoke as jest.Mock).mockResolvedValue(mockResult);
 
       await revokePostController(config)(req, res);
 
-      expect(revokeCredentials).toHaveBeenCalledWith(CRI_URL, DOCUMENT_ID);
+      expect(revoke).toHaveBeenCalledWith(CRI_URL, DOCUMENT_ID);
       expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
-        message: "Credential successfully revoked",
+        message: "Digital driving licence successfully revoked",
         messageType: "success",
       });
     });
 
-    it("should render error message when revocation fails", async () => {
-      const mockResult = {
-        message: "No credential found for this document identifier",
-        messageType: "error" as const,
-      };
-      (revokeCredentials as jest.Mock).mockResolvedValue(mockResult);
+    it("should render an error when CRI returns 404 (no credential found for the provided driving licence)", async () => {
+      const mockResult = 404;
+      (revoke as jest.Mock).mockResolvedValue(mockResult);
 
       await revokePostController(config)(req, res);
 
-      expect(revokeCredentials).toHaveBeenCalledWith(CRI_URL, DOCUMENT_ID);
       expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
-        message: "No credential found for this document identifier",
+        documentId: DOCUMENT_ID,
+        errorList: [
+          {
+            href: "#documentId",
+            text: "No digital driving licence found with this licence number",
+          },
+        ],
+        errors: {
+          documentId: {
+            href: "#documentId",
+            text: "No digital driving licence found with this licence number",
+          },
+        },
+      });
+    });
+
+    it("should render error message when CRI returns any other status code", async () => {
+      const mockResult = 500;
+      (revoke as jest.Mock).mockResolvedValue(mockResult);
+
+      await revokePostController(config)(req, res);
+
+      expect(revoke).toHaveBeenCalledWith(CRI_URL, DOCUMENT_ID);
+      expect(res.render).toHaveBeenCalledWith("revoke-form.njk", {
+        message:
+          "Something went wrong and the credential(s) may not have been revoked",
         messageType: "error",
       });
     });

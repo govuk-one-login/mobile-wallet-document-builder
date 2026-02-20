@@ -101,7 +101,7 @@ describe("documentSelectorPostController", () => {
   ])("should redirect to %s when selection=%s", (expectedRoute, selection) => {
     const req = getMockReq({
       body: {
-        "select-document-choice": selection,
+        document: selection,
       },
     });
     const { res } = getMockRes();
@@ -114,7 +114,7 @@ describe("documentSelectorPostController", () => {
   it("should re-render select-document form with a validation error when document selected is invalid", () => {
     const req = getMockReq({
       body: {
-        "select-document-choice": "InvalidCredentialType",
+        document: "InvalidCredentialType",
       },
     });
     const { res } = getMockRes();
@@ -122,7 +122,19 @@ describe("documentSelectorPostController", () => {
     documentSelectorPostController(config)(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
-      error: true,
+      errors: {
+        document: {
+          text: "Select the document you want to create",
+          href: "#document",
+        },
+      },
+      errorList: [
+        {
+          text: "Select the document you want to create",
+          href: "#document",
+        },
+      ],
+      document: "InvalidCredentialType",
       authenticated: false,
       documents: [
         {
@@ -149,7 +161,18 @@ describe("documentSelectorPostController", () => {
     documentSelectorPostController(config)(req, res);
 
     expect(res.render).toHaveBeenCalledWith("select-document-form.njk", {
-      error: true,
+      errors: {
+        document: {
+          text: "Select the document you want to create",
+          href: "#document",
+        },
+      },
+      errorList: [
+        {
+          text: "Select the document you want to create",
+          href: "#document",
+        },
+      ],
       authenticated: false,
       documents: [
         {

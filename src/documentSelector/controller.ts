@@ -7,6 +7,9 @@ import {
   documentsConfig as config,
 } from "./config/documentsConfig";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
+import { formatValidationError, renderBadRequest } from "../utils/validation";
+
+const SELECT_DOCUMENT_TEMPLATE = "select-document-form.njk";
 
 export interface DocumentSelectorConfig {
   documentsConfig?: DocumentsConfig;
@@ -23,7 +26,7 @@ export function documentSelectorGetController({
         return res.redirect(route);
       }
 
-      return res.render("select-document-form.njk", {
+      return res.render(SELECT_DOCUMENT_TEMPLATE, {
         documents: buildTemplateInputForDocuments(documentsConfig),
         authenticated: isAuthenticated(req),
       });
@@ -42,25 +45,25 @@ export function documentSelectorPostController({
 }: DocumentSelectorConfig = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {
-      const selectedDocument = req.body["select-document-choice"];
-      if (!selectedDocument) {
-        return res.render("select-document-form.njk", {
-          error: true,
-          documents: buildTemplateInputForDocuments(documentsConfig),
-          authenticated: isAuthenticated(req),
-        });
+      const selectedDocument = req.body["document"];
+      if (!selectedDocument || !documentsConfig[selectedDocument]) {
+        return renderBadRequest(
+          res,
+          req,
+          SELECT_DOCUMENT_TEMPLATE,
+          formatValidationError(
+            "document",
+            "Select the document you want to create",
+          ),
+          {
+            documents: buildTemplateInputForDocuments(documentsConfig),
+            authenticated: isAuthenticated(req),
+          },
+        );
       }
 
-      const { route } = documentsConfig[selectedDocument] ?? {};
-      if (route) {
-        return res.redirect(route);
-      }
-
-      return res.render("select-document-form.njk", {
-        error: true,
-        documents: buildTemplateInputForDocuments(documentsConfig),
-        authenticated: isAuthenticated(req),
-      });
+      const { route } = documentsConfig[selectedDocument];
+      return res.redirect(route);
     } catch (error) {
       logger.error(
         error,

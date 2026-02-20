@@ -5,8 +5,7 @@
 {% block content %}
     <form action="/dvs/select-journey" method="post">
         {{ govukRadios({
-                classes: "govuk-radios--medium",
-                "name": "selectedJourney",
+                name: "journey",
                 fieldset: {
                 legend: {
                 text: pageTitle,
@@ -16,9 +15,9 @@
                 },
                 items: journeyOptions,
                 errorMessage: {
-                text: "You must choose an option"
-                } if error
+                text: errors['journey'].text
+                } if (errors['journey'])
                 }) }}
-        {{ govukButton({"text": "Continue", "preventDoubleClick": true}) }}
+        {{ govukButton({text: "Continue", preventDoubleClick: true}) }}
     </form>
 {% endblock %}

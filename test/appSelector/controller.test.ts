@@ -86,7 +86,18 @@ describe("appSelectorPostController", () => {
       walletAppsConfig,
     );
     expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
-      error: true,
+      errors: {
+        app: {
+          text: "Select the app you want to create a document in",
+          href: "#app",
+        },
+      },
+      errorList: [
+        {
+          text: "Select the app you want to create a document in",
+          href: "#app",
+        },
+      ],
       apps: mockApps,
       authenticated: false,
       credentialType: undefined,
@@ -98,7 +109,7 @@ describe("appSelectorPostController", () => {
   it("should re-render select-app form with a validation error when app selected is invalid", () => {
     const req = getMockReq({
       body: {
-        "select-app-choice": "not-a-valid-app-option",
+        app: "not-a-valid-app-option",
       },
     });
     const { res } = getMockRes();
@@ -110,7 +121,19 @@ describe("appSelectorPostController", () => {
       walletAppsConfig,
     );
     expect(res.render).toHaveBeenCalledWith("select-app-form.njk", {
-      error: true,
+      errors: {
+        app: {
+          text: "Select the app you want to create a document in",
+          href: "#app",
+        },
+      },
+      errorList: [
+        {
+          text: "Select the app you want to create a document in",
+          href: "#app",
+        },
+      ],
+      app: "not-a-valid-app-option",
       apps: mockApps,
       authenticated: false,
       credentialType: undefined,
@@ -122,7 +145,7 @@ describe("appSelectorPostController", () => {
   it("should set the app cookie to the selected value with the configured expiry", () => {
     const req = getMockReq({
       body: {
-        "select-app-choice": "test-app-1",
+        app: "test-app-1",
       },
     });
     const { res } = getMockRes();
@@ -138,7 +161,7 @@ describe("appSelectorPostController", () => {
   it("should redirect to /select-document with credentialType when provided", () => {
     const req = getMockReq({
       body: {
-        "select-app-choice": "test-app-1",
+        app: "test-app-1",
         credentialType: "SocialSecurityCredential",
       },
     });
@@ -154,7 +177,7 @@ describe("appSelectorPostController", () => {
   it("should redirect to /select-document without credentialType when not provided", () => {
     const req = getMockReq({
       body: {
-        "select-app-choice": "test-app-1",
+        app: "test-app-1",
       },
     });
     const { res } = getMockRes();
