@@ -603,7 +603,7 @@ Resources:
   DocumentDatabaseKmsKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: !Sub "alias/${AWS::StackName}/${Environment}/DocumentDatabaseKmsKey"
+      AliasName: !Sub "alias/document-database-encryption-key-${AWS::StackName}"
       TargetKeyId: !Ref DocumentDatabaseKmsKey
 
   # DYNAMODB
