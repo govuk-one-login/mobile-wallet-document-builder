@@ -70,7 +70,7 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.DEV_ECR_REPOSITORY }}
+          ECR_REPOSITORY: ${{ secrets.DEV_ECR_REPOSITORY_NAME }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$GIT_REF_SHA .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$GIT_REF_SHA
@@ -78,9 +78,9 @@ jobs:
       - name: Upload SAM Template to Bucket
         id: publish-template
         env:
-          ARTIFACT_BUCKET_NAME: ${{ secrets.DEV_ARTIFACT_SOURCE_BUCKET_NAME }}
+          ARTIFACT_BUCKET_NAME: ${{ secrets.DEV_GH_ARTIFACT_SOURCE_BUCKET_NAME }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.DEV_ECR_REPOSITORY }}
+          ECR_REPOSITORY: ${{ secrets.DEV_ECR_REPOSITORY_NAME }}
         run: |
           echo "Running sam build on template file"
           echo "SAM_CLI_TELEMETRY=0" >> $GITHUB_ENV
