@@ -7,7 +7,7 @@ import {
   documentsConfig as config,
 } from "./config/documentsConfig";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
-import { formatValidationError, renderBadRequest } from "../utils/validation";
+import { formatValidationError, generateErrorList } from "../utils/validation";
 
 const SELECT_DOCUMENT_TEMPLATE = "select-document-form.njk";
 
@@ -47,19 +47,18 @@ export function documentSelectorPostController({
     try {
       const selectedDocument = req.body["document"];
       if (!selectedDocument || !documentsConfig[selectedDocument]) {
-        return renderBadRequest(
-          res,
-          req,
-          SELECT_DOCUMENT_TEMPLATE,
-          formatValidationError(
-            "document",
-            "Select the document you want to create",
-          ),
-          {
-            documents: buildTemplateInputForDocuments(documentsConfig),
-            authenticated: isAuthenticated(req),
-          },
+        const errors = formatValidationError(
+          "document",
+          "Select the document you want to create",
         );
+        res.status(400);
+        return res.render(SELECT_DOCUMENT_TEMPLATE, {
+          errors,
+          errorList: generateErrorList(errors),
+          ...req.body,
+          documents: buildTemplateInputForDocuments(documentsConfig),
+          authenticated: isAuthenticated(req),
+        });
       }
 
       const { route } = documentsConfig[selectedDocument];

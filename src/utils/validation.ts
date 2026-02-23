@@ -1,5 +1,3 @@
-import { Request, Response } from "express";
-
 export interface Error {
   text: string;
   href: string;
@@ -20,21 +18,4 @@ export function formatValidationError(
 export function generateErrorList(errors: Record<string, Error>) {
   const errorValues = Object.values(errors);
   return [...new Map(errorValues.map((error) => [error.text, error])).values()];
-}
-
-export function renderBadRequest(
-  res: Response,
-  req: Request,
-  template: string,
-  errors: Record<string, Error>,
-  options?: object,
-): void {
-  res.status(400);
-
-  res.render(template, {
-    errors,
-    errorList: generateErrorList(errors),
-    ...req.body,
-    ...options,
-  });
 }

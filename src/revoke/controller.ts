@@ -3,7 +3,7 @@ import { logger } from "../middleware/logger";
 import { revoke } from "./services/revokeService";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import { getCriEndpoint } from "../config/appConfig";
-import { formatValidationError, renderBadRequest } from "../utils/validation";
+import { formatValidationError, generateErrorList } from "../utils/validation";
 
 const REVOKE_TEMPLATE = "revoke-form.njk";
 
@@ -24,29 +24,31 @@ export function revokePostController({
     try {
       const documentId = req.body["documentId"];
       if (!validateDocumentId(documentId)) {
-        return renderBadRequest(
-          res,
-          req,
-          REVOKE_TEMPLATE,
-          formatValidationError(
-            "documentId",
-            "ID must be 5 to 25 characters long and contain only uppercase or lowercase letters and digits",
-          ),
+        const errors = formatValidationError(
+          "documentId",
+          "ID must be 5 to 25 characters long and contain only uppercase or lowercase letters and digits",
         );
+        res.status(400);
+        return res.render(REVOKE_TEMPLATE, {
+          errors,
+          errorList: generateErrorList(errors),
+          ...req.body,
+        });
       }
 
       const result = await revoke(criUrl, documentId);
 
       if (result === 404) {
-        return renderBadRequest(
-          res,
-          req,
-          REVOKE_TEMPLATE,
-          formatValidationError(
-            "documentId",
-            "No digital driving licence found with this licence number",
-          ),
+        const errors = formatValidationError(
+          "documentId",
+          "No digital driving licence found with this licence number",
         );
+        res.status(400);
+        return res.render(REVOKE_TEMPLATE, {
+          errors,
+          errorList: generateErrorList(errors),
+          ...req.body,
+        });
       }
 
       if (result === 202) {

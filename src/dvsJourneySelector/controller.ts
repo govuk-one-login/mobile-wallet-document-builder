@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { JOURNEY_OPTIONS } from "./constants/journeyOptions";
 import { JOURNEY_VALUES } from "./constants/journeyValues";
 import { ROUTES } from "../config/routes";
-import { formatValidationError, renderBadRequest } from "../utils/validation";
+import { formatValidationError, generateErrorList } from "../utils/validation";
 
 const SELECT_JOURNEY_TEMPLATE = "select-journey-form.njk";
 
@@ -29,16 +29,15 @@ export function dvsJourneySelectorPostController(
     return res.redirect(ROUTES.REVOKE);
   }
 
-  return renderBadRequest(
-    res,
-    req,
-    SELECT_JOURNEY_TEMPLATE,
-    formatValidationError(
-      "journey",
-      "Select if you want to issue or revoke a test digital driving licence",
-    ),
-    {
-      journeyOptions: JOURNEY_OPTIONS,
-    },
+  const errors = formatValidationError(
+    "journey",
+    "Select if you want to issue or revoke a test digital driving licence",
   );
+  res.status(400);
+  return res.render(SELECT_JOURNEY_TEMPLATE, {
+    errors,
+    errorList: generateErrorList(errors),
+    ...req.body,
+    journeyOptions: JOURNEY_OPTIONS,
+  });
 }
