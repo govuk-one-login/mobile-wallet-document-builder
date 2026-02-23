@@ -46,6 +46,7 @@
     "qrcode": "^1.5.3"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@jest-mock/express": "^3.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
