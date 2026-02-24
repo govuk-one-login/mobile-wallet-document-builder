@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.1.0/schemas/schema.json",
   "services": [
     {
-      "service-tag": "cri-test-harness",
+      "service-tag": "mobile-wallet-document-builder",
       "quality-gates": [
         {
           "phase": "pre-merge",
@@ -11,11 +11,7 @@
             "file": ".github/workflows/pull-request.yml",
             "path": "jobs.ci"
           },
-          "check-types": [
-            "unit",
-            "unit test coverage",
-            "code style and linting"
-          ]
+          "check-types": ["unit", "code style and linting"]
         },
         {
           "phase": "pre-merge",
@@ -24,11 +20,7 @@
             "file": ".github/workflows/sonarqube.yml",
             "path": "jobs.run-code-quality-and-security-analysis"
           },
-          "check-types": [
-            "unit",
-            "unit test coverage",
-            "code style and linting"
-          ]
+          "check-types": ["unit", "unit test coverage", "code quality"]
         },
         {
           "phase": "pre-upload",
@@ -38,6 +30,15 @@
             "path": "jobs.upload-s3-artifact-to-build"
           },
           "check-types": ["code style and linting"]
+        },
+        {
+          "phase": "pre-merge",
+          "provider": "GitHub",
+          "config": {
+            "file": ".github/workflows/sonarqube.yml",
+            "path": "jobs.run-code-quality-and-security-analysis"
+          },
+          "check-types": ["unit", "unit test coverage", "code quality"]
         }
       ]
     }
