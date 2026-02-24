@@ -74,8 +74,7 @@ Mappings:
       AccountId: 652711504416
 
 Resources:
-
-  # Security groups
+  # SECURITY GROUPS
   WalletFELoadBalancerSG:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -199,7 +198,7 @@ Resources:
         - Key: access_logs.s3.prefix
           Value: !Sub wallet-stub-front-${Environment}
         - Key: idle_timeout.timeout_seconds
-          Value: 60 # N.B, this is 1 second less than the nodeJS app is configured in server.ts
+          Value: 60
 
   WalletFELoadBalancerListenerTargetGroupECS:
     Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
@@ -603,7 +602,7 @@ Resources:
   DocumentDatabaseKmsKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: !Sub "alias/${AWS::StackName}/${Environment}/DocumentDatabaseKmsKey"
+      AliasName: !Sub "alias/database-encryption-key-${AWS::StackName}"
       TargetKeyId: !Ref DocumentDatabaseKmsKey
 
   # DYNAMODB

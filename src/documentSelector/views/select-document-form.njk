@@ -5,8 +5,7 @@
 {% block content %}
     <form action="/select-document" method="post">
         {{ govukRadios({
-                "id": "select-document-choice",
-                "name": "select-document-choice",
+                name: "document",
                 fieldset: {
                 legend: {
                 text: pageTitle,
@@ -16,9 +15,9 @@
                 },
                 items: documents,
                 errorMessage: {
-                text: "You must choose an option"
-                } if error
+                text: errors['document'].text
+                } if (errors['document'])
                 }) }}
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+        {{ govukButton({text: "Continue", type: "Submit", preventDoubleClick: true}) }}
     </form>
 {% endblock %}
