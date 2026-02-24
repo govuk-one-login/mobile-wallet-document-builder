@@ -45,8 +45,8 @@ export function documentSelectorPostController({
 }: DocumentSelectorConfig = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {
-      const selectedDocument = req.body["document"];
-      if (!selectedDocument || !documentsConfig[selectedDocument]) {
+      const { document } = req.body;
+      if (!document || !documentsConfig[document]) {
         const errors = formatValidationError(
           "document",
           "Select the document you want to create",
@@ -55,13 +55,13 @@ export function documentSelectorPostController({
         return res.render(SELECT_DOCUMENT_TEMPLATE, {
           errors,
           errorList: generateErrorList(errors),
-          ...req.body,
+          document,
           documents: buildTemplateInputForDocuments(documentsConfig),
           authenticated: isAuthenticated(req),
         });
       }
 
-      const { route } = documentsConfig[selectedDocument];
+      const { route } = documentsConfig[document];
       return res.redirect(route);
     } catch (error) {
       logger.error(

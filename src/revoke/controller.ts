@@ -32,7 +32,7 @@ export function revokePostController({
         return res.render(REVOKE_TEMPLATE, {
           errors,
           errorList: generateErrorList(errors),
-          ...req.body,
+          documentId,
         });
       }
 
