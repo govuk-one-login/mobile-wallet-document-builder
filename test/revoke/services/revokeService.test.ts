@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { revokeCredentials } from "../../../src/revoke/services/revokeService";
+import { revoke } from "../../../src/revoke/services/revokeService";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -20,7 +20,7 @@ describe("revokeService.ts", () => {
     } as AxiosResponse;
     mockedAxios.post.mockResolvedValue(mockCriResponse);
 
-    await revokeCredentials(CRI_URL, DOCUMENT_ID);
+    await revoke(CRI_URL, DOCUMENT_ID);
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
       expectedRevokeUrl,
@@ -31,54 +31,20 @@ describe("revokeService.ts", () => {
     );
   });
 
-  it("should return a success message when the CRI returns 202", async () => {
+  it("should return return the status code returned by the CRI", async () => {
     const mockCriResponse = {
       status: 202,
     } as AxiosResponse;
     mockedAxios.post.mockResolvedValue(mockCriResponse);
 
-    const response = await revokeCredentials(CRI_URL, DOCUMENT_ID);
+    const response = await revoke(CRI_URL, DOCUMENT_ID);
 
-    expect(response).toEqual({
-      message: "Digital driving licence successfully revoked",
-      messageType: "success",
-    });
-  });
-
-  it("should return info message when CRI returns 404", async () => {
-    const mockCriResponse = {
-      status: 404,
-    } as AxiosResponse;
-    mockedAxios.post.mockResolvedValue(mockCriResponse);
-
-    const response = await revokeCredentials(CRI_URL, DOCUMENT_ID);
-
-    expect(response).toEqual({
-      message: "No credential found for this document identifier",
-      messageType: "info",
-    });
-  });
-
-  it("should return error message for other status codes such as 500", async () => {
-    const mockCriResponse = {
-      status: 500,
-    } as AxiosResponse;
-    mockedAxios.post.mockResolvedValue(mockCriResponse);
-
-    const response = await revokeCredentials(CRI_URL, DOCUMENT_ID);
-
-    expect(response).toEqual({
-      message:
-        "Something went wrong and the credential(s) may not have been revoked",
-      messageType: "error",
-    });
+    expect(response).toEqual(202);
   });
 
   it("should propagate error thrown by axios", async () => {
     mockedAxios.post.mockRejectedValue(new Error("Network error"));
 
-    await expect(revokeCredentials(CRI_URL, DOCUMENT_ID)).rejects.toThrow(
-      "Network error",
-    );
+    await expect(revoke(CRI_URL, DOCUMENT_ID)).rejects.toThrow("Network error");
   });
 });

@@ -6,8 +6,7 @@
     <form action="/select-app" method="post">
         <input type="hidden" name="credentialType" value="{{ credentialType }}">
         {{ govukRadios({
-                "id": "select-app-choice",
-                "name": "select-app-choice",
+                name: "app",
                 fieldset: {
                 legend: {
                 text: pageTitle,
@@ -17,9 +16,9 @@
                 },
                 items: apps,
                 errorMessage: {
-                text: "You must choose an option"
-                } if error
+                text: errors['app'].text
+                } if (errors['app'])
                 }) }}
-        {{ govukButton({"text": "Continue", "type": "Submit", "preventDoubleClick": true}) }}
+        {{ govukButton({text: "Continue", type: "Submit", "preventDoubleClick": true}) }}
     </form>
 {% endblock %}

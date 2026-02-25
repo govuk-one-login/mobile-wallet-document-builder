@@ -7,6 +7,9 @@ import {
   documentsConfig as config,
 } from "./config/documentsConfig";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
+import { formatValidationError, generateErrorList } from "../utils/validation";
+
+const SELECT_DOCUMENT_TEMPLATE = "select-document-form.njk";
 
 export interface DocumentSelectorConfig {
   documentsConfig?: DocumentsConfig;
@@ -23,7 +26,7 @@ export function documentSelectorGetController({
         return res.redirect(route);
       }
 
-      return res.render("select-document-form.njk", {
+      return res.render(SELECT_DOCUMENT_TEMPLATE, {
         documents: buildTemplateInputForDocuments(documentsConfig),
         authenticated: isAuthenticated(req),
       });
@@ -42,25 +45,24 @@ export function documentSelectorPostController({
 }: DocumentSelectorConfig = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {
-      const selectedDocument = req.body["select-document-choice"];
-      if (!selectedDocument) {
-        return res.render("select-document-form.njk", {
-          error: true,
+      const { document } = req.body;
+      if (!document || !documentsConfig[document]) {
+        const errors = formatValidationError(
+          "document",
+          "Select the document you want to create",
+        );
+        res.status(400);
+        return res.render(SELECT_DOCUMENT_TEMPLATE, {
+          errors,
+          errorList: generateErrorList(errors),
+          document,
           documents: buildTemplateInputForDocuments(documentsConfig),
           authenticated: isAuthenticated(req),
         });
       }
 
-      const { route } = documentsConfig[selectedDocument] ?? {};
-      if (route) {
-        return res.redirect(route);
-      }
-
-      return res.render("select-document-form.njk", {
-        error: true,
-        documents: buildTemplateInputForDocuments(documentsConfig),
-        authenticated: isAuthenticated(req),
-      });
+      const { route } = documentsConfig[document];
+      return res.redirect(route);
     } catch (error) {
       logger.error(
         error,
