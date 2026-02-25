@@ -1,5 +1,5 @@
 import * as proofJwt from "../../src/proofJwt/proofJwt";
-import * as signingKey from "../../src/config/appConfig";
+import * as appConfig from "../../src/config/appConfig";
 import { proofJwtController } from "../../src/proofJwt/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 
@@ -7,11 +7,12 @@ describe("controller.ts", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  it("should return 200 and proofJwt when successful", async () => {
+
+  it("should return 200 and proof Jwt when request is successful", async () => {
     const mockSignedJwt = "signed jwt token";
 
     jest
-      .spyOn(signingKey, "getStsSigningKeyId")
+      .spyOn(appConfig, "getStsSigningKeyId")
       .mockReturnValue("mock_signing_key_id");
     jest.spyOn(proofJwt, "getProofJwt").mockResolvedValue(mockSignedJwt);
 
@@ -32,7 +33,7 @@ describe("controller.ts", () => {
 
   it("should return 500 and server_error when signing fails", async () => {
     jest
-      .spyOn(signingKey, "getStsSigningKeyId")
+      .spyOn(appConfig, "getStsSigningKeyId")
       .mockReturnValue("mock_signing_key_id");
 
     jest
@@ -49,6 +50,7 @@ describe("controller.ts", () => {
     const { res } = getMockRes();
 
     await proofJwtController(req, res);
+
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ error: "server_error" });
   });

@@ -15,7 +15,7 @@ describe("getProofJwt", () => {
     mockKmsClient.reset();
   });
 
-  it("should return header.payload.signature on success", async () => {
+  it("should return the proof JWT on success", async () => {
     mockKmsClient.on(GetPublicKeyCommand).resolves({
       PublicKey: Buffer.from(
         "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAECO6A8rvNKD/sVNQwswdrIwR5ThN0gEc1rHtRzs5BXVvQ21bG1y7/b97RcxzbcQH+P2ti2DhwGiM/HwN5Agtg/Q==",
@@ -52,12 +52,13 @@ describe("getProofJwt", () => {
       Buffer.from(parts[1], "base64url").toString("utf8"),
     );
     expect(decodedPayload).toMatchObject({
-      nonce: "test-nonce",
+      iss: "urn:fdc:gov:uk:wallet",
       aud: "test-audience",
+      iat: Math.floor(Date.now() / 1000),
+      nonce: "test-nonce",
     });
 
-    const expectedJoseSignature = format.derToJose(mockSignatureDer, "ES256");
-    expect(parts[2]).toBe(expectedJoseSignature);
+    expect(parts[2]).toBe(mockSignature.toString("base64url"));
   });
 
   it("should throw error if KMS getPublicKey fails", async () => {
