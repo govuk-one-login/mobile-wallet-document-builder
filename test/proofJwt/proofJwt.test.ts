@@ -37,8 +37,36 @@ describe("getProofJwt", () => {
     );
 
     const parts = result.split(".");
-    console.log(parts);
-
     expect(parts).toHaveLength(3);
+
+    const decodedHeader = JSON.parse(
+      Buffer.from(parts[0], "base64url").toString("utf8"),
+    );
+    expect(decodedHeader).toMatchObject({
+      alg: "ES256",
+      typ: "openid4vci-proof+jwt",
+      kid: "did:key:zDnaeiG9cTwzu3BRBqvn9TW2nZqVaCFPZYkb8Ck4oxYujkkYr",
+    });
+
+    const decodedPayload = JSON.parse(
+      Buffer.from(parts[1], "base64url").toString("utf8"),
+    );
+    expect(decodedPayload).toMatchObject({
+      nonce: "test-nonce",
+      aud: "test-audience",
+    });
+
+    const expectedJoseSignature = format.derToJose(mockSignatureDer, "ES256");
+    expect(parts[2]).toBe(expectedJoseSignature);
+  });
+
+  it("should throw error if KMS getPublicKey fails", async () => {
+    mockKmsClient
+      .on(GetPublicKeyCommand)
+      .rejects(new Error("KMS public key error"));
+
+    await expect(
+      getProofJwt("test-nonce", "test-audience", "test-keyId"),
+    ).rejects.toThrow("KMS public key error");
   });
 });
