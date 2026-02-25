@@ -20,7 +20,13 @@
             "file": ".github/workflows/sonarqube.yml",
             "path": "jobs.run-code-quality-and-security-analysis"
           },
-          "check-types": ["unit", "unit test coverage", "code quality"]
+          "check-types": [
+            "unit",
+            "unit test coverage",
+            "code quality",
+            "vulnerability detection",
+            "secret scanning"
+          ]
         },
         {
           "phase": "pre-upload",
