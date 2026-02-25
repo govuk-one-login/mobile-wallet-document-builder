@@ -9,10 +9,16 @@ import { getProofJwt } from "../../src/proofJwt/proofJwt";
 import format from "ecdsa-sig-formatter";
 
 const mockKmsClient = mockClient(KMSClient);
+const TIMESTAMP = 1756114156000;
 
 describe("getProofJwt", () => {
   beforeEach(() => {
     mockKmsClient.reset();
+    jest.spyOn(Date, "now").mockImplementation(() => TIMESTAMP);
+  });
+
+  afterEach(() => {
+    jest.spyOn(Date, "now").mockRestore();
   });
 
   it("should return the proof JWT on success", async () => {
@@ -54,7 +60,7 @@ describe("getProofJwt", () => {
     expect(decodedPayload).toMatchObject({
       iss: "urn:fdc:gov:uk:wallet",
       aud: "test-audience",
-      iat: Math.floor(Date.now() / 1000),
+      iat: Math.floor(TIMESTAMP / 1000),
       nonce: "test-nonce",
     });
 
