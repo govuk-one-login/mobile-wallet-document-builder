@@ -16,6 +16,6 @@ export interface TableItem {
     | DrivingLicenceData
     | SimpleDocumentData;
   vcType: CredentialType;
-  credentialTtlSeconds: number;
+  credentialTtlMinutes: number;
   timeToLive: number;
 }
