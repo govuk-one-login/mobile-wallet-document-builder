@@ -180,7 +180,7 @@ describe("controller.ts", () => {
             documentId: "EDWAR550000SE5RO",
             vcType: "org.iso.18013.5.1.mDL",
             timeToLive: 1748736000,
-            credentialTtlMinutes: 2592000,
+            credentialTtlSeconds: 43200,
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",
@@ -231,7 +231,7 @@ describe("controller.ts", () => {
             documentId: "EDWAR550000SE5RO",
             vcType: "org.iso.18013.5.1.mDL",
             timeToLive: 1748736000,
-            credentialTtlMinutes: 2592000,
+            credentialTtlSeconds: 43200,
             data: {
               family_name: "Edwards-Smith",
               given_name: "Sarah Elizabeth",

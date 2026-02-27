@@ -65,7 +65,7 @@ export async function veteranCardDocumentBuilderPostController(
       documentId: data.serviceNumber,
       data,
       vcType: CREDENTIAL_TYPE,
-      credentialTtlMinutes: Number(body.credentialTtl) * 60,
+      credentialTtlSeconds: Number(body.credentialTtl),
       timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
     });
 

@@ -54,7 +54,7 @@ export async function dbsDocumentBuilderPostController(
       documentId: data.certificateNumber,
       data,
       vcType: CREDENTIAL_TYPE,
-      credentialTtlMinutes: Number(body.credentialTtl) * 60,
+      credentialTtlSeconds: Number(body.credentialTtl),
       timeToLive,
     });
 
