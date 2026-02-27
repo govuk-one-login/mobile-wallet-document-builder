@@ -141,7 +141,7 @@ describe("controller.ts", () => {
           },
           vcType: "BasicDisclosureCredential",
           timeToLive: 1760174135,
-          credentialTtlMinutes: 43200,
+          credentialTtlSeconds: 43200,
         });
       });
     });

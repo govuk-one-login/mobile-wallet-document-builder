@@ -93,7 +93,7 @@ export function drivingLicenceBuilderPostController({
         documentId: data.document_number,
         data,
         vcType: CREDENTIAL_TYPE,
-        credentialTtlMinutes: Number(body.credentialTtl),
+        credentialTtlSeconds: Number(body.credentialTtl),
         timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
       });
 

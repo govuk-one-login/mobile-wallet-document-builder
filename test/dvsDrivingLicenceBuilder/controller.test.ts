@@ -106,7 +106,7 @@ describe("controller.ts", () => {
         itemId: "2e0fac05-4b38-480f-9cbd-b046eabe1e46",
         timeToLive: 1748736000,
         vcType: "org.iso.18013.5.1.mDL",
-        credentialTtlMinutes: 2880,
+        credentialTtlSeconds: 172800,
         data: {
           document_number: "TEST1769688000000",
           family_name: "Test FirstName",
