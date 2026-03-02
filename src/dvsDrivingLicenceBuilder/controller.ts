@@ -16,7 +16,7 @@ import { logger } from "../middleware/logger";
 
 const DOCUMENT_PHOTO_FILENAME = "dvs.jpeg";
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
-const CREDENTIAL_TTL_MINUTES = 2880; // 48 hours
+const CREDENTIAL_TTL_SECONDS = 172800; // 48 hours
 
 export async function dvsDrivingLicenceBuilderGetController(
   req: Request,
@@ -37,7 +37,7 @@ export async function dvsDrivingLicenceBuilderGetController(
       documentId: drivingLicenceData.document_number,
       data: drivingLicenceData,
       vcType: CREDENTIAL_TYPE,
-      credentialTtlMinutes: CREDENTIAL_TTL_MINUTES,
+      credentialTtlSeconds: CREDENTIAL_TTL_SECONDS,
       timeToLive: getTimeToLiveEpoch(getTableItemTtl()),
     });
 

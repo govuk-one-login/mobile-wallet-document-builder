@@ -346,7 +346,7 @@ describe("controller.ts", () => {
           vcType:
             "uk.gov.account.mobile.example-credential-issuer.simplemdoc.1",
           timeToLive: 1748736000,
-          credentialTtlMinutes: 43200,
+          credentialTtlSeconds: 43200,
           data: {
             family_name: "Smith",
             given_name: "John",
