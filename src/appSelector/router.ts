@@ -18,7 +18,9 @@ router.get(
 router.post(
   ROUTES.SELECT_APP,
   guardRouteByEnvironment(),
-  requiresAuth,
+  requiresAuthdsadsa,
+
+  / dsad/sadas
   appSelectorPostController(),
 );
 
