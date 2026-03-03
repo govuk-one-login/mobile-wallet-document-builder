@@ -1,6 +1,5 @@
 ---
 name: 'Deployment'
-# Temporary change to trigger deployment
 
 'on':
   workflow_dispatch:
