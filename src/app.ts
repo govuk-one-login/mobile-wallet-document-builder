@@ -29,6 +29,7 @@ import { dvsJourneySelectorRouter } from "./dvsJourneySelector/router";
 import { dvsDrivingLicenceBuilderRouter } from "./dvsDrivingLicenceBuilder/router";
 import { dvsCredentialOfferViewerRouter } from "./dvsCredentialOfferViewer/router";
 import { startRouter } from "./start/router";
+import { pageNotFound } from "./middleware/pageNotFound";
 
 const APP_VIEWS = [
   path.resolve("dist/appSelector/views"),
@@ -105,6 +106,8 @@ export async function createApp(): Promise<express.Application> {
   app.use(ninoDocumentBuilderRouter);
   app.use(returnFromAuthRouter);
   app.use(veteranCardDocumentBuilderRouter);
+
+  app.use(pageNotFound);
 
   return app;
 }
