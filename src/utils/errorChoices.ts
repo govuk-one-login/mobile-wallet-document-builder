@@ -9,5 +9,4 @@ export const ERROR_CHOICES = [
   { value: "ERROR:CLIENT", text: "400 (invalid client)" },
   { value: "ERROR:GRANT", text: "400 (invalid grant)" },
   { value: "ERROR:500", text: "500" },
-  { value: "ERROR:404", text: "404" },
 ];
