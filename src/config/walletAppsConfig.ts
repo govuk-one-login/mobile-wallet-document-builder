@@ -8,11 +8,11 @@ export type WalletAppsConfig = Record<string, WalletAppConfig>;
 export const walletAppsConfig: WalletAppsConfig = {
   "govuk-build": {
     url: "https://mobile.build.account.gov.uk/wallet/",
-    name: "GOV.UK App (Build)",
+    name: "GOV.UK One Login App (Build)",
   },
   "govuk-staging": {
     url: "https://mobile.staging.account.gov.uk/wallet/",
-    name: "GOV.UK App (Staging)",
+    name: "GOV.UK One Login App (Staging)",
   },
   "wallet-test-dev": {
     url: "https://mobile.dev.account.gov.uk/wallet-test/",
