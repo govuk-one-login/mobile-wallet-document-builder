@@ -51,6 +51,21 @@ npm run lint
 npm run format
 ```
 
+### Pre-commit Hooks
+
+Husky: run checks before commits are created. 
+The pre-commit hook runs the following checks automatically:
+```
+npm run test
+npm run lint
+npm run format
+```
+#### Skipping pre-commit checks
+
+```
+git commit -m "your message" --no-verify
+```
+
 ### Build
 
 Build the assets with:
