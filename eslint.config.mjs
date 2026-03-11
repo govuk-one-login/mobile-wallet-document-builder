@@ -1,19 +1,13 @@
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
-import globals from "globals";
 
 export default [
   {
     ignores: ["dist", "coverage", "jest.setup.js"],
   },
   {
-    files: ["**/*.ts", "**/*.cjs"],
-    languageOptions: {
-      globals: {
-        ...globals.node,
-      },
-    },
+    files: ["**/*.ts"],
   },
   eslint.configs.recommended,
   ...tseslint.configs.strict,

@@ -40,6 +40,12 @@ Install the dependencies with:
 npm install
 ```
 
+### Post Install
+
+```
+npm run prepare
+```
+
 ### Lint & Format
 
 Lint and format the code with:
