@@ -1,29 +1,32 @@
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import eslintConfigPrettier from 'eslint-config-prettier'
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import eslintConfigPrettier from "eslint-config-prettier";
+import globals from "globals";
 
 export default [
   {
-    ignores: [
-      "dist",
-      "coverage",
-      "jest.setup.js"
-    ],
+    ignores: ["dist", "coverage", "jest.setup.js"],
   },
   {
-    files: ['**/*.ts'],
+    files: ["**/*.ts", "**/*.js"],
+    languageOptions: {
+      globals: globals.node,
+    },
   },
-  eslint.configs.recommended, ...tseslint.configs.strict, ...tseslint.configs.stylistic, eslintConfigPrettier,
+  eslint.configs.recommended,
+  ...tseslint.configs.strict,
+  ...tseslint.configs.stylistic,
+  eslintConfigPrettier,
   {
     rules: {
       "@typescript-eslint/no-non-null-assertion": "off",
       "@typescript-eslint/no-require-imports": "off",
-      '@typescript-eslint/no-unused-vars': [
-        'error',
+      "@typescript-eslint/no-unused-vars": [
+        "error",
         {
-          varsIgnorePattern: "^_"
-        }
-      ]
-    }
+          varsIgnorePattern: "^_",
+        },
+      ],
+    },
   },
-]
+];
