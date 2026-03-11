@@ -60,6 +60,10 @@ npm run test
 npm run lint
 npm run format
 ```
+Additionally, by adding @commitlint/config-conventional
+pre-commit hook ensures the commit messages follow strict formatting standards 
+before they are recorded in the repository.
+
 #### Skipping pre-commit checks
 
 ```
