@@ -8,9 +8,11 @@ export default [
     ignores: ["dist", "coverage", "jest.setup.js"],
   },
   {
-    files: ["**/*.ts", "**/*.js"],
+    files: ["**/*.ts", "**/*.cjs"],
     languageOptions: {
-      globals: globals.node,
+      globals: {
+        ...globals.node,
+      },
     },
   },
   eslint.configs.recommended,
