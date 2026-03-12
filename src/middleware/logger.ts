@@ -6,9 +6,7 @@ const logger = pino({
   level: "debug",
   timestamp: pino.stdTimeFunctions.isoTime,
   formatters: {
-    bindings: (bindings) => {
-      return { hostname: bindings.hostname };
-    },
+    bindings: () => ({}),
   },
   serializers: {
     req: (req) => {
