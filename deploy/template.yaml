@@ -78,14 +78,13 @@ Resources:
   WalletFELoadBalancerSG:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
-      GroupDescription: >-
-        Wallet Stub Front LoadBalancer Security Group
+      GroupDescription: Wallet Stub Front LoadBalancer Security Group
       SecurityGroupIngress:
         - CidrIp: 0.0.0.0/0
-          Description: Allow from anyone on port 80
-          FromPort: 80
+          Description: Allow from anyone on port 443
+          FromPort: 443
           IpProtocol: tcp
-          ToPort: 80
+          ToPort: 443
       VpcId:
         Fn::ImportValue: !Sub "${VpcStackName}-VpcId"
 
@@ -223,8 +222,11 @@ Resources:
         - TargetGroupArn: !Ref WalletFELoadBalancerListenerTargetGroupECS
           Type: forward
       LoadBalancerArn: !Ref WalletFELoadBalancer
-      Port: 80
-      Protocol: HTTP
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Sub "{{resolve:ssm:/${Environment}/Platform/ACM/PrimaryZoneWildcardCertificateARN}}"
+      SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
 
   # API GATEWAY
   WalletFEApiGwHttpEndpoint:
