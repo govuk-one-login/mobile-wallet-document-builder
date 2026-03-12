@@ -206,7 +206,7 @@ Resources:
       HealthCheckProtocol: HTTP
       Matcher:
         HttpCode: 200-499
-      Port: 80
+      Port: !Ref ContainerPort
       Protocol: HTTP
       TargetType: ip
       VpcId:
