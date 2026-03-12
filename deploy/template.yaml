@@ -249,6 +249,8 @@ Resources:
       PayloadFormatVersion: '1.0'
       RequestParameters:
         overwrite:header.x-govuk-signin-source-ip: $context.identity.sourceIp
+      TlsConfig:
+        ServerNameToVerify: !Ref WalletFEFrontCustomDomain
 
   WalletFEAPIGWRoute:
     Type: 'AWS::ApiGatewayV2::Route'
