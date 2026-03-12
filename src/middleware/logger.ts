@@ -7,6 +7,9 @@ const logger = pino({
   timestamp: pino.stdTimeFunctions.isoTime,
   formatters: {
     bindings: () => ({}),
+    level(label) {
+      return { level: label.toUpperCase() };
+    },
   },
   serializers: {
     req: (req) => {
