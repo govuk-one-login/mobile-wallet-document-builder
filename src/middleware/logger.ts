@@ -26,15 +26,7 @@ const logger = pino({
   },
 });
 
-const ignorePaths = new Set<string>([
-  "/public/stylesheets/application.css",
-  "/assets/images/govuk-crest.png",
-  "/assets/fonts/light-94a07e06a1-v2.woff2",
-  "/assets/fonts/bold-b542beb274-v2.woff2",
-  "/assets/images/favicon.ico",
-  "/healthcheck",
-  "/",
-]);
+const ignorePaths = new Set<string>(["/"]);
 
 const loggerMiddleware = PinoHttp({
   logger,
