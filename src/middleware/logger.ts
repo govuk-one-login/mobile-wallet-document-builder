@@ -1,10 +1,9 @@
 import pino from "pino";
 import PinoHttp from "pino-http";
-import { getLogLevel } from "../config/appConfig";
 
 const logger = pino({
   name: "mobile-wallet-document-builder",
-  level: getLogLevel(),
+  level: "debug",
   timestamp: pino.stdTimeFunctions.isoTime,
   formatters: {
     bindings: (bindings) => {
