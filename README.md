@@ -40,12 +40,6 @@ Install the dependencies with:
 npm install
 ```
 
-### Post Install
-
-```
-npm run prepare
-```
-
 ### Lint & Format
 
 Lint and format the code with:
@@ -59,16 +53,19 @@ npm run format
 
 ### Pre-commit Hooks
 
-Husky: run checks before commits are created. 
+Run the following command to install the pre-commit hooks used in this project:
+```
+npm run setup-hooks
+```
+
+This project uses Husky to run automated checks before commits are created.
 The pre-commit hook runs the following checks automatically:
 ```
 npm run test
 npm run lint
 npm run format
 ```
-Additionally, by using @commitlint/config-conventional
-pre-commit hook ensures the commit messages follow strict formatting standards 
-before they are recorded in the repository.
+Commit messages are also validated using @commitlint/config-conventional to ensure they follow standard formatting.
 
 #### Skipping pre-commit checks
 
