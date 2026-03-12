@@ -20,7 +20,7 @@ const logger = pino({
     },
     res: (res) => {
       return {
-        status: res.statusCode,
+        statusCode: res.statusCode,
       };
     },
   },
