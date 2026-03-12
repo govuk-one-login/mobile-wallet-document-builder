@@ -14,7 +14,6 @@ const logger = pino({
   serializers: {
     req: (req) => {
       return {
-        id: req.id,
         method: req.method,
         url: req.url,
       };
