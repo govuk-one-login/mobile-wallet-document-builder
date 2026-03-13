@@ -72,7 +72,10 @@ The following check runs before pushing to the remote repository:
 npm run test
 ```
 
-#### Skipping hook checks
+#### Skipping hooks
+
+> ⚠️
+> Skipping hooks with `--no-verify` bypasses commit checks.
 
 ```
 git commit -m "your message" --no-verify
