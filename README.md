@@ -51,6 +51,41 @@ npm run lint
 npm run format
 ```
 
+### Pre-commit & Pre-push Hooks
+
+This project uses [Husky](https://typicode.github.io/husky/) to run automated checks 
+before commits and pushes. Run the following command to install the hooks:
+```
+npm run setup-hooks
+```
+
+The following checks run automatically before each commit:
+```
+npm run lint
+npm run format:check
+```
+Commit messages are validated using [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint). 
+Messages that don't follow the standard format will be rejected.
+
+The following check runs before pushing to the remote repository:
+```
+npm run test
+```
+
+#### Skipping hooks
+
+> ⚠️
+> The `--no-verify` flag skips all configured hooks. This bypasses checks such as commit message validation and automated checks.
+> Use this option only when absolutely necessary.
+
+```
+git commit -m "your message" --no-verify
+```
+
+```
+git push --no-verify
+```
+
 ### Build
 
 Build the assets with:
