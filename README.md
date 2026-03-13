@@ -67,7 +67,7 @@ npm run format:check
 Commit messages are also validated using @commitlint/config-conventional. The commit-msg hook runs this check to ensure commit messages 
 follow standard formatting.
 
-The pre-push hook ensures that the following command runs before the branch is pushed:
+The pre-push hook ensures that the following command runs before pushing to the remote repository:
 ```
 npm run test
 ```
