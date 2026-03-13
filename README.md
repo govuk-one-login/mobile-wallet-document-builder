@@ -51,9 +51,9 @@ npm run lint
 npm run format
 ```
 
-### Pre-commit Hooks
+### Pre-commit & Pre-push Hooks
 
-Run the following command to install the pre-commit hooks used in this project:
+Run the following command to setup hooks used in this project:
 ```
 npm run setup-hooks
 ```
@@ -61,11 +61,16 @@ npm run setup-hooks
 This project uses Husky to run automated checks before commits are created.
 The pre-commit hook runs the following checks automatically:
 ```
-npm run test
 npm run lint
-npm run format
+npm run format:check
 ```
-Commit messages are also validated using @commitlint/config-conventional to ensure they follow standard formatting.
+Commit messages are also validated using @commitlint/config-conventional. The commit-msg hook runs this check to ensure commit messages 
+follow standard formatting.
+
+The pre-push hook ensures that the following command runs before the branch is pushed:
+```
+npm run test
+```
 
 #### Skipping pre-commit checks
 
