@@ -75,7 +75,8 @@ npm run test
 #### Skipping hooks
 
 > ⚠️
-> Skipping hooks with `--no-verify` bypasses commit checks.
+> The `--no-verify` flag skips all configured hooks. This bypasses checks such as commit message validation and automated checks.
+> Use this option only when absolutely necessary.
 
 ```
 git commit -m "your message" --no-verify
