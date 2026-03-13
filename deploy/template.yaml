@@ -51,28 +51,24 @@ Mappings:
       DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:219494607463:repository/doc-builder-image-repo-containerrepository-lc2jfleeqwvq
       OidcIssuerEndpoint: "https://auth-stub.mobile.dev.account.gov.uk"
       WalletApps: "govuk-build,wallet-test-dev,wallet-test-build"
-      SSLCertificateArn: "arn:aws:acm:eu-west-2:219494607463:certificate/4d435f13-b65d-48f9-80bd-7b52ba241e15"
     build:
       CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.build.account.gov.uk"
       SelfUrl: "stub-credential-issuer.wallet-onboarding.build.account.gov.uk"
       DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:899032468188:repository/doc-builder-image-repo-containerrepository-edrvcvwivlcg
       OidcIssuerEndpoint: "https://auth-stub.mobile.build.account.gov.uk"
       WalletApps: "govuk-build,wallet-test-dev,wallet-test-build"
-      SSLCertificateArn: "arn:aws:acm:eu-west-2:899032468188:certificate/b6695276-178f-458e-b138-7cf03b5ba9ad"
     staging:
       CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.staging.account.gov.uk"
       SelfUrl: "stub-credential-issuer.wallet-onboarding.staging.account.gov.uk"
       DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:899032468188:repository/doc-builder-image-repo-containerrepository-edrvcvwivlcg
       OidcIssuerEndpoint: "https://oidc.staging.account.gov.uk"
       WalletApps: "govuk-staging,wallet-test-staging"
-      SSLCertificateArn: "arn:aws:acm:eu-west-2:804878519326:certificate/3b4f7876-e857-4966-aa7f-69ed8c4e0d98"
     integration:
       CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.integration.account.gov.uk"
       SelfUrl: "stub-credential-issuer.wallet-onboarding.inrtegration.account.gov.uk"
       DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:899032468188:repository/doc-builder-image-repo-containerrepository-edrvcvwivlcg
       OidcIssuerEndpoint: "" # Not required as the DVS flow doesn't require authentication
       WalletApps: "wallet-test-integration"
-      SSLCertificateArn: "arn:aws:acm:eu-west-2:228170791542:certificate/6300e19a-d8a4-4f2e-965d-a97bd495245b"
   ElasticLoadBalancerAccountIds:
     eu-west-2:
       AccountId: 652711504416
@@ -205,6 +201,8 @@ Resources:
           Value: !Sub wallet-stub-front-${Environment}
         - Key: idle_timeout.timeout_seconds
           Value: 60
+        - Key: deletion_protection.enabled
+          Value: true
 
   WalletFELoadBalancerListenerTargetGroupECS:
     Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
@@ -230,10 +228,7 @@ Resources:
           Type: forward
       LoadBalancerArn: !Ref WalletFELoadBalancer
       Port: 80
-      Protocol: HTTPS
-      Certificates: 
-        - CertificateArn: !FindInMap [EnvironmentVariables, !Ref Environment, SSLCertificateArn]
-
+      Protocol: HTTP
 
   # API GATEWAY
   WalletFEApiGwHttpEndpoint:
