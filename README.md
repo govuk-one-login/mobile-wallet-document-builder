@@ -53,29 +53,33 @@ npm run format
 
 ### Pre-commit & Pre-push Hooks
 
-Run the following command to setup hooks used in this project:
+This project uses [Husky](https://typicode.github.io/husky/) to run automated checks 
+before commits and pushes. Run the following command to install the hooks:
 ```
 npm run setup-hooks
 ```
 
-This project uses Husky to run automated checks before commits are created.
-The pre-commit hook runs the following checks automatically:
+The following checks run automatically before each commit:
 ```
 npm run lint
 npm run format:check
 ```
-Commit messages are also validated using @commitlint/config-conventional. The commit-msg hook runs this check to ensure commit messages 
-follow standard formatting.
+Commit messages are validated using [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint). 
+Messages that don't follow the standard format will be rejected.
 
-The pre-push hook ensures that the following command runs before pushing to the remote repository:
+The following check runs before pushing to the remote repository:
 ```
 npm run test
 ```
 
-#### Skipping pre-commit checks
+#### Skipping hook checks
 
 ```
 git commit -m "your message" --no-verify
+```
+
+```
+git push --no-verify
 ```
 
 ### Build
