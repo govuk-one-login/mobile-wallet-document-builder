@@ -50,6 +50,7 @@ export async function stsStubAccessTokenController(
     res.status(200).json({
       access_token: accessToken,
       token_type: "bearer",
+      expires_in: accessTokenTtlInSecs,
     });
     return;
   } catch (error) {
