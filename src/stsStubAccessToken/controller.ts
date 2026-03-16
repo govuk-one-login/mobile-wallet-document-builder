@@ -5,12 +5,12 @@ import {
   getPreAuthorizedCodePayload,
 } from "./token/validateTokenRequest";
 import {
-  getAccessTokenTtlInSecs,
   getHardcodedWalletSubjectId,
   getStsSigningKeyId,
 } from "../config/appConfig";
 import { logger } from "../middleware/logger";
 import { PREAUTHORIZED_CODE_ERRORS } from "./types/PreAuthorizedCodeErrors";
+import { accessTokenTtlInSecs } from "../config/appConfig";
 
 export async function stsStubAccessTokenController(
   req: Request,
@@ -40,19 +40,17 @@ export async function stsStubAccessTokenController(
 
     logger.info(`Valid pre-authorized code received: ${preAuthorizedCode}`);
 
-    const accessTokenTtl = Number(getAccessTokenTtlInSecs());
-
     const accessToken = await createAccessToken(
       getHardcodedWalletSubjectId(),
       payload,
       getStsSigningKeyId(),
-      accessTokenTtl,
+      accessTokenTtlInSecs,
     );
 
     res.status(200).json({
       access_token: accessToken,
       token_type: "bearer",
-      expires_in: accessTokenTtl,
+      expires_in: accessTokenTtlInSecs,
     });
     return;
   } catch (error) {

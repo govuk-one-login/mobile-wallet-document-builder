@@ -3,7 +3,6 @@ process.env.OIDC_CLIENT_ID = "client-id";
 process.env.OIDC_PRIVATE_KEY = "private-key";
 process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT = "discovery-endpoint";
 process.env.SELF = "redirect-uri";
-process.env.COOKIE_TTL_IN_MILLISECONDS = "100";
 process.env.CREDENTIAL_ISSUER_URL = "https://test-cri.example.com";
 process.env.WALLET_APPS = "test-app-1,test-app-2";
 

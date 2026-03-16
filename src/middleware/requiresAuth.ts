@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { getCookieExpiryInMilliseconds } from "../config/appConfig";
+import { cookieTtlInMilliseconds } from "../config/appConfig";
 import { generators } from "openid-client";
 import { logger } from "./logger";
 
@@ -27,15 +27,15 @@ export function getAuthorizationUrl(req: Request, res: Response) {
 
   res.cookie("nonce", nonce, {
     httpOnly: true,
-    maxAge: getCookieExpiryInMilliseconds(),
+    maxAge: cookieTtlInMilliseconds,
   });
   res.cookie("state", state, {
     httpOnly: true,
-    maxAge: getCookieExpiryInMilliseconds(),
+    maxAge: cookieTtlInMilliseconds,
   });
   res.cookie("current_url", req.url, {
     httpOnly: true,
-    maxAge: getCookieExpiryInMilliseconds(),
+    maxAge: cookieTtlInMilliseconds,
   });
 
   return req.oidc.authorizationUrl({
