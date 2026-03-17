@@ -1,9 +1,9 @@
 import { NextFunction } from "express";
 import { requiresAuth } from "../../src/middleware/requiresAuth";
 import { getMockReq, getMockRes } from "@jest-mock/express";
+import { COOKIE_TTL_IN_MILLISECONDS } from "../../src/config/appConfig";
 
 process.env.SELF = "http://localhost:3000";
-process.env.COOKIE_TTL_IN_MILLISECONDS = "100";
 
 describe("requiresAuth", () => {
   it("should redirect to authorisation URL and set cookies when user is not authenticated", () => {
@@ -34,17 +34,26 @@ describe("requiresAuth", () => {
     expect(res.cookie).toHaveBeenCalledWith(
       "nonce",
       expect.any(String),
-      expect.objectContaining({ httpOnly: true, maxAge: 100 }),
+      expect.objectContaining({
+        httpOnly: true,
+        maxAge: COOKIE_TTL_IN_MILLISECONDS,
+      }),
     );
     expect(res.cookie).toHaveBeenCalledWith(
       "state",
       expect.any(String),
-      expect.objectContaining({ httpOnly: true, maxAge: 100 }),
+      expect.objectContaining({
+        httpOnly: true,
+        maxAge: COOKIE_TTL_IN_MILLISECONDS,
+      }),
     );
     expect(res.cookie).toHaveBeenCalledWith(
       "current_url",
       "/test-protected",
-      expect.objectContaining({ httpOnly: true, maxAge: 100 }),
+      expect.objectContaining({
+        httpOnly: true,
+        maxAge: COOKIE_TTL_IN_MILLISECONDS,
+      }),
     );
     expect(nextFunction).not.toHaveBeenCalled();
   });

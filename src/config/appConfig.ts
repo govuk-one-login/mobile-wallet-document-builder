@@ -1,3 +1,6 @@
+export const ACCESS_TOKEN_TTL_IN_SECS = 180;
+export const COOKIE_TTL_IN_MILLISECONDS = 3600000;
+
 function getEnvVarValue(variableName: string): string {
   const variableValue = process.env[variableName];
   if (!variableValue) {
@@ -34,10 +37,6 @@ export function getStsSigningKeyId(): string {
   return getEnvVarValue("STS_SIGNING_KEY_ID");
 }
 
-export function getAccessTokenTtlInSecs(): string {
-  return getEnvVarValue("ACCESS_TOKEN_TTL_IN_SECS");
-}
-
 export function getSelfUrl(): string {
   return getEnvVarValue("SELF");
 }
@@ -52,11 +51,6 @@ export function getClientSigningKeyId(): string {
 
 export function getOIDCDiscoveryEndpoint(): string {
   return getEnvVarValue("OIDC_ISSUER_DISCOVERY_ENDPOINT");
-}
-
-export function getCookieExpiryInMilliseconds() {
-  const ttl = getEnvVarValue("COOKIE_TTL_IN_MILLISECONDS");
-  return Number(ttl);
 }
 
 export function getHardcodedWalletSubjectId(): string {
