@@ -3,6 +3,7 @@ import { stsStubAccessTokenController } from "../../src/stsStubAccessToken/contr
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import * as accessToken from "../../src/stsStubAccessToken/token/createAccessToken";
 import * as validateTokenRequest from "../../src/stsStubAccessToken/token/validateTokenRequest";
+import { ACCESS_TOKEN_TTL_IN_SECS } from "../../src/config/appConfig";
 
 jest.mock("../../src/stsStubAccessToken/token/validateTokenRequest", () => ({
   validateGrantType: jest.fn(),
@@ -41,7 +42,7 @@ describe("controller.ts", () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       access_token: "eyJ0eXAiOiJKV1Qh.eyJzdWIiOiM.9nQevZ--Asqx5ltCWvw_AvVNDA",
-      expires_in: 180,
+      expires_in: ACCESS_TOKEN_TTL_IN_SECS,
       token_type: "bearer",
     });
   });

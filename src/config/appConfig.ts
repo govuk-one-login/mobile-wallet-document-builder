@@ -1,5 +1,5 @@
-export const accessTokenTtlInSecs = 180;
-export const cookieTtlInMilliseconds = 3600000;
+export const ACCESS_TOKEN_TTL_IN_SECS = 180;
+export const COOKIE_TTL_IN_MILLISECONDS = 3600000;
 
 function getEnvVarValue(variableName: string): string {
   const variableValue = process.env[variableName];

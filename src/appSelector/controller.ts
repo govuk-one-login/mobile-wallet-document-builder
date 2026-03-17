@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
-import { getWalletApps, cookieTtlInMilliseconds } from "../config/appConfig";
+import { getWalletApps, COOKIE_TTL_IN_MILLISECONDS } from "../config/appConfig";
 import { buildTemplateInputForApps } from "./utils/buildTemplateInputForApps";
 import {
   walletAppsConfig as config,
@@ -41,7 +41,7 @@ export function appSelectorGetController({
 export function appSelectorPostController({
   walletAppsConfig = config,
   walletApps = getWalletApps(),
-  cookieExpiry = cookieTtlInMilliseconds,
+  cookieExpiry = COOKIE_TTL_IN_MILLISECONDS,
 }: AppSelectorConfig = {}): ExpressRouteFunction {
   return function (req: Request, res: Response): void {
     try {

@@ -5,7 +5,7 @@ import {
   getPreAuthorizedCodePayload,
 } from "./token/validateTokenRequest";
 import {
-  accessTokenTtlInSecs,
+  ACCESS_TOKEN_TTL_IN_SECS,
   getHardcodedWalletSubjectId,
   getStsSigningKeyId,
 } from "../config/appConfig";
@@ -44,13 +44,13 @@ export async function stsStubAccessTokenController(
       getHardcodedWalletSubjectId(),
       payload,
       getStsSigningKeyId(),
-      accessTokenTtlInSecs,
+      ACCESS_TOKEN_TTL_IN_SECS,
     );
 
     res.status(200).json({
       access_token: accessToken,
       token_type: "bearer",
-      expires_in: accessTokenTtlInSecs,
+      expires_in: ACCESS_TOKEN_TTL_IN_SECS,
     });
     return;
   } catch (error) {
