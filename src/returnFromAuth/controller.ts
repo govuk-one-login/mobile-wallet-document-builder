@@ -4,7 +4,7 @@ import { CallbackParamsType, TokenSet, UserinfoResponse } from "openid-client";
 import { buildClientAssertion } from "./clientAssertion/buildClientAssertion";
 import {
   getClientSigningKeyId,
-  cookieTtlInMilliseconds,
+  COOKIE_TTL_IN_MILLISECONDS,
 } from "../config/appConfig";
 import { Jwt } from "../types/Jwt";
 
@@ -63,7 +63,7 @@ export async function returnFromAuthGetController(
     });
     const cookieOptions = {
       httpOnly: true,
-      maxAge: cookieTtlInMilliseconds,
+      maxAge: COOKIE_TTL_IN_MILLISECONDS,
     };
 
     res.cookie("id_token", tokenSet.id_token, cookieOptions);
