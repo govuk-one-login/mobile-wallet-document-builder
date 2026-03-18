@@ -81,6 +81,7 @@ export async function createApp(): Promise<express.Application> {
   });
   app.use(noCacheMiddleware);
 
+  app.use(healthcheckRouter);
   app.use(documentRouter);
   app.use(loggedOutRouter);
   app.use(proofJwtRouter);
@@ -93,7 +94,6 @@ export async function createApp(): Promise<express.Application> {
   app.use(dvsDrivingLicenceBuilderRouter);
   app.use(dvsCredentialOfferViewerRouter);
   app.use(startRouter);
-  app.use(healthcheckRouter);
 
   app.use(auth(getOIDCConfig()));
 
