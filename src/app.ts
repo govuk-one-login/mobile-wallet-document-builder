@@ -30,6 +30,7 @@ import { dvsDrivingLicenceBuilderRouter } from "./dvsDrivingLicenceBuilder/route
 import { dvsCredentialOfferViewerRouter } from "./dvsCredentialOfferViewer/router";
 import { startRouter } from "./start/router";
 import { pageNotFound } from "./middleware/pageNotFound";
+import { healthcheckRouter } from "./healthcheck/router";
 
 const APP_VIEWS = [
   path.resolve("dist/appSelector/views"),
@@ -80,6 +81,7 @@ export async function createApp(): Promise<express.Application> {
   });
   app.use(noCacheMiddleware);
 
+  app.use(healthcheckRouter);
   app.use(documentRouter);
   app.use(loggedOutRouter);
   app.use(proofJwtRouter);
