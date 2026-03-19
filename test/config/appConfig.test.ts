@@ -4,11 +4,9 @@ import {
   getEnvironment,
   getCriEndpoint,
   getPortNumber,
-  getAccessTokenTtlInSecs,
   getSelfUrl,
   getOIDCClientId,
   getOIDCDiscoveryEndpoint,
-  getCookieExpiryInMilliseconds,
   getClientSigningKeyId,
   getHardcodedWalletSubjectId,
   getWalletApps,
@@ -86,18 +84,6 @@ describe("appConfig.ts", () => {
     expect(getAwsRegion()).toEqual("eu-west-3");
   });
 
-  it("should throw an error if ACCESS_TOKEN_TTL_IN_SECS environment variable is not set", () => {
-    delete process.env.ACCESS_TOKEN_TTL_IN_SECS;
-    expect(() => getAccessTokenTtlInSecs()).toThrow(
-      new Error("ACCESS_TOKEN_TTL_IN_SECS environment variable not set"),
-    );
-  });
-
-  it("should return ACCESS_TOKEN_TTL_IN_SECS environment variable value if set", () => {
-    process.env.ACCESS_TOKEN_TTL_IN_SECS = "300";
-    expect(getAccessTokenTtlInSecs()).toEqual("300");
-  });
-
   it("should throw an error if SELF environment variable is not set", () => {
     delete process.env.SELF;
     expect(() => getSelfUrl()).toThrow(
@@ -144,18 +130,6 @@ describe("appConfig.ts", () => {
   it("should return OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable value if set", () => {
     process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT = "test-discovery-endpoint";
     expect(getOIDCDiscoveryEndpoint()).toEqual("test-discovery-endpoint");
-  });
-
-  it("should throw an error if COOKIE_TTL_IN_MILLISECONDS environment variable is not set", () => {
-    delete process.env.COOKIE_TTL_IN_MILLISECONDS;
-    expect(() => getCookieExpiryInMilliseconds()).toThrow(
-      new Error("COOKIE_TTL_IN_MILLISECONDS environment variable not set"),
-    );
-  });
-
-  it("should return COOKIE_TTL_IN_MILLISECONDS environment variable value if set", () => {
-    process.env.COOKIE_TTL_IN_MILLISECONDS = "200000";
-    expect(getCookieExpiryInMilliseconds()).toEqual(200000);
   });
 
   it("should return wallet subject ID", () => {

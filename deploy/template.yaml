@@ -392,8 +392,6 @@ Resources:
                 - CredentialIssuerUrl: !FindInMap [EnvironmentVariables, !Ref Environment, CredentialIssuerUrl]
             - Name: STS_SIGNING_KEY_ID
               Value: !Ref StsStubSigningKey
-            - Name: ACCESS_TOKEN_TTL_IN_SECS
-              Value: 180
             - Name: SELF
               Value: !If
                 - StackNameIsWalletDocBuilderFE
@@ -409,8 +407,6 @@ Resources:
               Value: !Ref ClientSigningKey
             - Name: OIDC_ISSUER_DISCOVERY_ENDPOINT
               Value: !FindInMap [EnvironmentVariables, !Ref Environment, OidcIssuerEndpoint]
-            - Name: COOKIE_TTL_IN_MILLISECONDS
-              Value: 3600000
             - Name: WALLET_APPS
               Value: !FindInMap [EnvironmentVariables, !Ref Environment, WalletApps]
           PortMappings:

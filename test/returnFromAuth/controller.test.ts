@@ -2,8 +2,8 @@ import { getMockReq, getMockRes } from "@jest-mock/express";
 import { returnFromAuthGetController } from "../../src/returnFromAuth/controller";
 import { logger } from "../../src/middleware/logger";
 import * as assertionJwt from "../../src/returnFromAuth/clientAssertion/buildClientAssertion";
+import { COOKIE_TTL_IN_MILLISECONDS } from "../../src/config/appConfig";
 
-process.env.COOKIE_TTL_IN_MILLISECONDS = "100000";
 process.env.CLIENT_SIGNING_KEY_ID = "14122ec4-cdd0-4154-8275-04363c15fbd9";
 
 const WALLET_SUBJECT_ID =
@@ -196,13 +196,13 @@ describe("returnFromAuthGetController", () => {
 
     expect(res.cookie).toHaveBeenNthCalledWith(1, "id_token", "id_token", {
       httpOnly: true,
-      maxAge: 100000,
+      maxAge: COOKIE_TTL_IN_MILLISECONDS,
     });
     expect(res.cookie).toHaveBeenNthCalledWith(
       2,
       "wallet_subject_id",
       WALLET_SUBJECT_ID,
-      { httpOnly: true, maxAge: 100000 },
+      { httpOnly: true, maxAge: COOKIE_TTL_IN_MILLISECONDS },
     );
     expect(loggerErrorSpy).not.toHaveBeenCalled();
   });
