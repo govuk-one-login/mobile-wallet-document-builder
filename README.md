@@ -1,189 +1,97 @@
-# mobile-wallet-document-builder
+# Mobile Wallet Document Builder
 
 ## Overview
 
-A service for filling in the content of documents, storing them and, through integration with a wallet credential issuer, providing the links needed to load those documents into the GOV.UK Wallet.
+A service for creating and storing test documents used by the GOV.UK Wallet credential issuer during credential issuance. Once a document is created, the service displays the credential offer returned by the issuer, which can then be consumed by the wallet.
 
-## Pre-requisites
+## Tech Stack
 
-- [Node.js LTS](https://nodejs.org/en)
-- [NPM](https://www.npmjs.com/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html)
-- [Homebrew](https://brew.sh)
-- [GDS VPN](https://docs.google.com/document/d/1O1LmLByDLlKU4F1-3chwS8qddd2WjYQgMaaEgTfK5To/edit?pli=1&tab=t.0)
+This service is built with TypeScript and Node.js/Express, using Nunjucks for server-side templating, containerised with Docker, and deployed to ECS Fargate behind an API Gateway. It uses DynamoDB and S3 for storage and KMS for signing and encryption, with infrastructure managed via AWS SAM.
 
-We recommend using [nvm](https://github.com/nvm-sh/nvm) to install and manage Node.js versions.
+## Prerequisites
 
-To install nvm, run:
-```
-brew install nvm
-```
+- [Node.js](https://nodejs.org/en) — we recommend managing versions with [nvm](https://github.com/nvm-sh/nvm)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) — required to run LocalStack locally and to build the app image
 
-Then, to install and use the required version of node using nvm, run the following commands:
-```
-nvm install
-```
-
-```
-nvm use
-```
-
-## Quickstart
-
-Make sure Docker is running, and you’re connected to the GDS VPN before starting the services.
+## Local Setup
 
 ### Install
 
-Install the dependencies with:
-```
+```bash
 npm install
+```
+
+### Pre-commit Hooks
+
+This project uses [Husky](https://typicode.github.io/husky/) to enforce checks before commits and pushes.
+
+```bash
+npm run setup-hooks
+```
+
+**Before each commit**, the following run automatically:
+
+```bash
+npm run lint
+npm run format:check
+```
+
+Commit messages are validated against the [Conventional Commits](https://github.com/conventional-changelog/commitlint) standard — non-conforming messages will be rejected.
+
+**Before each push**, the following runs automatically:
+
+```bash
+npm run test
 ```
 
 ### Lint & Format
 
-Lint and format the code with:
-```
+```bash
 npm run lint
-```
-
-```
 npm run format
-```
-
-### Pre-commit & Pre-push Hooks
-
-This project uses [Husky](https://typicode.github.io/husky/) to run automated checks 
-before commits and pushes. Run the following command to install the hooks:
-```
-npm run setup-hooks
-```
-
-The following checks run automatically before each commit:
-```
-npm run lint
-npm run format:check
-```
-Commit messages are validated using [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint). 
-Messages that don't follow the standard format will be rejected.
-
-The following check runs before pushing to the remote repository:
-```
-npm run test
-```
-
-#### Skipping hooks
-
-> ⚠️
-> The `--no-verify` flag skips all configured hooks. This bypasses checks such as commit message validation and automated checks.
-> Use this option only when absolutely necessary.
-
-```
-git commit -m "your message" --no-verify
-```
-
-```
-git push --no-verify
 ```
 
 ### Build
 
-Build the assets with:
-```
+```bash
 npm run build
 ```
 
-### Test
+### Run
 
-Unit test the code with:
-```
-npm run test
-```
+Create a local environment file:
 
-### Configure to Run Locally
-
-#### Create a .env file
-
-Create a copy of the example environment variable file:
-```
+```bash
 cp .env.example .env
 ```
 
-#### Set up LocalStack
+Start LocalStack to emulate AWS services (DynamoDB, S3, KMS) on port `4561`:
 
-This app uses LocalStack to run AWS services (DynamoDB, S3 and KMS) locally on port `4561`.
-To start the LocalStack container and emulate the services, run:
-```
+```bash
 npm run localstack:up
 ```
 
-#### Set up the authorization server stub
+Start the application:
 
-Running locally requires running this application together with a stub of the authorization server, such 
-as [this one](https://github.com/govuk-one-login/mobile-platform-back/tree/main/auth-stub).
-
-To configure this stub to work with the Document Builder, run:
-```
-./configure_auth_stub.sh <your_aws_profile>
+```bash
+npm run start       # production mode
+npm run dev         # development mode with hot reload
 ```
 
-Both repositories must be in the same directory for the script to work.
+The service will be available at [http://localhost:8001/start](http://localhost:8001/start).
 
-### Run
+### Test
 
-To start the application, run:
-```
-npm run start
-```
-
-To start in development mode, run:
-```
-npm run dev
-```
-Go to [http://localhost:8001/select-app](http://localhost:8001/select-app).
-
-## Deploy application to `dev`
-
-> You must be logged into the Onboarding Products `dev` AWS account.
-
-You can deploy the application to the `dev` AWS account by following these steps:
-
-### Store the OIDC Client ID
-
-Before a stack is deployed for the first name, an SSM parameter must be created to hold the OIDC client ID:
-
-```shell
-aws ssm put-parameter --name "/<your-stack-name>/Config/OIDC/Client/Id" --value "TEST_CLIENT_ID" --type String
-```
-The usual non-production deployment client ID is `TEST_CLIENT_ID`.
-
-### Build and push the docker image
-
-Run the script to build and push the Document Builder docker image, specifying an image tag and the name of your AWS profile
-for the Onboarding Products `dev` AWS account (which can be found in your `~/.aws/credentials` file):
-
-```shell
-./build-and-deploy-image.sh <your-chosen-tag> <your-onboarding-products-dev-profile> 
+```bash
+npm run test
 ```
 
-This will build the docker image, log into ECR, push the image to ECR, and update the `template.yaml` to specify this
-image for the Document Builder ECS task.
+## Deployment
 
-### Update the SAM template
+This service is deployed via GitHub Actions.
 
-If using your own deployed version of the [Example CRI](https://github.com/govuk-one-login/mobile-wallet-example-credential-issuer) 
-and [Auth Stub](https://github.com/govuk-one-login/mobile-platform-back/tree/main/auth-stub), the following mapping values in the template must be updated:
+Automated deployments to `build` are triggered on push to `main` after PR approval. Manual deployments to `dev` can be triggered from the GitHub Actions menu, where you can specify a branch name or commit SHA.
 
- ```yaml
- Mappings:
-   EnvironmentVariables:
-     dev:
-       CredentialIssuerUrl: "<your-cri-stack-name->example-credential-issuer.wallet-onboarding.dev.account.gov.uk"
-       OidcIssuerEndpoint: "https://<your-auth-stub-stack-name->.wallet-onboarding.dev.account.gov.uk"
- ```
+## Contributing
 
-### Build and deploy the stack
-
-```
-sam build && sam deploy --capabilities CAPABILITY_IAM --stack-name <your_stack_name>
-```
+Ensure your branch is up to date and all pre-commit hooks pass before opening a pull request. Avoid using `--no-verify` to bypass them unless absolutely necessary.
