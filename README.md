@@ -2,7 +2,7 @@
 
 ## Overview
 
-A service for creating and storing test documents used by the GOV.UK Wallet credential issuer to issue the corresponding digital credentials. Once a document is created, the service displays the credential offer returned by the issuer, which can then be consumed by the wallet.
+A service for creating and storing test documents used by the GOV.UK Wallet credential issuer to issue the corresponding digital credentials. Once a document is created, the service displays the credential offer returned by the issuer, which can then be consumed by GOV.UK Wallet.
 
 ## Tech Stack
 
