@@ -26,7 +26,7 @@ const logger = pino({
   },
 });
 
-const ignorePaths = new Set<string>(["/"]);
+const ignorePaths = new Set<string>(["/healthcheck"]);
 
 const loggerMiddleware = PinoHttp({
   logger,
