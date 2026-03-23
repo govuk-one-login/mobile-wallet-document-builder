@@ -102,4 +102,4 @@ Automated deployments to `build` are triggered on push to `main` after PR approv
 
 ## Contributing
 
-Ensure your branch is up to date and all pre-commit hooks pass before opening a pull request. Avoid using `--no-verify` to bypass them unless absolutely necessary.
+Ensure your branch is up to date and all pre-commit hooks pass before opening a pull request. Avoid using the git `--no-verify` flag to skip these checks unless absolutely necessary.
