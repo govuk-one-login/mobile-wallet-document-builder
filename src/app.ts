@@ -95,8 +95,10 @@ export async function createApp(): Promise<express.Application> {
   app.use(dvsCredentialOfferViewerRouter);
   app.use(startRouter);
 
-  app.use(auth(getOIDCConfig()));
-
+  const oidcConfig = getOIDCConfig();
+  if (oidcConfig.discoveryEndpoint) {
+    app.use(auth(oidcConfig));
+  }
   app.use(appSelectorRouter);
   app.use(credentialOfferViewerRouter);
   app.use(credentialViewerRouter);
