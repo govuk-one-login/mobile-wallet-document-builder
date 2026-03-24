@@ -373,7 +373,7 @@ export function buildDrivingLicenceRequestBody(
     given_name: "Sarah Elizabeth",
     title: "Miss",
     welsh_licence: "false",
-    portrait: "420x525.jpg",
+    photo: "420x525.jpg",
     "birth-day": "06",
     "birth-month": "03",
     "birth-year": "1975",

@@ -420,7 +420,7 @@ export function buildSimpleDocumentRequestBody(
   const defaults: SimpleDocumentRequestBody = {
     family_name: "Smith",
     given_name: "John",
-    portrait: "420x525.jpg",
+    photo: "420x525.jpg",
     "birth-day": "15",
     "birth-month": "06",
     "birth-year": "1985",

@@ -7,11 +7,8 @@ import { randomUUID } from "node:crypto";
 import {
   getDocumentsTableName,
   getEnvironment,
-  getPhotosBucketName,
   getTableItemTtl,
 } from "../config/appConfig";
-import { getPhoto } from "../utils/photoUtils";
-import { uploadPhoto } from "../services/s3Service";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 import { SimpleDocumentRequestBody } from "./types/SimpleDocumentRequestBody";
 import { saveDocument } from "../services/databaseService";
@@ -20,6 +17,7 @@ import { SimpleDocumentData } from "./types/SimpleDocumentData";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
+import { handlePhoto } from "../services/photoHandler";
 
 const CREDENTIAL_TYPE = CredentialType.SimpleDocument;
 const FISH_TYPES = [
@@ -92,12 +90,8 @@ export function simpleDocumentBuilderPostController({
         });
       }
 
-      const bucketName = getPhotosBucketName();
       const itemId = randomUUID();
-      const s3Uri = `s3://${bucketName}/${itemId}`;
-
-      const { photoBuffer, mimeType } = getPhoto(body.portrait);
-      await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
+      const s3Uri = await handlePhoto(body.photo);
 
       const data = buildSimpleDocumentDataFromRequestBody(body, s3Uri);
       await saveDocument(getDocumentsTableName(), {
@@ -142,7 +136,7 @@ function buildSimpleDocumentDataFromRequestBody(
   return {
     family_name: body.family_name,
     given_name: body.given_name,
-    portrait: s3Uri,
+    photo: s3Uri,
     birth_date: formatDate(birthDay, birthMonth, birthYear),
     issue_date: formatDate(issueDay, issueMonth, issueYear),
     expiry_date: formatDate(expiryDay, expiryMonth, expiryYear),

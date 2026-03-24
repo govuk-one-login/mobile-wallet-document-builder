@@ -2,16 +2,13 @@ import { Request, Response } from "express";
 import {
   getDocumentsTableName,
   getEnvironment,
-  getPhotosBucketName,
   getTableItemTtl,
 } from "../config/appConfig";
 import { CredentialType } from "../types/CredentialType";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { logger } from "../middleware/logger";
 import { randomUUID } from "node:crypto";
-import { uploadPhoto } from "../services/s3Service";
 import { saveDocument } from "../services/databaseService";
-import { getPhoto } from "../utils/photoUtils";
 import { validateDateFields, getDefaultDates, formatDate } from "../utils/date";
 import {
   getFullDrivingPrivileges,
@@ -24,6 +21,7 @@ import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
 import { DrivingLicenceRequestBody } from "./types/DrivingLicenceRequestBody";
 import { DrivingLicenceData } from "../types/DrivingLicenceData";
+import { handlePhoto } from "../services/photoHandler";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
 
@@ -81,11 +79,7 @@ export function drivingLicenceBuilderPostController({
       }
 
       const itemId = randomUUID();
-      const bucketName = getPhotosBucketName();
-      const s3Uri = `s3://${bucketName}/${itemId}`;
-
-      const { photoBuffer, mimeType } = getPhoto(body.portrait);
-      await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
+      const s3Uri = await handlePhoto(body.photo);
 
       const data = buildDataFromRequestBody(body, s3Uri);
       await saveDocument(getDocumentsTableName(), {
