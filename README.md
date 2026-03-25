@@ -56,19 +56,21 @@ Start LocalStack to emulate AWS services (DynamoDB, S3, KMS) on port `4561`:
 npm run localstack:up
 ```
 
-Running locally also requires an authorization server stub, such as [this one](https://github.com/govuk-one-login/mobile-platform-back/tree/main/auth-stub). To configure it to work with the Document Builder, run:
+Running locally also requires:
+
+- An authorization server stub, such as [this one](https://github.com/govuk-one-login/mobile-platform-back/tree/main/auth-stub). To configure it to work with the Document Builder, run:
 
 ```bash
-./configure_auth_stub.sh <your_aws_profile>
+./configure_auth_stub.sh <your_aws_profile>       # both repositories must be in the same parent directory for this script to work
 ```
 
-> Both repositories must be in the same parent directory for this script to work.
+- The example credential issuer for end-to-end journey functionality
 
 Start the application:
 
 ```bash
-npm run start       # production mode
-npm run dev         # development mode with hot reload
+npm run start     # production mode
+npm run dev       # development mode with hot reload
 ```
 
 The service will be available at http://localhost:8001/start (standard journey) or http://localhost:8001/dvs/start (DVS journey).
