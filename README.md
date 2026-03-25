@@ -71,7 +71,7 @@ npm run start       # production mode
 npm run dev         # development mode with hot reload
 ```
 
-The service will be available at [http://localhost:8001/start](http://localhost:8001/start).
+The service will be available at http://localhost:8001/start (standard journey) or http://localhost:8001/dvs/start (DVS journey).
 
 ### Test
 
