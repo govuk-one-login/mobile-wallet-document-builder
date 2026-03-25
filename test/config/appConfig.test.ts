@@ -120,11 +120,18 @@ describe("appConfig.ts", () => {
     expect(getClientSigningKeyId()).toEqual("test-client-key-id");
   });
 
-  it("should throw an error if OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable is not set", () => {
+  it("should throw an error if OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable is not set in a non-integration environment", () => {
     delete process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT;
+    process.env.ENVIRONMENT = "build";
     expect(() => getOIDCDiscoveryEndpoint()).toThrow(
       new Error("OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable not set"),
     );
+  });
+
+  it("should return undefined if OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable is not set in the integration environment", () => {
+    delete process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT;
+    process.env.ENVIRONMENT = "integration";
+    expect(getOIDCDiscoveryEndpoint()).toBeUndefined();
   });
 
   it("should return OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable value if set", () => {
