@@ -23,25 +23,10 @@ npm install
 
 ### Pre-commit Hooks
 
-This project uses [Husky](https://typicode.github.io/husky/) to enforce checks before commits and pushes.
+This project uses [Husky](https://typicode.github.io/husky/) to run checks before commits and pushes. Set it up with:
 
 ```bash
 npm run setup-hooks
-```
-
-**Before each commit**, the following run automatically:
-
-```bash
-npm run lint
-npm run format:check
-```
-
-Commit messages are validated against the [Conventional Commits](https://github.com/conventional-changelog/commitlint) standard — non-conforming messages will be rejected.
-
-**Before each push**, the following runs automatically:
-
-```bash
-npm run test
 ```
 
 ### Lint & Format
