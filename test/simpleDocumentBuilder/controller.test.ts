@@ -311,7 +311,7 @@ describe("controller.ts", () => {
           const req = getMockReq({
             body: {
               ...requestBody,
-              ...{ portrait: fileName },
+              ...{ photo: fileName },
             },
           });
           const { res } = getMockRes();
@@ -350,7 +350,7 @@ describe("controller.ts", () => {
           data: {
             family_name: "Smith",
             given_name: "John",
-            portrait: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            photo: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
             birth_date: "15-06-1985",
             issue_date: "01-04-2024",
             expiry_date: "01-04-2029",

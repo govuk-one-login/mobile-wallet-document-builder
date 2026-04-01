@@ -3,8 +3,7 @@ import { uploadPhoto } from "./s3Service";
 import { getPhotosBucketName } from "../config/appConfig";
 import { randomUUID } from "node:crypto";
 
-export async function handlePhoto(selectedPhoto?: string): Promise<string> {
-  if (!selectedPhoto) return "";
+export async function handlePhoto(selectedPhoto: string): Promise<string> {
 
   const { photoBuffer, mimeType } = getPhoto(selectedPhoto);
 

@@ -129,7 +129,7 @@ function buildDataFromRequestBody(
     given_name: body.given_name,
     title: body.title,
     welsh_licence: body.welsh_licence === "true",
-    portrait: s3Uri,
+    photo: s3Uri,
     birth_date: formatDate(birthDay, birthMonth, birthYear),
     birth_place: body.birth_place,
     issue_date: formatDate(issueDay, issueMonth, issueYear),
