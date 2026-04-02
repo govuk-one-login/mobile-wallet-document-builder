@@ -20,7 +20,7 @@ describe("buildDefaultDrivingLicenceData", () => {
       given_name: "Test FirstName",
       title: "Dr",
       welsh_licence: false,
-      portrait: "s3://bucket/item-uuid",
+      photo: "s3://bucket/item-uuid",
       birth_date: "21-06-2000",
       birth_place: "Birth city",
       issue_date: "29-01-2026",

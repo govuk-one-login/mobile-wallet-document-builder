@@ -5,7 +5,7 @@ export interface DrivingLicenceData {
   given_name: string;
   title: string;
   welsh_licence: boolean;
-  portrait: string;
+  photo: string;
   birth_date: string;
   birth_place: string;
   issue_date: string;

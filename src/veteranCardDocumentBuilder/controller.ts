@@ -1,23 +1,21 @@
 import { Request, Response } from "express";
-import { randomUUID } from "node:crypto";
 import { saveDocument } from "../services/databaseService";
 import { CredentialType } from "../types/CredentialType";
 import { logger } from "../middleware/logger";
 import { isAuthenticated } from "../utils/isAuthenticated";
-import { uploadPhoto } from "../services/s3Service";
 import {
   getDocumentsTableName,
   getEnvironment,
-  getPhotosBucketName,
   getTableItemTtl,
 } from "../config/appConfig";
 import { VeteranCardData } from "./types/VeteranCardData";
 import { VeteranCardRequestBody } from "./types/VeteranCardRequestBody";
-import { getPhoto } from "../utils/photoUtils";
 import { ERROR_CHOICES } from "../utils/errorChoices";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
+import { handlePhoto } from "../services/photoHandler";
+import { randomUUID } from "node:crypto";
 
 const CREDENTIAL_TYPE = CredentialType.DigitalVeteranCard;
 
@@ -52,13 +50,9 @@ export async function veteranCardDocumentBuilderPostController(
 ): Promise<void> {
   try {
     const body: VeteranCardRequestBody = req.body;
-    const { photoBuffer, mimeType } = getPhoto(body.photo);
-
-    const bucketName = getPhotosBucketName();
     const itemId = randomUUID();
-    await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
 
-    const s3Uri = `s3://${bucketName}/${itemId}`;
+    const s3Uri = await handlePhoto(body.photo);
     const data = buildVeteranCardDataFromRequestBody(body, s3Uri);
     await saveDocument(getDocumentsTableName(), {
       itemId,

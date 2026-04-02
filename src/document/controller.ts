@@ -40,7 +40,7 @@ export async function documentController(
     }
 
     if (tableItem.vcType === CredentialType.MobileDrivingLicence) {
-      const s3Uri = (data as DrivingLicenceData).portrait;
+      const s3Uri = (data as DrivingLicenceData).photo;
 
       const { bucketName, fileName } = getBucketAndFileName(s3Uri);
 
@@ -50,11 +50,11 @@ export async function documentController(
         res.status(404).send();
         return;
       }
-      (data as DrivingLicenceData).portrait = photo;
+      (data as DrivingLicenceData).photo = photo;
     }
 
     if (tableItem.vcType === CredentialType.SimpleDocument) {
-      const s3Uri = (data as SimpleDocumentData).portrait;
+      const s3Uri = (data as SimpleDocumentData).photo;
 
       const { bucketName, fileName } = getBucketAndFileName(s3Uri);
 
@@ -64,7 +64,7 @@ export async function documentController(
         res.status(404).send();
         return;
       }
-      (data as SimpleDocumentData).portrait = photo;
+      (data as SimpleDocumentData).photo = photo;
     }
 
     res.status(200).json(tableItem);
