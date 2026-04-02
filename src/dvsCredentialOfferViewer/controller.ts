@@ -10,6 +10,7 @@ import {
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import {
   WalletAppsConfig,
+  WALLET_APPS,
   walletAppsConfig as config,
 } from "../config/walletAppsConfig";
 import {
@@ -41,9 +42,9 @@ export function dvsCredentialOfferViewerController({
       let selectedApp = "";
 
       if (dvsRoutesNonProdEnvs.includes(environment)) {
-        selectedApp = "wallet-test-build";
+        selectedApp = WALLET_APPS.WALLET_TEST_BUILD;
       } else if (dvsRoutesProdEnvs.includes(environment)) {
-        selectedApp = "wallet-test-verifier-integration";
+        selectedApp = WALLET_APPS.WALLET_TEST_VERIFIER_INTEGRATION;
       } else {
         return res.redirect(ROUTES.START);
       }

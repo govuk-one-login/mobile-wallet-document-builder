@@ -68,7 +68,7 @@ Mappings:
       SelfUrl: "stub-credential-issuer.wallet-onboarding.integration.account.gov.uk"
       DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:899032468188:repository/doc-builder-image-repo-containerrepository-edrvcvwivlcg
       OidcIssuerEndpoint: "" # Not required as the DVS flow doesn't require authentication
-      WalletApps: "wallet-test-integration"
+      WalletApps: "wallet-test-verifier-integration"
   ElasticLoadBalancerAccountIds:
     eu-west-2:
       AccountId: 652711504416

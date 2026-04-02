@@ -1,3 +1,5 @@
+import { ENVIRONMENTS } from "./environments";
+
 export const ACCESS_TOKEN_TTL_IN_SECS = 180;
 export const COOKIE_TTL_IN_MILLISECONDS = 3600000;
 
@@ -49,8 +51,14 @@ export function getClientSigningKeyId(): string {
   return getEnvVarValue("CLIENT_SIGNING_KEY_ID");
 }
 
-export function getOIDCDiscoveryEndpoint(): string {
-  return getEnvVarValue("OIDC_ISSUER_DISCOVERY_ENDPOINT");
+export function getOIDCDiscoveryEndpoint(): string | undefined {
+  const endpoint = process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT;
+  if (!endpoint && getEnvironment() !== ENVIRONMENTS.INT) {
+    throw new Error(
+      "OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable not set",
+    );
+  }
+  return endpoint;
 }
 
 export function getHardcodedWalletSubjectId(): string {
