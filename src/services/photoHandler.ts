@@ -1,16 +1,33 @@
-import { getPhoto } from "../utils/photoUtils";
-import { uploadPhoto } from "./s3Service";
-import { getPhotosBucketName } from "../config/appConfig";
-import { randomUUID } from "node:crypto";
+import { getPhoto } from "../services/s3Service";
+import { logger } from "../middleware/logger";
 
-export async function handlePhoto(selectedPhoto: string): Promise<string> {
-  const { photoBuffer, mimeType } = getPhoto(selectedPhoto);
+export async function handlePhoto(
+  data: { photo: string },
+  itemId: string,
+): Promise<{ photo: string } | null> {
+  const s3Uri = data.photo;
 
-  const bucketName = getPhotosBucketName();
-  const itemId = randomUUID();
-  const s3Uri = `s3://${bucketName}/${itemId}`;
+  const { bucketName, fileName } = getBucketAndFileName(s3Uri);
 
-  await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
+  const photo = await getPhoto(fileName, bucketName);
 
-  return s3Uri;
+  if (!photo) {
+    logger.error(`Photo for document with ID ${itemId} not found`);
+    return null;
+  }
+
+  return {
+    ...data,
+    photo,
+  };
+}
+
+function getBucketAndFileName(s3Uri: string): {
+  bucketName: string;
+  fileName: string;
+} {
+  const s3UriParts = s3Uri.split("/");
+  const bucketName = s3UriParts[2];
+  const fileName = s3UriParts[3];
+  return { bucketName, fileName };
 }

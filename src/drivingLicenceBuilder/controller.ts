@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   getDocumentsTableName,
   getEnvironment,
+  getPhotosBucketName,
   getTableItemTtl,
 } from "../config/appConfig";
 import { CredentialType } from "../types/CredentialType";
@@ -21,7 +22,8 @@ import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
 import { DrivingLicenceRequestBody } from "./types/DrivingLicenceRequestBody";
 import { DrivingLicenceData } from "../types/DrivingLicenceData";
-import { handlePhoto } from "../services/photoHandler";
+import { uploadPhoto } from "../services/s3Service";
+import { getPhoto } from "../utils/photoUtils";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
 
@@ -79,7 +81,11 @@ export function drivingLicenceBuilderPostController({
       }
 
       const itemId = randomUUID();
-      const s3Uri = await handlePhoto(body.photo);
+      const bucketName = getPhotosBucketName();
+      const s3Uri = `s3://${bucketName}/${itemId}`;
+
+      const { photoBuffer, mimeType } = getPhoto(body.photo);
+      await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
 
       const data = buildDataFromRequestBody(body, s3Uri);
       await saveDocument(getDocumentsTableName(), {
