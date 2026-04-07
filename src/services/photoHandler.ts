@@ -2,12 +2,10 @@ import { getPhoto } from "../services/s3Service";
 import { logger } from "../middleware/logger";
 
 export async function handlePhoto(
-  data: { photo: string },
+  photoUri: string,
   itemId: string,
-): Promise<{ photo: string } | null> {
-  const s3Uri = data.photo;
-
-  const { bucketName, fileName } = getBucketAndFileName(s3Uri);
+): Promise<string | null> {
+  const { bucketName, fileName } = getBucketAndFileName(photoUri);
 
   const photo = await getPhoto(fileName, bucketName);
 
@@ -16,10 +14,7 @@ export async function handlePhoto(
     return null;
   }
 
-  return {
-    ...data,
-    photo,
-  };
+  return photo;
 }
 
 function getBucketAndFileName(s3Uri: string): {
