@@ -1,7 +1,7 @@
 import { getPhoto } from "../services/s3Service";
 import { logger } from "../middleware/logger";
 
-export async function handlePhoto(
+export async function getPhotoFromS3(
   photoUri: string,
   itemId: string,
 ): Promise<string | null> {
