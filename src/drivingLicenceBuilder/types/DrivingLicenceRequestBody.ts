@@ -3,7 +3,7 @@ export interface DrivingLicenceRequestBody {
   given_name: string;
   title: string;
   welsh_licence: string;
-  portrait: string;
+  photo: string;
   "birth-day": string;
   "birth-month": string;
   "birth-year": string;
