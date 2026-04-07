@@ -32,7 +32,7 @@ export function buildDefaultDrivingLicenceData(
     given_name: "Test FirstName",
     title: "Dr",
     welsh_licence: false,
-    photo: s3Uri,
+    portrait: s3Uri,
     birth_date: "21-06-2000",
     birth_place: "Birth city",
     issue_date: dateToday,
