@@ -40,7 +40,7 @@ const veteranCardData = {
 const drivingLicenceData = {
   family_name: "Edwards-Smith",
   given_name: "Sarah Elizabeth",
-  portrait: "s3://photosBucket/" + itemId,
+  photo: "s3://photosBucket/" + itemId,
   birth_date: "15-06-1985",
   birth_place: "London",
   issue_date: "01-04-2024",
@@ -56,7 +56,7 @@ const drivingLicenceData = {
 const simpleDocumentData = {
   family_name: "Smith",
   given_name: "John",
-  portrait: "s3://photosBucket/" + itemId,
+  photo: "s3://photosBucket/" + itemId,
   birth_date: "15-06-1985",
   issue_date: "01-04-2024",
   expiry_date: "01-04-2029",
@@ -212,7 +212,7 @@ describe("controller.ts", () => {
     await documentController(req, res);
 
     const mobileDrivingLicenceDocumentWithPhoto = { ...drivingLicenceData };
-    mobileDrivingLicenceDocumentWithPhoto.portrait = mockedPhoto;
+    mobileDrivingLicenceDocumentWithPhoto.photo = mockedPhoto;
 
     expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
     expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
@@ -235,7 +235,7 @@ describe("controller.ts", () => {
     await documentController(req, res);
 
     const simpleDocumentWithPhoto = { ...simpleDocumentData };
-    simpleDocumentWithPhoto.portrait = mockedPhoto;
+    simpleDocumentWithPhoto.photo = mockedPhoto;
 
     expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
     expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);

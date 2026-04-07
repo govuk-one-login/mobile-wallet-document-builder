@@ -1,7 +1,7 @@
 export interface SimpleDocumentRequestBody {
   family_name: string;
   given_name: string;
-  portrait: string;
+  photo: string;
   "birth-day": string;
   "birth-month": string;
   "birth-year": string;

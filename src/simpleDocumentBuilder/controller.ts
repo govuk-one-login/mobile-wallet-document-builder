@@ -10,8 +10,6 @@ import {
   getPhotosBucketName,
   getTableItemTtl,
 } from "../config/appConfig";
-import { getPhoto } from "../utils/photoUtils";
-import { uploadPhoto } from "../services/s3Service";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 import { SimpleDocumentRequestBody } from "./types/SimpleDocumentRequestBody";
 import { saveDocument } from "../services/databaseService";
@@ -20,6 +18,8 @@ import { SimpleDocumentData } from "./types/SimpleDocumentData";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
+import { getPhoto } from "../utils/photoUtils";
+import { uploadPhoto } from "../services/s3Service";
 
 const CREDENTIAL_TYPE = CredentialType.SimpleDocument;
 const FISH_TYPES = [
@@ -96,7 +96,7 @@ export function simpleDocumentBuilderPostController({
       const itemId = randomUUID();
       const s3Uri = `s3://${bucketName}/${itemId}`;
 
-      const { photoBuffer, mimeType } = getPhoto(body.portrait);
+      const { photoBuffer, mimeType } = getPhoto(body.photo);
       await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
 
       const data = buildSimpleDocumentDataFromRequestBody(body, s3Uri);
@@ -142,7 +142,7 @@ function buildSimpleDocumentDataFromRequestBody(
   return {
     family_name: body.family_name,
     given_name: body.given_name,
-    portrait: s3Uri,
+    photo: s3Uri,
     birth_date: formatDate(birthDay, birthMonth, birthYear),
     issue_date: formatDate(issueDay, issueMonth, issueYear),
     expiry_date: formatDate(expiryDay, expiryMonth, expiryYear),
