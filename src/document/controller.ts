@@ -3,7 +3,7 @@ import { getDocument } from "../services/databaseService";
 import { logger } from "../middleware/logger";
 import { CredentialType } from "../types/CredentialType";
 import { getDocumentsTableName } from "../config/appConfig";
-import { handlePhoto } from "../services/photoHandler";
+import { getPhotoFromS3 } from "../services/photoService";
 
 export async function documentController(
   req: Request,
@@ -28,7 +28,7 @@ export async function documentController(
       tableItem.vcType === CredentialType.SimpleDocument
     ) {
       const typedData = data as { photo: string };
-      const photoBase64 = await handlePhoto(typedData.photo, itemId);
+      const photoBase64 = await getPhotoFromS3(typedData.photo, itemId);
 
       if (!photoBase64) {
         res.status(404).send();
