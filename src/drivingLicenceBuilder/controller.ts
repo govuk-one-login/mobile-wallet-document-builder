@@ -9,9 +9,7 @@ import { CredentialType } from "../types/CredentialType";
 import { isAuthenticated } from "../utils/isAuthenticated";
 import { logger } from "../middleware/logger";
 import { randomUUID } from "node:crypto";
-import { uploadPhoto } from "../services/s3Service";
 import { saveDocument } from "../services/databaseService";
-import { getPhoto } from "../utils/photoUtils";
 import { validateDateFields, getDefaultDates, formatDate } from "../utils/date";
 import {
   getFullDrivingPrivileges,
@@ -24,6 +22,8 @@ import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
 import { DrivingLicenceRequestBody } from "./types/DrivingLicenceRequestBody";
 import { DrivingLicenceData } from "../types/DrivingLicenceData";
+import { uploadPhoto } from "../services/s3Service";
+import { getPhoto } from "../utils/photoUtils";
 
 const CREDENTIAL_TYPE = CredentialType.MobileDrivingLicence;
 
@@ -84,7 +84,7 @@ export function drivingLicenceBuilderPostController({
       const bucketName = getPhotosBucketName();
       const s3Uri = `s3://${bucketName}/${itemId}`;
 
-      const { photoBuffer, mimeType } = getPhoto(body.portrait);
+      const { photoBuffer, mimeType } = getPhoto(body.photo);
       await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
 
       const data = buildDataFromRequestBody(body, s3Uri);
@@ -135,7 +135,7 @@ function buildDataFromRequestBody(
     given_name: body.given_name,
     title: body.title,
     welsh_licence: body.welsh_licence === "true",
-    portrait: s3Uri,
+    photo: s3Uri,
     birth_date: formatDate(birthDay, birthMonth, birthYear),
     birth_place: body.birth_place,
     issue_date: formatDate(issueDay, issueMonth, issueYear),

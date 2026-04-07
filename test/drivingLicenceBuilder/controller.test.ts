@@ -140,7 +140,7 @@ describe("controller.ts", () => {
           const req = getMockReq({
             body: {
               ...requestBody,
-              ...{ portrait: fileName },
+              ...{ photo: fileName },
             },
           });
           const { res } = getMockRes();
@@ -186,7 +186,7 @@ describe("controller.ts", () => {
               given_name: "Sarah Elizabeth",
               title: "Miss",
               welsh_licence: false,
-              portrait: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+              photo: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
               birth_date: "06-03-1975",
               birth_place: "London",
               issue_date: "08-04-2019",
@@ -237,7 +237,7 @@ describe("controller.ts", () => {
               given_name: "Sarah Elizabeth",
               title: "Miss",
               welsh_licence: false,
-              portrait: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+              photo: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
               birth_date: "06-03-1975",
               birth_place: "London",
               issue_date: "08-04-2019",
@@ -373,7 +373,7 @@ export function buildDrivingLicenceRequestBody(
     given_name: "Sarah Elizabeth",
     title: "Miss",
     welsh_licence: "false",
-    portrait: "420x525.jpg",
+    photo: "420x525.jpg",
     "birth-day": "06",
     "birth-month": "03",
     "birth-year": "1975",
