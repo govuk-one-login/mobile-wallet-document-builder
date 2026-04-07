@@ -4,9 +4,6 @@ import { logger } from "../middleware/logger";
 import { CredentialType } from "../types/CredentialType";
 import { getDocumentsTableName } from "../config/appConfig";
 import { handlePhoto } from "../services/photoHandler";
-import { SimpleDocumentData } from "../simpleDocumentBuilder/types/SimpleDocumentData";
-import { DrivingLicenceData } from "../types/DrivingLicenceData";
-import { VeteranCardData } from "../veteranCardDocumentBuilder/types/VeteranCardData";
 
 export async function documentController(
   req: Request,
@@ -30,15 +27,15 @@ export async function documentController(
       tableItem.vcType === CredentialType.MobileDrivingLicence ||
       tableItem.vcType === CredentialType.SimpleDocument
     ) {
-      const success = await handlePhoto(
-        data as VeteranCardData | DrivingLicenceData | SimpleDocumentData,
-        itemId,
-      );
+      const typedData = data as { photo: string };
+      const photoBase64 = await handlePhoto(typedData.photo, itemId);
 
-      if (!success) {
+      if (!photoBase64) {
         res.status(404).send();
         return;
       }
+
+      typedData.photo = photoBase64;
     }
 
     res.status(200).json(tableItem);

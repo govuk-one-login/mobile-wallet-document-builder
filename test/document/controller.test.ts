@@ -194,6 +194,11 @@ describe("controller.ts", () => {
     expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
     expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
     expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      itemId,
+      data: { ...veteranCardData, photo: mockedPhoto },
+      vcType: CredentialType.DigitalVeteranCard,
+    });
   });
 
   it("should return 200 and the driving licence record as JSON", async () => {
@@ -211,12 +216,14 @@ describe("controller.ts", () => {
 
     await documentController(req, res);
 
-    const mobileDrivingLicenceDocumentWithPhoto = { ...drivingLicenceData };
-    mobileDrivingLicenceDocumentWithPhoto.photo = mockedPhoto;
-
     expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
     expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
     expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      itemId,
+      data: { ...drivingLicenceData, photo: mockedPhoto },
+      vcType: CredentialType.MobileDrivingLicence,
+    });
   });
 
   it("should return 200 and the simple document record as JSON", async () => {
@@ -234,11 +241,13 @@ describe("controller.ts", () => {
 
     await documentController(req, res);
 
-    const simpleDocumentWithPhoto = { ...simpleDocumentData };
-    simpleDocumentWithPhoto.photo = mockedPhoto;
-
     expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
     expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
     expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      itemId,
+      data: { ...simpleDocumentData, photo: mockedPhoto },
+      vcType: CredentialType.SimpleDocument,
+    });
   });
 });
