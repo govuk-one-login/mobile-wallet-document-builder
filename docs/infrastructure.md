@@ -28,7 +28,7 @@ flowchart LR
     client --> dns --> agw
     agw -->|"VPC Link"| alb --> container
     ecr -->|"image pull"| container
-    container --> ddb
-    container --> s3
-    container --> kms
+    container -->|"dynamodb:PutItem\ndynamodb:GetItem"| ddb
+    container -->|"s3:PutObject\ns3:GetObject"| s3
+    container -->|"kms:Sign\nkms:GetPublicKey"| kms
 ```
