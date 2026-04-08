@@ -53,7 +53,10 @@ export function getClientSigningKeyId(): string {
 
 export function getOIDCDiscoveryEndpoint(): string | undefined {
   const endpoint = process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT;
-  if (!endpoint && getEnvironment() !== ENVIRONMENTS.INT) {
+  if (
+    !endpoint &&
+    ![ENVIRONMENTS.INT, ENVIRONMENTS.LOCAL].includes(getEnvironment())
+  ) {
     throw new Error(
       "OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable not set",
     );

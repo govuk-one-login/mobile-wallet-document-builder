@@ -4,6 +4,8 @@ import {
   dvsRoutesProdEnvs,
   allDvsRoutesEnvs,
   gdsRoutesEnvs,
+  AUTH_DISABLED_ENVS,
+  isAuthDisabled,
 } from "../../src/config/environments";
 
 describe("environments", () => {
@@ -51,6 +53,39 @@ describe("environments", () => {
         ENVIRONMENTS.STAGE,
       ]);
     });
+  });
+
+  describe("AUTH_DISABLED_ENVS", () => {
+    it("should contain local and integration environments", () => {
+      expect(AUTH_DISABLED_ENVS).toEqual([
+        ENVIRONMENTS.LOCAL,
+        ENVIRONMENTS.INT,
+      ]);
+    });
+  });
+
+  describe("isAuthDisabled", () => {
+    const originalEnv = process.env.ENVIRONMENT;
+
+    afterEach(() => {
+      process.env.ENVIRONMENT = originalEnv;
+    });
+
+    it.each([ENVIRONMENTS.LOCAL, ENVIRONMENTS.INT])(
+      "should return true for %s",
+      (testEnvName) => {
+        process.env.ENVIRONMENT = testEnvName;
+        expect(isAuthDisabled()).toBe(true);
+      },
+    );
+
+    it.each([ENVIRONMENTS.DEV, ENVIRONMENTS.BUILD, ENVIRONMENTS.STAGE])(
+      "should return false for %s",
+      (testEnvName) => {
+        process.env.ENVIRONMENT = testEnvName;
+        expect(isAuthDisabled()).toBe(false);
+      },
+    );
   });
 
   describe("environment coverage", () => {

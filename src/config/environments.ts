@@ -20,3 +20,9 @@ export const gdsRoutesEnvs = [
   ENVIRONMENTS.BUILD,
   ENVIRONMENTS.STAGE,
 ];
+
+export const AUTH_DISABLED_ENVS = [ENVIRONMENTS.LOCAL, ENVIRONMENTS.INT];
+
+export function isAuthDisabled(): boolean {
+  return AUTH_DISABLED_ENVS.includes(process.env.ENVIRONMENT ?? "");
+}
