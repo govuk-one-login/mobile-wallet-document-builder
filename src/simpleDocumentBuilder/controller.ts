@@ -96,7 +96,7 @@ export function simpleDocumentBuilderPostController({
       const itemId = randomUUID();
       const s3Uri = `s3://${bucketName}/${itemId}`;
 
-      const { photoBuffer, mimeType } = getPhoto(body.photo);
+      const { photoBuffer, mimeType } = getPhoto(body.portrait);
       await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
 
       const data = buildSimpleDocumentDataFromRequestBody(body, s3Uri);
@@ -142,7 +142,7 @@ function buildSimpleDocumentDataFromRequestBody(
   return {
     family_name: body.family_name,
     given_name: body.given_name,
-    photo: s3Uri,
+    portrait: s3Uri,
     birth_date: formatDate(birthDay, birthMonth, birthYear),
     issue_date: formatDate(issueDay, issueMonth, issueYear),
     expiry_date: formatDate(expiryDay, expiryMonth, expiryYear),

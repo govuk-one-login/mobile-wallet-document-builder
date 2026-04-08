@@ -84,7 +84,7 @@ export function drivingLicenceBuilderPostController({
       const bucketName = getPhotosBucketName();
       const s3Uri = `s3://${bucketName}/${itemId}`;
 
-      const { photoBuffer, mimeType } = getPhoto(body.photo);
+      const { photoBuffer, mimeType } = getPhoto(body.portrait);
       await uploadPhoto(photoBuffer, itemId, bucketName, mimeType);
 
       const data = buildDataFromRequestBody(body, s3Uri);
@@ -135,7 +135,7 @@ function buildDataFromRequestBody(
     given_name: body.given_name,
     title: body.title,
     welsh_licence: body.welsh_licence === "true",
-    photo: s3Uri,
+    portrait: s3Uri,
     birth_date: formatDate(birthDay, birthMonth, birthYear),
     birth_place: body.birth_place,
     issue_date: formatDate(issueDay, issueMonth, issueYear),

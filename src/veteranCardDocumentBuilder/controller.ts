@@ -52,7 +52,7 @@ export async function veteranCardDocumentBuilderPostController(
 ): Promise<void> {
   try {
     const body: VeteranCardRequestBody = req.body;
-    const { photoBuffer, mimeType } = getPhoto(body.photo);
+    const { photoBuffer, mimeType } = getPhoto(body.portrait);
 
     const bucketName = getPhotosBucketName();
     const itemId = randomUUID();
@@ -96,7 +96,7 @@ function buildVeteranCardDataFromRequestBody(
 
   const data: VeteranCardData = {
     ...newObject,
-    photo: s3Uri,
+    portrait: s3Uri,
   };
 
   return data;

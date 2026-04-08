@@ -1,7 +1,7 @@
 export interface SimpleDocumentData {
   family_name: string;
   given_name: string;
-  photo: string;
+  portrait: string;
   birth_date: string;
   issue_date: string;
   expiry_date: string;

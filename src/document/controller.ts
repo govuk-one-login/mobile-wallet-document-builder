@@ -27,15 +27,15 @@ export async function documentController(
       tableItem.vcType === CredentialType.MobileDrivingLicence ||
       tableItem.vcType === CredentialType.SimpleDocument
     ) {
-      const typedData = data as { photo: string };
-      const photoBase64 = await getPhotoFromS3(typedData.photo, itemId);
+      const typedData = data as { portrait: string };
+      const photoBase64 = await getPhotoFromS3(typedData.portrait, itemId);
 
       if (!photoBase64) {
         res.status(404).send();
         return;
       }
 
-      typedData.photo = photoBase64;
+      typedData.portrait = photoBase64;
     }
 
     res.status(200).json(tableItem);

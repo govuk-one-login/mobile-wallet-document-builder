@@ -9,7 +9,7 @@ export interface VeteranCardRequestBody {
   "cardExpiryDate-year": string;
   serviceNumber: string;
   serviceBranch: string;
-  photo: string;
+  portrait: string;
   credentialTtl: string;
   throwError: string;
 }
