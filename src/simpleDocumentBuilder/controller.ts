@@ -10,8 +10,6 @@ import {
   getPhotosBucketName,
   getTableItemTtl,
 } from "../config/appConfig";
-import { getPhoto } from "../utils/photoUtils";
-import { uploadPhoto } from "../services/s3Service";
 import { getTimeToLiveEpoch } from "../utils/getTimeToLiveEpoch";
 import { SimpleDocumentRequestBody } from "./types/SimpleDocumentRequestBody";
 import { saveDocument } from "../services/databaseService";
@@ -20,6 +18,8 @@ import { SimpleDocumentData } from "./types/SimpleDocumentData";
 import { getRandomIntInclusive } from "../utils/getRandomIntInclusive";
 import { ExpressRouteFunction } from "../types/ExpressRouteFunction";
 import { getViewCredentialOfferRedirectUrl } from "../utils/getViewCredentialOfferRedirectUrl";
+import { getPhoto } from "../utils/photoUtils";
+import { uploadPhoto } from "../services/s3Service";
 
 const CREDENTIAL_TYPE = CredentialType.SimpleDocument;
 const FISH_TYPES = [

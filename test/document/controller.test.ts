@@ -34,7 +34,7 @@ const veteranCardData = {
   "cardExpiryDate-year": "2029",
   serviceNumber: "25057386",
   serviceBranch: "HM Naval Service",
-  photo: "s3://photosBucket/" + itemId,
+  portrait: "s3://photosBucket/" + itemId,
 };
 
 const drivingLicenceData = {
@@ -189,11 +189,16 @@ describe("controller.ts", () => {
     await documentController(req, res);
 
     const veteranCardDocumentWithPhoto = { ...veteranCardData };
-    veteranCardDocumentWithPhoto.photo = mockedPhoto;
+    veteranCardDocumentWithPhoto.portrait = mockedPhoto;
 
     expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
     expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
     expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      itemId,
+      data: { ...veteranCardData, portrait: mockedPhoto },
+      vcType: CredentialType.DigitalVeteranCard,
+    });
   });
 
   it("should return 200 and the driving licence record as JSON", async () => {
@@ -211,12 +216,14 @@ describe("controller.ts", () => {
 
     await documentController(req, res);
 
-    const mobileDrivingLicenceDocumentWithPhoto = { ...drivingLicenceData };
-    mobileDrivingLicenceDocumentWithPhoto.portrait = mockedPhoto;
-
     expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
     expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
     expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      itemId,
+      data: { ...drivingLicenceData, portrait: mockedPhoto },
+      vcType: CredentialType.MobileDrivingLicence,
+    });
   });
 
   it("should return 200 and the simple document record as JSON", async () => {
@@ -234,11 +241,13 @@ describe("controller.ts", () => {
 
     await documentController(req, res);
 
-    const simpleDocumentWithPhoto = { ...simpleDocumentData };
-    simpleDocumentWithPhoto.portrait = mockedPhoto;
-
     expect(getDocument).toHaveBeenCalledWith("testTable", itemId);
     expect(getPhoto).toHaveBeenCalledWith(itemId, bucketName);
     expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      itemId,
+      data: { ...simpleDocumentData, portrait: mockedPhoto },
+      vcType: CredentialType.SimpleDocument,
+    });
   });
 });

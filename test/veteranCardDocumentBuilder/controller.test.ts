@@ -86,7 +86,7 @@ describe("controller.ts", () => {
       "cardExpiryDate-year": "2029",
       serviceNumber: "25057386",
       serviceBranch: "HM Naval Service",
-      photo: "420x525.jpg",
+      portrait: "420x525.jpg",
       credentialTtl: "43200",
       throwError: "",
     };
@@ -123,7 +123,7 @@ describe("controller.ts", () => {
           const req = getMockReq({
             body: {
               ...requestBody,
-              ...{ photo: fileName },
+              ...{ portrait: fileName },
             },
           });
           const { res } = getMockRes();
@@ -170,7 +170,7 @@ describe("controller.ts", () => {
             "cardExpiryDate-year": "2029",
             serviceNumber: "25057386",
             serviceBranch: "HM Naval Service",
-            photo: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
+            portrait: "s3://testBucket/2e0fac05-4b38-480f-9cbd-b046eabe1e46",
           },
           vcType: "DigitalVeteranCard",
           timeToLive: 1760174135,

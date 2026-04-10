@@ -9,5 +9,5 @@ export interface VeteranCardData {
   "cardExpiryDate-year": string;
   serviceNumber: string;
   serviceBranch: string;
-  photo: string;
+  portrait: string;
 }
