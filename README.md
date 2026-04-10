@@ -86,3 +86,9 @@ Automated deployments to `build` are triggered on push to `main` after PR approv
 Pre-commit hooks are used to maintain code quality and validate commit messages against the [Conventional Commits](https://github.com/conventional-changelog/commitlint) standard — non-conforming messages will be rejected.
 
 Ensure your branch is up to date and all hooks pass before opening a pull request. Avoid using the git `--no-verify` flag to skip these checks unless absolutely necessary.
+
+## Further Documentation
+
+| Document                                           | Description |
+|----------------------------------------------------|---|
+| [`docs/infrastructure.md`](docs/infrastructure.md) | Infrastructure diagram — AWS architecture, API routes, data flow |
