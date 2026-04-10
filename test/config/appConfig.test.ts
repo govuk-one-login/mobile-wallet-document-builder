@@ -134,6 +134,12 @@ describe("appConfig.ts", () => {
     expect(getOIDCDiscoveryEndpoint()).toBeUndefined();
   });
 
+  it("should return undefined if OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable is not set in the local environment", () => {
+    delete process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT;
+    process.env.ENVIRONMENT = "local";
+    expect(getOIDCDiscoveryEndpoint()).toBeUndefined();
+  });
+
   it("should return OIDC_ISSUER_DISCOVERY_ENDPOINT environment variable value if set", () => {
     process.env.OIDC_ISSUER_DISCOVERY_ENDPOINT = "test-discovery-endpoint";
     expect(getOIDCDiscoveryEndpoint()).toEqual("test-discovery-endpoint");
