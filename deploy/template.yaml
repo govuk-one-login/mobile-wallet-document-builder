@@ -51,24 +51,28 @@ Mappings:
       DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:219494607463:repository/doc-builder-image-repo-containerrepository-lc2jfleeqwvq
       OidcIssuerEndpoint: "https://auth-stub.mobile.dev.account.gov.uk"
       WalletApps: "govuk-build,wallet-test-dev,wallet-test-build"
+      OneLoginAuthServerUrl: "sts-mock.wallet-onboarding.dev.account.gov.uk"
     build:
       CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.build.account.gov.uk"
       SelfUrl: "stub-credential-issuer.wallet-onboarding.build.account.gov.uk"
       DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:899032468188:repository/doc-builder-image-repo-containerrepository-edrvcvwivlcg
       OidcIssuerEndpoint: "https://auth-stub.mobile.build.account.gov.uk"
       WalletApps: "govuk-build,wallet-test-dev,wallet-test-build"
+      OneLoginAuthServerUrl: "sts-mock.wallet-onboarding.build.account.gov.uk"
     staging:
       CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.staging.account.gov.uk"
       SelfUrl: "stub-credential-issuer.wallet-onboarding.staging.account.gov.uk"
       DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:899032468188:repository/doc-builder-image-repo-containerrepository-edrvcvwivlcg
       OidcIssuerEndpoint: "https://oidc.staging.account.gov.uk"
       WalletApps: "govuk-staging,wallet-test-staging"
+      OneLoginAuthServerUrl: "" # Not required as functionality to issue credential without the wallet isn't available
     integration:
       CredentialIssuerUrl: "example-credential-issuer.wallet-onboarding.integration.account.gov.uk"
       SelfUrl: "stub-credential-issuer.wallet-onboarding.integration.account.gov.uk"
       DocumentBuilderImageRepository: arn:aws:ecr:eu-west-2:899032468188:repository/doc-builder-image-repo-containerrepository-edrvcvwivlcg
       OidcIssuerEndpoint: "" # Not required as the DVS flow doesn't require authentication
       WalletApps: "wallet-test-verifier-integration"
+      OneLoginAuthServerUrl: "" # Not required as functionality to issue credential without the wallet isn't available
   ElasticLoadBalancerAccountIds:
     eu-west-2:
       AccountId: 652711504416
@@ -413,6 +417,10 @@ Resources:
               Value: !FindInMap [EnvironmentVariables, !Ref Environment, OidcIssuerEndpoint]
             - Name: WALLET_APPS
               Value: !FindInMap [EnvironmentVariables, !Ref Environment, WalletApps]
+            - Name: ONE_LOGIN_AUTH_SERVER_URL
+              Value: !Sub
+                - "https://${OneLoginAuthServerUrl}"
+                - OneLoginAuthServerUrl: !FindInMap [ EnvironmentVariables, !Ref Environment, OneLoginAuthServerUrl ]
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp
