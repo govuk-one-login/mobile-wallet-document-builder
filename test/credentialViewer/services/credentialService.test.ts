@@ -1,5 +1,6 @@
 process.env.SELF = "https://doc-builder.test";
 process.env.CREDENTIAL_ISSUER_URL = "https://example-cri.test";
+process.env.ONE_LOGIN_AUTH_SERVER_URL = "https://sts-mock.test";
 
 import axios, { AxiosResponse } from "axios";
 import {
@@ -29,7 +30,7 @@ describe("credentialService", () => {
 
       expect(result).toBe(expectedAccessToken);
       expect(mockedAxios.post).toHaveBeenCalledWith(
-        "https://doc-builder.test/token",
+        "https://sts-mock.test/token",
         {
           grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
           "pre-authorized_code": preAuthorizedCode,

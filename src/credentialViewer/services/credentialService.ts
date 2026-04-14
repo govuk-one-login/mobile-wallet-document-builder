@@ -1,5 +1,9 @@
 import axios from "axios";
-import { getCriEndpoint, getSelfUrl } from "../../config/appConfig";
+import {
+  getCriEndpoint,
+  getOneLoginAuthServerUrl,
+  getSelfUrl,
+} from "../../config/appConfig";
 import { GrantType } from "../../stsStubAccessToken/token/validateTokenRequest";
 
 /**
@@ -11,7 +15,7 @@ export async function getAccessToken(
   preAuthorizedCode: string,
 ): Promise<string> {
   const response = await axios.post(
-    `${getSelfUrl()}/token`,
+    `${getOneLoginAuthServerUrl()}/token`,
     {
       grant_type: GrantType.PREAUTHORIZED_CODE,
       "pre-authorized_code": preAuthorizedCode,
