@@ -738,7 +738,11 @@ Resources:
     Properties:
       AlarmName: !Sub "${AWS::StackName}-BE5XXErrorAlarm"
       AlarmDescription: Trigger the alarm if errorThreshold exceeds 50% with a minimum of 5 invocations in the last 30 minutes
-      ActionsEnabled: false
+      ActionsEnabled: true
+      AlarmActions:
+        - !ImportValue alarm-sns-topic-critical
+      OKActions:
+        - !ImportValue alarm-sns-topic-critical
       InsufficientDataActions: []
       Dimensions: []
       EvaluationPeriods: 1
