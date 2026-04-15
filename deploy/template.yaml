@@ -706,7 +706,11 @@ Resources:
     Properties:
       AlarmName: !Sub "${AWS::StackName}-DocBuilderLowContainerTaskCountAlarm"
       AlarmDescription: Trigger a warning if the running container task count drops below 1
-      ActionsEnabled: false
+      ActionsEnabled: true
+      AlarmActions:
+        - !ImportValue alarm-sns-topic-critical
+      OKActions:
+        - !ImportValue alarm-sns-topic-critical
       InsufficientDataActions: []
       Dimensions: []
       EvaluationPeriods: 1
