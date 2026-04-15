@@ -77,3 +77,7 @@ export function getWalletApps(): string[] {
 export function getTableItemTtl(): number {
   return 43200;
 }
+
+export function getOneLoginAuthServerUrl(): string {
+  return getEnvVarValue("ONE_LOGIN_AUTH_SERVER_URL");
+}
