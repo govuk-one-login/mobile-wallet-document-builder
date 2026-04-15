@@ -699,6 +699,7 @@ Resources:
 
   # ALARMS
   DocBuilderLowContainerTaskCountAlarm:
+    Condition: IsBuildOrStagingOrInt
     DependsOn:
       - WalletFECluster
       - WalletFEECSService
@@ -734,6 +735,7 @@ Resources:
             Stat: Minimum
 
   BE5XXErrorAlarm:
+    Condition: IsBuildOrStagingOrInt
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmName: !Sub "${AWS::StackName}-BE5XXErrorAlarm"
