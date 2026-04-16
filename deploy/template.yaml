@@ -32,8 +32,7 @@ Parameters:
 Conditions:
   StackNameIsWalletDocBuilderFE: !Equals [!Ref "AWS::StackName", wallet-doc-builder]
 
-  IsBuildOrStagingOrInt: !Or
-    - !Equals [!Ref Environment, build]
+  IsStagingOrInt: !Or
     - !Equals [!Ref Environment, staging]
     - !Equals [!Ref Environment, integration]
 
@@ -707,7 +706,7 @@ Resources:
 
   # ALARMS
   DocBuilderLowContainerTaskCountAlarm:
-    Condition: IsBuildOrStagingOrInt
+    Condition: IsStagingOrInt
     DependsOn:
       - WalletFECluster
       - WalletFEECSService
@@ -743,7 +742,7 @@ Resources:
             Stat: Minimum
 
   FE5XXErrorAlarm:
-    Condition: IsBuildOrStagingOrInt
+    Condition: IsStagingOrInt
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmName: !Sub "${AWS::StackName}-FE5XXErrorAlarm"
@@ -793,6 +792,7 @@ Resources:
           Expression: (error/invocations) * 100
 
   FELatencyAlarmP99:
+    Condition: IsStagingOrInt
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmName: !Sub "${AWS::StackName}-FELatencyAlarmP99"
