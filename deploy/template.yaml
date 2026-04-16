@@ -714,8 +714,12 @@ Resources:
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmName: !Sub "${AWS::StackName}-DocBuilderLowContainerTaskCountAlarm"
-      AlarmDescription: Trigger a warning if the running container task count drops below 1
-      ActionsEnabled: false
+      AlarmDescription: Trigger the alarm if the running container task count drops below 1
+      ActionsEnabled: true
+      AlarmActions:
+        - !ImportValue alarm-sns-topic-warning
+      OKActions:
+        - !ImportValue alarm-sns-topic-warning
       InsufficientDataActions: []
       Dimensions: []
       EvaluationPeriods: 1
@@ -738,13 +742,17 @@ Resources:
             Period: 60
             Stat: Minimum
 
-  BE5XXErrorAlarm:
+  FE5XXErrorAlarm:
     Condition: IsBuildOrStagingOrInt
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName: !Sub "${AWS::StackName}-BE5XXErrorAlarm"
+      AlarmName: !Sub "${AWS::StackName}-FE5XXErrorAlarm"
       AlarmDescription: Trigger the alarm if errorThreshold exceeds 50% with a minimum of 5 invocations in the last 30 minutes
-      ActionsEnabled: false
+      ActionsEnabled: true
+      AlarmActions:
+        - !ImportValue alarm-sns-topic-warning
+      OKActions:
+        - !ImportValue alarm-sns-topic-warning
       InsufficientDataActions: []
       Dimensions: []
       EvaluationPeriods: 1
