@@ -12,6 +12,7 @@ import {
   getWalletApps,
   getTableItemTtl,
   getPhotosBucketName,
+  getOneLoginAuthServerUrl,
 } from "../../src/config/appConfig";
 
 describe("appConfig.ts", () => {
@@ -165,5 +166,17 @@ describe("appConfig.ts", () => {
 
   it("should return table item TTL", () => {
     expect(getTableItemTtl()).toEqual(43200);
+  });
+
+  it("should throw an error if ONE_LOGIN_AUTH_SERVER_URL environment variable is not set", () => {
+    delete process.env.ONE_LOGIN_AUTH_SERVER_URL;
+    expect(() => getOneLoginAuthServerUrl()).toThrow(
+      new Error("ONE_LOGIN_AUTH_SERVER_URL environment variable not set"),
+    );
+  });
+
+  it("should return ONE_LOGIN_AUTH_SERVER_URL environment variable value if set", () => {
+    process.env.ONE_LOGIN_AUTH_SERVER_URL = "test-ol-auth-server-url";
+    expect(getOneLoginAuthServerUrl()).toEqual("test-ol-auth-server-url");
   });
 });

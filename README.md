@@ -56,7 +56,7 @@ Start LocalStack to emulate AWS services (DynamoDB, S3, KMS) on port `4561`:
 npm run localstack:up
 ```
 
-Running locally also requires the example credential issuer for end-to-end journey functionality.
+Running locally also requires the example credential issuer and STS mock for end-to-end journey functionality.
 
 > **Note:** Authentication is disabled in `local` and `integration` environments. It is only active in `dev`, `build`, and `staging`.
 

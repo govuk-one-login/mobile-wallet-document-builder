@@ -2,6 +2,8 @@ import { MDOC_TEST_DATA, VCDM_TEST_DATA } from "./testData";
 
 process.env.SELF = "https://doc-builder.test";
 process.env.CREDENTIAL_ISSUER_URL = "https://example-cri.test";
+process.env.ONE_LOGIN_AUTH_SERVER_URL = "https://sts-mock.test";
+
 import { credentialViewerController } from "../../src/credentialViewer/controller";
 import { getMockReq, getMockRes } from "@jest-mock/express";
 import axios, { AxiosResponse } from "axios";
@@ -57,7 +59,7 @@ describe("controller.ts", () => {
 
     expect(mockedAxios.post).toHaveBeenNthCalledWith(
       1,
-      "https://doc-builder.test/token",
+      "https://sts-mock.test/token",
       {
         grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
         "pre-authorized_code":
@@ -151,7 +153,7 @@ describe("controller.ts", () => {
 
     expect(mockedAxios.post).toHaveBeenNthCalledWith(
       1,
-      "https://doc-builder.test/token",
+      "https://sts-mock.test/token",
       {
         grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
         "pre-authorized_code":
