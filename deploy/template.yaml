@@ -792,7 +792,6 @@ Resources:
           Expression: (error/invocations) * 100
 
   FELatencyAlarmP99:
-    Condition: IsStagingOrInt
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmName: !Sub "${AWS::StackName}-FELatencyAlarmP99"
