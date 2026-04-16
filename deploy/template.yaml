@@ -717,9 +717,9 @@ Resources:
       AlarmDescription: Trigger the alarm if the running container task count drops below 1
       ActionsEnabled: true
       AlarmActions:
-        - !ImportValue alarm-sns-topic-critical
+        - !ImportValue alarm-sns-topic-warning
       OKActions:
-        - !ImportValue alarm-sns-topic-critical
+        - !ImportValue alarm-sns-topic-warning
       InsufficientDataActions: []
       Dimensions: []
       EvaluationPeriods: 1
@@ -750,9 +750,9 @@ Resources:
       AlarmDescription: Trigger the alarm if errorThreshold exceeds 50% with a minimum of 5 invocations in the last 30 minutes
       ActionsEnabled: true
       AlarmActions:
-        - !ImportValue alarm-sns-topic-critical
+        - !ImportValue alarm-sns-topic-warning
       OKActions:
-        - !ImportValue alarm-sns-topic-critical
+        - !ImportValue alarm-sns-topic-warning
       InsufficientDataActions: []
       Dimensions: []
       EvaluationPeriods: 1
