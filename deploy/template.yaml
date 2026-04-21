@@ -128,12 +128,24 @@ Resources:
 
   # ACCESS LOGS
   WalletFEAPIGWAccessLogsGroup:
+    Metadata:
+      checkov:
+        skip:
+          - id: CKV_AWS_158
+            rule: "Ensure that CloudWatch Log Group is encrypted by KMS"
+            comment: KMS encryption not required as log group will not contain sensitive data.
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/apigateway/${AWS::StackName}-WalletFE-API-GW-AccessLogs
       RetentionInDays: 14
 
   WalletFEECSAccessLogsGroup:
+    Metadata:
+      checkov:
+        skip:
+          - id: CKV_AWS_158
+            rule: "Ensure that CloudWatch Log Group is encrypted by KMS"
+            comment: KMS encryption not required as log group will not contain sensitive data.
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/ecs/${AWS::StackName}-Wallet-Stub-Front-ECS
