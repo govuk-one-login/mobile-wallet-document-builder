@@ -19,6 +19,13 @@ jobs:
         with:
           fetch-depth: '0'
 
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@de2bfaecd21d58ef232e0d2a3391c33c32c460d7 # v12.3096.0
+        with:
+          file: "deploy/template.yaml"
+          quiet: true
+          soft_fail: false
+
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@d78e1a4a9656d3b223e59b80676a797f20093133 # pin@v2
         with:

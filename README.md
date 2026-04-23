@@ -29,6 +29,16 @@ This project uses [Husky](https://typicode.github.io/husky/) to run checks befor
 npm run setup-hooks
 ```
 
+### Checkov
+
+We use Checkov for static analysis of our IaC. Following can be used to run a Checkov analysis locally.
+
+```bash
+brew install checkov
+
+# Running Checkov analysis
+npm run checkov
+```
 ### Lint & Format
 
 ```bash
